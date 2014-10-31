@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/1.0/phpbu.xsd"
+       bootstrap="backup/bootstrap.php"
+       verbose="true">
+  <backups>
+    <backup>
+      <type>mysql</type>
+      <options>
+          <option name="databases">dbname</option>
+          <option name="tables" />
+          <option name="ignoreTables" />
+          <option name="structureOnly">dbname.table1,dbname.table2</option>
+      </options>
+      <target>
+        <path>/</path>
+        <filename>mysqldump-%Y%m%d-%H%i.sql</filename>
+        <compress>
+          <path />
+          <bin>bzip2</bin>
+        </compress>
+        <sanity>
+          <check name="SomeName">somevalue</check>
+        </sanity>
+        <sync>
+            <type />
+            <user />
+            <password />
+            <options>
+              <option name=""></option>
+            </option>
+        </sync>
+      </target>
+    </backup>
+  </backups>
+</phpbu>
