@@ -1,0 +1,30 @@
+{
+    "name": "phpbu/phpbu",
+    "description": "PHP Backup utility.",
+    "type": "library",
+    "keywords": [
+        "backup",
+        "mysqldump",
+        "tar.gz"
+    ],
+    "homepage": "http://phpbu.de/",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Sebastian Feldmann",
+            "email": "sebastian@phpbu.de",
+            "role": "lead"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/sebastianfeldmann/phpbu/issues"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "PHPBU\\": "src/PHPBU/"
+        }
+    },
+    "require": {
+    }
+}
