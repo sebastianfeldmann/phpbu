@@ -3,9 +3,7 @@
     "description": "PHP Backup utility.",
     "type": "library",
     "keywords": [
-        "backup",
-        "mysqldump",
-        "tar.gz"
+        "backup"
     ],
     "homepage": "http://phpbu.de/",
     "license": "BSD-3-Clause",
