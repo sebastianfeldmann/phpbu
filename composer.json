@@ -24,5 +24,14 @@
         }
     },
     "require": {
+        "sebastian/version": "~1.0",
+        "ext-dom": "*",
+        "ext-json": "*",
+        "ext-spl": "*"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
     }
 }
