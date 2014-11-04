@@ -1,4 +1,5 @@
 .settings
 .project
 .buildpath
+*.phar
 /vendor/
