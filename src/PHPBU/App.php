@@ -34,17 +34,27 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @package    PHPBU
- * @author     Sebastian Feldmann
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  2014 Sebastian Feldmann
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpbu.de/
- * @since      File available since Release 1.0.0
+ * @since      Class available since Release 1.0.0
  */
 namespace PHPBU;
 
 use PHPBU\App\Configuration;
 use PHPBU\App\Exception;
 
+/**
+ * Main application class.
+ *
+ * @package    PHPBU
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @link       http://www.phpbu.de/
+ * @since      Class available since Release 1.0.0
+ */
 class App
 {
     const EXIT_SUCCESS   = 0;
@@ -216,7 +226,7 @@ class App
         } elseif (isset($this->arguments['bootstrap'])) {
             $this->handleBootstrap($this->arguments['bootstrap']);
         }
-        
+
         // c
         if (!isset($this->arguments['backups'])) {
             $this->printHelp();
@@ -224,6 +234,11 @@ class App
         }
     }
 
+    /**
+     * Handles the php include_path settings.
+     *
+     * @param string|array $path
+     */
     protected function handleIncludePath($path)
     {
         if (is_array($path)){
@@ -232,13 +247,20 @@ class App
         ini_set('include_path', $path . PATH_SEPARATOR . ini_get('include_path'));
     }
 
+    /**
+     * Handles the bootstrap file inclusion.
+     *
+     * @param  string $filename
+     * @throws PHPBU\App\Exception
+     */
     protected function handleBootstrap($filename)
     {
         $pathToFile = stream_resolve_include_path($filename);
 
         if (!$pathToFile || !is_readable($pathToFile)) {
-            throw new \Exception(sprintf('Cannot open bootstrap file "%s".' . "\n", $filename));
+            throw new Exception(sprintf('Cannot open bootstrap file "%s".' . "\n", $filename));
         }
+        include_once $pathToFile;
     }
 
     /**
