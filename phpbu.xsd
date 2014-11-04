@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:annotation>
+		<xs:documentation source="http://www.phpbu.de/1.0/en/manual">
+		This schema file defines the rules by which the XML configuration file of PHPBu 0.0.1 may be structured.
+		</xs:documentation>
+		<xs:appinfo source="http://www.phpbu.de/1.0/en/appinfo"/>
+	</xs:annotation>
+	<xs:element name="phpbu" type="phpBuType">
+		<!-- todo annotation -->
+	</xs:element>
+	<xs:complexType name="syncType">
+		<xs:sequence>
+			<xs:element name="option" type="namedValueType" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="type" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="rsync"/>
+					<xs:enumeration value="dropbox"/>
+					<xs:enumeration value="amazon"/>
+					<xs:enumeration value="owncloud"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="skipOnSanityFail" use="required" type="xs:boolean"/>
+	</xs:complexType>
+	<xs:complexType name="sanitycheckType">
+		<xs:attribute name="type" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="SomeName"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="value" use="required" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="targetType">
+		<xs:attribute name="dirname" use="required" type="xs:string"/>
+		<xs:attribute name="filename" use="required" type="xs:string"/>
+		<xs:attribute name="compress">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="bzip2"/>
+					<xs:enumeration value="gzip"/>
+					<xs:enumeration value="tar.bzip2"/>
+					<xs:enumeration value="tar.gzip"/>
+					<xs:enumeration value="zip"/>
+					<xs:enumeration value="7zip"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="sourceType">
+		<xs:sequence>
+			<xs:element name="option" type="namedValueType" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="type">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="mysql"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="backupsType">
+		<xs:sequence>
+			<xs:element name="backup" type="backupType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="backupType">
+		<xs:sequence>
+			<xs:element name="source" type="sourceType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="target" type="targetType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="sanitycheck" type="sanitycheckType" maxOccurs="unbounded"/>
+			<xs:element name="sync" type="syncType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="loggersType">
+		<xs:sequence>
+			<xs:element name="log" type="loggerType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="loggerType">
+		<xs:attribute name="type">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="json"/>
+					<xs:enumeration value="plain"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="target" type="xs:anyURI"/>
+	</xs:complexType>
+
+	<xs:complexType name="phpType">
+		<xs:sequence>
+			<xs:element name="includePath" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="ini" type="namedValueType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="namedValueType">
+		<xs:attribute name="name" use="required" type="xs:string"/>
+		<xs:attribute name="value" use="required" type="xs:anySimpleType"/>
+	</xs:complexType>
+
+	<xs:complexType name="phpBuType">
+		<xs:group ref="configGroup"/>
+		<xs:attributeGroup ref="configAttributeGroup"/>	
+	</xs:complexType>
+	<xs:attributeGroup name="configAttributeGroup">
+		<xs:attribute name="bootstrap" type="xs:anyURI"/>
+		<xs:attribute name="verbose" type="xs:boolean" default="false"/>
+	</xs:attributeGroup>
+	<xs:group name="configGroup">
+		<xs:all>
+			<xs:element name="php" type="phpType" minOccurs="0"/>
+			<xs:element name="logging" type="loggersType" minOccurs="0"/>
+			<xs:element name="backups" type="backupsType" minOccurs="0"/>
+		</xs:all>
+	</xs:group>
+</xs:schema>
