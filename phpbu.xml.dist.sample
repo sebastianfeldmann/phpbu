@@ -3,34 +3,37 @@
        xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/1.0/phpbu.xsd"
        bootstrap="backup/bootstrap.php"
        verbose="true">
+
+  <php>
+    <includePath>.</includePath>
+    <ini name="max_execution_time" value="0" />
+  </php>
+
+
+  <logging>
+    <log type="json" target="/tmp/logfile.json" />
+    <log type="plain" target="/tmp/logfile.txt" />
+  </logging>
+
+
   <backups>
     <backup>
-      <type>mysql</type>
-      <options>
-          <option name="databases">dbname</option>
-          <option name="tables" />
-          <option name="ignoreTables" />
-          <option name="structureOnly">dbname.table1,dbname.table2</option>
-      </options>
-      <target>
-        <path>/</path>
-        <filename>mysqldump-%Y%m%d-%H%i.sql</filename>
-        <compress>
-          <path />
-          <bin>bzip2</bin>
-        </compress>
-        <sanity>
-          <check name="SomeName">somevalue</check>
-        </sanity>
-        <sync>
-            <type />
-            <user />
-            <password />
-            <options>
-              <option name=""></option>
-            </option>
-        </sync>
-      </target>
+      <source type="mysql">
+        <option name="databases" value="dbname" />
+        <option name="tables" value="" />
+        <option name="ignoreTables" value="" />
+        <option name="structureOnly" value="dbname.table1,dbname.table2" />
+      </source>
+
+      <target dirname="/tmp/backup" filename="mysqldump-%Y%m%d-%H%i.sql" compress="bzip2" />
+
+      <sanitycheck type="SomeName" value="10MB" />
+      <sanitycheck type="SomeName" value="20MB" />
+
+      <sync type="rsync" skipOnSanityFail="true">
+        <option name="user" value="user.name" />
+        <option name="password" value="topsecret" />
+      </sync>
     </backup>
   </backups>
 </phpbu>
