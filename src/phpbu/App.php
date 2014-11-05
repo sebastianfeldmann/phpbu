@@ -42,8 +42,10 @@
  */
 namespace phpbu;
 
+use Phar;
 use phpbu\App\Configuration;
 use phpbu\App\Exception;
+use phpbu\App\Version;
 
 /**
  * Main application class.
@@ -126,7 +128,7 @@ class App
         try {
             $parser  = new App\Args();
             $options = $parser->getOptions($args);
-        } catch ( Exception $e ) {
+        } catch (Exception $e) {
             $this->printError($e->getMessage(), true);
         }
 
@@ -148,6 +150,11 @@ class App
 
                 case 'include-path':
                     $this->arguments['include-path'] = $argument;
+                break;
+
+                case '--selfupdate':
+                case '--self-update':
+                    $this->handleSelfUpdate();
                 break;
 
                 case '-v':
@@ -223,11 +230,12 @@ class App
                 }
                 ini_set($name, $value);
             }
+        // elseif so we don't bootstrap twice by accident
         } elseif (isset($this->arguments['bootstrap'])) {
             $this->handleBootstrap($this->arguments['bootstrap']);
         }
 
-        // c
+        // no backups to handle
         if (!isset($this->arguments['backups'])) {
             $this->printHelp();
             exit(self::EXIT_EXCEPTION);
@@ -244,6 +252,7 @@ class App
         if (is_array($path)){
             $path = implode(PATH_SEPARATOR, $path);
         }
+
         ini_set('include_path', $path . PATH_SEPARATOR . ini_get('include_path'));
     }
 
@@ -260,7 +269,42 @@ class App
         if (!$pathToFile || !is_readable($pathToFile)) {
             throw new Exception(sprintf('Cannot open bootstrap file "%s".' . "\n", $filename));
         }
+
         include_once $pathToFile;
+    }
+
+    /**
+     * Handle the phar self-update.
+     */
+    protected function handleSelfUpdate()
+    {
+        $this->printVersionString();
+
+        $remoteFilename = sprintf('http://phar.phpbu.de/phpbu%s.phar', Version::getReleaseChannel());
+        $localFilename  = realpath($_SERVER['argv'][0]);
+        $tempFilename   = basename($localFilename, '.phar') . '-temp.phar';
+
+        print 'Updating the phpbu PHAR ... ';
+
+        file_put_contents($tempFilename, file_get_contents($remoteFilename));
+
+        chmod($tempFilename, 0777 & ~umask());
+
+        // check downloaded phar
+        try {
+            $phar = new Phar($tempFilename);
+            unset($phar);
+            // replace current phar with the new one
+            rename($tempFilename, $localFilename);
+        } catch (Exception $e) {
+            // cleanup crappy phar
+            unlink($tempFilename);
+            print ' failed' . PHP_EOL . $e->getMessage() . PHP_EOL;
+            exit(self::EXIT_EXCEPTION);
+        }
+
+        print ' done' . PHP_EOL;
+        exit(self::EXIT_SUCCESS);
     }
 
     /**
@@ -271,8 +315,9 @@ class App
         if ($this->isVersionStringPrinted) {
             return;
         }
-        print 'phpbu 1.0.0' . PHP_EOL;
-        $this->versionStringPrinted = true;
+
+        print Version::getVersionString() . PHP_EOL;
+        $this->isVersionStringPrinted = true;
     }
 
     /**
@@ -292,8 +337,8 @@ Usage: phpbu [option]
   -V, --version          Output version information and exit.
 
 EOT;
-        if (defined('__phpbu_PHAR__')) {
-            print "  --self-update          Update phpbu to the latest version.\n";
+        if (defined('__PHPBU_PHAR__')) {
+            print '  --self-update          Update phpbu to the latest version.' . PHP_EOL;
         }
     }
 
