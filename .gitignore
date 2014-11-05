@@ -3,3 +3,4 @@
 .buildpath
 *.phar
 /vendor/
+/build/
