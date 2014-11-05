@@ -37,11 +37,11 @@
  */
 $file = __DIR__ . '/vendor/autoload.php';
 if (file_exists($file)) {
-    define('phpbu_COMPOSER_AUTOLOAD', $file);
+    define('PHPBU_COMPOSER_AUTOLOAD', $file);
 }
 unset($file);
 
-if (!defined('phpbu_COMPOSER_AUTOLOAD')) {
+if (!defined('PHPBU_COMPOSER_AUTOLOAD')) {
     fwrite(STDERR,
         'You need to set up the project dependencies using the following commands:' . PHP_EOL .
         'wget http://getcomposer.org/composer.phar' . PHP_EOL .
@@ -50,6 +50,6 @@ if (!defined('phpbu_COMPOSER_AUTOLOAD')) {
     exit(1);
 }
 
-require phpbu_COMPOSER_AUTOLOAD;
+require PHPBU_COMPOSER_AUTOLOAD;
 
 phpbu\App::main();
