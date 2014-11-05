@@ -97,7 +97,8 @@ class Configuration
      *
      * @return array
      */
-    public function getAppSettings() {
+    public function getAppSettings()
+    {
         $settings = array();
         $root     = $this->document->documentElement;
 
@@ -116,7 +117,8 @@ class Configuration
      *
      * @return array
      */
-    public function getPhpSettings() {
+    public function getPhpSettings()
+    {
         $settings = array(
             'include_path' => array(),
             'ini'          => array(),
@@ -303,8 +305,7 @@ class Configuration
         //  - C:\windows
         //  - C:/windows
         //  - c:/windows
-        if (
-            defined('PHP_WINDOWS_VERSION_BUILD')
+        if (defined('PHP_WINDOWS_VERSION_BUILD')
          && ($path[0] === '\\' || (strlen($path) >= 3 && preg_match('#^[A-Z]\:[/\\\]#i', substr($path, 0, 3))))
         ) {
             return $path;

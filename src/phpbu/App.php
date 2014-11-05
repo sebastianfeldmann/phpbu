@@ -133,40 +133,34 @@ class App
         }
 
         foreach ($options as $option => $argument) {
-            switch ( $option ) {
+            switch ($option) {
                 case '--bootstrap':
                     $this->arguments['bootstrap'] = $argument;
-                break;
-
+                    break;
                 case '--configuration':
                     $this->arguments['configuration'] = $argument;
-                break;
-
+                    break;
                 case '-h':
                 case '--help':
                     $this->printHelp();
                     exit(self::EXIT_SUCCESS);
-                break;
-
+                    break;
                 case 'include-path':
                     $this->arguments['include-path'] = $argument;
-                break;
-
+                    break;
                 case '--selfupdate':
                 case '--self-update':
                     $this->handleSelfUpdate();
-                break;
-
+                    break;
                 case '-v':
                 case '--verbose':
                     $this->arguments['verbose'] = true;
-                break;
-
+                    break;
                 case '-V':
                 case '--version':
                     $this->printVersionString();
                     exit(self::EXIT_SUCCESS);
-                break;
+                    break;
             }
         }
 
@@ -185,9 +179,9 @@ class App
             } elseif (file_exists($configurationFile . '.dist')) {
                 $this->arguments['configuration'] = realpath($configurationFile . '.dist');
             }
-        // no configuration argument search for default configuration files
-        // phpbu.xml, phpbu.xml.dist in current working directory
         } elseif (!isset($this->arguments['configuration'])) {
+            // no configuration argument search for default configuration files
+            // phpbu.xml, phpbu.xml.dist in current working directory
             if (file_exists('phpbu.xml')) {
                 $this->arguments['configuration'] = realpath('phpbu.xml');
             } elseif (file_exists('phpbu.xml.dist')) {
@@ -230,7 +224,7 @@ class App
                 }
                 ini_set($name, $value);
             }
-        // elseif so we don't bootstrap twice by accident
+            // elseif so we don't bootstrap twice by accident
         } elseif (isset($this->arguments['bootstrap'])) {
             $this->handleBootstrap($this->arguments['bootstrap']);
         }
@@ -249,7 +243,7 @@ class App
      */
     protected function handleIncludePath($path)
     {
-        if (is_array($path)){
+        if (is_array($path)) {
             $path = implode(PATH_SEPARATOR, $path);
         }
 

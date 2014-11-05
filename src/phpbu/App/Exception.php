@@ -12,4 +12,6 @@ namespace phpbu\App;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Exception extends \Exception {}
+class Exception extends \Exception
+{
+}
