@@ -1,13 +1,13 @@
 <?php
-namespace PHPBU\App;
+namespace phpbu\App;
 
 use DOMElement;
 use DOMXPath;
-use PHPBU\App\Exception;
+use phpbu\App\Exception;
 
 /**
  *
- * Wrapper for the PHPBU XML configuration file.
+ * Wrapper for the phpbu XML configuration file.
  *
  * Example XML configuration file:
  * <code>
@@ -48,7 +48,7 @@ use PHPBU\App\Exception;
  * </phpbu>
  * </code>
  *
- * @package    PHPBU
+ * @package    phpbu
  * @subpackage App
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
@@ -154,7 +154,7 @@ class Configuration
      * Get the config for a single backup node.
      *
      * @param  DOMElement $backupNode
-     * @throws PHPBU\App\Exception
+     * @throws phpbu\App\Exception
      * @return array
      */
     private function getBackupConfig(DOMElement $backupNode)
@@ -330,7 +330,7 @@ class Configuration
      * Load the XML-File.
      *
      * @param  string $filename
-     * @throws PHPBU\App\Exception
+     * @throws phpbu\App\Exception
      * @return DOMDocument
      */
     private function loadXmlFile($filename)

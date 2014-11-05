@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPBU
+ * phpbu
  *
  * Copyright (c) 2014, Sebastian Feldmann <sebastian@phpbu.de>
  * All rights reserved.
@@ -33,22 +33,22 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package    PHPBU
+ * @package    phpbu
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  2014 Sebastian Feldmann
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-namespace PHPBU;
+namespace phpbu;
 
-use PHPBU\App\Configuration;
-use PHPBU\App\Exception;
+use phpbu\App\Configuration;
+use phpbu\App\Exception;
 
 /**
  * Main application class.
  *
- * @package    PHPBU
+ * @package    phpbu
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
@@ -251,7 +251,7 @@ class App
      * Handles the bootstrap file inclusion.
      *
      * @param  string $filename
-     * @throws PHPBU\App\Exception
+     * @throws phpbu\App\Exception
      */
     protected function handleBootstrap($filename)
     {
@@ -271,7 +271,7 @@ class App
         if ($this->isVersionStringPrinted) {
             return;
         }
-        print 'PHPBU 1.0.0' . PHP_EOL;
+        print 'phpbu 1.0.0' . PHP_EOL;
         $this->versionStringPrinted = true;
     }
 
@@ -286,14 +286,14 @@ class App
 Usage: phpbu [option]
 
   --bootstrap=<file>     A "bootstrap" PHP file that is included before the backup.
-  --configuration=<file> A PHPBU xml config file.
+  --configuration=<file> A phpbu xml config file.
   -h, --help             Display the help message and exit.
   -v, --verbose          Output more verbose information.
   -V, --version          Output version information and exit.
 
 EOT;
-        if (defined('__PHPBU_PHAR__')) {
-            print "  --self-update          Update PHPBU to the latest version.\n";
+        if (defined('__phpbu_PHAR__')) {
+            print "  --self-update          Update phpbu to the latest version.\n";
         }
     }
 

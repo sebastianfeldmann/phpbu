@@ -1,10 +1,10 @@
 <?php
-namespace PHPBU\App;
+namespace phpbu\App;
 
 /**
- * Base class for all PHPBU exceptions.
+ * Base class for all phpbu exceptions.
  *
- * @package    PHPBU
+ * @package    phpbu
  * @subpackage App
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>

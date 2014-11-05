@@ -1,12 +1,12 @@
 <?php
-namespace PHPBU\App;
+namespace phpbu\App;
 
-use PHPBU\App\Exception;
+use phpbu\App\Exception;
 
 /**
  * Cli argument parser.
  *
- * @package    PHPBU
+ * @package    phpbu
  * @subpackage App
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
@@ -80,7 +80,7 @@ class Args
      *
      * @param  string $arg
      * @param  array $options
-     * @throws PHPBU\App\Exception
+     * @throws phpbu\App\Exception
      */
     public function parseShortOption($arg, array &$options)
     {
@@ -95,7 +95,7 @@ class Args
      *
      * @param  string $arg
      * @param  array $options
-     * @throws PHPBU\App\Exception
+     * @throws phpbu\App\Exception
      */
     public function parseLongOption($arg, array &$options)
     {
