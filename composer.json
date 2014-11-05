@@ -20,7 +20,7 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "PHPBU\\": "src/PHPBU/"
+            "phpbu\\": "src/phpbu/"
         }
     },
     "require": {

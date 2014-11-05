@@ -1,10 +1,10 @@
-# PHPBU
+# phpbu
 
 PHP backup utility
 
 ## Installation
 
-You can download a [PHP Archive (PHAR)](http://php.net/phar) that bundles everything you need to run PHPBU in a single file.
+You can download a [PHP Archive (PHAR)](http://php.net/phar) that bundles everything you need to run phpbu in a single file.
 
     wget http://phar.phpbu.de/phpbu.phar
     chmod +x phpbu.phar
