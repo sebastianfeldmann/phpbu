@@ -42,6 +42,14 @@ class Args
         'version'        => true
     );
 
+    public function __construct()
+    {
+        if (defined('__PHPBU_PHAR__')) {
+            $this->longOptions['selfupdate']  = null;
+            $this->longOptions['self-update'] = null;
+        }
+    }
+
     /**
      * Get all cli options.
      *
