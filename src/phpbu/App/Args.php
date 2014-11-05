@@ -42,6 +42,9 @@ class Args
         'version'        => true
     );
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         if (defined('__PHPBU_PHAR__')) {
