@@ -29,6 +29,9 @@
         "ext-json": "*",
         "ext-spl": "*"
     },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "1.*"
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"

@@ -48,7 +48,8 @@ class Cli implements Runner
      * @throws phpbu\App\Exception
      * @return phpbu\Backup\Runner\Result
      */
-    public function run() {
+    public function run()
+    {
         $cmd    = $this->getExec();
         $output = array();
         $code   = null;
@@ -68,7 +69,7 @@ class Cli implements Runner
     public function getExec()
     {
         $amount = count($this->commands);
-        if ( $amount < 1 ) {
+        if ($amount < 1) {
             throw new Exception('no command to execute');
         }
         $cmd = $amount > 1 ? '(' . implode(' && ', $this->commands) . ')' : $this->commands[0];

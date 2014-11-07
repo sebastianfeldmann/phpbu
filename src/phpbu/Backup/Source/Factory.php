@@ -39,7 +39,7 @@ abstract class Factory
     public static function create($type, Target $target, $conf = array())
     {
         if (!isset(self::$classMap)) {
-            throw new \Exception(sprintf('uknown source: %s',$type));
+            throw new \Exception(sprintf('uknown source: %s', $type));
         }
         $class  = self::$classMap[$type];
         return new $class($target, $conf);

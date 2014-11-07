@@ -145,7 +145,10 @@ class Target
      */
     public function getPath()
     {
-        return $this->dirname . PATH_SEPARATOR . $this->filename .  ($this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
+        return $this->dirname
+               . PATH_SEPARATOR
+               . $this->filename
+               . ($this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
     }
 
     /**
