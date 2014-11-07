@@ -43,6 +43,11 @@ use phpbu\App\Exception;
  *         <option name="user" value="user.name" />
  *         <option name="password" value="topsecret" />
  *       </sync>
+ *
+ *       <cleanup skipOnSanityFail="true">
+ *         <option name="amount" value="50" />
+ *         <option name="outdated" value="2W" />
+ *       </cleanup>
  *     </backup>
  *   </backups>
  * </phpbu>
@@ -213,13 +218,13 @@ class Configuration
         // get sync configuration
         $sync = array();
         foreach ($backupNode->getElementsByTagName('sync') as $syncNode) {
-            $type    = (string) $optionNode->getAttribute('type');
-            $skip    = $this->toBoolean((string) $optionNode->getAttribute('skipOnSanityFail'), true);
+            $type    = (string) $syncNode->getAttribute('type');
+            $skip    = $this->toBoolean((string) $syncNode->getAttribute('skipOnSanityFail'), true);
             $options = array();
             foreach ($syncNode->getElementsByTagName('option') as $optionNode) {
-                $options[] = array('name' => $name,'value' => $value);
+                $options[$name] = $value;
             }
-            $sync[] = array('type' => $name, 'skipOnSanityFail' => $value, 'options' => $options);
+            $sync[] = array('type' => $type, 'skipOnSanityFail' => $skip, 'options' => $options);
         }
 
         return array(
