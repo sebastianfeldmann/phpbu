@@ -112,7 +112,7 @@ class Args
     {
         $list     = explode('=', $arg);
         $option   = $list[0];
-        $argument = null;
+        $argument = true;
 
         if (count($list) > 1) {
             $argument = $list[1];
@@ -123,10 +123,10 @@ class Args
         if (!isset($this->longOptions[$option]) && !isset($this->longOptions[$option . '='])) {
             throw new Exception('unknown option: --' . $option);
         }
-        if ($argument == null && isset($this->longOptions[$option . '='])) {
+        if ($argument === true && isset($this->longOptions[$option . '='])) {
             throw new Exception('argument required for option: --' . $option);
         }
-        if ($argument !== null && isset($this->longOptions[$option])) {
+        if ($argument !== true && isset($this->longOptions[$option])) {
             throw new Exception('needless argument for option: --' . $option);
         }
         $options['--' . $option] = $argument;
