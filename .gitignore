@@ -2,4 +2,6 @@
 .project
 .buildpath
 *.phar
+/build/logs
+/build/phar
 /vendor/
