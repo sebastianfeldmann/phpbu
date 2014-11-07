@@ -46,6 +46,7 @@ use Phar;
 use phpbu\App\Configuration;
 use phpbu\App\Exception;
 use phpbu\App\Version;
+use phpbu\Backup\Compressor;
 
 /**
  * Main application class.
@@ -109,13 +110,32 @@ class App
     {
         $this->handleOpt($args);
 
-        // create logger
+        // TODO: create logger
 
         // create backups
+        foreach ($this->arguments['backups'] as $backup) {
+            // create target
+            $target = new Backup\Target(
+                $backup['target']['dirname'],
+                $backup['target']['filename']
+            );
+            // compressor
+            if (isset($backup['target']['compressor'])) {
+                $compressor = Backup\Compressor::create($backup['target']['compressor']);
+                $target->setCompressor($compressor);
+            }
+            // create source
+            $source = Backup\Source\Factory::create($backup['source']['type'], $target, $backup['source']['options']);
+            $runner = $source->getRunner();
+            // $runner->run();
 
-        // do sanity checks
+            // TODO: do sanity checks
 
-        // do syncs
+            // TODO: do syncs
+
+            // TODO: do cleanups
+        }
+
     }
 
     /**

@@ -34,6 +34,11 @@
         <option name="user" value="user.name" />
         <option name="password" value="topsecret" />
       </sync>
+
+      <cleanup skipOnSanityFail="true">
+        <option name="user" value="user.name" />
+        <option name="password" value="topsecret" />
+      </cleanup>
     </backup>
   </backups>
 </phpbu>
