@@ -56,7 +56,7 @@ abstract class Factory
     public static function registerSource($type, $fqcn, $force = false)
     {
         if (!$force && isset(self::$classMap[$type])) {
-            throw new Exception('source already registered use fource parameter to overwrite');
+            throw new Exception('source is already registered use force parameter to overwrite');
         }
         self::$classMap[$type] = $fqcn;
     }
