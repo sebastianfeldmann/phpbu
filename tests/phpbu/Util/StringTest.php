@@ -56,4 +56,26 @@ class StringTest extends \PHPUnit_Framework_TestCase
             array('W', date('W')),
         );
     }
+
+    /**
+     * Test toBoolean with matching values.
+     */
+    public function testToBooleanMatch()
+    {
+        $this->assertTrue(String::toBoolean('true', false));
+        $this->assertTrue(String::toBoolean('tRuE', false));
+        $this->assertTrue(String::toBoolean('TRUE', false));
+        $this->assertFalse(String::toBoolean('false', true));
+        $this->assertFalse(String::toBoolean('fAlSe', true));
+        $this->assertFalse(String::toBoolean('FALSE', true));
+    }
+
+    /**
+     * Test toBoolean with non matching values to check the default.
+     */
+    public function testToBooleanDefault()
+    {
+        $this->assertTrue(String::toBoolean('FOO', true));
+        $this->assertFalse(String::toBoolean('BAR', false));
+    }
 }

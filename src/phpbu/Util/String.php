@@ -34,4 +34,21 @@ abstract class String
         }
         return $string;
     }
+
+    /**
+     * Converts a given value to boolean.
+     *
+     * @param  string  $value
+     * @param  boolean $default
+     * @return boolean
+     */
+    public static function toBoolean($value, $default)
+    {
+        if (strtolower($value) == 'false') {
+            return false;
+        } elseif (strtolower($value) == 'true') {
+            return true;
+        }
+        return $default;
+    }
 }
