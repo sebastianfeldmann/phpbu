@@ -17,12 +17,12 @@ use phpbu\Backup\Target;
 interface Source
 {
     /**
-     * Constructor
+     * Setup the source.
      *
      * @param  Target $target
      * @param  array  $conf
      */
-    public function __construct(Target $target, array $conf = array());
+    public function setup(Target $target, array $conf = array());
 
     /**
      * Runner getter

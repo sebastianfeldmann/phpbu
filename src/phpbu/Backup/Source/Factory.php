@@ -42,7 +42,9 @@ abstract class Factory
             throw new \Exception(sprintf('uknown source: %s', $type));
         }
         $class  = self::$classMap[$type];
-        return new $class($target, $conf);
+        $source = new $class();
+        $source->setup($target, $conf);
+        return $source;
     }
 
     /**

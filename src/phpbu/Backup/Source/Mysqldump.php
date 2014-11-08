@@ -28,13 +28,14 @@ class Mysqldump implements Source
     private $runner;
 
     /**
-     * Constructor.
+     * Setup.
      *
+     * @see    phpbu\Backup\Source
      * @param  phpbu\Backup\Target $target
      * @param  array               $conf
      * @throws phpbu\App\Exception
      */
-    public function __construct(Target $target, array $conf = array())
+    public function setup(Target $target, array $conf = array())
     {
         $this->runner = new Runner\Cli();
         $this->runner->setTarget($target);
