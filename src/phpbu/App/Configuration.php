@@ -4,6 +4,7 @@ namespace phpbu\App;
 use DOMElement;
 use DOMXPath;
 use phpbu\App\Exception;
+use phpbu\Util\String;
 
 /**
  *
@@ -111,7 +112,7 @@ class Configuration
             $settings['bootstrap'] = $this->toAbsolutePath((string) $root->getAttribute('bootstrap'));
         }
         if ($root->hasAttribute('verbose')) {
-            $settings['verbose'] = $this->toBoolean((string) $root->getAttribute('verbose'), false);
+            $settings['verbose'] = String::toBoolean((string) $root->getAttribute('verbose'), false);
         }
         return $settings;
     }
@@ -219,7 +220,7 @@ class Configuration
         $sync = array();
         foreach ($backupNode->getElementsByTagName('sync') as $syncNode) {
             $type    = (string) $syncNode->getAttribute('type');
-            $skip    = $this->toBoolean((string) $syncNode->getAttribute('skipOnSanityFail'), true);
+            $skip    = String::toBoolean((string) $syncNode->getAttribute('skipOnSanityFail'), true);
             $options = array();
             foreach ($syncNode->getElementsByTagName('option') as $optionNode) {
                 $options[$name] = $value;
@@ -268,23 +269,6 @@ class Configuration
             $settings[] = $conf;
         }
         return $settings;
-    }
-
-    /**
-     * Converts a given value to boolean.
-     *
-     * @param  string  $value
-     * @param  boolean $default
-     * @return boolean
-     */
-    protected function toBoolean($value, $default)
-    {
-        if (strtolower($value) == 'false') {
-            return false;
-        } elseif (strtolower($value) == 'true') {
-            return true;
-        }
-        return $default;
     }
 
     /**
