@@ -146,7 +146,7 @@ class Target
     public function getPath()
     {
         return $this->dirname
-               . PATH_SEPARATOR
+               . DIRECTORY_SEPARATOR
                . $this->filename
                . ($this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
     }
