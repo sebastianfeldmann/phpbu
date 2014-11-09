@@ -64,6 +64,8 @@ class Mysqldump implements Source
             $cmd->addOption('--host', $host);
         }
 
+        $this->testMysqlConnection($user, $password, $host);
+
         if (!empty($conf['quick']) && String::toBoolean($conf['quick'], false)) {
             $cmd->addOption('-q');
         }
@@ -158,6 +160,24 @@ class Mysqldump implements Source
             }
         }
         throw new RuntimeException('\'mysqldump\' was nowhere to be found please specify the correct path');
+    }
+
+    /**
+     * Test mysql connection.
+     *
+     * @param  string $user
+     * @param  string $password
+     * @param  string $host
+     * @return boolean
+     * @throws RuntimeException
+     */
+    public function testMysqlConnection($user = null, $password = null, $host = null)
+    {
+        // TODO: test mysql connection
+        // if some mysql extension is loaded (mysql, mysqli, pdo)
+        // no user given get os user
+        // try to connect to database
+        return true;
     }
 
     /**
