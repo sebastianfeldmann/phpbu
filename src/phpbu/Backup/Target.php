@@ -141,14 +141,15 @@ class Target
     /**
      * Path to target file.
      *
+     * @param  boolean $compressed
      * @return string
      */
-    public function getPath()
+    public function getPath($compressed = true)
     {
         return $this->dirname
                . DIRECTORY_SEPARATOR
                . $this->filename
-               . ($this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
+               . ($compressed && $this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
     }
 
     /**
