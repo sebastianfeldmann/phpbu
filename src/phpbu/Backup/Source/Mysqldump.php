@@ -6,7 +6,7 @@ use phpbu\Backup\Compressor;
 use phpbu\Backup\Runner;
 use phpbu\Backup\Source;
 use phpbu\Backup\Target;
-use phpbu\Util\String;
+use phpbu\Util;
 use RuntimeException;
 
 /**
@@ -35,7 +35,7 @@ class Mysqldump implements Source
      * @see    phpbu\Backup\Source
      * @param  phpbu\Backup\Target $target
      * @param  array               $conf
-     * @throws phpbu\App\Exception
+     * @throws RuntimeException
      */
     public function setup(Target $target, array $conf = array())
     {
@@ -46,9 +46,16 @@ class Mysqldump implements Source
         $this->runner->setTarget($target);
 
         $path      = isset($conf['pathToMysqldump']) ? $conf['pathToMysqldump'] : null;
-        $mysqldump = $this->detectMysqldumpLocation($path);
-        $cmd       = new Runner\Cli\Cmd($mysqldump);
+        $mysqldump = Util\Cli::detectCmdLocation(
+            'mysqldump',
+            $path,
+            array(
+                '/usr/local/mysql/bin/mysqldump', // Mac OS X
+                '/usr/mysql/bin/mysqldump'        // Linux
+            )
+        );
 
+        $cmd = new Runner\Cli\Cmd($mysqldump);
         $this->runner->addCommand($cmd);
 
         if (!empty($conf['user'])) {
@@ -66,10 +73,10 @@ class Mysqldump implements Source
 
         $this->testMysqlConnection($user, $password, $host);
 
-        if (!empty($conf['quick']) && String::toBoolean($conf['quick'], false)) {
+        if (!empty($conf['quick']) && Util\String::toBoolean($conf['quick'], false)) {
             $cmd->addOption('-q');
         }
-        if (!empty($conf['compress']) && String::toBoolean($conf['compress'], false)) {
+        if (!empty($conf['compress']) && Util\String::toBoolean($conf['compress'], false)) {
             $cmd->addOption('-C');
         }
         if (!empty($conf['tables'])) {
@@ -108,58 +115,6 @@ class Mysqldump implements Source
                 $this->runner->addCommand($cmd2);
             }
         }
-    }
-
-    /**
-     * Detect the 'mysqldump' location.
-     *
-     * @param  string $path     Directory where mysqldumo should be located
-     * @return string           Absolute path to mysqldump command
-     * @throws RuntimeException
-     */
-    public function detectMysqldumpLocation($path = null)
-    {
-        // explicit path given, so check it out
-        if (null !== $path) {
-            $mysqldump = $path . DIRECTORY_SEPARATOR . 'mysqldump';
-            if (!is_executable($mysqldump)) {
-                throw new RuntimeException(sprintf('wrong path specified for \'mysqldump\': %s', $path));
-            }
-            return $mysqldump;
-        }
-
-        // on nx systems use 'which' command.
-        if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
-            $mysqldump = `which mysqldump`;
-            if (is_executable($mysqldump)) {
-                return $mysqldump;
-            }
-            // try to find mysql command.
-            $mysqldump = dirname(`which mysql`) . "/mysqldump";
-            if (is_executable($mysqldump)) {
-                return $mysqldump;
-            }
-        }
-
-        // checking environment variable.
-        $pathList = explode(PATH_SEPARATOR, $_SERVER['PATH']);
-        foreach ($pathList as $path) {
-            if (is_executable($path)) {
-                return $path;
-            }
-        }
-
-        // some more pathes we came accross.
-        $pathList = array(
-            '/usr/local/mysql/bin/mysqldump', // Mac OS X
-            '/usr/mysql/bin/mysqldump'        // Linux
-        );
-        foreach ($pathList as $path) {
-            if (is_executable($path)) {
-                return $path;
-            }
-        }
-        throw new RuntimeException('\'mysqldump\' was nowhere to be found please specify the correct path');
     }
 
     /**
