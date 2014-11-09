@@ -96,7 +96,7 @@ class Result
      */
     public function getOutputAsString()
     {
-        if (null === $this->$output) {
+        if (null === $this->output) {
             $this->output = $this->bufferToText();
         }
         return $this->output;
