@@ -53,7 +53,7 @@ class Result
     {
         $this->cmd    = $cmd;
         $this->code   = $code;
-        $this->buffer = $buffer;
+        $this->buffer = $output;
     }
 
     /**
@@ -97,7 +97,7 @@ class Result
     public function getOutputAsString()
     {
         if (null === $this->$output) {
-            $this->outputText = $this->bufferToText();
+            $this->output = $this->bufferToText();
         }
         return $this->output;
     }
