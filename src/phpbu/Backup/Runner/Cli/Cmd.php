@@ -41,11 +41,20 @@ class Cmd
     /**
      * Add option to list
      *
-     * @param string $option
+     * @param string              $option
+     * @param miyed<string|array> $argument
+     * @param string              $glue
      */
-    public function addOption($option)
+    public function addOption($option, $argument = null, $glue = '=')
     {
-        $this->options[] = $option;
+        if (is_array($argument)) {
+            $argument        = array_map('escapeshellarg', $argument);
+            $glue            = ' ';
+            $escapedArgument = implode(' ', $argument);
+        } else {
+            $escapedArgument = escapeshellarg($argument);
+        }
+        $this->options[] = $option . (null !== $argument ? $glue . $escapedArgument : '');
     }
 
     /**
