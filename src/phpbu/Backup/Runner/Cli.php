@@ -34,6 +34,13 @@ class Cli implements Runner
     private $target;
 
     /**
+     * Do we use the commands output for compression
+     *
+     * @var boolean
+     */
+    private $compressOutput = true;
+
+    /**
      * Target settter
      *
      * @param phpbu\Backup\Target $target
@@ -41,6 +48,16 @@ class Cli implements Runner
     public function setTarget(Target $target)
     {
         $this->target = $target;
+    }
+
+    /**
+     * OutputCompression setter
+     *
+     * @param boolean $bool
+     */
+    public function setOutputCompression($bool)
+    {
+        $this->compressOutput = $bool;
     }
 
     /**
@@ -74,10 +91,12 @@ class Cli implements Runner
         }
         $cmd = $amount > 1 ? '(' . implode(' && ', $this->commands) . ')' : $this->commands[0];
 
-        if ($this->target->shouldBeCompressed()) {
-            $cmd    .= ' | ' . $this->target->getCompressor()->getCommand();
+        if ($this->compressOutput) {
+            if ($this->target->shouldBeCompressed()) {
+                $cmd    .= ' | ' . $this->target->getCompressor()->getCommand();
+            }
+            $cmd .= ' > ' . (string) $this->target;
         }
-        $cmd .= ' > ' . (string) $this->target;
 
         return $cmd;
     }
