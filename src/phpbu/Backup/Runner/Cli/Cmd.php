@@ -39,6 +39,16 @@ class Cmd
     }
 
     /**
+     * Name getter.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * Add option to list
      *
      * @param string              $option
