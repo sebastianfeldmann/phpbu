@@ -23,8 +23,9 @@ abstract class Factory
      * @var array
      */
     private static $classMap = array(
-        // type => fqcn
-        'mysql' => '\\phpbu\\Backup\\Source\\Mysqldump',
+        // type     => fqcn
+        'mysql'     => '\\phpbu\\Backup\\Source\\Mysqldump',
+        'directory' => '\\phpbu\\Backup\\Source\\Tar',
     );
 
     /**
