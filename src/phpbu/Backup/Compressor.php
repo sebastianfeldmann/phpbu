@@ -52,11 +52,12 @@ class Compressor
     }
 
     /**
+     * @param  $includePath
      * @return string
      */
-    public function getCommand()
+    public function getCommand($includePath = true)
     {
-        return $this->path . $this->cmd;
+        return ($includePath ? $this->path : '' ) . $this->cmd;
     }
 
     /**
