@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\Backup\Source;
 
-use phpbu\App\Exception;
-use phpbu\Backup\Compressor;
 use phpbu\Backup\Runner;
 use phpbu\Backup\Source;
 use phpbu\Backup\Target;
