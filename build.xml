@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="phpbu" default="build">
+ <property name="php" value="php"/>
+
+ <target name="build"
+   depends="prepare,lint,phploc,phpcs-ci,phpunit"/>
+
+ <target name="clean" description="Cleanup build artifacts">
+  <delete dir="${basedir}/build/logs"/>
+  <delete dir="${basedir}/build/phar"/>
+
+  <delete>
+   <fileset dir="${basedir}/build">
+    <include name="**/*.phar" />
+   </fileset>
+  </delete>
+ </target>
+
+ <target name="prepare" description="Prepare for build">
+  <mkdir dir="${basedir}/build/logs"/>
+ </target>
+
+ <target name="lint">
+  <apply executable="${php}" failonerror="true">
+   <arg value="-l" />
+
+   <fileset dir="${basedir}/src">
+    <include name="**/*.php" />
+    <modified />
+   </fileset>
+
+   <fileset dir="${basedir}/tests">
+    <include name="**/*.php" />
+    <modified />
+   </fileset>
+  </apply>
+ </target>
+
+ <target name="phploc" description="Measure project size using PHPLOC">
+  <exec executable="phploc">
+   <arg value="--log-csv" />
+   <arg value="${basedir}/build/logs/phploc.csv" />
+   <arg value="--log-xml" />
+   <arg value="${basedir}/build/logs/phploc.xml" />
+   <arg path="${basedir}/src" />
+  </exec>
+ </target>
+
+ <target name="phpcs" description="Find coding standard violations using PHP_CodeSniffer">
+  <exec executable="phpcs">
+   <arg value="--standard=PSR2" />
+   <arg value="--extensions=php" />
+   <arg path="${basedir}/src" />
+   <arg path="${basedir}/tests" />
+  </exec>
+ </target>
+
+ <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer">
+  <exec executable="phpcs" output="/dev/null">
+   <arg value="--report=checkstyle" />
+   <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
+   <arg value="--standard=PSR2" />
+   <arg value="--extensions=php" />
+   <arg path="${basedir}/src" />
+   <arg path="${basedir}/tests" />
+  </exec>
+ </target>
+
+ <target name="phpunit" description="Run unit tests with PHPUnit">
+  <exec executable="phpunit" failonerror="true">
+  </exec>
+ </target>
+
+ <target name="phar"
+         description="Create PHAR archive of phpbu and all its dependencies (release)"
+         depends="phar-prepare">
+  <exec executable="bash" outputproperty="version">
+   <arg value="-c" />
+   <arg value="${basedir}/phpbu --version" />
+  </exec>
+
+  <antcall target="phar-build">
+   <param name="version" value="${version}"/>
+  </antcall>
+ </target>
+
+ <target name="phar-alpha"
+         description="Create PHAR archive of PHPUnit and all its dependencies (alpha)"
+         depends="phar-prepare">
+  <antcall target="phar-build">
+   <param name="version" value="alpha"/>
+  </antcall>
+ </target>
+
+ <target name="phar-beta"
+         description="Create PHAR archive of PHPUnit and all its dependencies (beta)"
+         depends="phar-prepare">
+  <antcall target="phar-build">
+   <param name="version" value="beta"/>
+  </antcall>
+ </target>
+
+ <target name="phar-prepare" depends="clean">
+  <mkdir dir="${basedir}/build/phar"/>
+
+  <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
+
+  <copy file="${basedir}/vendor/sebastian/version/LICENSE" tofile="${basedir}/build/phar/sebastian-version/LICENSE"/>
+  <copy todir="${basedir}/build/phar/sebastian-version">
+   <fileset dir="${basedir}/vendor/sebastian/version/src">
+    <include name="**/*.php" />
+    <exclude name="**/autoload.php" />
+   </fileset>
+  </copy>
+ </target>
+
+ <target name="phar-build">
+  <copy todir="${basedir}/build/phar">
+   <fileset dir="${basedir}/src">
+    <include name="**/*.php" />
+   </fileset>
+  </copy>
+
+  <exec executable="${basedir}/build/phar-version.php" outputproperty="phar_version">
+   <arg value="${version}" />
+  </exec>
+
+  <exec executable="phpab">
+   <arg value="--all" />
+   <arg value="--phar" />
+   <arg value="--output" />
+   <arg path="${basedir}/build/phpbu-${phar_version}.phar" />
+   <arg value="--template" />
+   <arg path="${basedir}/build/phar-autoload.php.in" />
+   <arg value="--indent" />
+   <arg value="            " />
+   <arg path="${basedir}/build/phar" />
+  </exec>
+
+  <chmod file="${basedir}/build/phpbu-${phar_version}.phar" perm="ugo+rx"/>
+ </target>
+</project>
