@@ -40,6 +40,13 @@ class Target
     private $permissions;
 
     /**
+     * Should the file be compressed.
+     *
+     * @var boolean
+     */
+    private $compress = false;
+
+    /**
      * File compression.
      *
      * @var phpbu\Backup\Compressor
@@ -141,15 +148,33 @@ class Target
     /**
      * Path to target file.
      *
-     * @param  boolean $compressed
      * @return string
      */
-    public function getPath($compressed = true)
+    public function getPath()
     {
         return $this->dirname
                . DIRECTORY_SEPARATOR
                . $this->filename
-               . ($compressed && $this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
+               . ($this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
+    }
+
+    /**
+     * Disable file compression
+     */
+    public function disableCompression() {
+        $this->compress = false;
+    }
+
+    /**
+     * Enable file compression
+     *
+     * @throws phpbu\App\Exception
+     */
+    public function enableCompression() {
+        if (null == $this->compressor) {
+            throw new Exception('can\'t enable compression without a compressor');
+        }
+        $this->compress = true;
     }
 
     /**
@@ -160,6 +185,7 @@ class Target
     public function setCompressor(Compressor $compressor)
     {
         $this->compressor = $compressor;
+        $this->compress   = true;
     }
 
     /**
@@ -179,7 +205,7 @@ class Target
      */
     public function shouldBeCompressed()
     {
-        return $this->compressor !== null;
+        return $this->compress !== false;
     }
 
     /**

@@ -30,18 +30,20 @@ class Tar implements Source
         $this->runner->setOutputCompression(false);
 
         $compressOption     = '';
-        $compressed         = false;
         $allowedCompressors = array(
             'bzip2' => 'j',
             'gzip'  => 'z',
         );
 
+        // check if 'tar' can handle the requested compression
         if ($target->shouldBeCompressed()) {
             $compressor = $target->getCompressor();
             $name       = $compressor->getCommand(false);
             if (isset($allowedCompressors[$name])) {
-                $compressed     = true;
                 $compressOption = $allowedCompressors[$name];
+            } else {
+                // the requested compression is not available for the 'tar' command
+                $target->disableCompression();
             }
         }
 
@@ -51,7 +53,7 @@ class Tar implements Source
         $cmd->addOption(
             '-' . $compressOption . 'cvf',
             array(
-                $target->getPath($compressed),
+                (string) $target,
                 $conf['dir'],
             )
         );
