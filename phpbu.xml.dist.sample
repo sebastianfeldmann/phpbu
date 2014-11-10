@@ -17,7 +17,7 @@
 
 
   <backups>
-    <backup>
+    <backup stopOnError="true">
       <source type="mysql">
         <option name="databases" value="dbname" />
         <option name="tables" value="" />
@@ -27,18 +27,34 @@
 
       <target dirname="/tmp/backup" filename="mysqldump-%Y%m%d-%H%i.sql" compress="bzip2" />
 
+      <!-- do some sanity checks to make sure everything worked as planned -->
+      <!--
       <sanitycheck type="SomeName" value="10MB" />
       <sanitycheck type="SomeName" value="20MB" />
+      -->
 
-      <sync type="rsync" skipOnSanityFail="true">
+      <!-- sync backup to some location or service -->
+      <!--
+      <sync type="ftp" skipOnSanityFail="true">
         <option name="user" value="user.name" />
         <option name="password" value="topsecret" />
+        <option name="target" value="backup/
       </sync>
+      -->
 
-      <cleanup skipOnSanityFail="true">
-        <option name="user" value="user.name" />
-        <option name="password" value="topsecret" />
+      <!-- deletes backups older 1 month -->
+      <!--
+      <cleanup type="age" skipOnSanityFail="true">
+        <option name="lifetime" value="1m" />
       </cleanup>
+      -->
+
+      <!-- keeps latest 20 backups -->
+      <!--
+      <cleanup type="amount" skipOnSanityFail="true">
+        <option name="count" value="20" />
+      </cleanup>
+      -->
     </backup>
   </backups>
 </phpbu>
