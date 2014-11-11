@@ -180,8 +180,8 @@ class Configuration
         }
         $source['type'] = $type;
         foreach ($sourceNode->getElementsByTagName('option') as $optionNode) {
-            $name  = (string) $optionNode->getAttribute('name');
-            $value = (string) $optionNode->getAttribute('value');
+            $name                     = (string) $optionNode->getAttribute('name');
+            $value                    = (string) $optionNode->getAttribute('value');
             $source['options'][$name] = $value;
         }
 
@@ -223,7 +223,9 @@ class Configuration
             $skip    = String::toBoolean((string) $syncNode->getAttribute('skipOnSanityFail'), true);
             $options = array();
             foreach ($syncNode->getElementsByTagName('option') as $optionNode) {
-                $options[$name] = $value;
+                $name                   = (string) $optionNode->getAttribute('name');
+                $value                  = (string) $optionNode->getAttribute('value');
+                $sync['options'][$name] = $value;
             }
             $sync[] = array('type' => $type, 'skipOnSanityFail' => $skip, 'options' => $options);
         }
@@ -231,8 +233,8 @@ class Configuration
         return array(
             'source' => $source,
             'target' => $target,
-            'sync'   => $sync,
             'sanity' => $sanity,
+            'sync'   => $sync,
         );
     }
 
