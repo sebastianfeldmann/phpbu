@@ -5,8 +5,9 @@ PHP backup utility
 ## Features
 
 * Creating backups
-    + MySQL Databases
     + Directories
+    + MySQL
+    + PostgreSQL (planned)
 * Validate backups (planned)
 * Sync backups to other locations (planned)
     + amazon s3
@@ -14,7 +15,7 @@ PHP backup utility
     + ftp
     + rsync
     + sftp
-* Cleanup you backup directory (planned)
+* Cleanup you backup location (planned)
 
 ## Requirements
 
