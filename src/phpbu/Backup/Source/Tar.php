@@ -2,9 +2,9 @@
 namespace phpbu\Backup\Source;
 
 use phpbu\App\Result;
+use phpbu\Backup\Cli;
 use phpbu\Backup\Source;
 use phpbu\Backup\Target;
-use phpbu\Cli;
 use phpbu\Util;
 
 class Tar implements Source

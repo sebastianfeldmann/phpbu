@@ -1,11 +1,11 @@
 <?php
-namespace phpbu\Cli;
+namespace phpbu\Backup\Cli;
 
 /**
  * Cli command
  *
  * @package    phpbu
- * @subpackage Cli
+ * @subpackage Backup
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License

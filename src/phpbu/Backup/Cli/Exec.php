@@ -1,14 +1,14 @@
 <?php
-namespace phpbu\Cli;
+namespace phpbu\Backup\Cli;
 
-use phpbu\Cli\Cmd;
+use phpbu\Backup\Cli\Cmd;
 use phpbu\Backup\Target;
 
 /**
  * Cli Runner
  *
  * @package    phpbu
- * @subpackage Cli
+ * @subpackage Backup
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
