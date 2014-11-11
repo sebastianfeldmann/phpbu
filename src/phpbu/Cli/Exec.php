@@ -1,23 +1,21 @@
 <?php
-namespace phpbu\Backup\Runner;
+namespace phpbu\Cli;
 
-use phpbu\Backup\Runner;
-use phpbu\Backup\Runner\Cli\Cmd;
-use phpbu\Backup\Runner\Result;
+use phpbu\Cli\Cmd;
 use phpbu\Backup\Target;
 
 /**
  * Cli Runner
  *
  * @package    phpbu
- * @subpackage Backup
+ * @subpackage Cli
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Cli implements Runner
+class Exec
 {
     /**
      * List of system commands to execute.
@@ -63,9 +61,9 @@ class Cli implements Runner
     /**
      *
      * @throws phpbu\App\Exception
-     * @return phpbu\Backup\Runner\Result
+     * @return phpbu\Cli\Result
      */
-    public function run()
+    public function execute()
     {
         $cmd    = $this->getExec();
         $output = array();

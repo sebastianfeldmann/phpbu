@@ -1,9 +1,10 @@
 <?php
 namespace phpbu\Backup\Source;
 
-use phpbu\Backup\Runner;
+use phpbu\App\Result;
 use phpbu\Backup\Source;
 use phpbu\Backup\Target;
+use phpbu\Cli;
 use phpbu\Util;
 use RuntimeException;
 
@@ -11,7 +12,7 @@ use RuntimeException;
  * Mysqldump source class.
  *
  * @package    phpbu
- * @subpackage backup
+ * @subpackage Backup
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
@@ -21,11 +22,11 @@ use RuntimeException;
 class Mysqldump implements Source
 {
     /**
-     * Runner to execute shell commands.
+     * Executor to run the mysqldump shell commands.
      *
-     * @var phpbu\Backup\Runner\Cli
+     * @var phpbu\Cli\Exec
      */
-    private $runner;
+    private $exec;
 
     /**
      * Setup.
@@ -37,11 +38,11 @@ class Mysqldump implements Source
      */
     public function setup(Target $target, array $conf = array())
     {
-        $user         = $_SERVER['USER'];
-        $password     = null;
-        $host         = 'localhost';
-        $this->runner = new Runner\Cli();
-        $this->runner->setTarget($target);
+        $user       = $_SERVER['USER'];
+        $password   = null;
+        $host       = 'localhost';
+        $this->exec = new Cli\Exec();
+        $this->exec->setTarget($target);
 
         $path      = isset($conf['pathToMysqldump']) ? $conf['pathToMysqldump'] : null;
         $mysqldump = Util\Cli::detectCmdLocation(
@@ -53,8 +54,8 @@ class Mysqldump implements Source
             )
         );
 
-        $cmd = new Runner\Cli\Cmd($mysqldump);
-        $this->runner->addCommand($cmd);
+        $cmd = new Cli\Cmd($mysqldump);
+        $this->exec->addCommand($cmd);
 
         if (!empty($conf['user'])) {
             $user = $conf['user'];
@@ -110,7 +111,7 @@ class Mysqldump implements Source
                 $cmd2->addOption('--skip-add-drop-table');
                 $cmd2->addOption('--no-create-db');
                 $cmd2->addOption('--no-create-info');
-                $this->runner->addCommand($cmd2);
+                $this->exec->addCommand($cmd2);
             }
         }
     }
@@ -135,10 +136,15 @@ class Mysqldump implements Source
 
     /**
      *
-     * @return phpbu\Backup\Runner
+     * @param  phpbu\App\Result $result
+     * @return phpbu\App\Result
      */
-    public function getRunner()
+    public function backup(Result $result)
     {
-        return $this->runner;
+        $r = $this->exec->execute();
+
+        echo $r->getCmd() . PHP_EOL;
+
+        return $result;
     }
 }

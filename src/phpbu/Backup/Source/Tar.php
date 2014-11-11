@@ -1,19 +1,20 @@
 <?php
 namespace phpbu\Backup\Source;
 
-use phpbu\Backup\Runner;
+use phpbu\App\Result;
 use phpbu\Backup\Source;
 use phpbu\Backup\Target;
+use phpbu\Cli;
 use phpbu\Util;
 
 class Tar implements Source
 {
     /**
-     * Runner to execute tar shell command.
+     * Executor to run the tar shell command.
      *
-     * @var phpbu\Backup\Runner\Cli
+     * @var phpbu\Cli\Exec
      */
-    private $runner;
+    private $exec;
 
     /**
      * Setup.
@@ -25,9 +26,9 @@ class Tar implements Source
      */
     public function setup(Target $target, array $conf = array())
     {
-        $this->runner = new Runner\Cli();
-        $this->runner->setTarget($target);
-        $this->runner->setOutputCompression(false);
+        $this->exec = new Cli\Exec();
+        $this->exec->setTarget($target);
+        $this->exec->setOutputCompression(false);
 
         $compressOption     = '';
         $allowedCompressors = array(
@@ -49,7 +50,7 @@ class Tar implements Source
 
         $path = isset($conf['pathToTar']) ? $conf['pathToTar'] : null;
         $tar  = Util\Cli::detectCmdLocation('tar', $path);
-        $cmd  = new Runner\Cli\Cmd($tar);
+        $cmd  = new Cli\Cmd($tar);
         $cmd->addOption(
             '-' . $compressOption . 'cvf',
             array(
@@ -57,15 +58,20 @@ class Tar implements Source
                 $conf['dir'],
             )
         );
-        $this->runner->addCommand($cmd);
+        $this->exec->addCommand($cmd);
     }
 
     /**
      *
-     * @return phpbu\Backup\Runner
+     * @param  phpbu\App\Result $result
+     * @return phpbu\App\Result
      */
-    public function getRunner()
+    public function backup(Result $result)
     {
-        return $this->runner;
+        $r = $this->exec->execute();
+
+        echo $r->getCmd() . PHP_EOL;
+
+        return $result;
     }
 }

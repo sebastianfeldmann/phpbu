@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\Backup;
 
+use phpbu\App\Result;
 use phpbu\Backup\Target;
 
 /**
@@ -25,9 +26,10 @@ interface Source
     public function setup(Target $target, array $conf = array());
 
     /**
-     * Runner getter
+     * Runner the backup
      *
-     * @return Runner
+     * @param  Result $result
+     * @return Result
      */
-    public function getRunner();
+    public function backup(Result $result);
 }
