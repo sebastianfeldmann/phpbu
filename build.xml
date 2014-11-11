@@ -76,7 +76,7 @@
          depends="phar-prepare">
   <exec executable="bash" outputproperty="version">
    <arg value="-c" />
-   <arg value="${basedir}/phpbu --version" />
+   <arg value="${basedir}/phpbu --version | awk '{print $2}'" />
   </exec>
 
   <antcall target="phar-build">
