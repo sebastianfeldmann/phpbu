@@ -1,7 +1,9 @@
-.settings
-.project
-.buildpath
 *.phar
+.buildpath
+.idea
+.project
+.settings
 /build/logs
+/composer.lock
 /build/phar
 /vendor/
