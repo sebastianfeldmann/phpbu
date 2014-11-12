@@ -42,11 +42,12 @@
  */
 namespace phpbu;
 
+use Phar;
 use phpbu\App\Configuration;
 use phpbu\App\Exception;
-use phpbu\App\Result;
+use phpbu\App\Runner;
 use phpbu\App\Version;
-use phpbu\Backup\Compressor;
+
 
 /**
  * Main application class.
@@ -69,15 +70,12 @@ class App
      *
      * @var string
      */
-    private static $logo = '         __              __
-        /\ \            /\ \
-   _____\ \ \___   _____\ \ \____  __  __
-  /\ \'__`\ \  _ `\/\ \'__`\ \ \'__`\/\ \/\ \
-  \ \ \L\ \ \ \ \ \ \ \L\ \ \ \L\ \ \ \_\ \
-   \ \ ,__/\ \_\ \_\ \ ,__/\ \_,__/\ \____/
-    \ \ \/  \/_/\/_/\ \ \/  \/___/  \/___/
-     \ \_\           \ \_\
-      \/_/            \/_/
+    private static $logo = '             __          __
+      ____  / /_  ____  / /_  __  __
+     / __ \/ __ \/ __ \/ __ \/ / / /
+    / /_/ / / / / /_/ / /_/ / /_/ /
+   / .___/_/ /_/ .___/_.___/\__,_/
+  /_/         /_/
 ';
 
     /**
@@ -110,33 +108,27 @@ class App
     {
         $this->handleOpt($args);
 
-        // TODO: create logger
-        $result = new Result();
+        $runner = new Runner();
 
-        // create backups
-        foreach ($this->arguments['backups'] as $backup) {
-            // create target
-            $target = new Backup\Target(
-                $backup['target']['dirname'],
-                $backup['target']['filename']
-            );
-            // compressor
-            if (isset($backup['target']['compress'])) {
-                $compressor = Backup\Compressor::create($backup['target']['compress']);
-                $target->setCompressor($compressor);
-            }
-            // create source
-            $source = Backup\Source\Factory::create($backup['source']['type'], $target, $backup['source']['options']);
-            $source->backup($result);
-            // $runner->run();
-
-            // TODO: do sanity checks
-
-            // TODO: do syncs
-
-            // TODO: do cleanups
+        try {
+            $result = $runner->run($this->arguments);
+        } catch (\Exception $e) {
+            print $e->getMessage() . PHP_EOL;
         }
 
+        $ret = self::EXIT_FAILURE;
+
+        /*
+        if (isset($result) && $result->wasSuccessful()) {
+            $ret = self::EXIT_SUCCESS;
+        } elseif (!isset($result) || $result->errorCount() > 0) {
+            $ret = self::EXIT_EXCEPTION;
+        }
+        */
+        // do hard success as long as the code above does not work
+        $ret = self::EXIT_SUCCESS;
+
+        exit($ret);
     }
 
     /**
@@ -245,13 +237,11 @@ class App
                 }
                 ini_set($name, $value);
             }
-            // elseif so we don't bootstrap twice by accident
-        } elseif (isset($this->arguments['bootstrap'])) {
-            $this->handleBootstrap($this->arguments['bootstrap']);
         }
 
         // no backups to handle
         if (!isset($this->arguments['backups'])) {
+            $this->printLogo();
             $this->printHelp();
             exit(self::EXIT_EXCEPTION);
         }
@@ -333,6 +323,14 @@ class App
 
         print Version::getVersionString() . PHP_EOL;
         $this->isVersionStringPrinted = true;
+    }
+
+    /**
+     * Show the phpbu logo
+     */
+    protected function printLogo()
+    {
+        print self::$logo . PHP_EOL;
     }
 
     /**
