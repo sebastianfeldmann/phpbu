@@ -40,9 +40,11 @@ class Runner
      */
     public function run(array $arguments)
     {
-        //$this->printer = $this->createPrinter($arguments);
-        $result = new Result();
-        //$result->addListener($this->printer);
+        $this->handleConfiguration($arguments);
+
+        $this->printer = $this->createPrinter($arguments);
+        $result        = new Result();
+        $result->addListener($this->printer);
 
         // create backups
         foreach ($arguments['backups'] as $backup) {
@@ -108,6 +110,18 @@ class Runner
     }
 
     /**
+     * Make sure the config is valid.
+     *
+     * @param array $arguments
+     */
+    protected function handleConfiguration(array &$arguments)
+    {
+        $arguments['colors']  = isset($arguments['colors'])  ? $arguments['colors']  : false;
+        $arguments['debug']   = isset($arguments['debug'])   ? $arguments['debug']   : false;
+        $arguments['verbose'] = isset($arguments['verbose']) ? $arguments['verbose'] : false;
+    }
+
+    /**
      * Creates the output printer.
      *
      * @param  array $arguments
@@ -124,4 +138,5 @@ class Runner
 
         return $printer;
     }
+
 }

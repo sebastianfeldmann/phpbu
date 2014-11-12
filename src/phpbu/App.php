@@ -118,15 +118,11 @@ class App
 
         $ret = self::EXIT_FAILURE;
 
-        /*
         if (isset($result) && $result->wasSuccessful()) {
             $ret = self::EXIT_SUCCESS;
         } elseif (!isset($result) || $result->errorCount() > 0) {
             $ret = self::EXIT_EXCEPTION;
         }
-        */
-        // do hard success as long as the code above does not work
-        $ret = self::EXIT_SUCCESS;
 
         exit($ret);
     }
@@ -149,6 +145,9 @@ class App
             switch ($option) {
                 case '--bootstrap':
                     $this->arguments['bootstrap'] = $argument;
+                    break;
+                case '--colors':
+                    $this->arguments['colors'] = $argument;
                     break;
                 case '--configuration':
                     $this->arguments['configuration'] = $argument;
@@ -224,6 +223,14 @@ class App
 
             if (isset($phpbu['verbose']) && $phpbu['verbose'] === true) {
                 $this->arguments['verbose'] = true;
+            }
+
+            if (isset($phpbu['colors']) && $phpbu['colors'] === true) {
+                $this->arguments['colors'] = true;
+            }
+
+            if (isset($phpbu['debug']) && $phpbu['debug'] === true) {
+                $this->arguments['debug'] = true;
             }
 
             if (!empty($phpSettings['include_path'])) {

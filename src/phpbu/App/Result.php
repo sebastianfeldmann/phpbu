@@ -24,6 +24,13 @@ class Result
     protected $listener = array();
 
     /**
+     * List of errors.
+     *
+     * @var array
+     */
+    protected $errors = array();
+
+    /**
      * @var boolean
      */
     protected $stopOnError = false;
@@ -36,7 +43,7 @@ class Result
     /**
      * @var boolean
      */
-    protected $sanityFailed = false;
+    protected $checkFailed = false;
 
     /**
      * @var boolean
@@ -44,12 +51,30 @@ class Result
     protected $syncFailed = false;
 
     /**
+     * @return boolean
+     */
+    public function wasSuccessful()
+    {
+        return empty($this->errors);
+    }
+
+    /**
+     * Return currnet error count.
+     *
+     * @return integer
+     */
+    public function errorCount()
+    {
+        return count($this->errors);
+    }
+
+    /**
      * @param Backup $backup
      */
     public function backupStart($backup)
     {
         foreach($this->listener as $log) {
-            $log->info('backup started');
+            $log->backupStart($backup);
         }
     }
 
@@ -60,7 +85,17 @@ class Result
     {
         $this->backupFailed = true;
         foreach($this->listener as $log) {
-            $log->error('backup started');
+            $log->backupFailed($backup);
+        }
+    }
+
+    /**
+     * @param Backup $backup
+     */
+    public function backupEnd($backup)
+    {
+        foreach($this->listener as $log) {
+            $log->backupEnd($backup);
         }
     }
 
@@ -70,7 +105,7 @@ class Result
     public function sanityStart($sanity)
     {
         foreach($this->listener as $log) {
-            $log->info('sanity start');
+            $log->sanityStart($sanity);
         }
     }
 
@@ -80,9 +115,8 @@ class Result
     public function sanityFailed($sanity)
     {
         $this->sanityFailed = true;
-        $call               = $sanity->shouldStopOnFail() ? 'error' : 'warning';
         foreach($this->listener as $log) {
-            $log->$call('sanity failed');
+            $log->sanityFailed($sanity);
         }
     }
 
@@ -92,7 +126,7 @@ class Result
     public function sanityEnd($sanity)
     {
         foreach($this->listener as $log) {
-            $log->$call('sanity done');
+            $log->sanityEnd($sanity);
         }
     }
 
@@ -102,7 +136,7 @@ class Result
     public function syncStart($sync)
     {
         foreach($this->listener as $log) {
-            $log->info('sync start');
+            $log->syncStart($sync);
         }
     }
 
@@ -112,9 +146,8 @@ class Result
     public function syncFailed($sync)
     {
         $this->syncFailed = true;
-        $call             = $sync->shouldStopOnFail() ? 'error' : 'warning';
         foreach($this->listener as $log) {
-            $log->$call('sync failed');
+            $log->syncFailed($sync);
         }
     }
 
@@ -125,17 +158,7 @@ class Result
     {
         foreach($this->listener as $log)
         {
-            $log->info('sync done');
-        }
-    }
-
-    /**
-     * @param Backup $backup
-     */
-    public function backupEnd($backup)
-    {
-        foreach($this->listener as $log) {
-            $log->info('backup done');
+            $log->syncEnd($sync);
         }
     }
 
