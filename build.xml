@@ -103,7 +103,15 @@
  <target name="phar-prepare" depends="clean">
   <mkdir dir="${basedir}/build/phar"/>
 
-  <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
+ <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
+
+  <copy file="${basedir}/vendor/phpunit/php-timer/LICENSE" tofile="${basedir}/build/phar/php-timer/LICENSE"/>
+  <copy todir="${basedir}/build/phar/php-timer">
+   <fileset dir="${basedir}/vendor/phpunit/php-timer/PHP">
+    <include name="**/*.php" />
+    <exclude name="**/Autoload.*" />
+   </fileset>
+  </copy>
 
   <copy file="${basedir}/vendor/sebastian/version/LICENSE" tofile="${basedir}/build/phar/sebastian-version/LICENSE"/>
   <copy todir="${basedir}/build/phar/sebastian-version">
