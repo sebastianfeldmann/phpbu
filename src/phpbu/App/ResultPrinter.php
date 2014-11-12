@@ -51,7 +51,7 @@ class ResultPrinter implements Listener
      */
     public function phpbuStart()
     {
-        if ( $this->verbose ) {
+        if ($this->verbose) {
             print 'phpbu starting' . PHP_EOL;
         }
     }
@@ -61,7 +61,7 @@ class ResultPrinter implements Listener
      */
     public function phpbuEnd()
     {
-        if ( $this->verbose ) {
+        if ($this->verbose) {
             print 'phpbu done' . PHP_EOL;
         }
     }
@@ -71,7 +71,7 @@ class ResultPrinter implements Listener
      */
     public function backupStart($backup)
     {
-        if ( $this->verbose ) {
+        if ($this->verbose) {
             print 'starting backup' . PHP_EOL;
         }
     }
@@ -89,7 +89,7 @@ class ResultPrinter implements Listener
      */
     public function backupEnd($backup)
     {
-        if ( $this->verbose ) {
+        if ($this->verbose) {
             print 'backup done' . PHP_EOL;
         }
     }
@@ -99,7 +99,7 @@ class ResultPrinter implements Listener
      */
     public function sanityStart($sanity)
     {
-        if ( $this->verbose ) {
+        if ($this->verbose) {
             print 'sanity check:';
         }
     }
@@ -109,7 +109,7 @@ class ResultPrinter implements Listener
      */
     public function sanityFailed($sanity)
     {
-        if ( $this->verbose ) {
+        if ($this->verbose) {
             print 'failed' . PHP_EOL;
         }
     }
@@ -119,7 +119,7 @@ class ResultPrinter implements Listener
      */
     public function sanityEnd($sanity)
     {
-        if ( $this->verbose ) {
+        if ($this->verbose) {
             print 'done' . PHP_EOL;
         }
     }
@@ -129,7 +129,7 @@ class ResultPrinter implements Listener
      */
     public function syncStart($sync)
     {
-        if ( $this->verbose ) {
+        if ($this->verbose) {
             print 'sync start:';
         }
     }
@@ -139,7 +139,7 @@ class ResultPrinter implements Listener
      */
     public function syncFailed($sync)
     {
-        if ( $this->verbose ) {
+        if ($this->verbose) {
             print 'failed' . PHP_EOL;
         }
     }
@@ -149,7 +149,7 @@ class ResultPrinter implements Listener
      */
     public function syncEnd($sync)
     {
-        if ( $this->verbose ) {
+        if ($this->verbose) {
             print 'done' . PHP_EOL;
         }
     }

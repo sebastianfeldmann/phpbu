@@ -46,6 +46,8 @@ class Runner
         $result        = new Result();
         $result->addListener($this->printer);
 
+        $result->phpbuStart();
+
         // create backups
         foreach ($arguments['backups'] as $backup) {
             // create target
@@ -105,6 +107,9 @@ class Runner
             }
 
         }
+
+        $result->phpbuEnd();
+
         // if printer is result printer
         print \PHP_Timer::resourceUsage() . PHP_EOL;
     }
@@ -138,5 +143,4 @@ class Runner
 
         return $printer;
     }
-
 }

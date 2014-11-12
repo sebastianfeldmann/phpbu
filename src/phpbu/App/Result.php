@@ -21,7 +21,7 @@ class Result
      *
      * @var array
      */
-    protected $listener = array();
+    protected $listeners = array();
 
     /**
      * List of errors.
@@ -69,12 +69,30 @@ class Result
     }
 
     /**
+     */
+    public function phpbuStart()
+    {
+        foreach ($this->listeners as $l) {
+            $l->phpbuStart();
+        }
+    }
+
+    /**
+     */
+    public function phpbuEnd()
+    {
+        foreach ($this->listeners as $l) {
+            $l->phpbuEnd();
+        }
+    }
+
+    /**
      * @param Backup $backup
      */
     public function backupStart($backup)
     {
-        foreach($this->listener as $log) {
-            $log->backupStart($backup);
+        foreach ($this->listeners as $l) {
+            $l->backupStart($backup);
         }
     }
 
@@ -84,8 +102,8 @@ class Result
     public function backupFailed($backup)
     {
         $this->backupFailed = true;
-        foreach($this->listener as $log) {
-            $log->backupFailed($backup);
+        foreach ($this->listeners as $l) {
+            $l->backupFailed($backup);
         }
     }
 
@@ -94,8 +112,8 @@ class Result
      */
     public function backupEnd($backup)
     {
-        foreach($this->listener as $log) {
-            $log->backupEnd($backup);
+        foreach ($this->listeners as $l) {
+            $l->backupEnd($backup);
         }
     }
 
@@ -104,8 +122,8 @@ class Result
      */
     public function sanityStart($sanity)
     {
-        foreach($this->listener as $log) {
-            $log->sanityStart($sanity);
+        foreach ($this->listeners as $l) {
+            $l->sanityStart($sanity);
         }
     }
 
@@ -115,8 +133,8 @@ class Result
     public function sanityFailed($sanity)
     {
         $this->sanityFailed = true;
-        foreach($this->listener as $log) {
-            $log->sanityFailed($sanity);
+        foreach ($this->listeners as $l) {
+            $l->sanityFailed($sanity);
         }
     }
 
@@ -125,8 +143,8 @@ class Result
      */
     public function sanityEnd($sanity)
     {
-        foreach($this->listener as $log) {
-            $log->sanityEnd($sanity);
+        foreach ($this->listeners as $l) {
+            $l->sanityEnd($sanity);
         }
     }
 
@@ -135,8 +153,8 @@ class Result
      */
     public function syncStart($sync)
     {
-        foreach($this->listener as $log) {
-            $log->syncStart($sync);
+        foreach ($this->listeners as $l) {
+            $l->syncStart($sync);
         }
     }
 
@@ -146,8 +164,8 @@ class Result
     public function syncFailed($sync)
     {
         $this->syncFailed = true;
-        foreach($this->listener as $log) {
-            $log->syncFailed($sync);
+        foreach ($this->listeners as $l) {
+            $l->syncFailed($sync);
         }
     }
 
@@ -156,9 +174,9 @@ class Result
      */
     public function syncEnd($sync)
     {
-        foreach($this->listener as $log)
+        foreach ($this->listeners as $l)
         {
-            $log->syncEnd($sync);
+            $l->syncEnd($sync);
         }
     }
 
