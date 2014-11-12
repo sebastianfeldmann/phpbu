@@ -352,6 +352,7 @@ Usage: phpbu [option]
 
   --bootstrap=<file>     A "bootstrap" PHP file that is included before the backup.
   --configuration=<file> A phpbu xml config file.
+  --colors               Use colors in output.
   -h, --help             Display the help message and exit.
   -v, --verbose          Output more verbose information.
   -V, --version          Output version information and exit.
