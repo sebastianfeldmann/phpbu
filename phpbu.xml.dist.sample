@@ -6,55 +6,44 @@
 
   <php>
     <includePath>.</includePath>
-    <ini name="max_execution_time" value="0" />
+    <ini name="max_execution_time" value="0"/>
   </php>
 
 
   <logging>
-    <log type="json" target="/tmp/logfile.json" />
-    <log type="plain" target="/tmp/logfile.txt" />
+    <log type="json" target="/tmp/logfile.json"/>
+    <log type="plain" target="/tmp/logfile.txt"/>
   </logging>
 
 
   <backups>
     <backup stopOnError="true">
+      <!-- data to backup -->
       <source type="mysql">
-        <option name="databases" value="dbname" />
-        <option name="tables" value="" />
-        <option name="ignoreTables" value="" />
-        <option name="structureOnly" value="dbname.table1,dbname.table2" />
+        <option name="databases" value="dbname"/>
+        <option name="tables" value=""/>
+        <option name="ignoreTables" value=""/>
+        <option name="structureOnly" value="dbname.table1,dbname.table2"/>
       </source>
 
-      <target dirname="/tmp/backup" filename="mysqldump-%Y%m%d-%H%i.sql" compress="bzip2" />
+      <!-- where should the backup be stored -->
+      <target dirname="/tmp/backup" filename="mysqldump-%Y%m%d-%H%i.sql" compress="bzip2"/>
 
       <!-- do some sanity checks to make sure everything worked as planned -->
-      <!--
-      <sanitycheck type="SomeName" value="10MB" />
-      <sanitycheck type="SomeName" value="20MB" />
-      -->
+      <check type="Foo" value="Bar"/>
+      <check type="Fiz" value="Baz"/>
 
       <!-- sync backup to some location or service -->
-      <!--
-      <sync type="ftp" skipOnSanityFail="true">
-        <option name="user" value="user.name" />
-        <option name="password" value="topsecret" />
-        <option name="target" value="backup/
+      <sync type="ftp" skipOnCheckFailure="true">
+        <option name="user" value="user.name"/>
+        <option name="password" value="topsecret"/>
+        <option name="target" value="backup"/>
       </sync>
-      -->
 
-      <!-- deletes backups older 1 month -->
-      <!--
-      <cleanup type="age" skipOnSanityFail="true">
-        <option name="lifetime" value="1m" />
+      <!-- deletes old backups -->
+      <cleanup type="age" skipOnCheckFailure="true" skipOnSyncFailure="true">
+        <option name="lifetime" value="1m"/>
       </cleanup>
-      -->
-
-      <!-- keeps latest 20 backups -->
-      <!--
-      <cleanup type="amount" skipOnSanityFail="true">
-        <option name="count" value="20" />
-      </cleanup>
-      -->
     </backup>
   </backups>
 </phpbu>

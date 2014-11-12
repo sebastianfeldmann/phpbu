@@ -204,37 +204,56 @@ class Configuration
             'compress' => $compress,
         );
 
-        // get sanity information
-        $sanity = array();
-        foreach ($backupNode->getElementsByTagName('sanitycheck') as $sanityNode) {
-            $type  = (string) $sanityNode->getAttribute('type');
-            $value = (string) $sanityNode->getAttribute('value');
+        // get check informations
+        $checks = array();
+        foreach ($backupNode->getElementsByTagName('check') as $checkNode) {
+            $type      = (string) $checkNode->getAttribute('type');
+            $value     = (string) $checkNode->getAttribute('value');
             // skip invalid sanity checks
             if (!$type || !$value) {
                 continue;
             }
-            $sanity[] = array('type' => $type, 'value' => $value);
+            $checks[] = array('type' => $type, 'value' => $value);
         }
 
-        // get sync configuration
-        $sync = array();
+        // get sync configurations
+        $syncs = array();
         foreach ($backupNode->getElementsByTagName('sync') as $syncNode) {
-            $type    = (string) $syncNode->getAttribute('type');
-            $skip    = String::toBoolean((string) $syncNode->getAttribute('skipOnSanityFail'), true);
-            $options = array();
+            $sync = array(
+                'type'            => (string) $syncNode->getAttribute('type'),
+                'skipOnCheckFail' => String::toBoolean((string) $syncNode->getAttribute('skipOnCheckFail'), true),
+                'options'         => array()
+            );
             foreach ($syncNode->getElementsByTagName('option') as $optionNode) {
                 $name                   = (string) $optionNode->getAttribute('name');
                 $value                  = (string) $optionNode->getAttribute('value');
                 $sync['options'][$name] = $value;
             }
-            $sync[] = array('type' => $type, 'skipOnSanityFail' => $skip, 'options' => $options);
+            $syncs[] = $sync;
+        }
+
+        // get cleanup configuration
+        $cleanup = array();
+        foreach ($backupNode->getElementsByTagName('cleanup') as $cleanupNode) {
+            $cleanup = array(
+                'type'            => (string) $cleanupNode->getAttribute('type'),
+                'skipOnCheckFail' => String::toBoolean((string) $cleanupNode->getAttribute('skipOnCheckFail'), true),
+                'skipOnSyncFail'  => String::toBoolean((string) $cleanupNode->getAttribute('skipOnSyncFail'), true),
+                'options'         => array()
+            );
+            foreach ($cleanupNode->getElementsByTagName('option') as $optionNode) {
+                $name                      = (string) $optionNode->getAttribute('name');
+                $value                     = (string) $optionNode->getAttribute('value');
+                $cleanup['options'][$name] = $value;
+            }
         }
 
         return array(
-            'source' => $source,
-            'target' => $target,
-            'sanity' => $sanity,
-            'sync'   => $sync,
+            'source'  => $source,
+            'target'  => $target,
+            'checks'  => $checks,
+            'syncs'   => $syncs,
+            'cleanup' => $cleanup,
         );
     }
 

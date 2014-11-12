@@ -13,7 +13,7 @@
   <xs:complexType name="phpType">
     <xs:sequence>
       <xs:element name="includePath" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="ini" type="optionType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="ini" type="nameValueType" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -53,7 +53,7 @@
 
   <xs:complexType name="sourceType">
     <xs:sequence>
-      <xs:element name="option" type="optionType" maxOccurs="unbounded"/>
+      <xs:element name="option" type="nameValueType" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="type">
       <xs:simpleType>
@@ -83,12 +83,11 @@
   <xs:complexType name="checkType">
     <xs:attribute name="type" use="required" type="xs:string"/>
     <xs:attribute name="value" use="required" type="xs:string"/>
-    <xs:attribute name="stopOnFailure" type="xs:boolean"/>
   </xs:complexType>
 
   <xs:complexType name="syncType">
     <xs:sequence>
-      <xs:element name="option" type="optionType" maxOccurs="unbounded"/>
+      <xs:element name="option" type="nameValueType" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="type" use="required">
       <xs:simpleType>
@@ -105,14 +104,14 @@
 
   <xs:complexType name="cleanupType">
     <xs:sequence>
-      <xs:element name="option" type="optionType" maxOccurs="unbounded"/>
+      <xs:element name="option" type="nameValueType" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="type" use="required" type="xs:string"/>
     <xs:attribute name="skipOnCheckFail" type="xs:boolean"/>
-
+    <xs:attribute name="skipOnSyncFail" type="xs:boolean"/>
   </xs:complexType>
 
-  <xs:complexType name="optionType">
+  <xs:complexType name="nameValueType">
     <xs:attribute name="name" use="required" type="xs:string"/>
     <xs:attribute name="value" use="required" type="xs:anySimpleType"/>
   </xs:complexType>
