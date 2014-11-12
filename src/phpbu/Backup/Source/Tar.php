@@ -69,7 +69,7 @@ class Tar implements Source
         $tar  = Util\Cli::detectCmdLocation('tar', $path);
         $cmd  = new Cli\Cmd($tar);
         $cmd->addOption(
-            '-' . $compressOption . 'cvf',
+            '-' . $compressOption . 'cf',
             array(
                 (string) $target,
                 $this->conf['dir'],
