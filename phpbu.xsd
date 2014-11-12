@@ -124,6 +124,7 @@
   <xs:attributeGroup name="configAttributeGroup">
     <xs:attribute name="bootstrap" type="xs:anyURI"/>
     <xs:attribute name="verbose" type="xs:boolean" default="false"/>
+    <xs:attribute name="colors" type="xs:boolean" default="false"/>
   </xs:attributeGroup>
 
   <xs:group name="configGroup">

@@ -35,6 +35,7 @@ class Args
      */
     private $longOptions = array(
         'bootstrap='     => true,
+        'colors'         => true,
         'configuration=' => true,
         'help'           => true,
         'include-path='  => true,

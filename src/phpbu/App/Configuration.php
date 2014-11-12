@@ -114,6 +114,9 @@ class Configuration
         if ($root->hasAttribute('verbose')) {
             $settings['verbose'] = String::toBoolean((string) $root->getAttribute('verbose'), false);
         }
+        if ($root->hasAttribute('colors')) {
+            $settings['colors'] = String::toBoolean((string) $root->getAttribute('colors'), false);
+        }
         return $settings;
     }
 
