@@ -20,16 +20,16 @@ interface Source
     /**
      * Setup the source.
      *
-     * @param  Target $target
-     * @param  array  $conf
+     * @param array  $conf
      */
-    public function setup(Target $target, array $conf = array());
+    public function setup(array $conf = array());
 
     /**
      * Runner the backup
      *
-     * @param  Result $result
+     * @param  phpbu\App\Target $target
+     * @param  phpbu\App\Result $result
      * @return Result
      */
-    public function backup(Result $result);
+    public function backup(Target $target, Result $result);
 }

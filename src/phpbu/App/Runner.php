@@ -64,8 +64,8 @@ class Runner
              *  /_.___/\__,_/\___/_/|_|\__,_/ .___/
              *                             /_/
              */
-            $source = Backup\Source\Factory::create($backup['source']['type'], $target, $backup['source']['options']);
-            $source->backup($result);
+            $source = Backup\Source\Factory::create($backup['source']['type'], $backup['source']['options']);
+            $source->backup($target, $result);
 
             /*
              *          __              __

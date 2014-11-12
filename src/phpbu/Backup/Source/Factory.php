@@ -2,6 +2,7 @@
 namespace phpbu\Backup\Source;
 
 use phpbu\App\Exception;
+use phpbu\Backup\Source;
 use phpbu\Backup\Target;
 
 /**
@@ -32,19 +33,21 @@ abstract class Factory
      * Source Factory.
      *
      * @param  string $type
-     * @param  Target $target
      * @param  array  $conf
-     * @throws Exception
+     * @throws phpbu\App\Exception
      * @return Source
      */
-    public static function create($type, Target $target, $conf = array())
+    public static function create($type, $conf = array())
     {
         if (!isset(self::$classMap)) {
-            throw new \Exception(sprintf('uknown source: %s', $type));
+            throw new Exception(sprintf('uknown source: %s', $type));
         }
         $class  = self::$classMap[$type];
         $source = new $class();
-        $source->setup($target, $conf);
+        if (!($source instanceof Source)) {
+            throw new Exception(sprintf('source type \'%s\' has to implement the \'Source\' interface', $type));
+        }
+        $source->setup($conf);
         return $source;
     }
 
@@ -54,7 +57,7 @@ abstract class Factory
      * @param  string $type  Name the class is registered at
      * @param  string $fqcn  Full Qualified Class Name
      * @param  string $force Overwrite already registered class
-     * @throws Exception
+     * @throws phpbu\App\Exception
      */
     public static function registerSource($type, $fqcn, $force = false)
     {

@@ -17,14 +17,31 @@ class Tar implements Source
     private $exec;
 
     /**
+     * Configuration
+     *
+     * @var array
+     */
+    private $conf;
+
+    /**
      * Setup.
      *
      * @see    phpbu\Backup\Source
-     * @param  phpbu\Backup\Target $target
      * @param  array               $conf
      * @throws RuntimeException
      */
-    public function setup(Target $target, array $conf = array())
+    public function setup(array $conf = array())
+    {
+        $this->conf = $conf;
+    }
+
+    /**
+     *
+     * @param  phpbu\Backup\Target $target
+     * @param  phpbu\App\Result    $result
+     * @return phpbu\App\Result
+     */
+    public function backup(Target $target, Result $result)
     {
         $this->exec = new Cli\Exec();
         $this->exec->setTarget($target);
@@ -48,26 +65,18 @@ class Tar implements Source
             }
         }
 
-        $path = isset($conf['pathToTar']) ? $conf['pathToTar'] : null;
+        $path = isset($this->conf['pathToTar']) ? $this->conf['pathToTar'] : null;
         $tar  = Util\Cli::detectCmdLocation('tar', $path);
         $cmd  = new Cli\Cmd($tar);
         $cmd->addOption(
             '-' . $compressOption . 'cvf',
             array(
                 (string) $target,
-                $conf['dir'],
+                $this->conf['dir'],
             )
         );
         $this->exec->addCommand($cmd);
-    }
 
-    /**
-     *
-     * @param  phpbu\App\Result $result
-     * @return phpbu\App\Result
-     */
-    public function backup(Result $result)
-    {
         $r = $this->exec->execute();
 
         echo $r->getCmd() . PHP_EOL;
