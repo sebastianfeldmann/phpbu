@@ -88,5 +88,4 @@ Simple configuration example:
       </backup>
     </backups>
   </phpbu>
-  }
 ```
