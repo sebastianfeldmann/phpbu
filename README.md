@@ -79,12 +79,14 @@ Simple configuration example:
       <backup>
         <!-- source -->
         <source type="mysql">
-          <option name="databases" value="mydbname" />
-          <option name="user" value="user.name" />
-          <option name="password" value="topsecret" />
+          <option name="databases" value="mydbname"/>
+          <option name="user" value="user.name"/>
+          <option name="password" value="topsecret"/>
         </source>
         <!-- where should the backup be stored -->
-        <target dirname="backup/mysql" filename="mysqldump-%Y%m%d-%H%i.sql" compress="bzip2" />
+        <target dirname="backup/mysql"
+                filename="mysqldump-%Y%m%d-%H%i.sql"
+                compress="bzip2"/>
       </backup>
     </backups>
   </phpbu>
