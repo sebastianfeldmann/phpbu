@@ -51,6 +51,7 @@ phpbu [option]
 
   --bootstrap=<file>     A "bootstrap" PHP file that is included before the backup.
   --configuration=<file> A phpbu xml config file.
+  --colours              Use colors in output.
   -h, --help             Display the help message and exit.
   -v, --verbose          Output more verbose information.
   -V, --version          Output version information and exit.
@@ -58,6 +59,34 @@ phpbu [option]
 
 ### Usage Examples
 
-    $ phpbu --bootstrap=backup/bootstrap.php
+    $ phpbu
 
-    $ phpbu --configuration=config.xml
+This requires a valid XML phpbu configuration file (phpbu.xml or phpbu.xml.dist) in your current working directory.
+Alternatively, you can specify the path to your configuration file
+
+    $ phpbu --configuration=backup/config.xml
+
+## Configuration
+
+Simple configuration example:
+
+```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/1.0/phpbu.xsd"
+         verbose="true">
+    <backups>
+      <backup>
+        <!-- source -->
+        <source type="mysql">
+          <option name="databases" value="mydbname" />
+          <option name="user" value="user.name" />
+          <option name="password" value="topsecret" />
+        </source>
+        <!-- where should the backup be stored -->
+        <target dirname="backup/mysql" filename="mysqldump-%Y%m%d-%H%i.sql" compress="bzip2" />
+      </backup>
+    </backups>
+  </phpbu>
+  }
+```
