@@ -298,7 +298,14 @@ class App
 
         print 'Updating the phpbu PHAR ... ';
 
-        file_put_contents($tempFilename, file_get_contents($remoteFilename));
+        $old  = error_reporting(0);
+        $phar = file_get_contents($remoteFilename);
+        error_reporting($old);
+        if (!$phar) {
+            print ' failed' . PHP_EOL . 'Couldn\'t reach phpbu update site' . PHP_EOL;
+            exit(self::EXIT_EXCEPTION);
+        }
+        file_put_contents($tempFilename, $phar);
 
         chmod($tempFilename, 0777 & ~umask());
 
@@ -311,11 +318,11 @@ class App
         } catch (Exception $e) {
             // cleanup crappy phar
             unlink($tempFilename);
-            print ' failed' . PHP_EOL . $e->getMessage() . PHP_EOL;
+            print 'failed' . PHP_EOL . $e->getMessage() . PHP_EOL;
             exit(self::EXIT_EXCEPTION);
         }
 
-        print ' done' . PHP_EOL;
+        print 'done' . PHP_EOL;
         exit(self::EXIT_SUCCESS);
     }
 
