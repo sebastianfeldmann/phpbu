@@ -113,6 +113,13 @@
    </fileset>
   </copy>
 
+  <copy file="${basedir}/vendor/sebastian/environment/LICENSE" tofile="${basedir}/build/phar/sebastian-environment/LICENSE"/>
+  <copy todir="${basedir}/build/phar/sebastian-environment">
+   <fileset dir="${basedir}/vendor/sebastian/environment/src">
+    <include name="**/*.php" />
+   </fileset>
+  </copy>
+
   <copy file="${basedir}/vendor/sebastian/version/LICENSE" tofile="${basedir}/build/phar/sebastian-version/LICENSE"/>
   <copy todir="${basedir}/build/phar/sebastian-version">
    <fileset dir="${basedir}/vendor/sebastian/version/src">
