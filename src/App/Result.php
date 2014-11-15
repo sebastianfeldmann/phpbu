@@ -4,10 +4,13 @@ namespace phpbu\App;
 use phpbu\App\Listener;
 
 /**
- * Runner result
+ * Runner result.
+ *
+ * Heavily 'inspired' by Sebastian Bermann's phpunit PHPUnit_Framework_TestResult.
  *
  * @package    phpbu
  * @subpackage App
+ * @author     Sebastian Bergmann <sebastian@phpunit.de>
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
@@ -118,33 +121,33 @@ class Result
     }
 
     /**
-     * @param Sanity $sanity
+     * @param Check $check
      */
-    public function sanityStart($sanity)
+    public function checkStart($check)
     {
         foreach ($this->listeners as $l) {
-            $l->sanityStart($sanity);
+            $l->checkStart($check);
         }
     }
 
     /**
-     * @param Sanity $sanity
+     * @param Check $check
      */
-    public function sanityFailed($sanity)
+    public function checkFailed($check)
     {
-        $this->sanityFailed = true;
+        $this->checkFailed = true;
         foreach ($this->listeners as $l) {
-            $l->sanityFailed($sanity);
+            $l->checkFailed($check);
         }
     }
 
     /**
-     * @param Sanity $sanity
+     * @param Check $check
      */
-    public function sanityEnd($sanity)
+    public function checkEnd($check)
     {
         foreach ($this->listeners as $l) {
-            $l->sanityEnd($sanity);
+            $l->checkEnd($check);
         }
     }
 
@@ -170,13 +173,44 @@ class Result
     }
 
     /**
-     * @param Sysc $sync
+     * @param Sync $cleanup
      */
     public function syncEnd($sync)
     {
         foreach ($this->listeners as $l)
         {
             $l->syncEnd($sync);
+        }
+    }
+    /**
+     * @param Cleanup $cleanup
+     */
+    public function cleanupStart($cleanup)
+    {
+        foreach ($this->listeners as $l) {
+            $l->cleanupStart($cleanup);
+        }
+    }
+
+    /**
+     * @param Cleanup $cleanup
+     */
+    public function cleanupFailed($cleanup)
+    {
+        $this->cleanupFailed = true;
+        foreach ($this->listeners as $l) {
+            $l->cleanupFailed($cleanup);
+        }
+    }
+
+    /**
+     * @param Cleanup $cleanup
+     */
+    public function cleanupEnd($cleanup)
+    {
+        foreach ($this->listeners as $l)
+        {
+            $l->cleanupEnd($cleanup);
         }
     }
 
@@ -193,7 +227,8 @@ class Result
     /**
      * Unregisters a Listener.
      *
-     * @param phpbu\App\Listener $listener
+     * @author Sebastian Bergmann <sebastian@phpunit.de>
+     * @param  phpbu\App\Listener $listener
      */
     public function removeListener(Listener $listener)
     {

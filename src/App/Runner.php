@@ -68,8 +68,10 @@ class Runner
              *  /_.___/\__,_/\___/_/|_|\__,_/ .___/
              *                             /_/
              */
+            $result->backupStart($backup);
             $source = Backup\Source\Factory::create($backup['source']['type'], $backup['source']['options']);
             $source->backup($target, $result);
+            $result->backupEnd($backup);
 
             /*
              *          __              __
@@ -80,7 +82,9 @@ class Runner
              *
              */
             foreach ($backup['checks'] as $check) {
+                $result->checkStart($check);
                 // TODO: do check stuff
+                $result->checkEnd($check);
             }
 
             /*
@@ -91,7 +95,9 @@ class Runner
              *       /____/
              */
             foreach ($backup['syncs'] as $sync) {
+                $result->syncStart($sync);
                 // TODO: do sync stuff
+                $result->syncEnd($sync);
             }
 
             /*
@@ -103,15 +109,19 @@ class Runner
              *                              /_/
              */
             if (!empty($arguments['cleanup'])) {
+                $cleanup = $arguments['cleanup'];
+                $result->cleanupStart($cleanup);
                 // TODO: do cleanup stuff
+                $result->cleanupEnd($cleanup);
             }
 
         }
 
         $result->phpbuEnd();
 
-        // if printer is result printer
-        print \PHP_Timer::resourceUsage() . PHP_EOL;
+        $this->printer->printResult();
+
+        return $result;
     }
 
     /**

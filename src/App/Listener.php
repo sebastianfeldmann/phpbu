@@ -27,19 +27,19 @@ interface Listener
     public function backupEnd($backup);
 
     /**
-     * @param Sanity $sanity
+     * @param Check $check
      */
-    public function sanityStart($sanity);
+    public function checkStart($check);
 
     /**
-     * @param Sanity $sanity
+     * @param Check $check
      */
-    public function sanityFailed($sanity);
+    public function checkFailed($check);
 
     /**
-     * @param Sanity $sanity
+     * @param Check $check
      */
-    public function sanityEnd($sanity);
+    public function checkEnd($check);
 
     /**
      * @param Sync $sync
@@ -55,4 +55,19 @@ interface Listener
      * @param Sysc $sync
      */
     public function syncEnd($sync);
+
+    /**
+     * @param Cleanup $cleanup
+     */
+    public function cleanupStart($cleanup);
+
+    /**
+     * @param Cleanup $cleanup
+     */
+    public function cleanupFailed($cleanup);
+
+    /**
+     * @param Cleanup $cleanup
+     */
+    public function cleanupEnd($cleanup);
 }
