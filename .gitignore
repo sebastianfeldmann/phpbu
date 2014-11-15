@@ -3,6 +3,7 @@
 .idea
 .project
 .settings
+/backup
 /build/logs
 /composer.lock
 /build/phar
