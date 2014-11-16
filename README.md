@@ -1,6 +1,6 @@
 # PHPBU
 
-PHP backup utility
+PHP Backup Utility
 
 ## Features
 
