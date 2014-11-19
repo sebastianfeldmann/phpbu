@@ -152,6 +152,9 @@ class App
                 case '--configuration':
                     $this->arguments['configuration'] = $argument;
                     break;
+                case '--debug':
+                    $this->arguments['debug'] = $argument;
+                    break;
                 case '-h':
                 case '--help':
                     $this->printHelp();

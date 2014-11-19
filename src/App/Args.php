@@ -37,6 +37,7 @@ class Args
         'bootstrap='     => true,
         'colors'         => true,
         'configuration=' => true,
+        'debug'          => true,
         'help'           => true,
         'include-path='  => true,
         'verbose'        => true,
