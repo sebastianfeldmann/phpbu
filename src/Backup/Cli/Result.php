@@ -77,6 +77,14 @@ class Result
     }
 
     /**
+     * Command executed successful
+     */
+    public function wasSuccessful()
+    {
+        return $this->code == 0;
+    }
+
+    /**
      * Output getter
      *
      * @param  boolean $asString
