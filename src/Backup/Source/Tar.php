@@ -79,7 +79,11 @@ class Tar implements Source
 
         $r = $this->exec->execute();
 
-        echo $r->getCmd() . PHP_EOL;
+        $result->debug($r->getCmd());
+
+        if (!$r->wasSuccessful()) {
+            throw new Exception('tar failed');
+        }
 
         return $result;
     }

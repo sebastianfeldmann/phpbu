@@ -46,10 +46,10 @@ class Runner
         $result        = new Result();
         $result->addListener($this->printer);
 
-        $result->phpbuStart();
+        $result->phpbuStart($arguments);
 
         // create backups
-        foreach ($arguments['backups'] as $backup) {
+        foreach ($arguments['backups'] as $backup) {;
             // create target
             $target = new Backup\Target(
                 $backup['target']['dirname'],
@@ -69,9 +69,14 @@ class Runner
              *                             /_/
              */
             $result->backupStart($backup);
-            $source = Backup\Source\Factory::create($backup['source']['type'], $backup['source']['options']);
-            $source->backup($target, $result);
-            $result->backupEnd($backup);
+            try {
+                $source = Backup\Source\Factory::create($backup['source']['type'], $backup['source']['options']);
+                $source->backup($target, $result);
+                $result->backupEnd($backup);
+            } catch ( \Exception $e ) {
+                // TODO: check stopOnError
+                $result->backupFailed($backup);
+            }
 
             /*
              *          __              __
@@ -82,9 +87,13 @@ class Runner
              *
              */
             foreach ($backup['checks'] as $check) {
-                $result->checkStart($check);
-                // TODO: do check stuff
-                $result->checkEnd($check);
+                try {
+                    $result->checkStart($check);
+                    // TODO: do check stuff
+                    $result->checkEnd($check);
+                } catch ( Exception $e ) {
+                    $result->checkFailed($check);
+                }
             }
 
             /*
@@ -95,9 +104,14 @@ class Runner
              *       /____/
              */
             foreach ($backup['syncs'] as $sync) {
-                $result->syncStart($sync);
-                // TODO: do sync stuff
-                $result->syncEnd($sync);
+                try {
+                    $result->syncStart($sync);
+                    // TODO: do sync stuff
+                    // TODO: check skipOnCheckFail
+                    $result->syncEnd($sync);
+                } catch ( Exception $e ) {
+                    $result->syncFailed($sync);
+                }
             }
 
             /*
@@ -110,9 +124,14 @@ class Runner
              */
             if (!empty($arguments['cleanup'])) {
                 $cleanup = $arguments['cleanup'];
-                $result->cleanupStart($cleanup);
-                // TODO: do cleanup stuff
-                $result->cleanupEnd($cleanup);
+                try {
+                    $result->cleanupStart($cleanup);
+                    // TODO: do cleanup stuff
+                    // TODO: check skipOnCheckFail skipOnSyncFail
+                    $result->cleanupEnd($cleanup);
+                } catch ( Exception $e ) {
+                    $result->syncFailed($sync);
+                }
             }
 
         }

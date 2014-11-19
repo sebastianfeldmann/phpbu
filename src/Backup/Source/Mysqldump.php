@@ -1,12 +1,12 @@
 <?php
 namespace phpbu\Backup\Source;
 
+use phpbu\App\Exception;
 use phpbu\App\Result;
 use phpbu\Backup\Cli;
 use phpbu\Backup\Source;
 use phpbu\Backup\Target;
 use phpbu\Util;
-use RuntimeException;
 
 /**
  * Mysqldump source class.
@@ -40,7 +40,7 @@ class Mysqldump implements Source
      *
      * @see    phpbu\Backup\Source
      * @param  array               $conf
-     * @throws RuntimeException
+     * @throws phpbu\App\Exception
      */
     public function setup(array $conf = array())
     {
@@ -133,7 +133,11 @@ class Mysqldump implements Source
         }
         $r = $this->exec->execute();
 
-        echo $r->getCmd() . PHP_EOL;
+        $result->debug($r->getCmd());
+
+        if (!$r->wasSuccessful()) {
+            throw new Exception('mysqldump failed');
+        }
 
         return $result;
     }
@@ -145,7 +149,7 @@ class Mysqldump implements Source
      * @param  string $password
      * @param  string $host
      * @return boolean
-     * @throws RuntimeException
+     * @throws phpbu\App\Exception
      */
     public function testMysqlConnection($user = null, $password = null, $host = null)
     {
