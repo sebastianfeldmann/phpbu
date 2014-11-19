@@ -20,7 +20,7 @@ class Exec
     /**
      * List of system commands to execute.
      *
-     * @var array<phpbu\Backup\Runner\Cli\Cmd>
+     * @var array<phpbu\Backup\Cli\Cmd>
      */
     private $commands = array();
 
@@ -102,7 +102,7 @@ class Exec
     /**
      * Adds a system command to the command list.
      *
-     * @param phpbu\Backup\Runner\Cli\Cmd $cmd
+     * @param phpbu\Backup\Cli\Cmd $cmd
      */
     public function addCommand(Cmd $cmd)
     {
