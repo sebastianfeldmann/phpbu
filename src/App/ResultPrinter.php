@@ -3,6 +3,7 @@ namespace phpbu\App;
 
 use InvalidArgumentException;
 use phpbu\App\Listener;
+use phpbu\App\Version;
 use phpbu\Log\Printer;
 use PHP_Timer;
 use SebastianBergmann\Environment\Console;
@@ -94,68 +95,71 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     *
+     * @see \phpbu\App\Listener::phpbuStart()
      */
-    public function phpbuStart()
+    public function phpbuStart($settings)
     {
-        if ($this->verbose) {
-            $this->write('phpbu start' .PHP_EOL);
-        }
-    }
-
-    /**
-     *
-     */
-    public function phpbuEnd()
-    {
-        if ($this->verbose) {
-            $this->write('phpbu done' . PHP_EOL);
-        }
-    }
-
-    /**
-     * @param Backup $backup
-     */
-    public function backupStart($backup)
-    {
-        if ($this->verbose) {
-            $this->write('starting backup' . PHP_EOL);
-        }
-    }
-
-    /**
-     * @param Backup $backup
-     */
-    public function backupFailed($backup)
-    {
-        $this->writeWithColor(
-            'fg-white, bg-red, bold',
-            'error performing backup'
+        $this->write(
+            Version::getVersionString() . PHP_EOL .
+            PHP_EOL .
+            'Configuration read from ' . $settings['configuration'] . PHP_EOL .
+            PHP_EOL
         );
     }
 
     /**
-     * @param Backup $backup
+     * @see \phpbu\App\Listener::phpbuEnd()
+     */
+    public function phpbuEnd()
+    {
+        // do something fooish
+    }
+
+    /**
+     * @see \phpbu\App\Listener::backupStart()
+     */
+    public function backupStart($backup)
+    {
+        if ($this->verbose) {
+            $this->write('create backup (' . $backup['source']['type'] . '):');
+        }
+    }
+
+    /**
+     * @see \phpbu\App\Listener::backupFailed()
+     */
+    public function backupFailed($backup)
+    {
+        if ($this->verbose) {
+            $this->writeWithColor(
+                'fg-white, bg-red, bold',
+                'failed'
+            );
+        }
+    }
+
+    /**
+     * @see \phpbu\App\Listener::backupEnd()
      */
     public function backupEnd($backup)
     {
         if ($this->verbose) {
-            $this->write('backup done' . PHP_EOL);
+            $this->write('done' . PHP_EOL);
         }
     }
 
     /**
-     * @param Check $check
+     * @see \phpbu\App\Listener::checkStart()
      */
     public function checkStart($check)
     {
         if ($this->verbose) {
-            $this->write('check:');
+            $this->write('check (' . $check['type'] . '):');
         }
     }
 
     /**
-     * @param Check $check
+     * @see \phpbu\App\Listener::checkFailed()
      */
     public function checkFailed($check)
     {
@@ -168,7 +172,7 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @param Check $check
+     * @see \phpbu\App\Listener::checkEnd()
      */
     public function checkEnd($check)
     {
@@ -178,7 +182,7 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @param Sync $sync
+     * @see \phpbu\App\Listener::syncStart()
      */
     public function syncStart($sync)
     {
@@ -188,7 +192,7 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @param Sync $sync
+     * @see \phpbu\App\Listener::syncFailed()
      */
     public function syncFailed($sync)
     {
@@ -201,20 +205,17 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @param Sysc $sync
+     * @see \phpbu\App\Listener::syncEnd()
      */
     public function syncEnd($sync)
     {
         if ($this->verbose) {
-            $this->writeWithColor(
-                'fg-black, bg-green, bold',
-                'done'
-            );
+            $this->write('done' . PHP_EOL);
         }
     }
 
     /**
-     * @param Cleanup $cleanup
+     * @see \phpbu\App\Listener::cleanupStart()
      */
     public function cleanupStart($cleanup)
     {
@@ -224,7 +225,7 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @param Cleanup $cleanup
+     * @see \phpbu\App\Listener::cleanupFailed()
      */
     public function cleanupFailed($cleanup)
     {
@@ -237,15 +238,22 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @param Cleanup $cleanup
+     * @see \phpbu\App\Listener::cleanupEnd()
      */
     public function cleanupEnd($cleanup)
     {
         if ($this->verbose) {
-            $this->writeWithColor(
-                'fg-black, bg-green, bold',
-                'done'
-            );
+            $this->write('done' . PHP_EOL);
+        }
+    }
+
+    /**
+     * @see \phpbu\App\Listener::debug()
+     */
+    public function debug($msg)
+    {
+        if ($this->debug) {
+            $this->write($msg . PHP_EOL);
         }
     }
 

@@ -4,70 +4,76 @@ namespace phpbu\App;
 interface Listener
 {
     /**
+     * @param array $settings
      */
-    public function phpbuStart();
+    public function phpbuStart($settings);
 
     /**
      */
     public function phpbuEnd();
 
     /**
-     * @param Backup $backup
+     * @param array $backup
      */
     public function backupStart($backup);
 
     /**
-     * @param Backup $backup
+     * @param array $backup
      */
     public function backupFailed($backup);
 
     /**
-     * @param Backup $backup
+     * @param array $backup
      */
     public function backupEnd($backup);
 
     /**
-     * @param Check $check
+     * @param array $check
      */
     public function checkStart($check);
 
     /**
-     * @param Check $check
+     * @param array $check
      */
     public function checkFailed($check);
 
     /**
-     * @param Check $check
+     * @param array $check
      */
     public function checkEnd($check);
 
     /**
-     * @param Sync $sync
+     * @param array $sync
      */
     public function syncStart($sync);
 
     /**
-     * @param Sync $sync
+     * @param array $sync
      */
     public function syncFailed($sync);
 
     /**
-     * @param Sysc $sync
+     * @param array $sync
      */
     public function syncEnd($sync);
 
     /**
-     * @param Cleanup $cleanup
+     * @param array $cleanup
      */
     public function cleanupStart($cleanup);
 
     /**
-     * @param Cleanup $cleanup
+     * @param array $cleanup
      */
     public function cleanupFailed($cleanup);
 
     /**
-     * @param Cleanup $cleanup
+     * @param array $cleanup
      */
     public function cleanupEnd($cleanup);
+
+    /**
+     * @param string $msg
+     */
+    public function debug($msg);
 }

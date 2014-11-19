@@ -72,11 +72,13 @@ class Result
     }
 
     /**
+     *
+     * @param array $settings
      */
-    public function phpbuStart()
+    public function phpbuStart(array $settings)
     {
         foreach ($this->listeners as $l) {
-            $l->phpbuStart();
+            $l->phpbuStart($settings);
         }
     }
 
@@ -211,6 +213,17 @@ class Result
         foreach ($this->listeners as $l)
         {
             $l->cleanupEnd($cleanup);
+        }
+    }
+
+    /**
+     * @param string $msg
+     */
+    public function debug($msg)
+    {
+        foreach ($this->listeners as $l)
+        {
+            $l->debug($msg);
         }
     }
 
