@@ -78,4 +78,26 @@ class StringTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(String::toBoolean('FOO', true));
         $this->assertFalse(String::toBoolean('BAR', false));
     }
+
+    /**
+     * Test byte values
+     */
+    public function testToByte()
+    {
+        $this->assertEquals(1024, String::toBytes('1K'), '1K shoul match 1.024 bytes');
+        $this->assertEquals(1048576, String::toBytes('1M'), '1M should match 1.048.576 bytes');
+        $this->assertEquals(2097152, String::toBytes('2M'), '2M should match 2.097.152 bytes');
+        $this->assertEquals(1099511627776, String::toBytes('1T'), '1T should match 1.099.511.627.776 bytes');
+    }
+
+    /**
+     * Test byte values lower case
+     */
+    public function testToByte()
+    {
+        $this->assertEquals(1024, String::toBytes('1k'), '1k shoul match 1.024 bytes');
+        $this->assertEquals(1048576, String::toBytes('1m'), '1m should match 1.048.576 bytes');
+        $this->assertEquals(2097152, String::toBytes('2m'), '2m should match 2.097.152 bytes');
+        $this->assertEquals(1099511627776, String::toBytes('1t'), '1t should match 1.099.511.627.776 bytes');
+    }
 }
