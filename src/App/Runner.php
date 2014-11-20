@@ -70,7 +70,7 @@ class Runner
              */
             $result->backupStart($backup);
             try {
-                $source = Backup\Source\Factory::create($backup['source']['type'], $backup['source']['options']);
+                $source = Backup\Factory::create($backup['source']['type'], $backup['source']['options']);
                 $source->backup($target, $result);
                 $result->backupEnd($backup);
             } catch ( \Exception $e ) {
