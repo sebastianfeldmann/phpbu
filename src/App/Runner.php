@@ -4,6 +4,7 @@ namespace phpbu\App;
 use phpbu\App\Result;
 use phpbu\App\ResultPrinter;
 use phpbu\Backup;
+use phpbu\Backup\Factory;
 
 /**
  * Runner actually executes all backup jobs.
@@ -51,10 +52,9 @@ class Runner
         // create backups
         foreach ($arguments['backups'] as $backup) {
             // create target
-            $target = new Backup\Target(
-                $backup['target']['dirname'],
-                $backup['target']['filename']
-            );
+            $checkFailed = false;
+            $syncFailed  = false;
+            $target      = new Backup\Target($backup['target']['dirname'], $backup['target']['filename']);
             // compressor
             if (!empty($backup['target']['compress'])) {
                 $compressor = Backup\Compressor::create($backup['target']['compress']);
@@ -73,67 +73,78 @@ class Runner
                 $source = Backup\Factory::createSource($backup['source']['type'], $backup['source']['options']);
                 $source->backup($target, $result);
                 $result->backupEnd($backup);
+
+                /*
+                 *          __              __
+                 *    _____/ /_  ___  _____/ /_______
+                 *   / ___/ __ \/ _ \/ ___/ //_/ ___/
+                 *  / /__/ / / /  __/ /__/ ,< (__  )
+                 *  \___/_/ /_/\___/\___/_/|_/____/
+                 *
+                 */
+                foreach ($backup['checks'] as $check) {
+                    try {
+                        $result->checkStart($check);
+                        $c = Factory::createCheck($check['type']);
+                        if ($c->pass($target, $check['value'], $result)) {
+                            $result->checkEnd($check);
+                        } else {
+                            $checkFailed = true;
+                            $result->checkFailed($check);
+                        }
+                    } catch ( Exception $e ) {
+                        $checkFailed = true;
+                        $result->checkFailed($check);
+                    }
+                }
+
+                /*
+                 *     _______  ______  __________
+                 *    / ___/ / / / __ \/ ___/ ___/
+                 *   (__  ) /_/ / / / / /__(__  )
+                 *  /____/\__, /_/ /_/\___/____/
+                 *       /____/
+                 */
+                foreach ($backup['syncs'] as $sync) {
+                    try {
+                        $result->syncStart($sync);
+                        if ($checkFailed && $sync['skipOnCheckFail']) {
+                            // TODO: add syncSkip() method to interface
+                            echo "skipped" . PHP_EOL;
+                        } else {
+                            //$sync = Factory::createSync($sync['type'], $sync['options']);
+                            $result->syncEnd($sync);
+                        }
+                    } catch (Exception $e) {
+                        $result->syncFailed($sync);
+                    }
+                }
+
+                /*
+                 *          __
+                 *    _____/ /__  ____ _____  __  ______
+                 *   / ___/ / _ \/ __ `/ __ \/ / / / __ \
+                 *  / /__/ /  __/ /_/ / / / / /_/ / /_/ /
+                 *  \___/_/\___/\__,_/_/ /_/\__,_/ .___/
+                 *                              /_/
+                 */
+                if (!empty($arguments['cleanup'])) {
+                    $cleanup = $arguments['cleanup'];
+                    try {
+                        $result->cleanupStart($cleanup);
+                        // TODO: add cleanupSkip() method to interface
+                        // TODO: do cleanup stuff
+                        // TODO: check skipOnCheckFail skipOnSyncFail
+                        $result->cleanupEnd($cleanup);
+                    } catch (Exception $e) {
+                        $result->syncFailed($sync);
+                    }
+                }
+
             } catch (\Exception $e) {
                 // TODO: check stopOnError
                 $result->backupFailed($backup);
             }
-
-            /*
-             *          __              __
-             *    _____/ /_  ___  _____/ /_______
-             *   / ___/ __ \/ _ \/ ___/ //_/ ___/
-             *  / /__/ / / /  __/ /__/ ,< (__  )
-             *  \___/_/ /_/\___/\___/_/|_/____/
-             *
-             */
-            foreach ($backup['checks'] as $check) {
-                try {
-                    $result->checkStart($check);
-                    // TODO: do check stuff
-                    $result->checkEnd($check);
-                } catch ( Exception $e ) {
-                    $result->checkFailed($check);
-                }
-            }
-
-            /*
-             *     _______  ______  __________
-             *    / ___/ / / / __ \/ ___/ ___/
-             *   (__  ) /_/ / / / / /__(__  )
-             *  /____/\__, /_/ /_/\___/____/
-             *       /____/
-             */
-            foreach ($backup['syncs'] as $sync) {
-                try {
-                    $result->syncStart($sync);
-                    // TODO: do sync stuff
-                    // TODO: check skipOnCheckFail
-                    $result->syncEnd($sync);
-                } catch (Exception $e) {
-                    $result->syncFailed($sync);
-                }
-            }
-
-            /*
-             *          __
-             *    _____/ /__  ____ _____  __  ______
-             *   / ___/ / _ \/ __ `/ __ \/ / / / __ \
-             *  / /__/ /  __/ /_/ / / / / /_/ / /_/ /
-             *  \___/_/\___/\__,_/_/ /_/\__,_/ .___/
-             *                              /_/
-             */
-            if (!empty($arguments['cleanup'])) {
-                $cleanup = $arguments['cleanup'];
-                try {
-                    $result->cleanupStart($cleanup);
-                    // TODO: do cleanup stuff
-                    // TODO: check skipOnCheckFail skipOnSyncFail
-                    $result->cleanupEnd($cleanup);
-                } catch (Exception $e) {
-                    $result->syncFailed($sync);
-                }
-            }
-
         }
 
         $result->phpbuEnd();
