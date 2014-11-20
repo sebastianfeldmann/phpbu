@@ -170,6 +170,8 @@ class Configuration
      */
     private function getBackupConfig(DOMElement $backupNode)
     {
+        // stop on error
+        $stopOnError = String::toBoolean((string) $backupNode->getAttribute('stopOnError'), false);
         // get source configuration
         $source  = array();
         $sources = $backupNode->getElementsByTagName('source');
@@ -252,11 +254,12 @@ class Configuration
         }
 
         return array(
-            'source'  => $source,
-            'target'  => $target,
-            'checks'  => $checks,
-            'syncs'   => $syncs,
-            'cleanup' => $cleanup,
+            'stopOnError' => $stopOnError,
+            'source'      => $source,
+            'target'      => $target,
+            'checks'      => $checks,
+            'syncs'       => $syncs,
+            'cleanup'     => $cleanup,
         );
     }
 
