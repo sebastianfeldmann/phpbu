@@ -82,9 +82,10 @@ class StringTest extends \PHPUnit_Framework_TestCase
     /**
      * Test byte values
      */
-    public function testToByte()
+    public function testToByteUpperCase()
     {
-        $this->assertEquals(1024, String::toBytes('1K'), '1K shoul match 1.024 bytes');
+        $this->assertEquals(500, String::toBytes('500B'), '500B should match 500 bytes');
+        $this->assertEquals(1024, String::toBytes('1K'), '1K should match 1.024 bytes');
         $this->assertEquals(1048576, String::toBytes('1M'), '1M should match 1.048.576 bytes');
         $this->assertEquals(2097152, String::toBytes('2M'), '2M should match 2.097.152 bytes');
         $this->assertEquals(1099511627776, String::toBytes('1T'), '1T should match 1.099.511.627.776 bytes');
@@ -93,9 +94,9 @@ class StringTest extends \PHPUnit_Framework_TestCase
     /**
      * Test byte values lower case
      */
-    public function testToByte()
+    public function testToByteLowerCase()
     {
-        $this->assertEquals(1024, String::toBytes('1k'), '1k shoul match 1.024 bytes');
+        $this->assertEquals(1024, String::toBytes('1k'), '1k should match 1.024 bytes');
         $this->assertEquals(1048576, String::toBytes('1m'), '1m should match 1.048.576 bytes');
         $this->assertEquals(2097152, String::toBytes('2m'), '2m should match 2.097.152 bytes');
         $this->assertEquals(1099511627776, String::toBytes('1t'), '1t should match 1.099.511.627.776 bytes');
