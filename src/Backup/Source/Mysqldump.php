@@ -55,9 +55,10 @@ class Mysqldump implements Source
      */
     public function backup(Target $target, Result $result)
     {
+        $host       = 'localhost';
         $user       = $_SERVER['USER'];
         $password   = null;
-        $host       = 'localhost';
+        $datbases   = array();
         $this->exec = new Cli\Exec();
         $this->exec->setTarget($target);
 
@@ -87,8 +88,6 @@ class Mysqldump implements Source
             $cmd->addOption('--host', $host);
         }
 
-        $this->testMysqlConnection($user, $password, $host);
-
         if (!empty($this->conf['quick']) && Util\String::toBoolean($this->conf['quick'], false)) {
             $cmd->addOption('-q');
         }
@@ -109,6 +108,15 @@ class Mysqldump implements Source
                 }
             }
         }
+
+        // validate mysql connection
+        if (!empty($this->conf['validateConnection'])
+         && Util\String::toBoolean($this->conf['validateConnection'], false)) {
+            if (!$this->canConnect($host, $user, $password, $databases)) {
+                throw new Exception('Can\'t connect to mysql server');
+            }
+        }
+
         if (!empty($this->conf['ignoreTables'])) {
             $tables = explode(' ', $this->conf['ignoreTables']);
             foreach ($tables as $table) {
@@ -136,6 +144,11 @@ class Mysqldump implements Source
         $result->debug($r->getCmd());
 
         if (!$r->wasSuccessful()) {
+            // cleanup possible target
+            if ( file_exists((string) $target)) {
+                $result->debug('unlink defective file');
+                unlink((string) $target);
+            }
             throw new Exception('mysqldump failed');
         }
 
@@ -145,18 +158,32 @@ class Mysqldump implements Source
     /**
      * Test mysql connection.
      *
+     * @param  string $host
      * @param  string $user
      * @param  string $password
-     * @param  string $host
+     * @param  array  $databases
      * @return boolean
      * @throws phpbu\App\Exception
      */
-    public function testMysqlConnection($user = null, $password = null, $host = null)
+    public function canConnect($host, $user, $password = null, array $databases = array())
     {
-        // TODO: test mysql connection
-        // if some mysql extension is loaded (mysql, mysqli, pdo)
-        // no user given get os user
-        // try to connect to database
+        // no special database given all-databases a requested
+        // use 'mysql' because is has to exist
+        if (empty($databases)) {
+            $databases[] = 'mysql';
+        }
+
+        // check all databases
+        foreach ($databases as $db) {
+            $mysqli = @new \mysqli($host, $user, $password, $db);
+            if (0 != $mysqli->connect_errno) {
+                unset($mysqli);
+                return false;
+            }
+
+            $mysqli->close();
+            unset($mysqli);
+        }
         return true;
     }
 }
