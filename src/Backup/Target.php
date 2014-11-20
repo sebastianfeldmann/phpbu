@@ -161,7 +161,8 @@ class Target
     /**
      * Disable file compression
      */
-    public function disableCompression() {
+    public function disableCompression()
+    {
         $this->compress = false;
     }
 
@@ -170,7 +171,8 @@ class Target
      *
      * @throws phpbu\App\Exception
      */
-    public function enableCompression() {
+    public function enableCompression()
+    {
         if (null == $this->compressor) {
             throw new Exception('can\'t enable compression without a compressor');
         }

@@ -179,8 +179,7 @@ class Result
      */
     public function syncEnd($sync)
     {
-        foreach ($this->listeners as $l)
-        {
+        foreach ($this->listeners as $l) {
             $l->syncEnd($sync);
         }
     }
@@ -210,8 +209,7 @@ class Result
      */
     public function cleanupEnd($cleanup)
     {
-        foreach ($this->listeners as $l)
-        {
+        foreach ($this->listeners as $l) {
             $l->cleanupEnd($cleanup);
         }
     }
@@ -221,8 +219,7 @@ class Result
      */
     public function debug($msg)
     {
-        foreach ($this->listeners as $l)
-        {
+        foreach ($this->listeners as $l) {
             $l->debug($msg);
         }
     }

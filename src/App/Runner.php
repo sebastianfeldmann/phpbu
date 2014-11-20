@@ -49,14 +49,14 @@ class Runner
         $result->phpbuStart($arguments);
 
         // create backups
-        foreach ($arguments['backups'] as $backup) {;
+        foreach ($arguments['backups'] as $backup) {
             // create target
             $target = new Backup\Target(
                 $backup['target']['dirname'],
                 $backup['target']['filename']
             );
             // compressor
-            if (isset($backup['target']['compress'])) {
+            if (!empty($backup['target']['compress'])) {
                 $compressor = Backup\Compressor::create($backup['target']['compress']);
                 $target->setCompressor($compressor);
             }
@@ -73,7 +73,7 @@ class Runner
                 $source = Backup\Factory::createSource($backup['source']['type'], $backup['source']['options']);
                 $source->backup($target, $result);
                 $result->backupEnd($backup);
-            } catch ( \Exception $e ) {
+            } catch (\Exception $e) {
                 // TODO: check stopOnError
                 $result->backupFailed($backup);
             }
@@ -109,7 +109,7 @@ class Runner
                     // TODO: do sync stuff
                     // TODO: check skipOnCheckFail
                     $result->syncEnd($sync);
-                } catch ( Exception $e ) {
+                } catch (Exception $e) {
                     $result->syncFailed($sync);
                 }
             }
@@ -129,7 +129,7 @@ class Runner
                     // TODO: do cleanup stuff
                     // TODO: check skipOnCheckFail skipOnSyncFail
                     $result->cleanupEnd($cleanup);
-                } catch ( Exception $e ) {
+                } catch (Exception $e) {
                     $result->syncFailed($sync);
                 }
             }

@@ -48,7 +48,6 @@ use phpbu\App\Exception;
 use phpbu\App\Runner;
 use phpbu\App\Version;
 
-
 /**
  * Main application class.
  *

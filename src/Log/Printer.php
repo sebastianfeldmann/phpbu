@@ -88,7 +88,9 @@ class Printer
             file_put_contents(
                 $this->outTarget,
                 tidy_repair_file(
-                    $this->outTarget, array('indent' => true, 'wrap' => 0), 'utf8'
+                    $this->outTarget,
+                    array('indent' => true, 'wrap' => 0),
+                    'utf8'
                 )
             );
         }
