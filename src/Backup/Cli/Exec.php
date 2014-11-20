@@ -91,9 +91,9 @@ class Exec
 
         if ($this->compressOutput) {
             if ($this->target->shouldBeCompressed()) {
-                $cmd    .= ' | ' . $this->target->getCompressor()->getCommand();
+                $cmd    .= ' 2>&1 | ' . $this->target->getCompressor()->getCommand();
             }
-            $cmd .= ' > ' . (string) $this->target;
+            $cmd .= ' > ' . (string) $this->target . ' ; test ${PIPESTATUS[0]} -eq 0';
         }
 
         return $cmd;
