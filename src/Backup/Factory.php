@@ -6,7 +6,6 @@ use phpbu\Backup\Source;
 use phpbu\Backup\Check;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Cleanup;
-use phpbu\Backup\Target;
 
 /**
  * Source Factory
