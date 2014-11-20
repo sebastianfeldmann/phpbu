@@ -32,6 +32,7 @@ abstract class Factory
             'directory' => '\\phpbu\\Backup\\Source\\Tar',
         ),
         'check'   => array(
+            'SizeMin' => '\\phpbu\\Backup\\Check\\SizeMin',
         ),
         'sync'    => array(
         ),
@@ -88,7 +89,7 @@ abstract class Factory
     public static function createCheck($alias)
     {
         $check = self::create('check', $alias);
-        if (!($source instanceof Check)) {
+        if (!($check instanceof Check)) {
             throw new Exception(sprintf('Check \'%s\' has to implement the \'Check\' interface', $alias));
         }
         return $check;
@@ -156,7 +157,7 @@ abstract class Factory
      */
     private static function checkType($type)
     {
-        if ( !isset(self::$classMap[$type])) {
+        if (!isset(self::$classMap[$type])) {
             throw new Exception('invalid type, use \'source\', \'check\', \'sync\' or \'cleanup\'');
         }
     }
