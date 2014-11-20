@@ -49,6 +49,7 @@
       <xs:element name="sync" type="syncType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="cleanup" type="cleanupType" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
+    <xs:attribute name="stopOnError" type="xs:boolean"/>
   </xs:complexType>
 
   <xs:complexType name="sourceType">
@@ -89,16 +90,7 @@
     <xs:sequence>
       <xs:element name="option" type="nameValueType" maxOccurs="unbounded"/>
     </xs:sequence>
-    <xs:attribute name="type" use="required">
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="amazon"/>
-          <xs:enumeration value="dropbox"/>
-          <xs:enumeration value="owncloud"/>
-          <xs:enumeration value="rsync"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
+    <xs:attribute name="type" use="required" type="xs:string"/>
     <xs:attribute name="skipOnCheckFail" use="required" type="xs:boolean"/>
   </xs:complexType>
 

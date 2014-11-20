@@ -37,7 +37,7 @@ For convenience, you can move the PHAR to a directory that is in your [PATH](htt
     mv phpbu.phar /usr/local/bin/phpbu
     phpbu --version
 
-We also support installing PHPBU via Composer
+Installing PHPBU via Composer is also supported.
 
 ```json
   "require": {
