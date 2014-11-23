@@ -8,7 +8,7 @@ PHP Backup Utility
     + Directories
     + MySQL
     + PostgreSQL (planned)
-* Validate backups (planned)
+* Validate backups
 * Sync backups to other locations (planned)
     + amazon s3
     + dropbox
