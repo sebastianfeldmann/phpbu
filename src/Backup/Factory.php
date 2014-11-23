@@ -38,6 +38,7 @@ abstract class Factory
         ),
         'cleaner' => array(
             'Outdated' => '\\phpbu\\Backup\\Cleaner\\Outdated',
+            'Capacity' => '\\phpbu\\Backup\\Cleaner\\Capacity',
         ),
     );
 
@@ -55,7 +56,7 @@ abstract class Factory
     {
         self::checkType($type);
         if (!isset(self::$classMap[$type][$alias])) {
-            throw new Exception(sprintf('unknown $s: %s', $type, $alias));
+            throw new Exception(sprintf('unknown %s: %s', $type, $alias));
         }
         $class = self::$classMap[$type][$alias];
         return new $class();
