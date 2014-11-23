@@ -56,7 +56,18 @@ abstract class String
 
     /**
      * Returns given size in bytes.
-     *   e.g. 1K => 1024
+     * Allowed units:
+     *   B => byte
+     *   K => kilo byte
+     *   M => mega byte
+     *   G => giga byte
+     *   T => terra byte
+     *   P => peta byte
+     *
+     * e.g.
+     * 1K => 1024
+     * 2K => 2048
+     * ...
      *
      * @param  string $value
      * @throws RuntimeException
@@ -67,10 +78,41 @@ abstract class String
         if (!preg_match('#^[1-9]+[0-9]*[BKMGT]$#i', $value)) {
             throw new RuntimeException('Invalid size value');
         }
-        $sizes  = array('B' => 0, 'K' => 1, 'M' => 2, 'G' => 3, 'T' => 4, 'P' => 5);
+        $units  = array('B' => 0, 'K' => 1, 'M' => 2, 'G' => 3, 'T' => 4, 'P' => 5);
         $unit   = strtoupper(substr($value, -1));
-        $number = substr($value, 0, -1);
+        $number = intval(substr($value, 0, -1));
 
-        return $number * pow(1024, $sizes[$unit]);
+        return $number * pow(1024, $units[$unit]);
+    }
+
+    /**
+     * Returns time in seconds for a given value.
+     * Allowed units:
+     *   S => second
+     *   I => minute
+     *   D => day
+     *   W => week
+     *   M => month
+     *   Y => year
+     *
+     * e.g.
+     *  2I => 120
+     * 10D => 864000
+     * ...
+     *
+     * @param  string $offset
+     * @throws RuntimeException
+     * @return integer
+     */
+    public function toTime($offset)
+    {
+        if (!preg_match('#^[1-9]+[0-9]*[SIHDWMY]$#i', $offset)) {
+            throw new RuntimeException(sprintf('Invalid value for offset: %s', $offset));
+        }
+        $units  = array('S' => 1, 'I' => 60, 'H' => 3600, 'D' => 86400, 'W' => 604800, 'M' => 2678400, 'Y' => 31536000);
+        $unit   = strtoupper(substr($offset, -1));
+        $number = intval(substr($offset, 0, -1));
+
+        return $number * $units[$unit];
     }
 }

@@ -101,4 +101,28 @@ class StringTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2097152, String::toBytes('2m'), '2m should match 2.097.152 bytes');
         $this->assertEquals(1099511627776, String::toBytes('1t'), '1t should match 1.099.511.627.776 bytes');
     }
+
+    /**
+     * Test byte values
+     */
+    public function testToTimeUpperCase()
+    {
+        $this->assertEquals(3600, String::toTime('60I'), '60I should match 3600 seconds');
+        $this->assertEquals(604800, String::toTime('1W'), '1W should match 604.800 seconds');
+        $this->assertEquals(2678400, String::toTime('1M'), '1M should match 2.678.400 seconds');
+        $this->assertEquals(31536000, String::toTime('1Y'), '1Y should match 31.536.000 seconds');
+        $this->assertEquals(172800, String::toTime('2D'), '2D should match 172.800 seconds');
+    }
+
+    /**
+     * Test byte values lower case
+     */
+    public function testToTimeLowerCase()
+    {
+        $this->assertEquals(3600, String::toTime('60i'), '60I should match 3600 seconds');
+        $this->assertEquals(604800, String::toTime('1w'), '1W should match 604.800 seconds');
+        $this->assertEquals(2678400, String::toTime('1m'), '1M should match 2.678.400 seconds');
+        $this->assertEquals(31536000, String::toTime('1y'), '1Y should match 31.536.000 seconds');
+        $this->assertEquals(172800, String::toTime('2d'), '2D should match 172.800 seconds');
+    }
 }
