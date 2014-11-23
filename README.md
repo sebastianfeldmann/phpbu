@@ -15,7 +15,7 @@ PHP Backup Utility
     + ftp
     + rsync
     + sftp
-* Cleanup you backup location (planned)
+* Cleanup you backup location
 
 ## Requirements
 
