@@ -25,7 +25,7 @@ abstract class String
      */
     public static function replaceDatePlaceholders($string)
     {
-        // TODO: don't replace escaped % => %%
+        // TODO: don't replace escaped % => %%, \% ...
         return preg_replace_callback(
             '#%([a-zA-Z])#',
             function ($match) {
