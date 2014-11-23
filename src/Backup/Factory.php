@@ -26,19 +26,20 @@ abstract class Factory
      * @var array
      */
     private static $classMap = array(
-        //     type     => fqcn
+        //   type       => fqcn
         'source'  => array(
             'mysql'     => '\\phpbu\\Backup\\Source\\Mysqldump',
             'directory' => '\\phpbu\\Backup\\Source\\Tar',
         ),
         'check'   => array(
-            'SizeMin' => '\\phpbu\\Backup\\Check\\SizeMin',
+            'SizeMin'   => '\\phpbu\\Backup\\Check\\SizeMin',
         ),
         'sync'    => array(
         ),
         'cleaner' => array(
-            'Outdated' => '\\phpbu\\Backup\\Cleaner\\Outdated',
-            'Capacity' => '\\phpbu\\Backup\\Cleaner\\Capacity',
+            'Capacity'  => '\\phpbu\\Backup\\Cleaner\\Capacity',
+            'Outdated'  => '\\phpbu\\Backup\\Cleaner\\Outdated',
+            'Quantity'  => '\\phpbu\\Backup\\Cleaner\\Quantity',
         ),
     );
 

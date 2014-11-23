@@ -16,6 +16,9 @@ PHP Backup Utility
     + rsync
     + sftp
 * Cleanup you backup location
+    + delete backups older x
+    + store only x MB of backups
+    + keep only last x backups
 
 ## Requirements
 

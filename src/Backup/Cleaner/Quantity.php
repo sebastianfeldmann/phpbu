@@ -11,7 +11,7 @@ use RuntimeException;
 /**
  * Cleanup backup directory.
  *
- * Removes oldest backup till the given capacity isn't exceeded anymore.
+ * Removes oldest backup till the given quantity isn't exceeded anymore.
  *
  * @package    phpbu
  * @subpackage Backup
@@ -21,36 +21,27 @@ use RuntimeException;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Capacity implements Cleaner
+class Quantity implements Cleaner
 {
     /**
-     * Original XML value
+     * Amount of backups to keep
      *
      * @var string
      */
-    protected $capacityRaw;
-
-    /**
-     * Capacity in bytes.
-     *
-     * @var integer
-     */
-    protected $capacityBytes;
+    protected $amount;
 
     /**
      * @see \phpbu\Backup\Cleanup::setup()
      */
     public function setup(array $options)
     {
-        if (!isset($options['size'])) {
-            throw new RuntimeException('option \'size\' is missing');
+        if (!isset($options['amount'])) {
+            throw new RuntimeException('option \'amount\' is missing');
         }
-        $bytes = String::toBytes($options['size']);
-        if ($bytes < 1) {
-            throw new RuntimeException(sprintf('invalid value for \'size\': %s', $options['size']));
+        if (!is_int($options['amount'])) {
+            throw new RuntimeException(sprintf('invalid value for \'amount\': %s', $options['amount']));
         }
-        $this->capacityRaw   = $options['size'];
-        $this->capacityBytes = $bytes;
+        $this->amount = $options['amount'];
     }
 
     /**
@@ -62,24 +53,21 @@ class Capacity implements Cleaner
         $path   = dirname($target);
         $dItter = new DirectoryIterator($path);
         $files  = array();
-        $size   = 0;
         // sum filesize of al backups
         foreach ($dItter as $i => $fileInfo) {
             if ($fileInfo->isDir()) {
                 continue;
             }
             $files[date('YmdHis', $fileInfo->getMTime()) . '_' . $i] = $fileInfo->getFileInfo();
-            $size                                                   += $fileInfo->getSize();
         }
 
         // backups exceed capacity?
-        if ($size > $this->capacityBytes) {
+        if (count($files) > $this->amount) {
             // oldest backups first
             ksort($files);
 
-            while ($size > $this->capacityBytes) {
+            while (count($files) > $this->amount) {
                 $fileInfo = array_shift($files);
-                $size    -= $fileInfo->getSize();
                 $result->debug(sprintf('delete %s', $fileInfo->getPathname()));
                 // TODO: check deletable...
                 unlink($fileInfo->getPathname());
