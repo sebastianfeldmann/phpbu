@@ -220,7 +220,7 @@ class ResultPrinter extends Printer implements Listener
     public function cleanupStart($cleanup)
     {
         if ($this->verbose) {
-            $this->write('cleanup start: ' . PHP_EOL);
+            $this->write('cleanup start: ');
         }
     }
 
