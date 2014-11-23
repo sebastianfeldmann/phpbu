@@ -36,13 +36,14 @@ abstract class Factory
         ),
         'sync'    => array(
         ),
-        'cleanup' => array(
+        'cleaner' => array(
+            'Outdated' => '\\phpbu\\Backup\\Cleaner\\Outdated',
         ),
     );
 
     /**
      * Backup Factory.
-     * Creates 'Source', 'Check', 'Sync' and 'Cleanup' Objects.
+     * Creates 'Source', 'Check', 'Sync' and 'Cleaner' Objects.
      *
      * @param  string $type
      * @param  string $alias
@@ -114,27 +115,27 @@ abstract class Factory
     }
 
     /**
-     * Cleanup Factory.
+     * Cleaner Factory.
      *
      * @param  string $alias
      * @param  array  $conf
      * @throws phpbu\App\Exception
-     * @return Cleanup
+     * @return Cleaner
      */
-    public static function createCleanup($alias, $conf = array())
+    public static function createCleaner($alias, $conf = array())
     {
-        $cleanup = self::create('cleanup', $alias);
-        if (!($source instanceof Cleanup)) {
-            throw new Exception(sprintf('cleanup \'%s\' has to implement the \'Cleanup\' interface', $alias));
+        $cleaner = self::create('cleaner', $alias);
+        if (!($cleaner instanceof Cleaner)) {
+            throw new Exception(sprintf('cleaner \'%s\' has to implement the \'Cleaner\' interface', $alias));
         }
-        $cleanup->setup($conf);
-        return $cleanup;
+        $cleaner->setup($conf);
+        return $cleaner;
     }
 
     /**
      * Extend the backup factory.
      *
-     * @param  string $type        Type to create 'source', 'check', 'sync' or 'cleanup'
+     * @param  string $type        Type to create 'source', 'check', 'sync' or 'cleaner'
      * @param  string $alias       Name the class is registered at
      * @param  string $fqcn        Full Qualified Class Name
      * @param  string $force       Overwrite already registered class
@@ -158,7 +159,7 @@ abstract class Factory
     private static function checkType($type)
     {
         if (!isset(self::$classMap[$type])) {
-            throw new Exception('invalid type, use \'source\', \'check\', \'sync\' or \'cleanup\'');
+            throw new Exception('invalid type, use \'source\', \'check\', \'sync\' or \'cleaner\'');
         }
     }
 }
