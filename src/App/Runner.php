@@ -128,21 +128,26 @@ class Runner
                  *  \___/_/\___/\__,_/_/ /_/\__,_/ .___/
                  *                              /_/
                  */
-                if (!empty($arguments['cleanup'])) {
-                    $cleanup = $arguments['cleanup'];
+                if (!empty($backup['cleanup'])) {
+                    $cleanup = $backup['cleanup'];
                     try {
                         $result->cleanupStart($cleanup);
-                        // TODO: add cleanupSkip() method to interface
-                        // TODO: do cleanup stuff
-                        // TODO: check skipOnCheckFail skipOnSyncFail
-                        $result->cleanupEnd($cleanup);
+                        if (($checkFailed && $cleanup['skipOnCheckFail']) || ($syncFailed && $cleanup['skipOnSyncFail'])) {
+                            // TODO: add cleanupSkip() method to interface
+                            echo "skipped" .PHP_EOL;
+                        } else {
+                            $cleaner = Factory::createCleaner($cleanup['type'], $cleanup['options']);
+                            $cleaner->cleanup($target, $result);
+                            $result->cleanupEnd($cleanup);
+                        }
                     } catch (Exception $e) {
-                        $result->syncFailed($sync);
+                        $result->cleanupFailed($cleanup);
                     }
                 }
 
             } catch (\Exception $e) {
                 // TODO: check stopOnError
+                echo "exception:" . $e->getMessage() . PHP_EOL;
                 $result->backupFailed($backup);
             }
         }
