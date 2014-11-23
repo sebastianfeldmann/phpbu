@@ -25,16 +25,14 @@ abstract class String
      */
     public static function replaceDatePlaceholders($string)
     {
-        if (false !== strpos($string, '%')) {
-            $string = preg_replace_callback(
-                '#%([a-zA-Z])#',
-                function ($match) {
-                    return date($match[1]);
-                },
-                $string
-            );
-        }
-        return $string;
+        // TODO: don't replace escaped % => %%
+        return preg_replace_callback(
+            '#%([a-zA-Z])#',
+            function ($match) {
+                return date($match[1]);
+            },
+            $string
+        );
     }
 
     /**
