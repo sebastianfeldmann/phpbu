@@ -26,11 +26,39 @@ class Target
     private $dirname;
 
     /**
+     * Path to the backup with potential date placeholders like %d.
+     *
+     * @var string
+     */
+    private $dirnameRaw;
+
+    /**
+     * Indicates if the path changes over time.
+     *
+     * @var boolean
+     */
+    private $dirnameIsChanging = false;
+
+    /**
      * Backup filename.
      *
      * @var string
      */
     private $filename;
+
+    /**
+     * Filename with potential date placeholders like %d.
+     *
+     * @var string
+     */
+    private $filenameRaw;
+
+    /**
+     * Indicates if the filename changes over time.
+     *
+     * @var boolean
+     */
+    private $filenameIsChanging = false;
 
     /**
      * Permissions for potential directory or file creation.
@@ -96,8 +124,12 @@ class Target
      */
     public function setDir($dir)
     {
-        // replace potential date placeholder
-        $dir = String::replaceDatePlaceholders($dir);
+        $this->dirnameRaw = $dir;
+        if (false !== strpos($dir, '%')) {
+            $this->dirnameIsChanging = true;
+            // replace potential date placeholder
+            $dir = String::replaceDatePlaceholders($dir);
+        }
         // if directory doesn't exist, create it
         if (!is_dir($dir)) {
             $reporting = error_reporting();
@@ -121,36 +153,20 @@ class Target
      */
     public function setFile($file)
     {
-        $this->filename = String::replaceDatePlaceholders($file);
-    }
-
-    /**
-     * Date placeholder replacement.
-     * Replaces %{somevalue} with date({somevalue}).
-     *
-     * @param  string $string
-     * @return string
-     */
-    private function datePlaceholderDecode($string)
-    {
-        if (false !== strpos($string, '%')) {
-            $string = preg_replace_callback(
-                '#%([a-zA-Z])#',
-                function ($match) {
-                    return date($match[1]);
-                },
-                $string
-            );
+        $this->filenameRaw = $file;
+        if (false !== strpos($file, '%')) {
+            $this->filenameIsChanging = true;
+            $file                    = String::replaceDatePlaceholders($file);
         }
-        return $string;
+        $this->filename = $file;
     }
 
     /**
-     * Path to target file.
+     * Path and filename off the target file.
      *
      * @return string
      */
-    public function getPath()
+    public function getPathname()
     {
         return $this->dirname
                . DIRECTORY_SEPARATOR
@@ -211,12 +227,32 @@ class Target
     }
 
     /**
+     * Dirname configured with any date placeholders
+     *
+     * @return boolean
+     */
+    public function hasChangingPath()
+    {
+        return $this->dirnameIsChanging;
+    }
+
+    /**
+     * Filename configured with any date placeholders
+     *
+     * @return boolean
+     */
+    public function hasChangingFilename()
+    {
+        return $this->filenameIsChanging;
+    }
+
+    /**
      * Magic to string method.
      *
      * @return string
      */
     public function __toString()
     {
-        return $this->getPath();
+        return $this->getPathname();
     }
 }
