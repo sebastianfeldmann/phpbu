@@ -121,7 +121,7 @@ class ResultPrinter extends Printer implements Listener
     public function backupStart($backup)
     {
         if ($this->verbose) {
-            $this->write('create backup (' . $backup['source']['type'] . '):');
+            $this->write('create backup (' . $backup['source']['type'] . '):' . PHP_EOL);
         }
     }
 
@@ -131,6 +131,7 @@ class ResultPrinter extends Printer implements Listener
     public function backupFailed($backup)
     {
         if ($this->verbose) {
+            $this->write(PHP_EOL);
             $this->writeWithColor(
                 'fg-white, bg-red, bold',
                 'failed'
@@ -144,7 +145,7 @@ class ResultPrinter extends Printer implements Listener
     public function backupEnd($backup)
     {
         if ($this->verbose) {
-            $this->write('done' . PHP_EOL);
+            $this->write('backup done' . PHP_EOL);
         }
     }
 
@@ -154,7 +155,7 @@ class ResultPrinter extends Printer implements Listener
     public function checkStart($check)
     {
         if ($this->verbose) {
-            $this->write('check (' . $check['type'] . '):');
+            $this->write('check (' . $check['type'] . '): ');
         }
     }
 
@@ -187,7 +188,7 @@ class ResultPrinter extends Printer implements Listener
     public function syncStart($sync)
     {
         if ($this->verbose) {
-            $this->write('sync start:');
+            $this->write('sync start: ');
         }
     }
 

@@ -142,13 +142,14 @@ class Runner
                             $result->cleanupEnd($cleanup);
                         }
                     } catch (Exception $e) {
+                        $result->deubg('exception: ' . $e->getMessage());
                         $result->cleanupFailed($cleanup);
                     }
                 }
 
             } catch (\Exception $e) {
                 // TODO: check stopOnError
-                echo "exception:" . $e->getMessage() . PHP_EOL;
+                $result->deubg('exception: ' . $e->getMessage());
                 $result->backupFailed($backup);
             }
         }
