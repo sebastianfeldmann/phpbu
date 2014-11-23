@@ -145,7 +145,7 @@ class Mysqldump implements Source
 
         if (!$r->wasSuccessful()) {
             // cleanup possible target
-            if ( file_exists((string) $target)) {
+            if (file_exists((string) $target)) {
                 $result->debug('unlink defective file');
                 unlink((string) $target);
             }

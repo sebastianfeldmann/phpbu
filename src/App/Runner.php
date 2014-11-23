@@ -132,7 +132,8 @@ class Runner
                     $cleanup = $backup['cleanup'];
                     try {
                         $result->cleanupStart($cleanup);
-                        if (($checkFailed && $cleanup['skipOnCheckFail']) || ($syncFailed && $cleanup['skipOnSyncFail'])) {
+                        if (($checkFailed && $cleanup['skipOnCheckFail'])
+                         || ($syncFailed && $cleanup['skipOnSyncFail'])) {
                             // TODO: add cleanupSkip() method to interface
                             echo "skipped" .PHP_EOL;
                         } else {
