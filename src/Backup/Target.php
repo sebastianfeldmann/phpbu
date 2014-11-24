@@ -130,19 +130,6 @@ class Target
             // replace potential date placeholder
             $dir = String::replaceDatePlaceholders($dir);
         }
-        // if directory doesn't exist, create it
-        if (!is_dir($dir)) {
-            $reporting = error_reporting();
-            error_reporting(0);
-            $created = mkdir($dir, 0755, true);
-            error_reporting($reporting);
-            if (!$created) {
-                throw new Exception(sprintf('cant\'t create directory: %s', $dir));
-            }
-        }
-        if (!is_writable($dir)) {
-            throw new Exception(sprintf('no write permission for directory: %s', $dir));
-        }
         $this->dirname = $dir;
     }
 
@@ -159,6 +146,51 @@ class Target
             $file                    = String::replaceDatePlaceholders($file);
         }
         $this->filename = $file;
+    }
+
+    /**
+     * Checks if the backup target directory is writable.
+     * Creates the Directory if it doesn't exist.
+     *
+     * @throws Exception
+     */
+    public function setupDir()
+    {
+         // if directory doesn't exist, create it
+         if (!is_dir($this->dirname)) {
+             $reporting = error_reporting();
+             error_reporting(0);
+             $created = mkdir($this->dirname, 0755, true);
+             error_reporting($reporting);
+             if (!$created) {
+                throw new Exception(sprintf('cant\'t create directory: %s', $this->dirname));
+             }
+         }
+         if (!is_writable($this->dirname)) {
+            throw new Exception(sprintf('no write permission for directory: %s', $this->dirname));
+         }
+    }
+
+    /**
+     * Returns the path to the backup file
+     *
+     * @param  boolean $raw
+     * @return string
+     */
+    public function getPath($raw = false)
+    {
+        return $raw ? $this->dirnameRaw : $this->dirname;
+    }
+
+    /**
+     * Returns the name to the backup file
+     *
+     * @param  boolean $raw
+     * @return string
+     */
+    public function getName($raw = false)
+    {
+        return $raw ? $this->filenameRaw : $this->filename;
     }
 
     /**
@@ -209,7 +241,7 @@ class Target
     /**
      * Compressor getter.
      *
-     * @return phpbu\Compressor
+     * @return \phpbu\Backup\Compressor
      */
     public function getCompressor()
     {

@@ -4,9 +4,11 @@ namespace phpbu\Backup\Cleaner;
 use DirectoryIterator;
 use phpbu\App\Result;
 use phpbu\Backup\Cleaner;
+use phpbu\Backup\Collector;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
 use RuntimeException;
+use phpbu\Backup\Collector;
 
 /**
  * Cleanup backup directory.
@@ -58,18 +60,12 @@ class Capacity implements Cleaner
      */
     public function cleanup(Target $target, Result $result)
     {
-        // TODO: if target directory is dynamic %d or something like that
-        $path   = dirname($target);
-        $dItter = new DirectoryIterator($path);
-        $files  = array();
-        $size   = 0;
-        // sum filesize of al backups
-        foreach ($dItter as $i => $fileInfo) {
-            if ($fileInfo->isDir()) {
-                continue;
-            }
-            $files[date('YmdHis', $fileInfo->getMTime()) . '_' . $i] = $fileInfo->getFileInfo();
-            $size                                                   += $fileInfo->getSize();
+        $collector = new Collector($target);
+        $files     = $collector->getBackupFiles();
+        $size      = 0;
+
+        foreach ( $files as $file ) {
+            $size += $file->getSize();
         }
 
         // backups exceed capacity?
@@ -78,11 +74,11 @@ class Capacity implements Cleaner
             ksort($files);
 
             while ($size > $this->capacityBytes) {
-                $fileInfo = array_shift($files);
-                $size    -= $fileInfo->getSize();
-                $result->debug(sprintf('delete %s', $fileInfo->getPathname()));
+                $file  = array_shift($files);
+                $size -= $file->getSize();
+                $result->debug(sprintf('delete %s', $file->getPathname()));
                 // TODO: check deletable...
-                unlink($fileInfo->getPathname());
+                unlink($file->getPathname());
             }
         }
     }
