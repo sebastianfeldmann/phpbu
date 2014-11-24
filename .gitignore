@@ -5,6 +5,7 @@
 .settings
 /backup
 /build/logs
-/composer.lock
 /build/phar
+/composer.lock
+/phpbu.xml
 /vendor/
