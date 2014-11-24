@@ -17,7 +17,19 @@ use SebastianBergmann;
  */
 class Version
 {
+    /**
+     * Version of the phar file.
+     * Is getting set via the phar build process.
+     *
+     * @var string
+     */
     private static $pharVersion;
+
+    /**
+     * Current version
+     *
+     * @var string
+     */
     private static $version;
 
     /**

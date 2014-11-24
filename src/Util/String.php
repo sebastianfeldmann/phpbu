@@ -68,7 +68,7 @@ abstract class String
      * ...
      *
      * @param  string $value
-     * @throws RuntimeException
+     * @throws \RuntimeException
      * @return integer
      */
     public function toBytes($value)
@@ -99,7 +99,7 @@ abstract class String
      * ...
      *
      * @param  string $offset
-     * @throws RuntimeException
+     * @throws \RuntimeException
      * @return integer
      */
     public function toTime($offset)

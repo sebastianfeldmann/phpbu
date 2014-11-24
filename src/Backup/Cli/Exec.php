@@ -20,14 +20,14 @@ class Exec
     /**
      * List of system commands to execute.
      *
-     * @var array<phpbu\Backup\Cli\Cmd>
+     * @var array<\phpbu\Backup\Cli\Cmd>
      */
     private $commands = array();
 
     /**
      * Backup target
      *
-     * @var phpbu\Backup\Target
+     * @var \phpbu\Backup\Target
      */
     private $target;
 
@@ -41,7 +41,7 @@ class Exec
     /**
      * Target settter
      *
-     * @param phpbu\Backup\Target $target
+     * @param \phpbu\Backup\Target $target
      */
     public function setTarget(Target $target)
     {
@@ -60,8 +60,8 @@ class Exec
 
     /**
      *
-     * @throws phpbu\App\Exception
-     * @return phpbu\Cli\Result
+     * @throws \phpbu\App\Exception
+     * @return \phpbu\Cli\Result
      */
     public function execute()
     {
@@ -78,7 +78,7 @@ class Exec
     /**
      * Generates the system command.
      *
-     * @throws phpbu\App\Exception
+     * @throws \phpbu\App\Exception
      * @return string
      */
     public function getExec()
@@ -102,7 +102,7 @@ class Exec
     /**
      * Adds a system command to the command list.
      *
-     * @param phpbu\Backup\Cli\Cmd $cmd
+     * @param \phpbu\Backup\Cli\Cmd $cmd
      */
     public function addCommand(Cmd $cmd)
     {

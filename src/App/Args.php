@@ -93,7 +93,7 @@ class Args
      *
      * @param  string $arg
      * @param  array $options
-     * @throws phpbu\App\Exception
+     * @throws \phpbu\App\Exception
      */
     public function parseShortOption($arg, array &$options)
     {
@@ -108,7 +108,7 @@ class Args
      *
      * @param  string $arg
      * @param  array $options
-     * @throws phpbu\App\Exception
+     * @throws \phpbu\App\Exception
      */
     public function parseLongOption($arg, array &$options)
     {

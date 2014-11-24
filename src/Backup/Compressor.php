@@ -72,8 +72,8 @@ class Compressor
      * Factory method.
      *
      * @param  string $name
-     * @throws Exception
-     * @return Compressor
+     * @throws \phpbu\App\Exception
+     * @return \phpbu\Backup\Compressor
      */
     public static function create($name)
     {

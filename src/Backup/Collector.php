@@ -8,7 +8,7 @@ use phpbu\Backup\Target;
  * Collector
  *
  * @package    phpbu
- * @subpackage tests
+ * @subpackage Backup
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License

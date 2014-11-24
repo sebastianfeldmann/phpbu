@@ -23,7 +23,7 @@ abstract class Cli
      * @param  string $path              Directory where the command should be located
      * @param  array  $optionalLocations Some fallback locations where to investigate
      * @return string                    Absolute path to detected command including command itself
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public static function detectCmdLocation($cmd, $path = null, $optionalLocations = array())
     {

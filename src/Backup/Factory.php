@@ -50,7 +50,7 @@ abstract class Factory
      * @param  string $type
      * @param  string $alias
      * @param  array  $conf
-     * @throws phpbu\App\Exception
+     * @throws \phpbu\App\Exception
      * @return mixed
      */
     public static function create($type, $alias, $conf = array())
@@ -68,8 +68,8 @@ abstract class Factory
      *
      * @param  string $alias
      * @param  array  $conf
-     * @throws phpbu\App\Exception
-     * @return Source
+     * @throws \phpbu\App\Exception
+     * @return \phpbu\Backup\Source
      */
     public static function createSource($alias, $conf = array())
     {
@@ -86,8 +86,8 @@ abstract class Factory
      *
      * @param  string $alias
      * @param  array  $conf
-     * @throws phpbu\App\Exception
-     * @return Check
+     * @throws \phpbu\App\Exception
+     * @return \phpbu\Backup\Check
      */
     public static function createCheck($alias)
     {
@@ -103,8 +103,8 @@ abstract class Factory
      *
      * @param  string $alias
      * @param  array  $conf
-     * @throws phpbu\App\Exception
-     * @return Sync
+     * @throws \phpbu\App\Exception
+     * @return \phpbu\Backup\Sync
      */
     public static function createSync($alias, $conf = array())
     {
@@ -121,8 +121,8 @@ abstract class Factory
      *
      * @param  string $alias
      * @param  array  $conf
-     * @throws phpbu\App\Exception
-     * @return Cleaner
+     * @throws \phpbu\App\Exception
+     * @return \phpbu\backup\Cleaner
      */
     public static function createCleaner($alias, $conf = array())
     {
@@ -141,7 +141,7 @@ abstract class Factory
      * @param  string $alias       Name the class is registered at
      * @param  string $fqcn        Full Qualified Class Name
      * @param  string $force       Overwrite already registered class
-     * @throws phpbu\App\Exception
+     * @throws \phpbu\App\Exception
      */
     public static function register($type, $alias, $fqcn, $force = false)
     {
@@ -156,7 +156,7 @@ abstract class Factory
      * Throws an excepton if type is invalid.
      *
      * @param  string $type
-     * @throws phpbu\App\Exception
+     * @throws \phpbu\App\Exception
      */
     private static function checkType($type)
     {

@@ -12,7 +12,7 @@ class Tar implements Source
     /**
      * Executor to run the tar shell command.
      *
-     * @var phpbu\Cli\Exec
+     * @var \phpbu\Cli\Exec
      */
     private $exec;
 
@@ -28,7 +28,7 @@ class Tar implements Source
      *
      * @see    phpbu\Backup\Source
      * @param  array               $conf
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public function setup(array $conf = array())
     {
@@ -37,9 +37,9 @@ class Tar implements Source
 
     /**
      *
-     * @param  phpbu\Backup\Target $target
-     * @param  phpbu\App\Result    $result
-     * @return phpbu\App\Result
+     * @param  \phpbu\Backup\Target $target
+     * @param  \phpbu\App\Result    $result
+     * @return \phpbu\App\Result
      */
     public function backup(Target $target, Result $result)
     {

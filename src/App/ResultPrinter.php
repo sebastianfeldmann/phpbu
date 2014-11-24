@@ -25,7 +25,8 @@ use SebastianBergmann\Environment\Console;
 class ResultPrinter extends Printer implements Listener
 {
     /**
-     * Verbose
+     * Verbose output
+     *
      * @var boolean
      */
     protected $verbose;
@@ -68,7 +69,7 @@ class ResultPrinter extends Printer implements Listener
      * @param  string                   $verbose
      * @param  string                   $colors
      * @param  string                   $debug
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function __construct($out = null, $verbose = false, $colors = false, $debug = false)
     {

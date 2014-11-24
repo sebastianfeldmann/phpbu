@@ -72,7 +72,6 @@ class Result
     }
 
     /**
-     *
      * @param array $settings
      */
     public function phpbuStart(array $settings)
@@ -92,7 +91,7 @@ class Result
     }
 
     /**
-     * @param Backup $backup
+     * @param array $backup
      */
     public function backupStart($backup)
     {
@@ -102,7 +101,7 @@ class Result
     }
 
     /**
-     * @param Backup $backup
+     * @param array $backup
      */
     public function backupFailed($backup)
     {
@@ -113,7 +112,7 @@ class Result
     }
 
     /**
-     * @param Backup $backup
+     * @param array $backup
      */
     public function backupEnd($backup)
     {
@@ -123,7 +122,7 @@ class Result
     }
 
     /**
-     * @param Check $check
+     * @param array $check
      */
     public function checkStart($check)
     {
@@ -133,7 +132,7 @@ class Result
     }
 
     /**
-     * @param Check $check
+     * @param array $check
      */
     public function checkFailed($check)
     {
@@ -144,7 +143,7 @@ class Result
     }
 
     /**
-     * @param Check $check
+     * @param array $check
      */
     public function checkEnd($check)
     {
@@ -154,7 +153,7 @@ class Result
     }
 
     /**
-     * @param Sync $sync
+     * @param array $sync
      */
     public function syncStart($sync)
     {
@@ -164,7 +163,7 @@ class Result
     }
 
     /**
-     * @param Sync $sync
+     * @param array $sync
      */
     public function syncFailed($sync)
     {
@@ -175,7 +174,7 @@ class Result
     }
 
     /**
-     * @param Sync $cleanup
+     * @param array $cleanup
      */
     public function syncEnd($sync)
     {
@@ -184,7 +183,7 @@ class Result
         }
     }
     /**
-     * @param Cleanup $cleanup
+     * @param array $cleanup
      */
     public function cleanupStart($cleanup)
     {
@@ -194,7 +193,7 @@ class Result
     }
 
     /**
-     * @param Cleanup $cleanup
+     * @param array $cleanup
      */
     public function cleanupFailed($cleanup)
     {
@@ -205,7 +204,7 @@ class Result
     }
 
     /**
-     * @param Cleanup $cleanup
+     * @param array $cleanup
      */
     public function cleanupEnd($cleanup)
     {
@@ -227,7 +226,7 @@ class Result
     /**
      * Registers a Listener.
      *
-     * @param phpbu\App\Listener
+     * @param \phpbu\App\Listener
      */
     public function addListener(Listener $listener)
     {
@@ -238,7 +237,7 @@ class Result
      * Unregisters a Listener.
      *
      * @author Sebastian Bergmann <sebastian@phpunit.de>
-     * @param  phpbu\App\Listener $listener
+     * @param  \phpbu\App\Listener $listener
      */
     public function removeListener(Listener $listener)
     {

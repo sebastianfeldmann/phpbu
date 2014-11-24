@@ -77,7 +77,7 @@ class Target
     /**
      * File compression.
      *
-     * @var phpbu\Backup\Compressor
+     * @var \phpbu\Backup\Compressor
      */
     private $compressor;
 
@@ -86,7 +86,7 @@ class Target
      *
      * @param  string $dirname
      * @param  string $filename
-     * @throws phpbu\App\Exception
+     * @throws \phpbu\App\Exception
      */
     public function __construct($dirname, $filename)
     {
@@ -98,7 +98,7 @@ class Target
      * Permission setter.
      *
      * @param  string $permissions
-     * @throws Exception
+     * @throws \phpbu\App\Exception
      */
     public function setPermissions($permissions)
     {
@@ -120,7 +120,7 @@ class Target
      *
      * @param  string $dir
      * @param  string $mod
-     * @throws phpbu\App\Exception
+     * @throws \phpbu\App\Exception
      */
     public function setDir($dir)
     {
@@ -152,7 +152,7 @@ class Target
      * Checks if the backup target directory is writable.
      * Creates the Directory if it doesn't exist.
      *
-     * @throws Exception
+     * @throws \phpbu\App\Exception
      */
     public function setupDir()
     {
@@ -217,7 +217,7 @@ class Target
     /**
      * Enable file compression
      *
-     * @throws phpbu\App\Exception
+     * @throws \phpbu\App\Exception
      */
     public function enableCompression()
     {
@@ -230,7 +230,7 @@ class Target
     /**
      * Compressor setter.
      *
-     * @param Compressor $compressor
+     * @param \phpbu\Backup\Compressor $compressor
      */
     public function setCompressor(Compressor $compressor)
     {

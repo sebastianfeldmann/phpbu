@@ -274,7 +274,7 @@ class App
      * Handles the bootstrap file inclusion.
      *
      * @param  string $filename
-     * @throws phpbu\App\Exception
+     * @throws \phpbu\App\Exception
      */
     protected function handleBootstrap($filename)
     {

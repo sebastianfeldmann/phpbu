@@ -8,7 +8,8 @@ use phpbu\Util\String;
 use RuntimeException;
 
 /**
- * Backup Target class.
+ * SizeMin class.
+ * Checks if a backup file has a least a given size.
  *
  * @package    phpbu
  * @subpackage Backup

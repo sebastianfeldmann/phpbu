@@ -27,9 +27,8 @@ interface Source
     /**
      * Runner the backup
      *
-     * @param  phpbu\App\Target $target
-     * @param  phpbu\App\Result $result
-     * @return Result
+     * @param  \phpbu\App\Target $target
+     * @param  \phpbu\App\Result $result
      */
     public function backup(Target $target, Result $result);
 }

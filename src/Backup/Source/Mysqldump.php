@@ -24,7 +24,7 @@ class Mysqldump implements Source
     /**
      * Executor to run the mysqldump shell commands.
      *
-     * @var phpbu\Cli\Exec
+     * @var \phpbu\Cli\Exec
      */
     private $exec;
 
@@ -38,9 +38,9 @@ class Mysqldump implements Source
     /**
      * Setup.
      *
-     * @see    phpbu\Backup\Source
-     * @param  array               $conf
-     * @throws phpbu\App\Exception
+     * @see    \phpbu\Backup\Source
+     * @param  array                $conf
+     * @throws \phpbu\App\Exception
      */
     public function setup(array $conf = array())
     {
@@ -49,9 +49,9 @@ class Mysqldump implements Source
 
     /**
      *
-     * @param  phpbu\App\Target $target
-     * @param  phpbu\App\Result $result
-     * @return phpbu\App\Result
+     * @param  \phpbu\App\Target $target
+     * @param  \phpbu\App\Result $result
+     * @return \phpbu\App\Result
      */
     public function backup(Target $target, Result $result)
     {
@@ -163,7 +163,7 @@ class Mysqldump implements Source
      * @param  string $password
      * @param  array  $databases
      * @return boolean
-     * @throws phpbu\App\Exception
+     * @throws \phpbu\App\Exception
      */
     public function canConnect($host, $user, $password = null, array $databases = array())
     {

@@ -74,14 +74,14 @@ class Configuration
     /**
      * Configfile DOMDocument
      *
-     * @var DOMDocument
+     * @var \DOMDocument
      */
     private $document;
 
     /**
      * Xpath to navigate the config DOM.
      *
-     * @var DOMXPath
+     * @var \DOMXPath
      */
     private $xpath;
 
@@ -89,7 +89,7 @@ class Configuration
      * Constructor
      *
      * @param  string $filename
-     * @return Configuration
+     * @return \phpbu\App\Configuration
      */
     public function __construct($filename)
     {
@@ -164,8 +164,8 @@ class Configuration
     /**
      * Get the config for a single backup node.
      *
-     * @param  DOMElement $backupNode
-     * @throws phpbu\App\Exception
+     * @param  \DOMElement $backupNode
+     * @throws \phpbu\App\Exception
      * @return array
      */
     private function getBackupConfig(DOMElement $backupNode)
@@ -347,8 +347,8 @@ class Configuration
      * Load the XML-File.
      *
      * @param  string $filename
-     * @throws phpbu\App\Exception
-     * @return DOMDocument
+     * @throws \phpbu\App\Exception
+     * @return \DOMDocument
      */
     private function loadXmlFile($filename)
     {

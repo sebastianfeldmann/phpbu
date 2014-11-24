@@ -22,14 +22,14 @@ class Runner
     /**
      * Application output
      *
-     * @var phpbu\App\Listener
+     * @var \phpbu\App\Listener
      */
     protected $printer;
 
     /**
      * Application Result
      *
-     * @var phpbu\App\Result
+     * @var \phpbu\App\Result
      */
     protected $result;
 
@@ -37,7 +37,7 @@ class Runner
      * Run all backups configured
      *
      * @param  array $arguments
-     * @return phpbu\App\Result
+     * @return \phpbu\App\Result
      */
     public function run(array $arguments)
     {
@@ -178,7 +178,7 @@ class Runner
      * Creates the output printer.
      *
      * @param  array $arguments
-     * @return phpbu\App\ResultPrinter
+     * @return \phpbu\App\ResultPrinter
      */
     protected function createPrinter(array $arguments)
     {
