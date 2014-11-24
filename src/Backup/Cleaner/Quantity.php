@@ -8,7 +8,6 @@ use phpbu\Backup\Collector;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
 use RuntimeException;
-use phpbu\Backup\Collector;
 
 /**
  * Cleanup backup directory.

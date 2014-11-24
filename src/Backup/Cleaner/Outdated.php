@@ -8,7 +8,6 @@ use phpbu\Backup\Collector;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
 use RuntimeException;
-use phpbu\Backup\Collector;
 
 /**
  * Cleanup backup directory.
@@ -60,9 +59,9 @@ class Outdated implements Cleaner
      */
     public function cleanup(Target $target, Result $result)
     {
-        $path    = dirname($target);
-        $dItter  = new DirectoryIterator($path);
-        $minTime = time() - $this->offsetSeconds;
+        $path      = dirname($target);
+        $dItter    = new DirectoryIterator($path);
+        $minTime   = time() - $this->offsetSeconds;
         $collector = new Collector($target);
         $files     = $collector->getBackupFiles();
 
