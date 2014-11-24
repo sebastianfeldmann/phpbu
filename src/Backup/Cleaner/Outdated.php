@@ -4,9 +4,11 @@ namespace phpbu\Backup\Cleaner;
 use DirectoryIterator;
 use phpbu\App\Result;
 use phpbu\Backup\Cleaner;
+use phpbu\Backup\Collector;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
 use RuntimeException;
+use phpbu\Backup\Collector;
 
 /**
  * Cleanup backup directory.
@@ -61,17 +63,17 @@ class Outdated implements Cleaner
         $path    = dirname($target);
         $dItter  = new DirectoryIterator($path);
         $minTime = time() - $this->offsetSeconds;
-        // TODO: if target directory is dynamic %d or something like that
-        foreach ($dItter as $fileInfo) {
-            if ($fileInfo->isDir()) {
-                continue;
-            }
+        $collector = new Collector($target);
+        $files     = $collector->getBackupFiles();
 
+        foreach ($files as $file) {
             // last mod date < min date? delete!
-            if ($fileInfo->getMTime() < $minTime) {
-                $result->debug(sprintf('delete %s', $fileInfo->getPathname()));
-                // TODO: check deletable...
-                unlink($fileInfo->getPathname());
+            if ($file->getMTime() < $minTime) {
+                if (!$file->isWritable()) {
+                    throw new RuntimeException(sprintf('can\'t detele file: %s', $file->getPathname()));
+                }
+                $result->debug(sprintf('delete %s', $file->getPathname()));
+                unlink($file->getPathname());
             }
         }
     }

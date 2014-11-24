@@ -76,8 +76,10 @@ class Capacity implements Cleaner
             while ($size > $this->capacityBytes) {
                 $file  = array_shift($files);
                 $size -= $file->getSize();
+                if (!$file->isWritable()) {
+                    throw new RuntimeException(sprintf('can\'t detele file: %s', $file->getPathname()));
+                }
                 $result->debug(sprintf('delete %s', $file->getPathname()));
-                // TODO: check deletable...
                 unlink($file->getPathname());
             }
         }

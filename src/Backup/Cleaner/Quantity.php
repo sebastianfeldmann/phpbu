@@ -4,9 +4,11 @@ namespace phpbu\Backup\Cleaner;
 use DirectoryIterator;
 use phpbu\App\Result;
 use phpbu\Backup\Cleaner;
+use phpbu\Backup\Collector;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
 use RuntimeException;
+use phpbu\Backup\Collector;
 
 /**
  * Cleanup backup directory.
@@ -49,17 +51,10 @@ class Quantity implements Cleaner
      */
     public function cleanup(Target $target, Result $result)
     {
-        // TODO: if target directory is dynamic %d or something like that
-        $path   = dirname($target);
-        $dItter = new DirectoryIterator($path);
-        $files  = array();
-        // sum filesize of al backups
-        foreach ($dItter as $i => $fileInfo) {
-            if ($fileInfo->isDir()) {
-                continue;
-            }
-            $files[date('YmdHis', $fileInfo->getMTime()) . '_' . $i] = $fileInfo->getFileInfo();
-        }
+        $path      = dirname($target);
+        $dItter    = new DirectoryIterator($path);
+        $collector = new Collector($target);
+        $files     = $collector->getBackupFiles();
 
         // backups exceed capacity?
         if (count($files) > $this->amount) {
@@ -67,10 +62,12 @@ class Quantity implements Cleaner
             ksort($files);
 
             while (count($files) > $this->amount) {
-                $fileInfo = array_shift($files);
-                $result->debug(sprintf('delete %s', $fileInfo->getPathname()));
-                // TODO: check deletable...
-                unlink($fileInfo->getPathname());
+                $file = array_shift($files);
+                $result->debug(sprintf('delete %s', $file->getPathname()));
+                if (!$file->isWritable()) {
+                    throw new RuntimeException(sprintf('can\'t detele file: %s', $file->getPathname()));
+                }
+                unlink($file->getPathname());
             }
         }
     }
