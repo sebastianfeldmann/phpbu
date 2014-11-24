@@ -23,13 +23,13 @@ abstract class String
      * @param  string $string
      * @return string
      */
-    public static function replaceDatePlaceholders($string)
+    public static function replaceDatePlaceholders($string, $time = null)
     {
-        // TODO: don't replace escaped % => %%, \% ...
+        $time = $time === null ? time() : $time;
         return preg_replace_callback(
             '#%([a-zA-Z])#',
-            function ($match) {
-                return date($match[1]);
+            function ($match) use ($time) {
+                return date($match[1], $time);
             },
             $string
         );

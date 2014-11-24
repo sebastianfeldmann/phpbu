@@ -14,6 +14,8 @@ namespace phpbu\Util;
  */
 class StringTest extends \PHPUnit_Framework_TestCase
 {
+    static protected $time;
+
     /**
      * Test multiple date replacements in one string.
      */
@@ -33,7 +35,8 @@ class StringTest extends \PHPUnit_Framework_TestCase
     {
         $string   = 'my-%' . $placeholder . '.zip';
         $expected = 'my-' . $expected . '.zip';
-        $replaced = String::replaceDatePlaceholders($string);
+        $time     = self::getTime();
+        $replaced = String::replaceDatePlaceholders($string, $time);
         $this->assertEquals($expected, $replaced, sprintf('date placeholder %s should be replaced', $placeholder));
     }
 
@@ -44,16 +47,17 @@ class StringTest extends \PHPUnit_Framework_TestCase
      */
     public function providerDatePlaceholder()
     {
+        $time = self::getTime();
         return array(
-            array('Y', date('Y')),
-            array('y', date('y')),
-            array('d', date('d')),
-            array('m', date('m')),
-            array('H', date('H')),
-            array('i', date('i')),
-            array('s', date('s')),
-            array('w', date('w')),
-            array('W', date('W')),
+            array('Y', date('Y', $time)),
+            array('y', date('y', $time)),
+            array('d', date('d', $time)),
+            array('m', date('m', $time)),
+            array('H', date('H', $time)),
+            array('i', date('i', $time)),
+            array('s', date('s', $time)),
+            array('w', date('w', $time)),
+            array('W', date('W', $time)),
         );
     }
 
@@ -124,5 +128,19 @@ class StringTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2678400, String::toTime('1m'), '1M should match 2.678.400 seconds');
         $this->assertEquals(31536000, String::toTime('1y'), '1Y should match 31.536.000 seconds');
         $this->assertEquals(172800, String::toTime('2d'), '2D should match 172.800 seconds');
+    }
+
+    /**
+     * Return local test time.
+     * Not changing in one testrun.
+     *
+     * @return integer
+     */
+    protected function getTime()
+    {
+        if (!self::$time) {
+            self::$time = time();
+        }
+        return self::$time;
     }
 }
