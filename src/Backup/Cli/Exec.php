@@ -70,27 +70,33 @@ class Exec
         $code   = 0;
         $old    = error_reporting(0);
         exec($cmd, $output, $code);
-        if ($this->compressOutput && $this->target->shouldBeCompressed()) {
-            $compressorCode   = 0;
-            $compressorOutput = array();
-            exec($this->target->getCompressor()->getCommand() . ' -f ' . $this->target->getPathname(), $compressorOutput, $compressorCode);
 
-            $code   += $compressorCode;
-            $output = array_merge($output, $compressorOutput);
-        }
-        error_reporting($old);
+        if ($code == 0) {
+            // run the compressor command
+            if ($this->compressOutput && $this->target->shouldBeCompressed()) {
+                $compressorCode   = 0;
+                $compressorOutput = array();
+                exec($this->target->getCompressor()->getCommand() . ' -f ' . $this->target->getPathname(), $compressorOutput, $compressorCode);
 
-        $result = new Result($cmd, $code, $output);
-        if (!$result->wasSuccessful()) {
-            // remove possible targets
+                if ($compressorCode !== 0) {
+                    // remove compressed file with errors
+                    if (file_exists($this->target->getPathname(true))) {
+                        unlink($this->target->getPathname(true));
+                    }
+                }
+
+                $code  += $compressorCode;
+                $output = array_merge($output, $compressorOutput);
+            }
+        } else {
+            // remove file with errors
             if (file_exists($this->target->getPathname())) {
                 unlink($this->target->getPathname());
             }
-            if ($this->target->shouldBeCompressed() && file_exists($this->target->getPathname(true))) {
-                unlink($this->target->getPathname(true));
-            }
         }
-        return $result;
+        error_reporting($old);
+
+        return new Result($cmd, $code, $output);
     }
 
     /**
