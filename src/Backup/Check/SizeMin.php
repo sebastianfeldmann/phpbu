@@ -26,7 +26,7 @@ class SizeMin implements Check
      */
     public function pass(Target $target, $value, Result $result)
     {
-        $file = (string) $target;
+        $file = $target->getPathname(true);
 
         if (!file_exists($file)) {
             throw new RuntimeException('Backup file does not exist');

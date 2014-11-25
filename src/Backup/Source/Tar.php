@@ -71,7 +71,7 @@ class Tar implements Source
         $cmd->addOption(
             '-' . $compressOption . 'cf',
             array(
-                (string) $target,
+                $target->getPathname(true),
                 $this->conf['dir'],
             )
         );

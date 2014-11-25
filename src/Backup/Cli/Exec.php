@@ -67,12 +67,30 @@ class Exec
     {
         $cmd    = $this->getExec();
         $output = array();
-        $code   = null;
+        $code   = 0;
         $old    = error_reporting(0);
         exec($cmd, $output, $code);
+        if ($this->compressOutput && $this->target->shouldBeCompressed()) {
+            $compressorCode   = 0;
+            $compressorOutput = array();
+            exec($this->target->getCompressor()->getCommand() . ' -f ' . $this->target->getPathname(), $compressorOutput, $compressorCode);
+
+            $code   += $compressorCode;
+            $output = array_merge($output, $compressorOutput);
+        }
         error_reporting($old);
 
-        return new Result($cmd, $code, $output);
+        $result = new Result($cmd, $code, $output);
+        if (!$result->wasSuccessful()) {
+            // remove possible targets
+            if (file_exists($this->target->getPathname())) {
+                unlink($this->target->getPathname());
+            }
+            if ($this->target->shouldBeCompressed() && file_exists($this->target->getPathname(true))) {
+                unlink($this->target->getPathname(true));
+            }
+        }
+        return $result;
     }
 
     /**
@@ -90,11 +108,8 @@ class Exec
         $cmd = $amount > 1 ? '(' . implode(' && ', $this->commands) . ')' : $this->commands[0];
 
         if ($this->compressOutput) {
-            if ($this->target->shouldBeCompressed()) {
-                $cmd .= ' 2>&1 | ' . $this->target->getCompressor()->getCommand() . ' > ' . (string) $this->target . ' ; test ${PIPESTATUS[0]} -eq 0';
-            }
+            $cmd .= ' > ' . $this->target->getPathname();
         }
-
         return $cmd;
     }
 

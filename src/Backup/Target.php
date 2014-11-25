@@ -174,36 +174,66 @@ class Target
     /**
      * Returns the path to the backup file
      *
-     * @param  boolean $raw
      * @return string
      */
-    public function getPath($raw = false)
+    public function getPath()
     {
-        return $raw ? $this->dirnameRaw : $this->dirname;
+        return $this->dirname;
+    }
+
+    /**
+     * Returns the path to the backup file
+     *
+     * @return string
+     */
+    public function getPathRaw()
+    {
+        return $this->dirnameRaw;
     }
 
     /**
      * Returns the name to the backup file
      *
-     * @param  boolean $raw
      * @return string
      */
-    public function getName($raw = false)
+    public function getName()
     {
-        return $raw ? $this->filenameRaw : $this->filename;
+        return $this->filename;
     }
+
+    /**
+     * Returns the name to the backup file
+     *
+     * @return string
+     */
+    public function getNameRaw()
+    {
+        return $this->filenameRaw;
+    }
+
+    /**
+     * Returns the name to the backup file
+     *
+     * @return string
+     */
+    public function getNameCompressed()
+    {
+        return $this->filename . ($this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
+    }
+
 
     /**
      * Path and filename off the target file.
      *
+     * @param  boolean $compressed
      * @return string
      */
-    public function getPathname()
+    public function getPathname($compressed = false)
     {
         return $this->dirname
                . DIRECTORY_SEPARATOR
                . $this->filename
-               . ($this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
+               . ($compressed && $this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
     }
 
     /**

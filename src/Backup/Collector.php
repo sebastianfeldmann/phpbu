@@ -52,7 +52,7 @@ class Collector
      */
     public function __construct(Target $target)
     {
-        $this->pathRaw = $target->getPath(true);
+        $this->pathRaw = $target->getPathRaw();
         if ($target->hasChangingPath()) {
             $dirs = explode('/', substr($this->pathRaw, 1));
 
@@ -68,7 +68,7 @@ class Collector
             $this->pathNotChanging = $target->getPath();
         }
 
-        $this->fileRegex = $this->createRegex($target->getName(true));
+        $this->fileRegex = $this->createRegex($target->getNameRaw());
         if ($target->shouldBeCompressed()) {
             $this->fileRegex .= '.' . $target->getCompressor()->getSuffix();
         }
