@@ -111,7 +111,7 @@ class Runner
                         $result->syncStart($sync);
                         if ($checkFailed && $sync['skipOnCheckFail']) {
                             // TODO: add syncSkip() method to interface
-                            echo "skipped" . PHP_EOL;
+                            echo "sync skipped" . PHP_EOL;
                         } else {
                             //$sync = Factory::createSync($sync['type'], $sync['options']);
                             $result->syncEnd($sync);
@@ -136,14 +136,14 @@ class Runner
                         if (($checkFailed && $cleanup['skipOnCheckFail'])
                          || ($syncFailed && $cleanup['skipOnSyncFail'])) {
                             // TODO: add cleanupSkip() method to interface
-                            echo "skipped" .PHP_EOL;
+                            echo "cleanup skipped" .PHP_EOL;
                         } else {
                             $cleaner = Factory::createCleaner($cleanup['type'], $cleanup['options']);
                             $cleaner->cleanup($target, $result);
                             $result->cleanupEnd($cleanup);
                         }
                     } catch (Exception $e) {
-                        $result->deubg('exception: ' . $e->getMessage());
+                        $result->debug('exception: ' . $e->getMessage());
                         $result->cleanupFailed($cleanup);
                     }
                 }
