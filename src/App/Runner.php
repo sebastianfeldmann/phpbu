@@ -150,7 +150,7 @@ class Runner
 
             } catch (\Exception $e) {
                 // TODO: check stopOnError
-                $result->deubg('exception: ' . $e->getMessage());
+                $result->debug('exception: ' . $e->getMessage());
                 $result->backupFailed($backup);
             }
         }
