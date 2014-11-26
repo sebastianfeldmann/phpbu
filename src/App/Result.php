@@ -26,6 +26,10 @@ class Result
      */
     protected $listeners = array();
 
+    protected $backups = array();
+
+    protected $backupActive;
+
     /**
      * List of errors.
      *
@@ -72,6 +76,15 @@ class Result
     }
 
     /**
+     * Return list of executed backups.
+     *
+     * @return array
+     */
+    public function getBackups() {
+        return $this->backups;
+    }
+
+    /**
      * @param array $settings
      */
     public function phpbuStart(array $settings)
@@ -106,6 +119,7 @@ class Result
     public function backupFailed($backup)
     {
         $this->backupFailed = true;
+        $this->backups[$this->backupActive]['success'] = false;
         foreach ($this->listeners as $l) {
             $l->backupFailed($backup);
         }
@@ -116,6 +130,8 @@ class Result
      */
     public function backupEnd($backup)
     {
+        $this->backups[]    = array('success' => true, 'checks' => 0, 'checks_failed' => 0, 'syncs' => 0, 'syncs_failed' => 0, 'cleanup' => false);
+        $this->backupActive = count($this->backups) - 1;
         foreach ($this->listeners as $l) {
             $l->backupEnd($backup);
         }
@@ -126,6 +142,7 @@ class Result
      */
     public function checkStart($check)
     {
+        $this->backups[$this->backupActive]['checks']++;
         foreach ($this->listeners as $l) {
             $l->checkStart($check);
         }
@@ -136,7 +153,7 @@ class Result
      */
     public function checkFailed($check)
     {
-        $this->checkFailed = true;
+        $this->backups[$this->backupActive]['checks_failed']++;
         foreach ($this->listeners as $l) {
             $l->checkFailed($check);
         }
@@ -157,6 +174,7 @@ class Result
      */
     public function syncStart($sync)
     {
+        $this->backups[$this->backupActive]['syncs']++;
         foreach ($this->listeners as $l) {
             $l->syncStart($sync);
         }
@@ -167,7 +185,7 @@ class Result
      */
     public function syncFailed($sync)
     {
-        $this->syncFailed = true;
+        $this->backups[$this->backupActive]['checks_failed']++;
         foreach ($this->listeners as $l) {
             $l->syncFailed($sync);
         }
@@ -187,6 +205,7 @@ class Result
      */
     public function cleanupStart($cleanup)
     {
+        $this->backups[$this->backupActive]['cleanup'] = true;
         foreach ($this->listeners as $l) {
             $l->cleanupStart($cleanup);
         }
@@ -197,7 +216,7 @@ class Result
      */
     public function cleanupFailed($cleanup)
     {
-        $this->cleanupFailed = true;
+        $this->backups[$this->backupActive]['cleanup'] = false;
         foreach ($this->listeners as $l) {
             $l->cleanupFailed($cleanup);
         }

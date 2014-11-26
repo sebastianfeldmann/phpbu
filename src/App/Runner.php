@@ -69,8 +69,8 @@ class Runner
              *  /_.___/\__,_/\___/_/|_|\__,_/ .___/
              *                             /_/
              */
-            $result->backupStart($backup);
             try {
+                $result->backupStart($backup);
                 $source = Backup\Factory::createSource($backup['source']['type'], $backup['source']['options']);
                 $source->backup($target, $result);
                 $result->backupEnd($backup);
@@ -157,7 +157,7 @@ class Runner
 
         $result->phpbuEnd();
 
-        $this->printer->printResult();
+        $this->printer->printResult($result);
 
         return $result;
     }

@@ -122,7 +122,7 @@ class ResultPrinter extends Printer implements Listener
     public function backupStart($backup)
     {
         if ($this->verbose) {
-            $this->write('create backup (' . $backup['source']['type'] . '):' . PHP_EOL);
+            $this->write('create backup (' . $backup['source']['type'] . '): ');
         }
     }
 
@@ -146,7 +146,7 @@ class ResultPrinter extends Printer implements Listener
     public function backupEnd($backup)
     {
         if ($this->verbose) {
-            $this->write('backup done' . PHP_EOL);
+            $this->write('done' . PHP_EOL);
         }
     }
 
@@ -261,15 +261,29 @@ class ResultPrinter extends Printer implements Listener
 
     /**
      * Prints a result summary
+     *
+     * @param \phpbu\App\Result $result
      */
-    public function printResult()
+    public function printResult(Result $result)
     {
-        // TODO:
-        // backup count
-        // check count
-        // sync count
-        // cleanup count
-        print PHP_Timer::resourceUsage() . PHP_EOL;
+        print PHP_Timer::resourceUsage() . PHP_EOL . PHP_EOL;
+
+        $backups = $result->getBackups();
+        foreach($backups as $backup) {
+            $this->printBackup($backup);
+        }
+    }
+
+    /**
+     * Prints backup informations
+     *
+     * @param array $backup
+     */
+    protected function printBackup(array $backup)
+    {
+        if ($backup['success']) {
+            $this->write('OK' . PHP_EOL);
+        }
     }
 
     /**
