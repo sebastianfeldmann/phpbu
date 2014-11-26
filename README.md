@@ -26,6 +26,10 @@ PHP Backup Utility
     + ext/dom
     + ext/json
     + ext/spl
+* POSIX Shell
+    + mysqldump
+    + tar
+    + bzip2 or gzip
 
 ## Installation
 
