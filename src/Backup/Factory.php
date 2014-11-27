@@ -35,6 +35,10 @@ abstract class Factory
             'SizeMin'   => '\\phpbu\\Backup\\Check\\SizeMin',
         ),
         'sync'    => array(
+            'dropbox'   => '\\phpbu\\Backup\\Sync\\Dropbox',
+            'ftp'       => '\\phpbu\\Backup\\Sync\\Ftp',
+            'rsync'     => '\\phpbu\\Backup\\Sync\\Rsync',
+            'sftp'      => '\\phpbu\\Backup\\Sync\\Sftp',
         ),
         'cleaner' => array(
             'Capacity'  => '\\phpbu\\Backup\\Cleaner\\Capacity',
@@ -109,7 +113,7 @@ abstract class Factory
     public static function createSync($alias, $conf = array())
     {
         $sync = self::create('sync', $alias);
-        if (!($source instanceof Sync)) {
+        if (!($sync instanceof Sync)) {
             throw new Exception(sprintf('sync \'%s\' has to implement the \'Sync\' interface', $alias));
         }
         $sync->setup($conf);
