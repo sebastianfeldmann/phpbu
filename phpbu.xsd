@@ -50,6 +50,7 @@
       <xs:element name="cleanup" type="cleanupType" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
     <xs:attribute name="stopOnError" type="xs:boolean"/>
+    <xs:attribute name="name" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="sourceType">

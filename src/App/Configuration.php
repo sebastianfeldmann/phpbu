@@ -172,6 +172,7 @@ class Configuration
     {
         // stop on error
         $stopOnError = String::toBoolean((string) $backupNode->getAttribute('stopOnError'), false);
+        $backupName  = $backupNode->getAttribute('name');
         // get source configuration
         $source  = array();
         $sources = $backupNode->getElementsByTagName('source');
@@ -254,6 +255,7 @@ class Configuration
         }
 
         return array(
+            'name'        => $backupName,
             'stopOnError' => $stopOnError,
             'source'      => $source,
             'target'      => $target,

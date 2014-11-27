@@ -163,7 +163,7 @@ class Result
      */
     public function backupStart($backup)
     {
-        $this->backupActive = new Result\Backup($backup['source']['type']);
+        $this->backupActive = new Result\Backup(!empty($backup['name']) ? $backup['name'] : $backup['source']['type']);
         $this->backups[]    = $this->backupActive;
 
         foreach ($this->listeners as $l) {
