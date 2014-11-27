@@ -131,7 +131,7 @@ class ResultPrinter extends Printer implements Listener
     public function backupStart($backup)
     {
         $this->numBackups++;
-        if ($this->verbose) {
+        if ($this->debug) {
             $this->write('create backup (' . $backup['source']['type'] . '): ');
         }
     }
@@ -141,8 +141,7 @@ class ResultPrinter extends Printer implements Listener
      */
     public function backupFailed($backup)
     {
-        if ($this->verbose) {
-            $this->write(PHP_EOL);
+        if ($this->debug) {
             $this->writeWithColor(
                 'fg-white, bg-red, bold',
                 'failed'
@@ -155,7 +154,7 @@ class ResultPrinter extends Printer implements Listener
      */
     public function backupEnd($backup)
     {
-        if ($this->verbose) {
+        if ($this->debug) {
             $this->write('done' . PHP_EOL);
         }
     }
@@ -166,7 +165,7 @@ class ResultPrinter extends Printer implements Listener
     public function checkStart($check)
     {
         $this->numChecks++;
-        if ($this->verbose) {
+        if ($this->debug) {
             $this->write('check (' . $check['type'] . '): ');
         }
     }
@@ -176,7 +175,7 @@ class ResultPrinter extends Printer implements Listener
      */
     public function checkFailed($check)
     {
-        if ($this->verbose) {
+        if ($this->debug) {
             $this->writeWithColor(
                 'fg-white, bg-red, bold',
                 'failed'
@@ -189,7 +188,7 @@ class ResultPrinter extends Printer implements Listener
      */
     public function checkEnd($check)
     {
-        if ($this->verbose) {
+        if ($this->debug) {
             $this->write('passed' . PHP_EOL);
         }
     }
@@ -200,8 +199,8 @@ class ResultPrinter extends Printer implements Listener
     public function syncStart($sync)
     {
         $this->numSyncs++;
-        if ($this->verbose) {
-            $this->write('sync start: ');
+        if ($this->debug) {
+            $this->write('sync start (' . $sync['type'] . '): ');
         }
     }
 
@@ -210,7 +209,7 @@ class ResultPrinter extends Printer implements Listener
      */
     public function syncSkipped($sync)
     {
-        if ($this->verbose) {
+        if ($this->debug) {
             $this->writeWithColor(
                 'fg-black, bg-yellow',
                 'skipped'
@@ -223,7 +222,7 @@ class ResultPrinter extends Printer implements Listener
      */
     public function syncFailed($sync)
     {
-        if ($this->verbose) {
+        if ($this->debug) {
             $this->writeWithColor(
                 'fg-white, bg-red, bold',
                 'failed'
@@ -236,7 +235,7 @@ class ResultPrinter extends Printer implements Listener
      */
     public function syncEnd($sync)
     {
-        if ($this->verbose) {
+        if ($this->debug) {
             $this->write('done' . PHP_EOL);
         }
     }
@@ -247,8 +246,8 @@ class ResultPrinter extends Printer implements Listener
     public function cleanupStart($cleanup)
     {
         $this->numCleanups++;
-        if ($this->verbose) {
-            $this->write('cleanup start: ');
+        if ($this->debug) {
+            $this->write('cleanup start (' . $cleanup['type'] . '): ');
         }
     }
 
@@ -257,7 +256,7 @@ class ResultPrinter extends Printer implements Listener
      */
     public function cleanupSkipped($cleanup)
     {
-        if ($this->verbose) {
+        if ($this->debug) {
             $this->writeWithColor(
                 'fg-black, bg-yellow',
                 'skipped'
@@ -270,7 +269,7 @@ class ResultPrinter extends Printer implements Listener
      */
     public function cleanupFailed($cleanup)
     {
-        if ($this->verbose) {
+        if ($this->debug) {
             $this->writeWithColor(
                 'fg-white, bg-red, bold',
                 'failed'
@@ -283,7 +282,7 @@ class ResultPrinter extends Printer implements Listener
      */
     public function cleanupEnd($cleanup)
     {
-        if ($this->verbose) {
+        if ($this->debug) {
             $this->write('done' . PHP_EOL);
         }
     }
@@ -305,7 +304,7 @@ class ResultPrinter extends Printer implements Listener
      */
     public function printResult(Result $result)
     {
-        print PHP_Timer::resourceUsage() . PHP_EOL . PHP_EOL;
+        $this->printHeader();
 
         $this->printErrors($result);
 
@@ -319,13 +318,32 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
+     * Prints the result header with memory usage info
+     */
+    protected function printHeader()
+    {
+        $this->write(PHP_Timer::resourceUsage() . PHP_EOL . PHP_EOL);
+    }
+
+    /**
      * Print Error informations
      *
      * @param \phpbu\App\Result $result
      */
     protected function printErrors(Result $result)
     {
-        // foo
+        /* @var $e Exception */
+        foreach ($result->getErrors() as $e) {
+            $this->write(
+                sprintf(
+                    "Exception '%s' width message '%s'\nin %s:%d\n\n",
+                    get_class($e),
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine()
+                )
+            );
+        }
     }
 
     /**
@@ -335,46 +353,55 @@ class ResultPrinter extends Printer implements Listener
      */
     protected function printBackupVerbose(Result\Backup $backup)
     {
-        $this->write(sprintf('backup %s: ', $backup->getType()));
-        if ($backup->wasSuccessful()) {
+        $this->write(sprintf('backup %s: ', $backup->getName()));
+        if ($backup->wasSuccessful() && $backup->noneSkipped() && $backup->noneFailed()) {
             $this->writeWithColor(
-                'fg-black, bg-green, bold',
+                'fg-black, bg-green',
                 'OK'
             );
+        } elseif ((!$backup->noneSkipped() || !$backup->noneFailed()) && $backup->wasSuccessful()) {
+                $this->writeWithColor(
+                    'fg-black, bg-yellow',
+                    'OK, but skipped or failed Syncs or Cleanups!'
+                );
         } else {
             $this->writeWithColor(
                 'fg-white, bg-red, bold',
                 'FAILED'
             );
         }
-        $chExecuted = str_pad($backup->checkCount(), 8);
-        $chFailed   = str_pad($backup->checkFailedCount(), 6);
-        $syExecuted = str_pad($backup->syncCount(), 8);
-        $sySkipped  = str_pad($backup->syncSkippedCount(), 7);
-        $syFailed   = str_pad($backup->syncFailedCount(), 6);
-        $clExecuted = str_pad($backup->cleanupCount(), 8);
-        $clSkipped  = str_pad($backup->cleanupSkippedCount(), 7);
-        $clFailed   = str_pad($backup->cleanupFailedCount(), 6);
+        $chExecuted = str_pad($backup->checkCount(), 8, ' ', STR_PAD_LEFT);
+        $chFailed   = str_pad($backup->checkFailedCount(), 6, ' ', STR_PAD_LEFT);
+        $syExecuted = str_pad($backup->syncCount(), 8, ' ', STR_PAD_LEFT);
+        $sySkipped  = str_pad($backup->syncSkippedCount(), 7, ' ', STR_PAD_LEFT);
+        $syFailed   = str_pad($backup->syncFailedCount(), 6, ' ', STR_PAD_LEFT);
+        $clExecuted = str_pad($backup->cleanupCount(), 8, ' ', STR_PAD_LEFT);
+        $clSkipped  = str_pad($backup->cleanupSkippedCount(), 7, ' ', STR_PAD_LEFT);
+        $clFailed   = str_pad($backup->cleanupFailedCount(), 6, ' ', STR_PAD_LEFT);
 
         $out = '          | executed | skipped | failed |' . PHP_EOL
              . '----------+----------+---------+--------+' . PHP_EOL
              . ' checks   | ' . $chExecuted . ' |         | ' . $chFailed . ' |' . PHP_EOL
              . ' syncs    | ' . $syExecuted . ' | ' . $sySkipped . ' | ' . $syFailed . ' |' . PHP_EOL
              . ' cleanups | ' . $clExecuted . ' | ' . $clSkipped . ' | ' . $clFailed . ' |' . PHP_EOL
-             . '----------+----------+---------+--------+' . PHP_EOL;
+             . '----------+----------+---------+--------+' . PHP_EOL . PHP_EOL;
 
         $this->write($out);
     }
 
+    /**
+     * Prints 'OK' or 'FAILURE' footer
+     *
+     * @param Result $result
+     */
     protected function printFooter(Result $result)
     {
-
         if (count($result->getBackups()) === 0) {
             $this->writeWithColor(
                 'fg-black, bg-yellow',
                 'No backups executed!'
             );
-        } elseif ($result->wasSuccessful() && $result->noneSkipped()) {
+        } elseif ($result->wasSuccessful() && $result->noneSkipped() && $result->noneFailed()) {
             $this->writeWithColor(
                 'fg-black, bg-green',
                 sprintf(
@@ -389,24 +416,27 @@ class ResultPrinter extends Printer implements Listener
                     ($this->numCleanups == 1) ? '' : 's'
                 )
             );
-        } elseif (!$result->noneSkipped() && $result->wasSuccessful()) {
+        } elseif ((!$result->noneSkipped() || !$result->noneFailed()) && $result->wasSuccessful()) {
             $this->writeWithColor(
                 'fg-black, bg-yellow',
                 sprintf(
-                    "OK, but incomplete, skipped Syncs or Cleanups!\n" .
-                    'Backups: %d, skipped Syncs: %d, skipped Cleanups: %d.',
+                    "OK, but skipped or failed Syncs or Cleanups!\n" .
+                    'Backups: %d, Syncs: skipped|failed %d|%d, Cleanups: skipped|failed %d|%d.',
                     count($result->getBackups()),
                     $result->syncsSkippedCount(),
-                    $result->cleanupsSkippedCount()
+                    $result->syncsFailedCount(),
+                    $result->cleanupsSkippedCount(),
+                    $result->cleanupsFailedCount()
                 )
             );
         } else {
             $this->writeWithColor(
                 'fg-white, bg-red',
                 sprintf(
-                    "FAILURES!\n" .
+                    "FAILURE!\n" .
                     'Backups: %d, failed Checks: %d, failed Syncs: %d, failed Cleanups: %d.',
                     count($result->getBackups()),
+                    $result->checksFailedCount(),
                     $result->syncsFailedCount(),
                     $result->cleanupsFailedCount()
                 )

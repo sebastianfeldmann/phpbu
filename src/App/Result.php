@@ -82,7 +82,7 @@ class Result
      */
     public function wasSuccessful()
     {
-        return empty($this->errors);
+        return $this->backupsFailed === 0;
     }
 
     /**
@@ -94,6 +94,24 @@ class Result
     }
 
     /**
+     * @return boolean
+     */
+    public function noneFailed()
+    {
+        return $this->syncsFailed + $this->cleanupsFailed === 0;
+    }
+
+    /**
+     * Add Exception to error list
+     *
+     * @param Exception $e
+     */
+    public function addError(\Exception $e)
+    {
+        $this->errors[] = $e;
+    }
+
+    /**
      * Return currnet error count.
      *
      * @return integer
@@ -101,6 +119,15 @@ class Result
     public function errorCount()
     {
         return count($this->errors);
+    }
+
+    /**
+     * Returns list of errors
+     *
+     * @return array<Exception>
+     */
+    public function getErrors() {
+        return $this->errors;
     }
 
     /**
@@ -155,6 +182,16 @@ class Result
         foreach ($this->listeners as $l) {
             $l->backupFailed($backup);
         }
+    }
+
+    /**
+     * Return amount of failed backups
+     *
+     * @return integer
+     */
+    public function backupsFailedCount()
+    {
+        return $this->backupsFailed;
     }
 
     /**
@@ -295,7 +332,7 @@ class Result
         $this->cleanupsSkipped++;
         $this->backupActive->cleanupSkipped($cleanup);
         foreach ($this->listeners as $l) {
-            $l->cleanupSkip($cleanup);
+            $l->cleanupSkipped($cleanup);
         }
     }
 
@@ -304,7 +341,7 @@ class Result
      *
      * @return integer
      */
-    public function cleanupSkippedCount()
+    public function cleanupsSkippedCount()
     {
         return $this->cleanupsSkipped;
     }
