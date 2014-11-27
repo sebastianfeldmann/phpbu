@@ -5,7 +5,6 @@ use phpbu\App\Result;
 use phpbu\Backup\Check;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
-use RuntimeException;
 
 /**
  * SizeMin class.
@@ -29,7 +28,7 @@ class SizeMin implements Check
         $file = $target->getPathname(true);
 
         if (!file_exists($file)) {
-            throw new RuntimeException('Backup file does not exist');
+            throw new Exception('Backup file does not exist');
         }
 
         $actualSize = filesize($file);
