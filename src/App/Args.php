@@ -104,7 +104,7 @@ class Args
     }
 
     /**
-     * Check long option and put into otion list.
+     * Check long option and put into option list.
      *
      * @param  string $arg
      * @param  array $options
