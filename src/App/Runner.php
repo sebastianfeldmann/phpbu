@@ -93,8 +93,9 @@ class Runner
                             $checkFailed = true;
                             $result->checkFailed($check);
                         }
-                    } catch ( Exception $e ) {
+                    } catch (Backup\Check\Exception $e) {
                         $checkFailed = true;
+                        $result->addError($e);
                         $result->checkFailed($check);
                     }
                 }
@@ -112,10 +113,13 @@ class Runner
                         if ($checkFailed && $sync['skipOnCheckFail']) {
                             $result->syncSkippe($sync);
                         } else {
-                            //$sync = Factory::createSync($sync['type'], $sync['options']);
+                            $s = Factory::createSync($sync['type'], $sync['options']);
+                            $s->sync($target, $result);
                             $result->syncEnd($sync);
                         }
-                    } catch (Exception $e) {
+                    } catch (Backup\Sync\Exception $e) {
+                        $syncFailed = true;
+                        $result->addError($e);
                         $result->syncFailed($sync);
                     }
                 }
@@ -134,14 +138,15 @@ class Runner
                         $result->cleanupStart($cleanup);
                         if (($checkFailed && $cleanup['skipOnCheckFail'])
                          || ($syncFailed && $cleanup['skipOnSyncFail'])) {
-                            $result->cleanupsSkipped($cleanup);
+                            $result->cleanupSkipped($cleanup);
                         } else {
                             $cleaner = Factory::createCleaner($cleanup['type'], $cleanup['options']);
                             $cleaner->cleanup($target, $result);
                             $result->cleanupEnd($cleanup);
                         }
-                    } catch (Exception $e) {
+                    } catch (Backup\Cleanup\Exception $e) {
                         $result->debug('exception: ' . $e->getMessage());
+                        $result->addError($e);
                         $result->cleanupFailed($cleanup);
                     }
                 }
@@ -149,6 +154,7 @@ class Runner
             } catch (\Exception $e) {
                 // TODO: check stopOnError
                 $result->debug('exception: ' . $e->getMessage());
+                $result->addError($e);
                 $result->backupFailed($backup);
             }
         }
