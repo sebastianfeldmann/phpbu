@@ -26,8 +26,18 @@ class Result
      */
     protected $listeners = array();
 
+    /**
+     * List of executed Backups
+     *
+     * @var array<\phpbu\App\Result\Backup>
+     */
     protected $backups = array();
 
+    /**
+     * Currently running backup.
+     *
+     * @var \phpbu\App\Result\Backup
+     */
     protected $backupActive;
 
     /**
@@ -38,24 +48,34 @@ class Result
     protected $errors = array();
 
     /**
-     * @var boolean
+     * @var integer
      */
-    protected $stopOnError = false;
+    protected $backupsFailed = 0;
 
     /**
-     * @var boolean
+     * @var integer
      */
-    protected $backupFailed = false;
+    protected $checksFailed = 0;
 
     /**
-     * @var boolean
+     * @var integer
      */
-    protected $checkFailed = false;
+    protected $syncsSkipped = 0;
 
     /**
-     * @var boolean
+     * @var integer
      */
-    protected $syncFailed = false;
+    protected $syncsFailed = 0;
+
+    /**
+     * @var integer
+     */
+    protected $cleanupsSkipped = 0;
+
+    /**
+     * @var integer
+     */
+    protected $cleanupsFailed = 0;
 
     /**
      * @return boolean
@@ -63,6 +83,14 @@ class Result
     public function wasSuccessful()
     {
         return empty($this->errors);
+    }
+
+    /**
+     * @return boolean
+     */
+    public function noneSkipped()
+    {
+        return $this->syncsSkipped + $this->cleanupsSkipped === 0;
     }
 
     /**
@@ -108,6 +136,9 @@ class Result
      */
     public function backupStart($backup)
     {
+        $this->backupActive = new Result\Backup($backup['source']['type']);
+        $this->backups[]    = $this->backupActive;
+
         foreach ($this->listeners as $l) {
             $l->backupStart($backup);
         }
@@ -118,8 +149,9 @@ class Result
      */
     public function backupFailed($backup)
     {
-        $this->backupFailed = true;
-        $this->backups[$this->backupActive]['success'] = false;
+        $this->backupsFailed++;
+        $this->backupActive->fail();
+
         foreach ($this->listeners as $l) {
             $l->backupFailed($backup);
         }
@@ -130,8 +162,6 @@ class Result
      */
     public function backupEnd($backup)
     {
-        $this->backups[]    = array('success' => true, 'checks' => 0, 'checks_failed' => 0, 'syncs' => 0, 'syncs_failed' => 0, 'cleanup' => false);
-        $this->backupActive = count($this->backups) - 1;
         foreach ($this->listeners as $l) {
             $l->backupEnd($backup);
         }
@@ -141,8 +171,8 @@ class Result
      * @param array $check
      */
     public function checkStart($check)
-    {
-        $this->backups[$this->backupActive]['checks']++;
+    {;
+        $this->backupActive->checkAdd($check);
         foreach ($this->listeners as $l) {
             $l->checkStart($check);
         }
@@ -153,10 +183,22 @@ class Result
      */
     public function checkFailed($check)
     {
-        $this->backups[$this->backupActive]['checks_failed']++;
+        $this->checksFailed++;
+        $this->backupActive->fail();
+        $this->backupActive->checkFailed($check);
         foreach ($this->listeners as $l) {
             $l->checkFailed($check);
         }
+    }
+
+    /**
+     * Return amount of failed checks
+     *
+     * @return integer
+     */
+    public function checksFailedCount()
+    {
+        return $this->checksFailed;
     }
 
     /**
@@ -174,7 +216,7 @@ class Result
      */
     public function syncStart($sync)
     {
-        $this->backups[$this->backupActive]['syncs']++;
+        $this->backupActive->syncAdd($sync);
         foreach ($this->listeners as $l) {
             $l->syncStart($sync);
         }
@@ -183,12 +225,45 @@ class Result
     /**
      * @param array $sync
      */
+    public function syncSkipped($sync)
+    {
+        $this->syncsSkipped++;
+        $this->backupActive->syncSkipped($sync);
+        foreach ($this->listeners as $l) {
+            $l->syncSkip($sync);
+        }
+    }
+
+    /**
+     * Return amount of skipped syncs
+     *
+     * @return integer
+     */
+    public function syncsSkippedCount()
+    {
+        return $this->syncsSkipped;
+    }
+
+    /**
+     * @param array $sync
+     */
     public function syncFailed($sync)
     {
-        $this->backups[$this->backupActive]['checks_failed']++;
+        $this->syncsFailed++;
+        $this->backupActive->syncFailed($sync);
         foreach ($this->listeners as $l) {
             $l->syncFailed($sync);
         }
+    }
+
+    /**
+     * Return amount of failed syncs
+     *
+     * @return integer
+     */
+    public function syncsFailedCount()
+    {
+        return $this->syncsFailed;
     }
 
     /**
@@ -200,12 +275,13 @@ class Result
             $l->syncEnd($sync);
         }
     }
+
     /**
      * @param array $cleanup
      */
     public function cleanupStart($cleanup)
     {
-        $this->backups[$this->backupActive]['cleanup'] = true;
+        $this->backupActive->cleanupAdd($cleanup);
         foreach ($this->listeners as $l) {
             $l->cleanupStart($cleanup);
         }
@@ -214,12 +290,45 @@ class Result
     /**
      * @param array $cleanup
      */
+    public function cleanupSkipped($cleanup)
+    {
+        $this->cleanupsSkipped++;
+        $this->backupActive->cleanupSkipped($cleanup);
+        foreach ($this->listeners as $l) {
+            $l->cleanupSkip($cleanup);
+        }
+    }
+
+    /**
+     * Return amount of skipped cleanups
+     *
+     * @return integer
+     */
+    public function cleanupSkippedCount()
+    {
+        return $this->cleanupsSkipped;
+    }
+
+    /**
+     * @param array $cleanup
+     */
     public function cleanupFailed($cleanup)
     {
-        $this->backups[$this->backupActive]['cleanup'] = false;
+        $this->cleanupsFailed++;
+        $this->backupActive->cleanupFailed($cleanup);
         foreach ($this->listeners as $l) {
             $l->cleanupFailed($cleanup);
         }
+    }
+
+    /**
+     * Return amount of failed cleanups
+     *
+     * @return integer
+     */
+    public function cleanupsFailedCount()
+    {
+        return $this->cleanupsFailed;
     }
 
     /**

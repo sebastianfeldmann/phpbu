@@ -50,6 +50,11 @@ interface Listener
     /**
      * @param array $sync
      */
+    public function syncSkipped($sync);
+
+    /**
+     * @param array $sync
+     */
     public function syncFailed($sync);
 
     /**
@@ -61,6 +66,11 @@ interface Listener
      * @param array $cleanup
      */
     public function cleanupStart($cleanup);
+
+    /**
+     * @param array $cleanup
+     */
+    public function cleanupSkipped($cleanup);
 
     /**
      * @param array $cleanup
