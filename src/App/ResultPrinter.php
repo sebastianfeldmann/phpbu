@@ -336,7 +336,7 @@ class ResultPrinter extends Printer implements Listener
         foreach ($result->getErrors() as $e) {
             $this->write(
                 sprintf(
-                    "Exception '%s' width message '%s'\nin %s:%d\n\n",
+                    "Exception '%s' with message '%s'\nin %s:%d\n\n",
                     get_class($e),
                     $e->getMessage(),
                     $e->getFile(),
