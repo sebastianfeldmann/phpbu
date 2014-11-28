@@ -156,19 +156,19 @@ class Target
      */
     public function setupDir()
     {
-         // if directory doesn't exist, create it
-         if (!is_dir($this->dirname)) {
-             $reporting = error_reporting();
-             error_reporting(0);
-             $created = mkdir($this->dirname, 0755, true);
-             error_reporting($reporting);
-             if (!$created) {
+        //if directory doesn't exist, create it
+        if (!is_dir($this->dirname)) {
+            $reporting = error_reporting();
+            error_reporting(0);
+            $created = mkdir($this->dirname, 0755, true);
+            error_reporting($reporting);
+            if (!$created) {
                 throw new Exception(sprintf('cant\'t create directory: %s', $this->dirname));
-             }
-         }
-         if (!is_writable($this->dirname)) {
+            }
+        }
+        if (!is_writable($this->dirname)) {
             throw new Exception(sprintf('no write permission for directory: %s', $this->dirname));
-         }
+        }
     }
 
     /**

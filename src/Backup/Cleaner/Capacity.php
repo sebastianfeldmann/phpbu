@@ -63,7 +63,7 @@ class Capacity implements Cleaner
         $files     = $collector->getBackupFiles();
         $size      = 0;
 
-        foreach ( $files as $file ) {
+        foreach ($files as $file) {
             $size += $file->getSize();
         }
 

@@ -126,7 +126,8 @@ class Result
      *
      * @return array<Exception>
      */
-    public function getErrors() {
+    public function getErrors()
+    {
         return $this->errors;
     }
 
@@ -135,7 +136,8 @@ class Result
      *
      * @return array
      */
-    public function getBackups() {
+    public function getBackups()
+    {
         return $this->backups;
     }
 

@@ -310,7 +310,7 @@ class ResultPrinter extends Printer implements Listener
 
         $backups = $result->getBackups();
         if ($this->verbose) {
-            foreach($backups as $backup) {
+            foreach ($backups as $backup) {
                 $this->printBackupVerbose($backup);
             }
         }

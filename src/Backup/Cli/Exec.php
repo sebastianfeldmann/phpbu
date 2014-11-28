@@ -76,7 +76,13 @@ class Exec
             if ($this->compressOutput && $this->target->shouldBeCompressed()) {
                 $compressorCode   = 0;
                 $compressorOutput = array();
-                exec($this->target->getCompressor()->getCommand() . ' -f ' . $this->target->getPathname(), $compressorOutput, $compressorCode);
+                exec(
+                    $this->target->getCompressor()->getCommand()
+                    . ' -f '
+                    . $this->target->getPathname(),
+                    $compressorOutput,
+                    $compressorCode
+                );
 
                 if ($compressorCode !== 0) {
                     // remove compressed file with errors
