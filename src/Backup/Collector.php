@@ -19,34 +19,6 @@ use phpbu\Util\String;
 abstract class Collector
 {
     /**
-     * Raw Path with potential date placeholders.
-     *
-     * @var string
-     */
-    protected $pathRaw;
-
-    /**
-     * Path that is not changing over time.
-     *
-     * @var string
-     */
-    protected $pathNotChanging;
-
-    /**
-     * List of dynamic directories
-     *
-     * @var array
-     */
-    protected $changingDirs = array();
-
-    /**
-     * Regular expression to match backup files
-     *
-     * @var string
-     */
-    protected $fileRegex;
-
-    /**
      * Collection cache
      *
      * @var array
@@ -58,7 +30,7 @@ abstract class Collector
      *
      * @param Target $target
      */
-    public function getBackupFiles(Target $target)
+    public static function getBackupFiles(Target $target)
     {
         $index = $target->getPathnameCompressed();
         if (!isset(self::$files[$index])) {
