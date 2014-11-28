@@ -2,6 +2,8 @@
 
 PHP Backup Utility
 
+Get more detailed infos on [www.phpbu.de](http://www.phpbu.de).
+
 ## Features
 
 * Creating backups
