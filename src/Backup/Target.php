@@ -194,11 +194,12 @@ class Target
     /**
      * Returns the name to the backup file
      *
+     * @param  boolean $compressed
      * @return string
      */
-    public function getName()
+    public function getName($compressed = false)
     {
-        return $this->filename;
+        return $this->filename . ($compressed &&$this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
     }
 
     /**
@@ -218,7 +219,7 @@ class Target
      */
     public function getNameCompressed()
     {
-        return $this->filename . ($this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
+        return $this->getName(true);
     }
 
 
@@ -234,6 +235,16 @@ class Target
                . DIRECTORY_SEPARATOR
                . $this->filename
                . ($compressed && $this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
+    }
+
+    /**
+     * Path and compressed filename off the target file.
+     *
+     * @return string
+     */
+    public function getPathnameCompressed()
+    {
+        return $this->getPathname(true);
     }
 
     /**
