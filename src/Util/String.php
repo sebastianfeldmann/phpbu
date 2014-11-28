@@ -36,6 +36,18 @@ abstract class String
     }
 
     /**
+     * Create a regex that matches the raw path considering possible date placeholders.
+     *
+     * @param  string $pathRaw
+     * @return string
+     */
+    public static function datePlaceholdersToRegex($stringWithDatePlaceholders)
+    {
+        $regex = preg_quote($stringWithDatePlaceholders, '#');
+        return preg_replace('#%[a-z]#i', '[0-9a-z]+', $regex);
+    }
+
+    /**
      * Converts a given value to boolean.
      *
      * @param  string  $value

@@ -3,6 +3,7 @@ namespace phpbu\Backup;
 
 use DirectoryIterator;
 use phpbu\Backup\Target;
+use phpbu\Util\String;
 
 /**
  * Collector
@@ -15,7 +16,7 @@ use phpbu\Backup\Target;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Collector
+abstract class Collector
 {
     /**
      * Raw Path with potential date placeholders.
@@ -46,65 +47,75 @@ class Collector
     protected $fileRegex;
 
     /**
+     * Collection cache
+     *
+     * @var array
+     */
+    protected static $files = array();
+
+    /**
      * Constructor
      *
      * @param Target $target
      */
-    public function __construct(Target $target)
+    public function getBackupFiles(Target $target)
     {
-        $this->pathRaw = $target->getPathRaw();
-        if ($target->hasChangingPath()) {
-            $dirs = explode('/', substr($this->pathRaw, 1));
+        $index = $target->getPathnameCompressed();
+        if (!isset(self::$files[$index])) {
+            $pathRaw         = $target->getPathRaw();
+            $pathNotChanging = '';
+            $changingDirs    = array();
+            $files           = array();
 
-            $this->pathNotChanging = '';
-            foreach ($dirs as $d) {
-                if (false !== strpos($d, '%')) {
-                    $this->changingDirs[] = $this->createRegex($d);
-                } else {
-                    $this->pathNotChanging .= DIRECTORY_SEPARATOR . $d;
+            if ($target->hasChangingPath()) {
+                // path should be absolute so we remove the root slash
+                $dirs = explode('/', substr($pathRaw, 1));
+
+                $pathNotChanging = '';
+                foreach ($dirs as $d) {
+                    if (false !== strpos($d, '%')) {
+                        $changingDirs[] = String::datePlaceholdersToRegex($d);
+                    } else {
+                        $pathNotChanging .= DIRECTORY_SEPARATOR . $d;
+                    }
                 }
+            } else {
+                $pathNotChanging = $target->getPath();
             }
-        } else {
-            $this->pathNotChanging = $target->getPath();
-        }
 
-        $this->fileRegex = $this->createRegex($target->getNameRaw());
-        if ($target->shouldBeCompressed()) {
-            $this->fileRegex .= '.' . $target->getCompressor()->getSuffix();
-        }
-    }
+            $fileRegex = String::datePlaceholdersToRegex($target->getNameRaw());
+            if ($target->shouldBeCompressed()) {
+                $fileRegex .= '.' . $target->getCompressor()->getSuffix();
+            }
 
-    /**
-     * Get all backup files
-     *
-     * @return array:
-     */
-    public function getBackupFiles()
-    {
-        $files = array();
-        $this->collect($files, $this->pathNotChanging, 0);
-        return $files;
+            // collect all matching backup files
+            self::collect($files, $fileRegex,$pathNotChanging, 0, count($changingDirs));
+            // store collected files for others to use
+            self::$files[$index] = $files;
+        }
+        return self::$files[$index];
     }
 
     /**
      * Recursive backup collecting
      *
      * @param array   $files
+     * @param string  $fileRegex
      * @param string  $path
      * @param integer $depth
+     * @param integer $maxDepth
      */
-    public function collect(&$files, $path, $depth)
+    protected static function collect(&$files, $fileRegex, $path, $depth, $maxDepth)
     {
         $dItter = new DirectoryIterator($path);
         // collect all matching subdirs and get there backup files
-        if ($depth < count($this->changingDirs)) {
+        if ($depth < $maxDepth) {
             foreach ($dItter as $i => $file) {
                 if ($file->isDot()) {
                     continue;
                 }
                 if ($file->isDir()) {
-                    // TODO: match
-                    $this->collect($files, $file->getPathname(), $depth + 1);
+                    self::collect($files, $fileRegex, $file->getPathname(), $depth + 1, $maxDepth);
                 }
             }
         } else {
@@ -112,23 +123,11 @@ class Collector
                 if ($file->isDir()) {
                     continue;
                 }
-                if (preg_match('#' . $this->fileRegex . '#i', $file->getFilename())) {
+                if (preg_match('#' . $fileRegex . '#i', $file->getFilename())) {
                     $index         = date('YmdHis', $file->getMTime()) . '-' . $i . '-' . $file->getPathname();
                     $files[$index] = $file->getFileInfo();
                 }
             }
         }
-    }
-
-    /**
-     * Create a regex that matches the raw path considering possible date placeholders.
-     *
-     * @param  string $pathRaw
-     * @return string
-     */
-    protected function createRegex($pathRaw)
-    {
-        $regex = preg_quote($pathRaw);
-        return preg_replace('#%[a-z]#i', '[0-9a-z]+', $regex);
     }
 }

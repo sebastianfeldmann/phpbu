@@ -59,9 +59,8 @@ class Capacity implements Cleaner
      */
     public function cleanup(Target $target, Result $result)
     {
-        $collector = new Collector($target);
-        $files     = $collector->getBackupFiles();
-        $size      = 0;
+        $files = Collector::getBackupFiles($target);
+        $size  = 0;
 
         foreach ($files as $file) {
             $size += $file->getSize();

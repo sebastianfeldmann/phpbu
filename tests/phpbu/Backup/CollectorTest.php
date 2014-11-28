@@ -23,8 +23,7 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
         $dirname   = $this->getTestDataDir() . '/collector/static-dir';
         $filename  = 'foo-%d.txt';
         $target    = new Target($dirname, $filename);
-        $collector = new Collector($target);
-        $files     = $collector->getBackupFiles();
+        $files     = Collector::getBackupFiles($target);
 
         $this->assertEquals(4, count($files), '4 files should be found');
     }
@@ -37,8 +36,7 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
         $dirname   = $this->getTestDataDir() . '/collector/dynamic-dir/single/%m';
         $filename  = '%H.txt';
         $target    = new Target($dirname, $filename);
-        $collector = new Collector($target);
-        $files     = $collector->getBackupFiles();
+        $files     = Collector::getBackupFiles($target);
 
         $this->assertEquals(4, count($files), '4 files should be found');
     }
@@ -51,8 +49,7 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
         $dirname   = $this->getTestDataDir() . '/collector/dynamic-dir/multi/%m/%d';
         $filename  = '%H.txt';
         $target    = new Target($dirname, $filename);
-        $collector = new Collector($target);
-        $files     = $collector->getBackupFiles();
+        $files     = Collector::getBackupFiles($target);
 
         $this->assertEquals(8, count($files), '8 files should be found');
     }

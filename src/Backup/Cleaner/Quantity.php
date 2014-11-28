@@ -50,10 +50,9 @@ class Quantity implements Cleaner
      */
     public function cleanup(Target $target, Result $result)
     {
-        $path      = dirname($target);
-        $dItter    = new DirectoryIterator($path);
-        $collector = new Collector($target);
-        $files     = $collector->getBackupFiles();
+        $path   = dirname($target);
+        $dItter = new DirectoryIterator($path);
+        $files  = Collector::getBackupFiles($target);
 
         // backups exceed capacity?
         if (count($files) > $this->amount) {
