@@ -71,7 +71,7 @@ abstract class String
      * @throws \RuntimeException
      * @return integer
      */
-    public function toBytes($value)
+    public static function toBytes($value)
     {
         if (!preg_match('#^[1-9]+[0-9]*[BKMGT]$#i', $value)) {
             throw new RuntimeException('Invalid size value');
@@ -102,7 +102,7 @@ abstract class String
      * @throws \RuntimeException
      * @return integer
      */
-    public function toTime($offset)
+    public static function toTime($offset)
     {
         if (!preg_match('#^[1-9]+[0-9]*[SIHDWMY]$#i', $offset)) {
             throw new RuntimeException(sprintf('Invalid value for offset: %s', $offset));
