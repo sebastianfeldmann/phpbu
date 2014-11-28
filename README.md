@@ -2,7 +2,7 @@
 
 PHP Backup Utility
 
-Get more detailed infos on [www.phpbu.de](http://www.phpbu.de).
+Get detailed information about all the features and a 'getting startet' tutorial at the [www.phpbu.de](http://www.phpbu.de) Website.
 
 ## Features
 
