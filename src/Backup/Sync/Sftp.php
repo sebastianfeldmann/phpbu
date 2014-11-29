@@ -70,7 +70,7 @@ class Sftp implements Sync
             );
         }
 
-        $remoteFilename = $target->getNameCompressed();
+        $remoteFilename = $target->getFilenameCompressed();
         $localFile      = $target->getPathname(true);
 
         if ('' !== $this->remotePath) {

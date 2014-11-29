@@ -23,21 +23,35 @@ class Target
      *
      * @var string
      */
-    private $dirname;
+    private $path;
 
     /**
      * Path to the backup with potential date placeholders like %d.
      *
      * @var string
      */
-    private $dirnameRaw;
+    private $pathRaw;
 
     /**
      * Indicates if the path changes over time.
      *
      * @var boolean
      */
-    private $dirnameIsChanging = false;
+    private $pathIsChanging = false;
+
+    /**
+     * Part of the path without placeholders
+     *
+     * @var string
+     */
+    private $pathNotChanging;
+
+    /**
+     * List of directories containing date placeholders
+     *
+     * @var array
+     */
+    private $pathElementsChanging = array();
 
     /**
      * Backup filename.
@@ -84,14 +98,15 @@ class Target
     /**
      * Constructor
      *
-     * @param  string $dirname
-     * @param  string $filename
+     * @param  string  $path
+     * @param  string  $filename
+     * @param  integer $time
      * @throws \phpbu\App\Exception
      */
-    public function __construct($dirname, $filename)
+    public function __construct($path, $filename, $time = null)
     {
-        $this->setDir($dirname);
-        $this->setFile($filename);
+        $this->setPath($path, $time);
+        $this->setFile($filename, $time);
     }
 
     /**
@@ -118,32 +133,48 @@ class Target
     /**
      * Directory setter.
      *
-     * @param  string $dir
-     * @param  string $mod
+     * @param  string  $path
+     * @param  integer $time
      * @throws \phpbu\App\Exception
      */
-    public function setDir($dir)
+    public function setPath($path, $time = null)
     {
-        $this->dirnameRaw = $dir;
-        if (false !== strpos($dir, '%')) {
-            $this->dirnameIsChanging = true;
+        $this->pathRaw = $path;
+        if (false !== strpos($path, '%')) {
+            $this->pathIsChanging = true;
+            // path should be absolute so we remove the root slash
+            $dirs = explode('/', substr($this->pathRaw, 1));
+
+            $this->pathNotChanging = '';
+            $foundChangingElement  = false;
+            foreach ($dirs as $d) {
+                if ($foundChangingElement || false !== strpos($d, '%')) {
+                    $this->pathElementsChanging[] = $d;
+                    $foundChangingElement = true;
+                } else {
+                    $this->pathNotChanging .= DIRECTORY_SEPARATOR . $d;
+                }
+            }
             // replace potential date placeholder
-            $dir = String::replaceDatePlaceholders($dir);
+            $path = String::replaceDatePlaceholders($path, $time);
+        } else {
+            $this->pathNotChanging = $path;
         }
-        $this->dirname = $dir;
+        $this->path = $path;
     }
 
     /**
      * Filename setter.
      *
-     * @param string $file
+     * @param string  $file
+     * @param integer $time
      */
-    public function setFile($file)
+    public function setFile($file, $time= null)
     {
         $this->filenameRaw = $file;
         if (false !== strpos($file, '%')) {
             $this->filenameIsChanging = true;
-            $file                    = String::replaceDatePlaceholders($file);
+            $file                    = String::replaceDatePlaceholders($file, $time);
         }
         $this->filename = $file;
     }
@@ -154,20 +185,20 @@ class Target
      *
      * @throws \phpbu\App\Exception
      */
-    public function setupDir()
+    public function setupPath()
     {
         //if directory doesn't exist, create it
-        if (!is_dir($this->dirname)) {
+        if (!is_dir($this->path)) {
             $reporting = error_reporting();
             error_reporting(0);
-            $created = mkdir($this->dirname, 0755, true);
+            $created = mkdir($this->path, 0755, true);
             error_reporting($reporting);
             if (!$created) {
-                throw new Exception(sprintf('cant\'t create directory: %s', $this->dirname));
+                throw new Exception(sprintf('cant\'t create directory: %s', $this->path));
             }
         }
-        if (!is_writable($this->dirname)) {
-            throw new Exception(sprintf('no write permission for directory: %s', $this->dirname));
+        if (!is_writable($this->path)) {
+            throw new Exception(sprintf('no write permission for directory: %s', $this->path));
         }
     }
 
@@ -178,7 +209,7 @@ class Target
      */
     public function getPath()
     {
-        return $this->dirname;
+        return $this->path;
     }
 
     /**
@@ -188,7 +219,7 @@ class Target
      */
     public function getPathRaw()
     {
-        return $this->dirnameRaw;
+        return $this->pathRaw;
     }
 
     /**
@@ -197,7 +228,7 @@ class Target
      * @param  boolean $compressed
      * @return string
      */
-    public function getName($compressed = false)
+    public function getFilename($compressed = false)
     {
         return $this->filename . ($compressed &&$this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
     }
@@ -207,7 +238,7 @@ class Target
      *
      * @return string
      */
-    public function getNameRaw()
+    public function getFilenameRaw()
     {
         return $this->filenameRaw;
     }
@@ -217,9 +248,9 @@ class Target
      *
      * @return string
      */
-    public function getNameCompressed()
+    public function getFilenameCompressed()
     {
-        return $this->getName(true);
+        return $this->getFilename(true);
     }
 
 
@@ -231,7 +262,7 @@ class Target
      */
     public function getPathname($compressed = false)
     {
-        return $this->dirname
+        return $this->path
                . DIRECTORY_SEPARATOR
                . $this->filename
                . ($compressed && $this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
@@ -245,6 +276,56 @@ class Target
     public function getPathnameCompressed()
     {
         return $this->getPathname(true);
+    }
+
+    /**
+     * Dirname configured with any date placeholders
+     *
+     * @return boolean
+     */
+    public function hasChangingPath()
+    {
+        return $this->pathIsChanging;
+    }
+
+    /**
+     * Returns the part of the path that is not changing
+     *
+     * @return string
+     */
+    public function getPathThatIsNotChanging()
+    {
+        return $this->pathNotChanging;
+    }
+
+    /**
+     * Changing path elements getter
+     *
+     * @return array
+     */
+    public function getChangingPathElements()
+    {
+        return $this->pathElementsChanging;
+    }
+
+    /**
+     * Returns amount of changing path elements
+     *
+     * @return integer
+     */
+    public function countChangingPathElements()
+    {
+        return count($this->pathElementsChanging);
+    }
+
+    /**
+     * Filename configured with any date placeholders
+     *
+     * @return boolean
+     */
+    public function hasChangingFilename()
+    {
+        return $this->filenameIsChanging;
     }
 
     /**
@@ -300,32 +381,12 @@ class Target
     }
 
     /**
-     * Dirname configured with any date placeholders
-     *
-     * @return boolean
-     */
-    public function hasChangingPath()
-    {
-        return $this->dirnameIsChanging;
-    }
-
-    /**
-     * Filename configured with any date placeholders
-     *
-     * @return boolean
-     */
-    public function hasChangingFilename()
-    {
-        return $this->filenameIsChanging;
-    }
-
-    /**
      * Magic to string method.
      *
      * @return string
      */
     public function __toString()
     {
-        return $this->getPathname();
+        return $this->getPathname(true);
     }
 }

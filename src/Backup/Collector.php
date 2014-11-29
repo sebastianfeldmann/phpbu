@@ -39,29 +39,8 @@ abstract class Collector
             $changingDirs    = array();
             $files           = array();
 
-            if ($target->hasChangingPath()) {
-                // path should be absolute so we remove the root slash
-                $dirs = explode('/', substr($pathRaw, 1));
-
-                $pathNotChanging = '';
-                foreach ($dirs as $d) {
-                    if (false !== strpos($d, '%')) {
-                        $changingDirs[] = String::datePlaceholdersToRegex($d);
-                    } else {
-                        $pathNotChanging .= DIRECTORY_SEPARATOR . $d;
-                    }
-                }
-            } else {
-                $pathNotChanging = $target->getPath();
-            }
-
-            $fileRegex = String::datePlaceholdersToRegex($target->getNameRaw());
-            if ($target->shouldBeCompressed()) {
-                $fileRegex .= '.' . $target->getCompressor()->getSuffix();
-            }
-
             // collect all matching backup files
-            self::collect($files, $fileRegex,$pathNotChanging, 0, count($changingDirs));
+            self::collect($files, $target, $target->getPathThatIsNotChanging(), 0);
             // store collected files for others to use
             self::$files[$index] = $files;
         }
@@ -72,27 +51,36 @@ abstract class Collector
      * Recursive backup collecting
      *
      * @param array   $files
-     * @param string  $fileRegex
+     * @param Target  $target
      * @param string  $path
      * @param integer $depth
-     * @param integer $maxDepth
      */
-    protected static function collect(&$files, $fileRegex, $path, $depth, $maxDepth)
+    protected static function collect(array &$files, Target $target, $path, $depth)
     {
         $dItter = new DirectoryIterator($path);
         // collect all matching subdirs and get there backup files
-        if ($depth < $maxDepth) {
+        if ($depth < $target->countChangingPathElements()) {
             foreach ($dItter as $i => $file) {
                 if ($file->isDot()) {
                     continue;
                 }
+                // TODO: match directory against dir-regex $target->getChangingPathElements()[$depth]
                 if ($file->isDir()) {
-                    self::collect($files, $fileRegex, $file->getPathname(), $depth + 1, $maxDepth);
+                    self::collect($files, $target, $file->getPathname(), $depth + 1);
                 }
             }
         } else {
+            // create regex to match only created backup files
+            $fileRegex = String::datePlaceholdersToRegex($target->getFilenameRaw());
+            if ($target->shouldBeCompressed()) {
+                $fileRegex .= '.' . $target->getCompressor()->getSuffix();
+            }
             foreach ($dItter as $i => $file) {
                 if ($file->isDir()) {
+                    continue;
+                }
+                // skip currently created backup
+                if ($file->getPathname() == $target->getPathnameCompressed()) {
                     continue;
                 }
                 if (preg_match('#' . $fileRegex . '#i', $file->getFilename())) {

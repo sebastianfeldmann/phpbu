@@ -20,10 +20,10 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testMatchFiles()
     {
-        $dirname   = $this->getTestDataDir() . '/collector/static-dir';
-        $filename  = 'foo-%d.txt';
-        $target    = new Target($dirname, $filename);
-        $files     = Collector::getBackupFiles($target);
+        $path     = $this->getTestDataDir() . '/collector/static-dir';
+        $filename = 'foo-%d.txt';
+        $target   = new Target($path   , $filename, strtotime('2014-12-01 04:30:57'));
+        $files    = Collector::getBackupFiles($target);
 
         $this->assertEquals(4, count($files), '4 files should be found');
     }
@@ -33,25 +33,51 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSingleDynamicDirectory()
     {
-        $dirname   = $this->getTestDataDir() . '/collector/dynamic-dir/single/%m';
-        $filename  = '%H.txt';
-        $target    = new Target($dirname, $filename);
-        $files     = Collector::getBackupFiles($target);
+        $path     = $this->getTestDataDir() . '/collector/dynamic-dir/single/%m';
+        $filename = '%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $files    = Collector::getBackupFiles($target);
 
         $this->assertEquals(4, count($files), '4 files should be found');
     }
 
     /**
-     * Test the Backup collector with two dynamic directories
+     * Test the Backup collector with one dynamic directory ignoring current backup
+     */
+    public function testSingleDynamicDirectorySkipCurrent()
+    {
+        $path     = $this->getTestDataDir() . '/collector/dynamic-dir/single/%Y%m';
+        $filename = '%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-03-17 04:30:57'));
+        $files    = Collector::getBackupFiles($target);
+
+        $this->assertEquals(3, count($files), '3 files should be found');
+    }
+
+    /**
+     * Test the Backup collector with multi dynamic directories
      */
     public function testMultipleDynamicDirectories()
     {
-        $dirname   = $this->getTestDataDir() . '/collector/dynamic-dir/multi/%m/%d';
-        $filename  = '%H.txt';
-        $target    = new Target($dirname, $filename);
-        $files     = Collector::getBackupFiles($target);
+        $path     = $this->getTestDataDir() . '/collector/dynamic-dir/multi/%m/%d';
+        $filename = '%H.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $files    = Collector::getBackupFiles($target);
 
         $this->assertEquals(8, count($files), '8 files should be found');
+    }
+
+    /**
+     * Test the Backup collector with multi dynamic directories and ignoring current backup
+     */
+    public function testMultipleDynamicDirectoriesSkipCurrent()
+    {
+        $path     = $this->getTestDataDir() . '/collector/dynamic-dir/multi/%m/%d';
+        $filename = '%H.txt';
+        $target   = new Target($path, $filename, strtotime('2014-02-02 22:30:57'));
+        $files    = Collector::getBackupFiles($target);
+
+        $this->assertEquals(7, count($files), '7 files should be found');
     }
 
     /**

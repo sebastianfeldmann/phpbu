@@ -55,7 +55,7 @@ class Runner
             $checkFailed = false;
             $syncFailed  = false;
             $target      = new Backup\Target($backup['target']['dirname'], $backup['target']['filename']);
-            $target->setupDir();
+            $target->setupPath();
             // compressor
             if (!empty($backup['target']['compress'])) {
                 $compressor = Backup\Compressor::create($backup['target']['compress']);
