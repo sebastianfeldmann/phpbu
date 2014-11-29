@@ -16,16 +16,18 @@ Get detailed information about all the features and a 'getting startet' tutorial
     + MySQL
     + PostgreSQL (planned)
 * Validate backups
-* Sync backups to other locations (planned)
-    + amazon s3
-    + dropbox
-    + ftp
-    + rsync
-    + sftp
+    + Check min size
+    + Comparing with previous backups (planned)
+* Sync backups to other locations
+    + Amazon s3 (planned)
+    + Dropbox (work in progress)
+    + FTP (postponed)
+    + rsync (planned)
+    + SFTP
 * Cleanup you backup location
-    + delete backups older x
-    + store only x MB of backups
-    + keep only last x backups
+    + Delete backups older x
+    + Store only x MB of backups
+    + Keep only last x backups
 
 ## Requirements
 
