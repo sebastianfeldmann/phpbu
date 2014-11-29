@@ -35,6 +35,9 @@
         "squizlabs/php_codesniffer": "1.*",
         "phpseclib/phpseclib": "0.3.*@dev"
     },
+    "bin": [
+        "phpbu"
+    ],
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"
