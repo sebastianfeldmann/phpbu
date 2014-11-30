@@ -35,9 +35,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
-$file = __DIR__ . '/vendor/autoload.php';
-if (file_exists($file)) {
-    define('PHPBU_COMPOSER_AUTOLOAD', $file);
+// check installation [composer default, composer bin, git clone]
+foreach (array(__DIR__ . '/../../autoload.php', __DIR__ . '/../autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
+    if (file_exists($file)) {
+        define('PHPBU_COMPOSER_AUTOLOAD', $file);
+    }
 }
 unset($file);
 
