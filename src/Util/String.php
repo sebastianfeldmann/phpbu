@@ -14,7 +14,7 @@ use RuntimeException;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-abstract class String
+class String
 {
     /**
      * Date placeholder replacement.
