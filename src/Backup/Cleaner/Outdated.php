@@ -7,7 +7,6 @@ use phpbu\Backup\Cleaner;
 use phpbu\Backup\Collector;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
-use RuntimeException;
 
 /**
  * Cleanup backup directory.
@@ -44,11 +43,11 @@ class Outdated implements Cleaner
     public function setup(array $options)
     {
         if (!isset($options['older'])) {
-            throw new RuntimeException('option \'older\' is missing');
+            throw new   Exception('option \'older\' is missing');
         }
         $seconds = String::toTime($options['older']);
         if ($seconds < 1) {
-            throw new RuntimeException(sprintf('invalid value for \'older\': %s', $options['older']));
+            throw new Exception(sprintf('invalid value for \'older\': %s', $options['older']));
         }
         $this->offsetRaw     = $options['older'];
         $this->offsetSeconds = $seconds;
@@ -68,7 +67,7 @@ class Outdated implements Cleaner
             // last mod date < min date? delete!
             if ($file->getMTime() < $minTime) {
                 if (!$file->isWritable()) {
-                    throw new RuntimeException(sprintf('can\'t detele file: %s', $file->getPathname()));
+                    throw new Exception(sprintf('can\'t detele file: %s', $file->getPathname()));
                 }
                 $result->debug(sprintf('delete %s', $file->getPathname()));
                 unlink($file->getPathname());

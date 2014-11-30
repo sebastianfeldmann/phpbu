@@ -7,7 +7,6 @@ use phpbu\Backup\Cleaner;
 use phpbu\Backup\Collector;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
-use RuntimeException;
 
 /**
  * Cleanup backup directory.
@@ -37,10 +36,10 @@ class Quantity implements Cleaner
     public function setup(array $options)
     {
         if (!isset($options['amount'])) {
-            throw new RuntimeException('option \'amount\' is missing');
+            throw new Exception('option \'amount\' is missing');
         }
         if (!is_int($options['amount'])) {
-            throw new RuntimeException(sprintf('invalid value for \'amount\': %s', $options['amount']));
+            throw new Exception(sprintf('invalid value for \'amount\': %s', $options['amount']));
         }
         $this->amount = $options['amount'];
     }
@@ -63,7 +62,7 @@ class Quantity implements Cleaner
                 $file = array_shift($files);
                 $result->debug(sprintf('delete %s', $file->getPathname()));
                 if (!$file->isWritable()) {
-                    throw new RuntimeException(sprintf('can\'t detele file: %s', $file->getPathname()));
+                    throw new Exception(sprintf('can\'t detele file: %s', $file->getPathname()));
                 }
                 unlink($file->getPathname());
             }

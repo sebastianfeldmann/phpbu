@@ -7,7 +7,6 @@ use phpbu\Backup\Cleaner;
 use phpbu\Backup\Collector;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
-use RuntimeException;
 
 /**
  * Cleanup backup directory.
@@ -44,11 +43,11 @@ class Capacity implements Cleaner
     public function setup(array $options)
     {
         if (!isset($options['size'])) {
-            throw new RuntimeException('option \'size\' is missing');
+            throw new Exception('option \'size\' is missing');
         }
         $bytes = String::toBytes($options['size']);
         if ($bytes < 1) {
-            throw new RuntimeException(sprintf('invalid value for \'size\': %s', $options['size']));
+            throw new Exception(sprintf('invalid value for \'size\': %s', $options['size']));
         }
         $this->capacityRaw   = $options['size'];
         $this->capacityBytes = $bytes;
@@ -75,7 +74,7 @@ class Capacity implements Cleaner
                 $file  = array_shift($files);
                 $size -= $file->getSize();
                 if (!$file->isWritable()) {
-                    throw new RuntimeException(sprintf('can\'t detele file: %s', $file->getPathname()));
+                    throw new Exception(sprintf('can\'t detele file: %s', $file->getPathname()));
                 }
                 $result->debug(sprintf('delete %s', $file->getPathname()));
                 unlink($file->getPathname());
