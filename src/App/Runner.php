@@ -4,7 +4,6 @@ namespace phpbu\App;
 use phpbu\App\Result;
 use phpbu\App\ResultPrinter;
 use phpbu\Backup;
-use phpbu\Backup\Factory;
 
 /**
  * Runner actually executes all backup jobs.
@@ -75,6 +74,9 @@ class Runner
                 $source->backup($target, $result);
                 $result->backupEnd($backup);
 
+                // setup the collector for this backup
+                $collector = new Backup\Collector($target);
+
                 /*
                  *          __              __
                  *    _____/ /_  ___  _____/ /_______
@@ -86,8 +88,8 @@ class Runner
                 foreach ($backup['checks'] as $check) {
                     try {
                         $result->checkStart($check);
-                        $c = Factory::createCheck($check['type']);
-                        if ($c->pass($target, $check['value'], $result)) {
+                        $c = Backup\Factory::createCheck($check['type']);
+                        if ($c->pass($target, $check['value'], $collector, $result)) {
                             $result->checkEnd($check);
                         } else {
                             $checkFailed = true;
@@ -113,7 +115,7 @@ class Runner
                         if ($checkFailed && $sync['skipOnCheckFail']) {
                             $result->syncSkippe($sync);
                         } else {
-                            $s = Factory::createSync($sync['type'], $sync['options']);
+                            $s = Backup\Factory::createSync($sync['type'], $sync['options']);
                             $s->sync($target, $result);
                             $result->syncEnd($sync);
                         }
@@ -141,7 +143,7 @@ class Runner
                             $result->cleanupSkipped($cleanup);
                         } else {
                             $cleaner = Factory::createCleaner($cleanup['type'], $cleanup['options']);
-                            $cleaner->cleanup($target, $result);
+                            $cleaner->cleanup($target, $collector, $result);
                             $result->cleanupEnd($cleanup);
                         }
                     } catch (Backup\Cleanup\Exception $e) {

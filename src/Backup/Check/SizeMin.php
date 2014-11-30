@@ -5,6 +5,7 @@ use phpbu\App\Result;
 use phpbu\Backup\Check;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
+use phpbu\Backup\Collector;
 
 /**
  * SizeMin class.
@@ -23,15 +24,10 @@ class SizeMin implements Check
     /**
      * @see \phpbu\Backup\Check::pass()
      */
-    public function pass(Target $target, $value, Result $result)
+    public function pass(Target $target, $value, Collector $collector, Result $result)
     {
-        $file = $target->getPathname(true);
-
-        if (!file_exists($file)) {
-            throw new Exception('Backup file does not exist');
-        }
-
-        $actualSize = filesize($file);
+        // throws App\Exception if file doesn't exist
+        $actualSize = $target->getSize();
         $testSize   = String::toBytes($value);
 
         return $testSize <= $actualSize;

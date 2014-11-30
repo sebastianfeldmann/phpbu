@@ -47,11 +47,11 @@ class Quantity implements Cleaner
     /**
      * @see \phpbu\Backup\Cleanup::cleanup()
      */
-    public function cleanup(Target $target, Result $result)
+    public function cleanup(Target $target, Collector $collector, Result $result)
     {
         $path   = dirname($target);
         $dItter = new DirectoryIterator($path);
-        $files  = Collector::getBackupFiles($target);
+        $files  = $collector->getBackupFiles($target);
 
         // backups exceed capacity?
         if (count($files) > $this->amount) {

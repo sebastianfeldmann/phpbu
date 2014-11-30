@@ -32,7 +32,9 @@ abstract class Factory
             'directory' => '\\phpbu\\Backup\\Source\\Tar',
         ),
         'check'   => array(
-            'SizeMin'   => '\\phpbu\\Backup\\Check\\SizeMin',
+            'SizeMin'                 => '\\phpbu\\Backup\\Check\\SizeMin',
+            'SizeDiffPreviousPercent' => '\\phpbu\\Backup\\Check\\SizeDiffPreviousPercent',
+            'SizeDiffAvgPercent'      => '\\phpbu\\Backup\\Check\\SizeDiffAvgPercent',
         ),
         'sync'    => array(
             'dropbox'   => '\\phpbu\\Backup\\Sync\\Dropbox',

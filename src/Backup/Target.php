@@ -75,6 +75,13 @@ class Target
     private $filenameIsChanging = false;
 
     /**
+     * Size in bytes
+     *
+     * @var integer
+     */
+    private $size;
+
+    /**
      * Permissions for potential directory or file creation.
      *
      * @var octal integer
@@ -241,6 +248,23 @@ class Target
     public function getFilenameRaw()
     {
         return $this->filenameRaw;
+    }
+
+    /**
+     * Returns the actual filesize in bytes
+     *
+     * @throws Exception
+     * @return integer
+     */
+    public function getSize()
+    {
+        if (null === $this->size) {
+            if (!file_exists($this)) {
+                throw new Exception(sprintf('target file \'%s\' doesn\'t exist', $this->getFilenameCompressed()));
+            }
+            $this->size = filesize($this);
+        }
+        return $this->size;
     }
 
     /**

@@ -56,9 +56,9 @@ class Capacity implements Cleaner
     /**
      * @see \phpbu\Backup\Cleanup::cleanup()
      */
-    public function cleanup(Target $target, Result $result)
+    public function cleanup(Target $target, Collector $collector, Result $result)
     {
-        $files = Collector::getBackupFiles($target);
+        $files = $collector->getBackupFiles($target);
         $size  = 0;
 
         foreach ($files as $file) {

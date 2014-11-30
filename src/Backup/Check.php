@@ -20,9 +20,11 @@ interface Check
     /**
      * Checks the created backup.
      *
-     * @param  Target $target
+     * @param  \phpbu\Backup\Target $target
      * @param  string $value
+     * @param  \phpbu\Backup\Collector
+     * @param  \phpbu\App\Result
      * @return boolean
      */
-    public function pass(Target $target, $value, Result $result);
+    public function pass(Target $target, $value, Collector $collector, Result $result);
 }

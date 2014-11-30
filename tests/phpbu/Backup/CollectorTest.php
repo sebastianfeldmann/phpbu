@@ -20,10 +20,11 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testMatchFiles()
     {
-        $path     = $this->getTestDataDir() . '/collector/static-dir';
-        $filename = 'foo-%d.txt';
-        $target   = new Target($path   , $filename, strtotime('2014-12-01 04:30:57'));
-        $files    = Collector::getBackupFiles($target);
+        $path      = $this->getTestDataDir() . '/collector/static-dir';
+        $filename  = 'foo-%d.txt';
+        $target    = new Target($path   , $filename, strtotime('2014-12-01 04:30:57'));
+        $collector = new Collector($target);
+        $files     = $collector->getBackupFiles();
 
         $this->assertEquals(4, count($files), '4 files should be found');
     }
@@ -33,10 +34,11 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSingleDynamicDirectory()
     {
-        $path     = $this->getTestDataDir() . '/collector/dynamic-dir/single/%m';
-        $filename = '%d.txt';
-        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $files    = Collector::getBackupFiles($target);
+        $path      = $this->getTestDataDir() . '/collector/dynamic-dir/single/%m';
+        $filename  = '%d.txt';
+        $target    = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $collector = new Collector($target);
+        $files     = $collector->getBackupFiles();
 
         $this->assertEquals(4, count($files), '4 files should be found');
     }
@@ -46,10 +48,11 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testSingleDynamicDirectorySkipCurrent()
     {
-        $path     = $this->getTestDataDir() . '/collector/dynamic-dir/single/%Y%m';
-        $filename = '%d.txt';
-        $target   = new Target($path, $filename, strtotime('2014-03-17 04:30:57'));
-        $files    = Collector::getBackupFiles($target);
+        $path      = $this->getTestDataDir() . '/collector/dynamic-dir/single/%Y%m';
+        $filename  = '%d.txt';
+        $target    = new Target($path, $filename, strtotime('2014-03-17 04:30:57'));
+        $collector = new Collector($target);
+        $files     = $collector->getBackupFiles();
 
         $this->assertEquals(3, count($files), '3 files should be found');
     }
@@ -59,10 +62,11 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testMultipleDynamicDirectories()
     {
-        $path     = $this->getTestDataDir() . '/collector/dynamic-dir/multi/%m/%d';
-        $filename = '%H.txt';
-        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $files    = Collector::getBackupFiles($target);
+        $path      = $this->getTestDataDir() . '/collector/dynamic-dir/multi/%m/%d';
+        $filename  = '%H.txt';
+        $target    = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $collector = new Collector($target);
+        $files     = $collector->getBackupFiles();
 
         $this->assertEquals(8, count($files), '8 files should be found');
     }
@@ -72,10 +76,11 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
      */
     public function testMultipleDynamicDirectoriesSkipCurrent()
     {
-        $path     = $this->getTestDataDir() . '/collector/dynamic-dir/multi/%m/%d';
-        $filename = '%H.txt';
-        $target   = new Target($path, $filename, strtotime('2014-02-02 22:30:57'));
-        $files    = Collector::getBackupFiles($target);
+        $path      = $this->getTestDataDir() . '/collector/dynamic-dir/multi/%m/%d';
+        $filename  = '%H.txt';
+        $target    = new Target($path, $filename, strtotime('2014-02-02 22:30:57'));
+        $collector = new Collector($target);
+        $files     = $collector->getBackupFiles();
 
         $this->assertEquals(7, count($files), '7 files should be found');
     }
