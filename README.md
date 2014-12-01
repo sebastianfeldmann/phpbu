@@ -95,7 +95,7 @@ Simple configuration example:
     <backups>
       <backup>
         <!-- source -->
-        <source type="mysql">
+        <source type="mysqldump">
           <option name="databases" value="mydbname"/>
           <option name="user" value="user.name"/>
           <option name="password" value="topsecret"/>

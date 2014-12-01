@@ -28,8 +28,8 @@ abstract class Factory
     private static $classMap = array(
         //   type       => fqcn
         'source'  => array(
-            'mysql'     => '\\phpbu\\Backup\\Source\\Mysqldump',
-            'directory' => '\\phpbu\\Backup\\Source\\Tar',
+            'mysqldump' => '\\phpbu\\Backup\\Source\\Mysqldump',
+            'tar'       => '\\phpbu\\Backup\\Source\\Tar',
         ),
         'check'   => array(
             'SizeMin'                 => '\\phpbu\\Backup\\Check\\SizeMin',

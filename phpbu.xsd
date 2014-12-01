@@ -56,14 +56,7 @@
     <xs:sequence>
       <xs:element name="option" type="nameValueType" maxOccurs="unbounded"/>
     </xs:sequence>
-    <xs:attribute name="type">
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="mysql"/>
-          <xs:enumeration value="directory"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
+    <xs:attribute name="type" type="xs:string"/>
   </xs:complexType>
 
   <xs:complexType name="targetType">
