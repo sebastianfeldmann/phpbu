@@ -3,14 +3,14 @@ namespace phpbu\Backup\Check;
 
 use phpbu\App\Result;
 use phpbu\Backup\Check;
+use phpbu\Backup\Collector;
 use phpbu\Backup\Target;
 use phpbu\Util\Math;
-use phpbu\Util\String;
-use phpbu\Backup\Collector;
 
 /**
- * ComparePercent class.
- * Checks if a backup filesize differs more than a given percent value comparing to the previous backup.
+ * SizeDiffPreviousPercent class
+ *
+ * Checks if a backup filesize differs more than a given percent value as compared to the previous backup.
  * If no previous backup exists this check will pass.
  *
  * @package    phpbu

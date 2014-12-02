@@ -3,12 +3,13 @@ namespace phpbu\Backup\Check;
 
 use phpbu\App\Result;
 use phpbu\Backup\Check;
+use phpbu\Backup\Collector;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
-use phpbu\Backup\Collector;
 
 /**
- * SizeMin class.
+ * SizeMin
+ *
  * Checks if a backup file has a least a given size.
  *
  * @package    phpbu

@@ -2,7 +2,7 @@
 namespace phpbu\Backup\Check;
 
 /**
- * Math utility test
+ * SizeMinTest
  *
  * @package    phpbu
  * @subpackage tests
