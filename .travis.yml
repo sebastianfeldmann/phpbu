@@ -9,6 +9,7 @@ php:
 before_script:
   - composer self-update
   - composer install --no-interaction --prefer-source --no-dev
+  - phpunit --self-update
 
 script:
   - phpunit --configuration ./build/travis-ci.phpunit.xml
