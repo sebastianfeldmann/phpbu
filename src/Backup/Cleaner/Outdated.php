@@ -54,14 +54,14 @@ class Outdated implements Cleaner
     }
 
     /**
-     * @see \phpbu\Backup\Cleanup::cleanup()
+     * @see \phpbu\Backup\Cleaner::cleanup()
      */
     public function cleanup(Target $target, Collector $collector, Result $result)
     {
         $path    = dirname($target);
         $dItter  = new DirectoryIterator($path);
         $minTime = time() - $this->offsetSeconds;
-        $files   = Collector::getBackupFiles($target);
+        $files   = $collector->getBackupFiles($target);
 
         foreach ($files as $file) {
             // last mod date < min date? delete!

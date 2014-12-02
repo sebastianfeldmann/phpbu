@@ -43,6 +43,7 @@ class Runner
         $this->handleConfiguration($arguments);
 
         $this->printer = $this->createPrinter($arguments);
+        $stop          = false;
         $result        = new Result();
         $result->addListener($this->printer);
 
@@ -50,6 +51,9 @@ class Runner
 
         // create backups
         foreach ($arguments['backups'] as $backup) {
+            if ($stop) {
+                break;
+            }
             // create target
             $checkFailed = false;
             $syncFailed  = false;
@@ -142,7 +146,7 @@ class Runner
                          || ($syncFailed && $cleanup['skipOnSyncFail'])) {
                             $result->cleanupSkipped($cleanup);
                         } else {
-                            $cleaner = Factory::createCleaner($cleanup['type'], $cleanup['options']);
+                            $cleaner = Backup\Factory::createCleaner($cleanup['type'], $cleanup['options']);
                             $cleaner->cleanup($target, $collector, $result);
                             $result->cleanupEnd($cleanup);
                         }
@@ -154,10 +158,12 @@ class Runner
                 }
 
             } catch (\Exception $e) {
-                // TODO: check stopOnError
                 $result->debug('exception: ' . $e->getMessage());
                 $result->addError($e);
                 $result->backupFailed($backup);
+                if (true == $backup['stopOnError']) {
+                    $stop = true;
+                }
             }
         }
 
