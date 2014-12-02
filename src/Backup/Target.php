@@ -176,7 +176,7 @@ class Target
      * @param string  $file
      * @param integer $time
      */
-    public function setFile($file, $time= null)
+    public function setFile($file, $time = null)
     {
         $this->filenameRaw = $file;
         if (false !== strpos($file, '%')) {
@@ -237,7 +237,11 @@ class Target
      */
     public function getFilename($compressed = false)
     {
-        return $this->filename . ($compressed &&$this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
+        return $this->filename . (
+            $compressed && $this->shouldBeCompressed()
+            ? '.' . $this->compressor->getSuffix()
+            : ''
+        );
     }
 
     /**
