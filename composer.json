@@ -33,7 +33,8 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "1.*",
-        "phpseclib/phpseclib": "0.3.*@dev"
+        "phpseclib/phpseclib": "0.3.*@dev",
+        "dropbox/dropbox-sdk": "1.1.*"
     },
     "bin": [
         "phpbu"
