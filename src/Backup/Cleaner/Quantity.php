@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\Backup\Cleaner;
 
-use DirectoryIterator;
 use phpbu\App\Result;
 use phpbu\Backup\Cleaner;
 use phpbu\Backup\Collector;
@@ -64,7 +63,8 @@ class Quantity implements Cleaner
                 if (!$file->isWritable()) {
                     throw new Exception(sprintf('can\'t detele file: %s', $file->getPathname()));
                 }
-                unlink($file->getPathname());
+                $result->debug(sprintf('delete %s', $file->getPathname()));
+                $file->unlink();
             }
         }
     }

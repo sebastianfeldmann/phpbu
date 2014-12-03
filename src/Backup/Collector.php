@@ -2,6 +2,7 @@
 namespace phpbu\Backup;
 
 use DirectoryIterator;
+use phpbu\Backup\File;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
 
@@ -21,7 +22,7 @@ class Collector
     /**
      * Collection cache
      *
-     * @var array
+     * @var array<\phpbu\Backup\File>
      */
     protected $files;
 
@@ -38,7 +39,7 @@ class Collector
     /**
      * Get all created backups.
      *
-     * @return array
+     * @return array<\phpbu\Backup\File>
      */
     public function getBackupFiles()
     {
@@ -86,7 +87,7 @@ class Collector
                 }
                 if (preg_match('#' . $fileRegex . '#i', $file->getFilename())) {
                     $index         = date('YmdHis', $file->getMTime()) . '-' . $i . '-' . $file->getPathname();
-                    $this->files[$index] = $file->getFileInfo();
+                    $this->files[$index] = new File($file->getFileInfo());
                 }
             }
         }

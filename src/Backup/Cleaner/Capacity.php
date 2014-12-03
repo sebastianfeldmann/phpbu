@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\Backup\Cleaner;
 
-use DirectoryIterator;
 use phpbu\App\Result;
 use phpbu\Backup\Cleaner;
 use phpbu\Backup\Collector;
@@ -77,7 +76,7 @@ class Capacity implements Cleaner
                     throw new Exception(sprintf('can\'t detele file: %s', $file->getPathname()));
                 }
                 $result->debug(sprintf('delete %s', $file->getPathname()));
-                unlink($file->getPathname());
+                $file->unlink();
             }
         }
     }

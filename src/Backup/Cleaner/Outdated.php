@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\Backup\Cleaner;
 
-use DirectoryIterator;
 use phpbu\App\Result;
 use phpbu\Backup\Cleaner;
 use phpbu\Backup\Collector;
@@ -59,7 +58,6 @@ class Outdated implements Cleaner
     public function cleanup(Target $target, Collector $collector, Result $result)
     {
         $path    = dirname($target);
-        $dItter  = new DirectoryIterator($path);
         $minTime = time() - $this->offsetSeconds;
         $files   = $collector->getBackupFiles($target);
 
@@ -70,7 +68,7 @@ class Outdated implements Cleaner
                     throw new Exception(sprintf('can\'t detele file: %s', $file->getPathname()));
                 }
                 $result->debug(sprintf('delete %s', $file->getPathname()));
-                unlink($file->getPathname());
+                $file->unlink();
             }
         }
     }
