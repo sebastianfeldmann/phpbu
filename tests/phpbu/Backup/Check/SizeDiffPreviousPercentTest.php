@@ -56,11 +56,10 @@ class SizeDiffPreviousPercentTest extends \PHPUnit_Framework_TestCase
     {
         $list = array();
         for ($i = 0; $i < $amount; $i++) {
-            $fileStub = $this->getMockBuilder('splFileInfo')
+            $fileStub = $this->getMockBuilder('\\phpbu\\Backup\\File')
                          ->disableOriginalConstructor()
                          ->getMock();
             $fileStub->method('getSize')->willReturn($size);
-
             $list['201401' . str_pad($i, 2, '0', STR_PAD_LEFT)] = $fileStub;
         }
         return $list;
