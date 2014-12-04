@@ -272,6 +272,33 @@ class Target
     }
 
     /**
+     * Target file exists already
+     *
+     * @param  boolean $compressed
+     * @return boolean
+     */
+    public function fileExists($compressed = true)
+    {
+        return file_exists($this->getPathname($compressed));
+    }
+
+    /**
+     * Deletes the target file
+     *
+     * @throws Exception
+     */
+    public function unlink($compressed = true)
+    {
+        if (!$this->fileExists($compressed)) {
+            throw new Exception(sprintf('target file \'%s\' doesn\'t exist', $this->getFilename($compressed)));
+        }
+        if (!is_writable($this->getPathname($compressed))) {
+            throw new Exception(sprintf('can\t delete file \'%s\'', $this->getFilename($compressed)));
+        }
+        $this->size = filesize($this->getPathname($compressed));
+    }
+
+    /**
      * Returns the name to the backup file
      *
      * @return string
