@@ -84,6 +84,16 @@ class File
     }
 
     /**
+     * Returns wether the file is writabe or not
+     *
+     * @return boolean
+     */
+    public function isWritable()
+    {
+        return $this->fileInfo->isWritable();
+    }
+
+    /**
      * Deletes the file
      *
      * @throws Exception
