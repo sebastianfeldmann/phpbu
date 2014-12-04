@@ -42,7 +42,7 @@ class Outdated implements Cleaner
     public function setup(array $options)
     {
         if (!isset($options['older'])) {
-            throw new   Exception('option \'older\' is missing');
+            throw new Exception('option \'older\' is missing');
         }
         $seconds = String::toTime($options['older']);
         if ($seconds < 1) {
