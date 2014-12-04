@@ -85,7 +85,7 @@ class String
      */
     public static function toBytes($value)
     {
-        if (!preg_match('#^[1-9]+[0-9]*[BKMGT]$#i', $value)) {
+        if (!preg_match('#^[0-9]*[BKMGT]$#i', $value)) {
             throw new RuntimeException('Invalid size value');
         }
         $units  = array('B' => 0, 'K' => 1, 'M' => 2, 'G' => 3, 'T' => 4, 'P' => 5);
