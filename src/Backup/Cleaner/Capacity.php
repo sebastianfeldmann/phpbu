@@ -37,6 +37,13 @@ class Capacity implements Cleaner
     protected $capacityBytes;
 
     /**
+     * Delete current backup as well
+     *
+     * @var boolean
+     */
+    protected $deleteTarget;
+
+    /**
      * @see \phpbu\Backup\Cleanup::setup()
      */
     public function setup(array $options)
@@ -45,9 +52,12 @@ class Capacity implements Cleaner
             throw new Exception('option \'size\' is missing');
         }
         $bytes = String::toBytes($options['size']);
-        if ($bytes < 1) {
+        if ($bytes < 0) {
             throw new Exception(sprintf('invalid value for \'size\': %s', $options['size']));
         }
+        $this->deleteTarget  = isset($options['deleteTarget'])
+                             ? String::toBoolean($options['deleteTarget'], false)
+                             : false;
         $this->capacityRaw   = $options['size'];
         $this->capacityBytes = $bytes;
     }
@@ -57,8 +67,8 @@ class Capacity implements Cleaner
      */
     public function cleanup(Target $target, Collector $collector, Result $result)
     {
-        $files = $collector->getBackupFiles($target);
-        $size  = 0;
+        $files = $collector->getBackupFiles();
+        $size  = $target->getSize();
 
         foreach ($files as $file) {
             $size += $file->getSize();
@@ -69,7 +79,7 @@ class Capacity implements Cleaner
             // oldest backups first
             ksort($files);
 
-            while ($size > $this->capacityBytes) {
+            while ($size > $this->capacityBytes && count($files) > 0) {
                 $file  = array_shift($files);
                 $size -= $file->getSize();
                 if (!$file->isWritable()) {
@@ -77,6 +87,12 @@ class Capacity implements Cleaner
                 }
                 $result->debug(sprintf('delete %s', $file->getPathname()));
                 $file->unlink();
+            }
+
+            // deleted all old backups but still exceeding the space limit
+            // delete the currently created backup as well
+            if ($this->deleteTarget && $size > $this->capacityBytes) {
+                $target->unlink();
             }
         }
     }
