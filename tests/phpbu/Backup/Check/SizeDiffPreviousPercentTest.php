@@ -46,7 +46,7 @@ class SizeDiffPreviousPercentTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Create a list of splFileInfo stubs
+     * Create a list of File stubs
      *
      * @param  integer $size      Size in byte the stubs will return on getSize()
      * @param  integer $amount    Amount of stubs in list
