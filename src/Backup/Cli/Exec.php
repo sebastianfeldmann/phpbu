@@ -86,8 +86,8 @@ class Exec
 
                 if ($compressorCode !== 0) {
                     // remove compressed file with errors
-                    if (file_exists($this->target->getPathname(true))) {
-                        unlink($this->target->getPathname(true));
+                    if ($this->target->fileExists()) {
+                        $this->target->unlink();
                     }
                 }
 
@@ -96,8 +96,8 @@ class Exec
             }
         } else {
             // remove file with errors
-            if (file_exists($this->target->getPathname())) {
-                unlink($this->target->getPathname());
+            if ($this->target->fileExists(false)) {
+                $this->target->unlink(false);
             }
         }
         error_reporting($old);
