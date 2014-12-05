@@ -84,6 +84,16 @@ class File
     }
 
     /**
+     * Return last modified date as unix timestamp
+     *
+     * @return integer
+     */
+    public function getMTime()
+    {
+        return $this->fileInfo->getMTime();
+    }
+
+    /**
      * Returns wether the file is writabe or not
      *
      * @return boolean
