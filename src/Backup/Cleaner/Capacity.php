@@ -6,6 +6,7 @@ use phpbu\Backup\Cleaner;
 use phpbu\Backup\Collector;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
+use RuntimeException;
 
 /**
  * Cleanup backup directory.
@@ -51,7 +52,11 @@ class Capacity implements Cleaner
         if (!isset($options['size'])) {
             throw new Exception('option \'size\' is missing');
         }
-        $bytes = String::toBytes($options['size']);
+        try {
+            $bytes = String::toBytes($options['size']);
+        } catch (RuntimeException $e) {
+            throw new Exception($e->getMessage());
+        }
         if ($bytes < 0) {
             throw new Exception(sprintf('invalid value for \'size\': %s', $options['size']));
         }

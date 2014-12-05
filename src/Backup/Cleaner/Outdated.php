@@ -6,6 +6,7 @@ use phpbu\Backup\Cleaner;
 use phpbu\Backup\Collector;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
+use RuntimeException;
 
 /**
  * Cleanup backup directory.
@@ -44,7 +45,11 @@ class Outdated implements Cleaner
         if (!isset($options['older'])) {
             throw new Exception('option \'older\' is missing');
         }
-        $seconds = String::toTime($options['older']);
+        try {
+            $seconds = String::toTime($options['older']);
+        } catch (RuntimeException $e) {
+            throw new Exception($e->getMessage());
+        }
         if ($seconds < 1) {
             throw new Exception(sprintf('invalid value for \'older\': %s', $options['older']));
         }

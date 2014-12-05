@@ -37,10 +37,13 @@ class Quantity implements Cleaner
         if (!isset($options['amount'])) {
             throw new Exception('option \'amount\' is missing');
         }
-        if (!is_int($options['amount'])) {
+        if (!is_numeric($options['amount'])) {
             throw new Exception(sprintf('invalid value for \'amount\': %s', $options['amount']));
         }
-        $this->amount = $options['amount'];
+        if ($options['amount'] < 1) {
+            throw new Exception(sprintf('value for \'amount\' must be greater 0, %s given', $options['amount']));
+        }
+        $this->amount = intval($options['amount']);
     }
 
     /**
@@ -48,16 +51,16 @@ class Quantity implements Cleaner
      */
     public function cleanup(Target $target, Collector $collector, Result $result)
     {
-        $path   = dirname($target);
-        $dItter = new DirectoryIterator($path);
-        $files  = $collector->getBackupFiles($target);
+        $path  = dirname($target);
+        $files = $collector->getBackupFiles($target);
 
         // backups exceed capacity?
         if (count($files) > $this->amount) {
             // oldest backups first
             ksort($files);
 
-            while (count($files) > $this->amount) {
+            // add one for current backup
+            while (count($files) + 1 > $this->amount) {
                 $file = array_shift($files);
                 $result->debug(sprintf('delete %s', $file->getPathname()));
                 if (!$file->isWritable()) {
