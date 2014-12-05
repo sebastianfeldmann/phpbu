@@ -89,8 +89,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getTime()
     {
-        if (null == $this->time)
-        {
+        if (null == $this->time) {
             $this->time = time();
         }
         return $this->time;

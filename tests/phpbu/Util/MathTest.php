@@ -20,7 +20,11 @@ class MathTest extends \PHPUnit_Framework_TestCase
     public function testGetDiffInPercent($whole, $part, $expected)
     {
         $diff = Math::getDiffInPercent($whole, $part);
-        $this->assertEquals($expected, $diff, sprintf('diff in percent (%d,%d) should be %d', $whole, $part, $expected));
+        $this->assertEquals(
+            $expected,
+            $diff,
+            sprintf('diff in percent (%d,%d) should be %d', $whole, $part, $expected)
+        );
     }
 
     /**

@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\Backup\Cleaner;
 
-require_once __DIR__ . '/TestCase.php';
-
 /**
  * OutdatedTest
  *

@@ -81,7 +81,11 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     {
         $args    = new Args();
         $options = $args->getOptions(array('foo', '--include-path=/foo/bar', 'bar'));
-        $this->assertEquals('/foo/bar', $options['--include-path'], 'long option --include-path must be set correctly');
+        $this->assertEquals(
+            '/foo/bar',
+            $options['--include-path'],
+            'long option --include-path must be set correctly'
+        );
     }
 
     /**
@@ -91,7 +95,11 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     {
         $args    = new Args();
         $options = $args->getOptions(array('foo', '--bootstrap=backup/bootstrap.php', 'bar'));
-        $this->assertEquals('backup/bootstrap.php', $options['--bootstrap'], 'long option --bootstrap must be set correctly');
+        $this->assertEquals(
+            'backup/bootstrap.php',
+            $options['--bootstrap'],
+            'long option --bootstrap must be set correctly'
+        );
     }
 
     /**
@@ -101,7 +109,11 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     {
         $args    = new Args();
         $options = $args->getOptions(array('foo', '--configuration=conf/my.xml.dist', 'bar'));
-        $this->assertEquals('conf/my.xml.dist', $options['--configuration'], 'long option --configuration must be set correctly');
+        $this->assertEquals(
+            'conf/my.xml.dist',
+            $options['--configuration'],
+            'long option --configuration must be set correctly'
+        );
     }
 
     /**

@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\Backup\Cleaner;
 
-require_once __DIR__ . '/TestCase.php';
-
 /**
  * QuatityTest
  *
@@ -55,13 +53,13 @@ class QuantityTest extends TestCase
     public function testCleanupDeleteFiles()
     {
         $fileList      = $this->getFileMockList(
-                            array(
-                                array('size' => 100, 'shouldBeDeleted' => true),
-                                array('size' => 100, 'shouldBeDeleted' => true),
-                                array('size' => 100, 'shouldBeDeleted' => false),
-                                array('size' => 100, 'shouldBeDeleted' => false),
-                            )
-                         );
+            array(
+                array('size' => 100, 'shouldBeDeleted' => true),
+                array('size' => 100, 'shouldBeDeleted' => true),
+                array('size' => 100, 'shouldBeDeleted' => false),
+                array('size' => 100, 'shouldBeDeleted' => false),
+            )
+        );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
         $collectorStub = $this->getMockBuilder('\\phpbu\\Backup\\Collector')

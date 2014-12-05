@@ -22,7 +22,7 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
     {
         $path      = $this->getTestDataDir() . '/collector/static-dir';
         $filename  = 'foo-%d.txt';
-        $target    = new Target($path   , $filename, strtotime('2014-12-01 04:30:57'));
+        $target    = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
         $collector = new Collector($target);
         $files     = $collector->getBackupFiles();
 

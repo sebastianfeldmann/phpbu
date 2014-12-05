@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\Backup;
+
 /**
  * Compressor test
  *
