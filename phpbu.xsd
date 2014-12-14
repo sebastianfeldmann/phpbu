@@ -23,14 +23,10 @@
   </xs:complexType>
 
   <xs:complexType name="logType">
-    <xs:attribute name="type">
-      <xs:simpleType>
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="json"/>
-          <xs:enumeration value="plain"/>
-        </xs:restriction>
-      </xs:simpleType>
-    </xs:attribute>
+    <xs:sequence>
+      <xs:element name="option" type="nameValueType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="type" use="required" type="xs:string"/>
     <xs:attribute name="target" type="xs:anyURI"/>
   </xs:complexType>
 
