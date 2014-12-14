@@ -63,26 +63,46 @@ class ResultPrinter extends Printer implements Listener
         'bg-yellow'  => 43
     );
 
+    /**
+     * Amount of executed backups
+     *
+     * @var integer
+     */
     private $numBackups = 0;
 
+    /**
+     * Amount of executed checks
+     *
+     * @var integer
+     */
     private $numChecks = 0;
 
+    /**
+     * Amount of executed Syncs
+     *
+     * @var integer
+     */
     private $numSyncs = 0;
 
+    /**
+     * Amount of executed Cleanups
+     *
+     * @var integer
+     */
     private $numCleanups = 0;
 
     /**
      * Constructor
      *
-     * @param  string                   $out
-     * @param  string                   $verbose
-     * @param  string                   $colors
-     * @param  string                   $debug
+     * @param  string $out
+     * @param  string $verbose
+     * @param  string $colors
+     * @param  string $debug
      * @throws \InvalidArgumentException
      */
     public function __construct($out = null, $verbose = false, $colors = false, $debug = false)
     {
-        parent::__construct($out);
+        $this->setOut($out);
 
         if (is_bool($verbose)) {
             $this->verbose = $verbose;
@@ -120,7 +140,7 @@ class ResultPrinter extends Printer implements Listener
     /**
      * @see \phpbu\App\Listener::phpbuEnd()
      */
-    public function phpbuEnd()
+    public function phpbuEnd(Result $result)
     {
         // do something fooish
     }
