@@ -10,7 +10,7 @@ interface Listener
 
     /**
      */
-    public function phpbuEnd();
+    public function phpbuEnd(Result $result);
 
     /**
      * @param array $backup

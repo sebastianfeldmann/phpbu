@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App;
 
+use phpbu\App\Factory;
 use phpbu\App\Result;
 use phpbu\App\ResultPrinter;
 use phpbu\Backup;
@@ -26,13 +27,6 @@ class Runner
     protected $printer;
 
     /**
-     * Application Result
-     *
-     * @var \phpbu\App\Result
-     */
-    protected $result;
-
-    /**
      * Run all backups configured
      *
      * @param  array $arguments
@@ -46,6 +40,10 @@ class Runner
         $stop          = false;
         $result        = new Result();
         $result->addListener($this->printer);
+
+        foreach ($this->createLoggers($arguments) as $listener) {
+            $result->addListener($listener);
+        }
 
         $result->phpbuStart($arguments);
 
@@ -74,7 +72,7 @@ class Runner
              */
             try {
                 $result->backupStart($backup);
-                $source = Backup\Factory::createSource($backup['source']['type'], $backup['source']['options']);
+                $source = Factory::createSource($backup['source']['type'], $backup['source']['options']);
                 $source->backup($target, $result);
                 $result->backupEnd($backup);
 
@@ -92,7 +90,7 @@ class Runner
                 foreach ($backup['checks'] as $check) {
                     try {
                         $result->checkStart($check);
-                        $c = Backup\Factory::createCheck($check['type']);
+                        $c = Factory::createCheck($check['type']);
                         if ($c->pass($target, $check['value'], $collector, $result)) {
                             $result->checkEnd($check);
                         } else {
@@ -119,7 +117,7 @@ class Runner
                         if ($checkFailed && $sync['skipOnCheckFail']) {
                             $result->syncSkippe($sync);
                         } else {
-                            $s = Backup\Factory::createSync($sync['type'], $sync['options']);
+                            $s = Factory::createSync($sync['type'], $sync['options']);
                             $s->sync($target, $result);
                             $result->syncEnd($sync);
                         }
@@ -146,7 +144,7 @@ class Runner
                          || ($syncFailed && $cleanup['skipOnSyncFail'])) {
                             $result->cleanupSkipped($cleanup);
                         } else {
-                            $cleaner = Backup\Factory::createCleaner($cleanup['type'], $cleanup['options']);
+                            $cleaner = Factory::createCleaner($cleanup['type'], $cleanup['options']);
                             $cleaner->cleanup($target, $collector, $result);
                             $result->cleanupEnd($cleanup);
                         }
@@ -167,7 +165,7 @@ class Runner
             }
         }
 
-        $result->phpbuEnd();
+        $result->phpbuEnd($result);
 
         $this->printer->printResult($result);
 
@@ -202,5 +200,21 @@ class Runner
         );
 
         return $printer;
+    }
+
+    /**
+     * Create all configured loggers
+     *
+     * @param  array $arguments
+     * @return array<Logger>
+     */
+    protected function createLoggers(array $arguments)
+    {
+        $loggers = array();
+        foreach ($arguments['logging'] as $log) {
+            $logger    = Factory::createLogger($log['type'], $log['options']);
+            $loggers[] = $logger;
+        }
+        return $loggers;
     }
 }

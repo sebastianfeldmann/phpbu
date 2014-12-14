@@ -1,11 +1,14 @@
 <?php
-namespace phpbu\Backup;
+namespace phpbu\App;
 
 use phpbu\App\Exception;
-use phpbu\Backup\Source;
+use phpbu\App\Listener;
 use phpbu\Backup\Check;
+use phpbu\Backup\Cleaner;
+use phpbu\Backup\Source;
 use phpbu\Backup\Sync;
-use phpbu\Backup\Cleanup;
+use phpbu\Log\Logger;
+
 
 /**
  * Source Factory
@@ -27,14 +30,18 @@ abstract class Factory
      */
     private static $classMap = array(
         //   type       => fqcn
+        'logger'  => array(
+            'json' => '\\phpbu\\Log\\Json',
+            'mail' => '\\phpbu\\Log\\Mail',
+        ),
         'source'  => array(
             'mysqldump' => '\\phpbu\\Backup\\Source\\Mysqldump',
             'tar'       => '\\phpbu\\Backup\\Source\\Tar',
         ),
         'check'   => array(
-            'SizeMin'                 => '\\phpbu\\Backup\\Check\\SizeMin',
-            'SizeDiffPreviousPercent' => '\\phpbu\\Backup\\Check\\SizeDiffPreviousPercent',
-            'SizeDiffAvgPercent'      => '\\phpbu\\Backup\\Check\\SizeDiffAvgPercent',
+            'sizemin'                 => '\\phpbu\\Backup\\Check\\SizeMin',
+            'sizediffpreviouspercent' => '\\phpbu\\Backup\\Check\\SizeDiffPreviousPercent',
+            'sizediffavgpercent'      => '\\phpbu\\Backup\\Check\\SizeDiffAvgPercent',
         ),
         'sync'    => array(
             'dropbox'   => '\\phpbu\\Backup\\Sync\\Dropbox',
@@ -43,9 +50,9 @@ abstract class Factory
             'sftp'      => '\\phpbu\\Backup\\Sync\\Sftp',
         ),
         'cleaner' => array(
-            'Capacity'  => '\\phpbu\\Backup\\Cleaner\\Capacity',
-            'Outdated'  => '\\phpbu\\Backup\\Cleaner\\Outdated',
-            'Quantity'  => '\\phpbu\\Backup\\Cleaner\\Quantity',
+            'capacity'  => '\\phpbu\\Backup\\Cleaner\\Capacity',
+            'outdated'  => '\\phpbu\\Backup\\Cleaner\\Outdated',
+            'quantity'  => '\\phpbu\\Backup\\Cleaner\\Quantity',
         ),
     );
 
@@ -55,18 +62,40 @@ abstract class Factory
      *
      * @param  string $type
      * @param  string $alias
-     * @param  array  $conf
      * @throws \phpbu\App\Exception
      * @return mixed
      */
-    public static function create($type, $alias, $conf = array())
+    public static function create($type, $alias)
     {
+        $type  = strtolower($type);
+        $alias = strtolower($alias);
         self::checkType($type);
         if (!isset(self::$classMap[$type][$alias])) {
             throw new Exception(sprintf('unknown %s: %s', $type, $alias));
         }
         $class = self::$classMap[$type][$alias];
         return new $class();
+    }
+
+    /**
+     * Logger Factory.
+     *
+     * @param  string $alias
+     * @param  array  $conf
+     * @throws \phpbu\App\Exception
+     * @return \phpbu\Backup\Source
+     */
+    public static function createLogger($alias, $conf = array())
+    {
+        $logger = self::create('logger', $alias);
+        if (!($logger instanceof Logger)) {
+            throw new Exception(sprintf('logger \'%s\' has to implement the \'Logger\' interfaces', $alias));
+        }
+        if (!($logger instanceof Listener)) {
+            throw new Exception(sprintf('logger \'%s\' has to implement the \'Listener\' interface', $alias));
+        }
+        $logger->setup($conf);
+        return $logger;
     }
 
     /**
@@ -151,6 +180,8 @@ abstract class Factory
      */
     public static function register($type, $alias, $fqcn, $force = false)
     {
+        $type  = strtolower($type);
+        $alias = strtolower($alias);
         self::checkType($type);
         if (!$force && isset(self::$classMap[$type][$alias])) {
             throw new Exception(sprintf('%s is already registered use force parameter to overwrite', $type));
@@ -167,7 +198,7 @@ abstract class Factory
     private static function checkType($type)
     {
         if (!isset(self::$classMap[$type])) {
-            throw new Exception('invalid type, use \'source\', \'check\', \'sync\' or \'cleaner\'');
+            throw new Exception('invalid type, use \'source\', \'check\', \'sync\', \'cleaner\' or \'logger\'');
         }
     }
 }

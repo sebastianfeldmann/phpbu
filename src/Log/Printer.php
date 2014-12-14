@@ -41,12 +41,22 @@ class Printer
     protected $printsHTML = false;
 
     /**
-     * Constructor.
+     * Constructor
      *
-     * @param  mixed                    $out
-     * @throws InvalidArgumentException
+     * @param string $out
      */
     public function __construct($out = null)
+    {
+        $this->setOut($out);
+    }
+
+    /**
+     * Out setter.
+     *
+     * @param  mixed $out
+     * @throws InvalidArgumentException
+     */
+    protected function setOut($out = null)
     {
         if ($out !== null) {
             if (is_string($out)) {
@@ -58,8 +68,7 @@ class Printer
                     }
                     $this->out = fsockopen($out[0], $out[1]);
                 } else {
-                    if (strpos($out, 'php://') === false &&
-                        !is_dir(dirname($out))) {
+                    if (strpos($out, 'php://') === false && !is_dir(dirname($out))) {
                         mkdir(dirname($out), 0777, true);
                     }
                     $this->out = fopen($out, 'wt');
@@ -158,7 +167,7 @@ class Printer
         if (is_bool($autoFlush)) {
             $this->autoFlush = $autoFlush;
         } else {
-            throw new Exception('Invalid argument, boolean expected');
+            throw new InvalidArgumentException('Invalid argument, boolean expected');
         }
     }
 }

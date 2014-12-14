@@ -156,7 +156,7 @@ class Result
     public function phpbuEnd()
     {
         foreach ($this->listeners as $l) {
-            $l->phpbuEnd();
+            $l->phpbuEnd($this);
         }
     }
 
