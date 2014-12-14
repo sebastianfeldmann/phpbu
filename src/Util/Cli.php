@@ -62,4 +62,64 @@ abstract class Cli
         }
         throw new RuntimeException(sprintf('\'%s\' was nowhere to be found please specify the correct path', $cmd));
     }
+
+    /**
+     * Is given path absolute
+     *
+     * @param  string $path
+     * @return boolean
+     */
+    public static function isAbsolutePath($path)
+    {
+        // path already absolute?
+        if ($path[0] === '/') {
+            return true;
+        }
+
+        // Matches the following on Windows:
+        //  - \\NetworkComputer\Path
+        //  - \\.\D:
+        //  - \\.\c:
+        //  - C:\Windows
+        //  - C:\windows
+        //  - C:/windows
+        //  - c:/windows
+        if (defined('PHP_WINDOWS_VERSION_BUILD')
+            && ($path[0] === '\\' || (strlen($path) >= 3 && preg_match('#^[A-Z]\:[/\\\]#i', substr($path, 0, 3))))
+        ) {
+            return true;
+        }
+
+        // Stream
+        if (strpos($path, '://') !== false) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Converts a path to an absolute one if necessary relative to a given base path.
+     *
+     * @param  string  $path
+     * @param  string  $base
+     * @param  boolean $useIncludePath
+     * @return string
+     */
+    public static function toAbsolutePath($path, $base, $useIncludePath = false)
+    {
+        if (self::isAbsolutePath($path)) {
+            return $path;
+        }
+
+        $file = $base . DIRECTORY_SEPARATOR . $path;
+
+        if ($useIncludePath && !file_exists($file)) {
+            $includePathFile = stream_resolve_include_path($path);
+            if ($includePathFile) {
+                $file = $includePathFile;
+            }
+        }
+        return $file;
+    }
 }

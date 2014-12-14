@@ -4,6 +4,7 @@ namespace phpbu\App;
 use DOMElement;
 use DOMXPath;
 use phpbu\App\Exception;
+use phpbu\Util\Cli;
 use phpbu\Util\String;
 
 /**
@@ -272,77 +273,42 @@ class Configuration
      */
     public function getLoggingSettings()
     {
-        $settings = array();
-        foreach ($this->xpath->query('logging/log') as $log) {
-            $type   = (string) $log->getAttribute('type');
-            $target = (string) $log->getAttribute('target');
-            $level  = (string) $log->getAttribute('level');
-
-            if (!$target) {
-                continue;
-            }
-
-            $target = $this->toAbsolutePath($target);
-            $conf   = array(
-                'type'   => $type,
-                'target' => $target,
-                'level'  => $level,
+        $loggers   = array();
+        foreach ($this->xpath->query('logging/log') as $logNode) {
+            $log    = array(
+                'type'    => (string) $logNode->getAttribute('type'),
+                'options' => array(),
             );
-
-            // cronfire logging
-            if ($type == 'cronfire') {
-                if ($log->hasAttribute('host')) {
-                    $conf['host'] = (string) $log->getAttribute('host');
-                }
+            $tarAtr = (string) $logNode->getAttribute('target');
+            if (!empty($tarAtr)) {
+                $log['options']['target'] = $this->toAbsolutePath($tarAtr);
             }
-            $settings[] = $conf;
+
+            foreach ($logNode->getElementsByTagName('option') as $optionNode) {
+                $name  = (string) $optionNode->getAttribute('name');
+                $value = (string) $optionNode->getAttribute('value');
+                // check for path option
+                if ('target' == $name) {
+                    $value = $this->toAbsolutePath($value);
+                }
+                $log['options'][$name] = $value;
+            }
+
+            $loggers[] = $log;
         }
-        return $settings;
+        return $loggers;
     }
 
     /**
      * Converts a path to an absolute one if necessary.
      *
-     * @author Sebastian Bergmann <sebastian@phpunit.de>
      * @param  string  $path
      * @param  boolean $useIncludePath
      * @return string
      */
     protected function toAbsolutePath($path, $useIncludePath = false)
     {
-        // path already absolute?
-        if ($path[0] === '/') {
-            return $path;
-        }
-
-        // Matches the following on Windows:
-        //  - \\NetworkComputer\Path
-        //  - \\.\D:
-        //  - \\.\c:
-        //  - C:\Windows
-        //  - C:\windows
-        //  - C:/windows
-        //  - c:/windows
-        if (defined('PHP_WINDOWS_VERSION_BUILD')
-         && ($path[0] === '\\' || (strlen($path) >= 3 && preg_match('#^[A-Z]\:[/\\\]#i', substr($path, 0, 3))))
-        ) {
-            return $path;
-        }
-
-        // Stream
-        if (strpos($path, '://') !== false) {
-            return $path;
-        }
-
-        $file = dirname($this->filename) . DIRECTORY_SEPARATOR . $path;
-
-        if ($useIncludePath && !file_exists($file)) {
-            $includePathFile = stream_resolve_include_path($path);
-            if ($includePathFile) {
-                $file = $includePathFile;
-            }
-        }
-        return $file;
+        return Cli::toAbsolutePath($path, dirname($this->filename), $useIncludePath);
     }
 
     /**
