@@ -58,17 +58,21 @@ class Sftp implements Sync
 
     public function sync(Target $target, Result $result)
     {
+        // silence phpseclib
+        $old  = error_reporting(0);
         $sftp = new Net_SFTP($this->host);
         if (!$sftp->login($this->user, $this->password)) {
+            error_reporting($old);
             throw new Exception(
                 sprintf(
                     'authentication failed for %s@%s%s',
                     $this->user,
                     $this->host,
-                    empty($this->password) ? '' : ' using password'
+                    empty($this->password) ? '' : ' with password ****'
                 )
             );
         }
+        error_reporting($old);
 
         $remoteFilename = $target->getFilenameCompressed();
         $localFile      = $target->getPathname(true);
