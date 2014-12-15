@@ -17,7 +17,7 @@ Get detailed information about all the features and a 'getting startet' tutorial
     + PostgreSQL (planned)
 * Validate backups
     + Check min size
-    + Comparing with previous backups (planned)
+    + Comparing with previous backups
 * Sync backups to other locations
     + Amazon s3 (planned)
     + Dropbox (work in progress)
