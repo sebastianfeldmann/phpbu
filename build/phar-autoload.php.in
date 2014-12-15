@@ -31,6 +31,8 @@ spl_autoload_register(
   }
 );
 
+require __PHPBU_PHAR_ROOT__ . '/swiftmailer/swift_init.php';
+
 Phar::mapPhar('___PHAR___');
 
 if ($execute) {
