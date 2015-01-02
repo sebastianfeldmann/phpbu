@@ -206,45 +206,46 @@ class App
         if (isset($this->arguments['configuration'])) {
             try {
                 $configuration = new Configuration($this->arguments['configuration']);
+
+                $phpbu                      = $configuration->getAppSettings();
+                $phpSettings                = $configuration->getPhpSettings();
+                $this->arguments['logging'] = $configuration->getLoggingSettings();
+                $this->arguments['backups'] = $configuration->getBackupSettings();
+
+                // argument bootstrap overrules config bootstrap
+                if (isset($this->arguments['bootstrap'])) {
+                    $this->handleBootstrap($this->arguments['bootstrap']);
+                } elseif (isset($phpbu['bootstrap'])) {
+                    $this->handleBootstrap($phpbu['bootstrap']);
+                }
+
+                if (isset($phpbu['verbose']) && $phpbu['verbose'] === true) {
+                    $this->arguments['verbose'] = true;
+                }
+
+                if (isset($phpbu['colors']) && $phpbu['colors'] === true) {
+                    $this->arguments['colors'] = true;
+                }
+
+                if (isset($phpbu['debug']) && $phpbu['debug'] === true) {
+                    $this->arguments['debug'] = true;
+                }
+
+                if (!empty($phpSettings['include_path'])) {
+                    $this->handleIncludePath($phpSettings['include_path']);
+                }
+
+                // handle php.ini settings
+                foreach ($phpSettings['ini'] as $name => $value) {
+                    if (defined($value)) {
+                        $value = constant($value);
+                    }
+                    ini_set($name, $value);
+                }
+
             } catch (Exception $e) {
                 $this->printError($e->getMessage());
                 exit(self::EXIT_FAILURE);
-            }
-
-            $phpbu                      = $configuration->getAppSettings();
-            $phpSettings                = $configuration->getPhpSettings();
-            $this->arguments['logging'] = $configuration->getLoggingSettings();
-            $this->arguments['backups'] = $configuration->getBackupSettings();
-
-            // argument bootstrap overrules config bootstrap
-            if (isset($this->arguments['bootstrap'])) {
-                $this->handleBootstrap($this->arguments['bootstrap']);
-            } elseif (isset($phpbu['bootstrap'])) {
-                $this->handleBootstrap($phpbu['bootstrap']);
-            }
-
-            if (isset($phpbu['verbose']) && $phpbu['verbose'] === true) {
-                $this->arguments['verbose'] = true;
-            }
-
-            if (isset($phpbu['colors']) && $phpbu['colors'] === true) {
-                $this->arguments['colors'] = true;
-            }
-
-            if (isset($phpbu['debug']) && $phpbu['debug'] === true) {
-                $this->arguments['debug'] = true;
-            }
-
-            if (!empty($phpSettings['include_path'])) {
-                $this->handleIncludePath($phpSettings['include_path']);
-            }
-
-            // handle php.ini settings
-            foreach ($phpSettings['ini'] as $name => $value) {
-                if (defined($value)) {
-                    $value = constant($value);
-                }
-                ini_set($name, $value);
             }
         }
 
