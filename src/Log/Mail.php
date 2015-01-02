@@ -5,6 +5,7 @@ use phpbu\App\Exception;
 use phpbu\App\Listener;
 use phpbu\App\Result;
 use phpbu\Log\Logger;
+use PHP_Timer;
 
 /**
  * Mail Logger
@@ -55,6 +56,34 @@ class Mail implements Listener, Logger
     protected $recepients = array();
 
     /**
+     * Amount of executed backups
+     *
+     * @var integer
+     */
+    private $numBackups = 0;
+
+    /**
+     * Amount of executed checks
+     *
+     * @var integer
+     */
+    private $numChecks = 0;
+
+    /**
+     * Amount of executed Syncs
+     *
+     * @var integer
+     */
+    private $numSyncs = 0;
+
+    /**
+     * Amount of executed Cleanups
+     *
+     * @var integer
+     */
+    private $numCleanups = 0;
+
+    /**
      * @see \phpbu\Log\Logger::setup
      */
     public function setup(array $options)
@@ -62,7 +91,7 @@ class Mail implements Listener, Logger
         if (empty($options['recipients'])) {
             throw new Exception('no recipients given');
         }
-        $emails              = $options['recipients'];
+        $mails               = $options['recipients'];
         $server              = gethostname();
         $this->subject       = isset($options['subejct'])
                              ? $options['subject']
@@ -76,7 +105,7 @@ class Mail implements Listener, Logger
         $this->transportType = isset($options['transport'])
                              ? $options['transport']
                              : 'mail';
-        $this->recepients    = array_map('trim', explode(';', $emails));
+        $this->recepients    = array_map('trim', explode(';', $mails));
 
         // create transport an mailer
         $transport    = $this->createTransport($this->transportType, $options);
@@ -96,15 +125,19 @@ class Mail implements Listener, Logger
      */
     public function phpbuEnd(Result $result)
     {
-        $body    = '';
+        $header  = $this->getHeaderHtml($result);
+        $errors  = $this->getErrorHtml($result);
+        $info    = $this->getInfoHtml($result);
+        $footer  = $this->getFooterHtml();
+        $body    = $header . $errors . $info . $footer;
         $message = \Swift_Message::newInstance();
         $message->setSubject($this->subject)
                 ->setFrom($this->senderMail, $this->senderName)
                 ->setTo($this->recepients)
-                //->setBody('Here is the message itself')
+                ->setBody($body)
                 ->addPart($body, 'text/html');
 
-        $sent = $this->mailer->send($message);
+        $sent = true;//$this->mailer->send($message);
         if (!$sent) {
             throw new Exception('mail not send');
         }
@@ -115,7 +148,7 @@ class Mail implements Listener, Logger
      */
     public function backupStart($backup)
     {
-        // do something fooish
+        $this->numBackups++;
     }
 
     /**
@@ -139,7 +172,7 @@ class Mail implements Listener, Logger
      */
     public function checkStart($check)
     {
-        // do something fooish
+        $this->numChecks++;
     }
 
     /**
@@ -163,7 +196,7 @@ class Mail implements Listener, Logger
      */
     public function syncStart($sync)
     {
-        // do something fooish
+        $this->numSyncs++;
     }
 
     /**
@@ -240,10 +273,16 @@ class Mail implements Listener, Logger
     protected function createTransport($type, array $options)
     {
         switch ($type) {
-            case 'mail':
+            case 'null':
+                 /* @var $transport \Swift_NullTransport */
                 $transport = \Swift_NullTransport::newInstance();
-                //$transport = \Swift_MailTransport::newInstance();
                 break;
+
+            case 'mail':
+                /* @var $transport \Swift_MailTransport */
+                $transport = \Swift_MailTransport::newInstance();
+                break;
+
             case 'smtp':
                 if (!isset($options['smtp.host'])) {
                     throw new Exception('option \'smtp.host\' ist missing');
@@ -252,8 +291,8 @@ class Mail implements Listener, Logger
                 $port       = isset($options['smtp.port'])
                             ? $options['smtp.port']
                             : 25;
-                $user       = isset($options['smtp.user'])
-                            ? $options['smtp.user']
+                $username   = isset($options['smtp.username'])
+                            ? $options['smtp.username']
                             : null;
                 $password   = isset($options['smtp.password'])
                             ? $options['smtp.password']
@@ -261,21 +300,152 @@ class Mail implements Listener, Logger
                 $encryption = isset($options['smtp.encryption'])
                             ? $options['smtp.encryption']
                             : null;
-                /* @var $transport \Swift_SmtpTransport */
-                $transport  = \Swift_SmtpTransport::newInstance($host, $port);
 
-                if ($user && $password) {
-                    $transport->setUsername($options['smtp.username'])
-                              ->setPassword($options['smtp.password']);
+                /* @var $transport \Swift_SmtpTransport */
+                $transport = \Swift_SmtpTransport::newInstance($host, $port);
+
+                if ($username && $password) {
+                    $transport->setUsername($username)
+                              ->setPassword($password);
                 }
                 if ($encryption) {
                     $transport->setEncryption($encryption);
                 }
                 break;
+
             default:
                 throw new Exception('mail transport not supported');
                 break;
         }
         return $transport;
+    }
+
+    /**
+     * Returns mail header html
+     *
+     * @param  \phpbu\App\Result $result
+     * @return string
+     */
+    protected function getHeaderHtml(Result $result)
+    {
+        $html = '';
+        if (count($result->getBackups()) === 0) {
+            $html = '<p style="color:orange;">No backups executed!</p>';
+        } elseif ($result->wasSuccessful() && $result->noneSkipped() && $result->noneFailed()) {
+            $html .= '<p>' .
+                sprintf(
+                    'OK (%d backup%s, %d check%s, %d sync%s, %d cleanup%s)',
+                    count($result->getBackups()),
+                    (count($result->getBackups()) == 1) ? '' : 's',
+                    $this->numChecks,
+                    ($this->numChecks == 1) ? '' : 's',
+                    $this->numSyncs,
+                    ($this->numSyncs == 1) ? '' : 's',
+                    $this->numCleanups,
+                    ($this->numCleanups == 1) ? '' : 's'
+                ) .
+                '</p>';
+        } elseif ((!$result->noneSkipped() || !$result->noneFailed()) && $result->wasSuccessful()) {
+            $html .= '<p style="color:orange;">' .
+                sprintf(
+                    'OK, but skipped or failed Syncs or Cleanups!<br />' .
+                    'Backups: %d, Syncs: skipped|failed %d|%d, Cleanups: skipped|failed %d|%d.',
+                    count($result->getBackups()),
+                    $result->syncsSkippedCount(),
+                    $result->syncsFailedCount(),
+                    $result->cleanupsSkippedCount(),
+                    $result->cleanupsFailedCount()
+                ) .
+                '</p>';
+        } else {
+            $html .= '<p style="color:red;">' .
+                sprintf(
+                    'FAILURE!<br />' .
+                    'Backups: %d, failed Checks: %d, failed Syncs: %d, failed Cleanups: %d.',
+                    count($result->getBackups()),
+                    $result->checksFailedCount(),
+                    $result->syncsFailedCount(),
+                    $result->cleanupsFailedCount()
+                ) .
+                '</p>';
+        }
+    }
+
+    /**
+     * Get error informations
+     *
+     * @param  \phpbu\App\Result $result
+     * @return string
+     */
+    protected function getErrorHtml(Result $result)
+    {
+        $html = '';
+        /* @var $e Exception */
+        foreach ($result->getErrors() as $e) {
+            $html .= '<p style="color:red;">' .
+                sprintf(
+                    "Exception '%s' with message '%s'<br />in %s:%d",
+                    get_class($e),
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine()
+                ) .
+                '</p>';
+
+        }
+        return $html;
+    }
+
+    /**
+     * Returns backup informations html
+     *
+     * @param  \phpbu\App\Result $result
+     * @return string
+     */
+    protected function getInfoHtml(Result $result)
+    {
+        $html    = '';
+        $backups = $result->getBackups();
+        if (count($backups) > 0) {
+            $html .= '<table>';
+            foreach ($backups as $backup) {
+                $html .= '<tr><td colspan="4">';
+                $html .= sprintf('backup %s ', $backup->getName());
+                if ($backup->wasSuccessful() && $backup->noneSkipped() && $backup->noneFailed()) {
+                    $html .= 'OK';
+                } elseif ((!$backup->noneSkipped() || !$backup->noneFailed()) && $backup->wasSuccessful()) {
+                    $html .= 'OK, but skipped or failed Syncs or Cleanups!';
+                } else {
+                    $html .= 'FAILED';
+                }
+                $html .= '</td></tr><tr><td></td><td>executed</td><td>skipped</td><td>failed</td></tr>';
+
+                $html .= '<tr><td>checks</td>'
+                       . '<td style="float:right;">' . $backup->checkCount() . '</td>'
+                       . '<td></td>'
+                       . '<td style="float:right;">' . $backup->checkFailedCount() . '</td></tr>'
+                       . '<tr><td>syncs</td>'
+                       . '<td style="float:right;">' . $backup->syncCount() . '</td>'
+                       . '<td style="float:right;">' . $backup->syncSkippedCount() . '</td>'
+                       . '<td style="float:right;">' . $backup->syncFailedCount() . '</td></tr>'
+                       . '<tr><td>cleanups</td>'
+                       . '<td style="float:right;">' . $backup->cleanupCount() . '</td>'
+                       . '<td style="float:right;">' . $backup->cleanupSkippedCount() . '</td>'
+                       . '<td style="float:right;">' . $backup->cleanupFailedCount() . '</td></tr>';
+            }
+            $html .= '</table>';
+        }
+
+        return $html;
+    }
+
+    /**
+     * Return mail body footer.
+     *
+     * @return string
+     */
+    protected function getFooterHtml()
+    {
+        return '<p>' . PHP_Timer::resourceUsage() . '</p>';
     }
 }
