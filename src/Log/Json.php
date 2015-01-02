@@ -44,7 +44,11 @@ class Json extends Printer implements Listener, Logger
      */
     public function phpbuEnd(Result $result)
     {
-
+        $output = array(
+            'errors'  => $this->getErrors($result),
+            'backups' => $this->getBackups($result),
+        );
+        $this->write($output);
     }
 
     /**
@@ -165,5 +169,69 @@ class Json extends Printer implements Listener, Logger
     public function debug($msg)
     {
         // do something fooish
+    }
+
+    /**
+     * @param string $buffer
+     */
+    public function write($buffer)
+    {
+        parent::write(json_encode($buffer));
+    }
+
+    /**
+     * Get error informations
+     *
+     * @param  \phpbu\App\Result $result
+     * @return array
+     */
+    protected function getErrors(Result $result)
+    {
+        $errors = array();
+        /* @var $e Exception */
+        foreach ($result->getErrors() as $e) {
+            $errors[] = array(
+                'class' => get_class($e),
+                'msg'   => $e->getMessage(),
+                'file'  => $e->getFile(),
+                'line'  => $e->getLine()
+            );
+        }
+        return $errors;
+    }
+
+    /**
+     * Returns backup informations
+     *
+     * @param  \phpbu\App\Result $result
+     * @return array
+     */
+    protected function getBackups(Result $result)
+    {
+        $output  = array();
+        $backups = $result->getBackups();
+        if (count($backups) > 0) {
+            foreach ($backups as $backup) {
+                $output[] = array(
+                    'name'     => $backup->getName(),
+                    'checks'   => array(
+                        'executed' => $backup->checkCount(),
+                        'failed'   => $backup->checkFailedCount(),
+                    ),
+                    'syncs'    => array(
+                        'executed' => $backup->syncCount(),
+                        'skipped'  => $backup->syncSkippedCount(),
+                        'failed'   => $backup->syncFailedCount(),
+                    ),
+                    'cleanups' => array(
+                        'executed' => $backup->cleanupCount(),
+                        'skipped'  => $backup->cleanupSkippedCount(),
+                        'failed'   => $backup->cleanupFailedCount(),
+                    ),
+                );
+            }
+        }
+
+        return $output;
     }
 }
