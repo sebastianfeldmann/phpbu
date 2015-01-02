@@ -325,12 +325,10 @@ class ResultPrinter extends Printer implements Listener
     public function printResult(Result $result)
     {
         $this->printHeader();
-
         $this->printErrors($result);
 
-        $backups = $result->getBackups();
         if ($this->verbose) {
-            foreach ($backups as $backup) {
+            foreach ($result->getBackups() as $backup) {
                 $this->printBackupVerbose($backup);
             }
         }
