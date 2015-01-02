@@ -313,6 +313,17 @@ class Mail implements Listener, Logger
                 }
                 break;
 
+            case 'sendmail':
+                if (!isset($options['sendmail.path'])) {
+                    throw new Exception('option \'sendmail.path\' ist missing');
+                }
+                $path    = $options['sendmail.path'];
+                $options = isset($options['sendmail.options']) ? ' ' . $options['sendmail.options'] : '';
+
+                /* @var $transport \Swift_SendmailTransport */
+                $transport = \Swift_SendmailTransport::newInstance($path . $options);
+                break;
+
             default:
                 throw new Exception('mail transport not supported');
                 break;
