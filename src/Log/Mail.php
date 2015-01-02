@@ -137,7 +137,7 @@ class Mail implements Listener, Logger
                 ->setBody($body)
                 ->addPart($body, 'text/html');
 
-        $sent = true;//$this->mailer->send($message);
+        $sent = $this->mailer->send($message);
         if (!$sent) {
             throw new Exception('mail not send');
         }
