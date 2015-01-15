@@ -10,17 +10,26 @@ use phpbu\Log\Printer;
 /**
  * Json Logger
  *
- * @package    phpbu
+ * @package phpbu
  * @subpackage Log
- * @author     Sebastian Feldmann <sebastian@phpbu.de>
- * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
- * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
- * @link       http://www.phpbu.de/
- * @since      Class available since Release 1.0.0
+ * @author Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright 2014 Sebastian Feldmann <sebastian@phpbu.de>
+ * @license http://www.opensource.org/licenses/BSD-3-Clause The BSD 3-Clause License
+ * @link http://www.phpbu.de/
+ * @since Class available since Release 1.0.0
  */
 class Json extends Printer implements Listener, Logger
 {
+
     /**
+     * List of all debug messages
+     *
+     * @var array
+     */
+    protected $debug = array();
+
+    /**
+     *
      * @see \phpbu\Log\Logger::setup
      */
     public function setup(array $options)
@@ -32,26 +41,28 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::phpbuStart()
      */
     public function phpbuStart($settings)
-    {
-
-    }
+    {}
 
     /**
+     *
      * @see \phpbu\App\Listener::phpbuEnd()
      */
     public function phpbuEnd(Result $result)
     {
         $output = array(
-            'errors'  => $this->getErrors($result),
-            'backups' => $this->getBackups($result),
+            'errors' => $this->extractErrors($result),
+            'debug' => $this->debug,
+            'backups' => $this->extractBackups($result)
         );
         $this->write($output);
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::backupStart()
      */
     public function backupStart($backup)
@@ -60,6 +71,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::backupEnd()
      */
     public function backupEnd($backup)
@@ -68,6 +80,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::backupFailed()
      */
     public function backupFailed($backup)
@@ -76,14 +89,14 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::checkStart()
      */
     public function checkStart($check)
-    {
-
-    }
+    {}
 
     /**
+     *
      * @see \phpbu\App\Listener::checkEnd()
      */
     public function checkEnd($check)
@@ -92,6 +105,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::checkFailed()
      */
     public function checkFailed($check)
@@ -100,6 +114,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::syncStart()
      */
     public function syncStart($sync)
@@ -108,6 +123,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::syncEnd()
      */
     public function syncEnd($sync)
@@ -116,6 +132,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::syncSkipped()
      */
     public function syncSkipped($sync)
@@ -124,6 +141,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::syncFailed()
      */
     public function syncFailed($sync)
@@ -132,6 +150,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::cleanupStart()
      */
     public function cleanupStart($cleanup)
@@ -140,6 +159,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::cleanupEnd()
      */
     public function cleanupEnd($cleanup)
@@ -148,6 +168,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::cleanupSkipped()
      */
     public function cleanupSkipped($cleanup)
@@ -156,6 +177,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::cleanupFailed()
      */
     public function cleanupFailed($cleanup)
@@ -164,14 +186,16 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     *
      * @see \phpbu\App\Listener::debug()
      */
     public function debug($msg)
     {
-        // do something fooish
+        $this->debug[] = $msg;
     }
 
     /**
+     *
      * @param string $buffer
      */
     public function write($buffer)
@@ -182,10 +206,10 @@ class Json extends Printer implements Listener, Logger
     /**
      * Get error informations
      *
-     * @param  \phpbu\App\Result $result
+     * @param \phpbu\App\Result $result
      * @return array
      */
-    protected function getErrors(Result $result)
+    protected function extractErrors(Result $result)
     {
         $errors = array();
         /* @var $e Exception */
@@ -203,31 +227,31 @@ class Json extends Printer implements Listener, Logger
     /**
      * Returns backup informations
      *
-     * @param  \phpbu\App\Result $result
+     * @param \phpbu\App\Result $result
      * @return array
      */
-    protected function getBackups(Result $result)
+    protected function extractBackups(Result $result)
     {
-        $output  = array();
+        $output = array();
         $backups = $result->getBackups();
         if (count($backups) > 0) {
             foreach ($backups as $backup) {
                 $output[] = array(
-                    'name'     => $backup->getName(),
-                    'checks'   => array(
+                    'name' => $backup->getName(),
+                    'checks' => array(
                         'executed' => $backup->checkCount(),
-                        'failed'   => $backup->checkFailedCount(),
+                        'failed'   => $backup->checkCountFailed()
                     ),
-                    'syncs'    => array(
+                    'syncs' => array(
                         'executed' => $backup->syncCount(),
-                        'skipped'  => $backup->syncSkippedCount(),
-                        'failed'   => $backup->syncFailedCount(),
+                        'skipped'  => $backup->syncCountSkipped(),
+                        'failed'   => $backup->syncCountFailed()
                     ),
                     'cleanups' => array(
                         'executed' => $backup->cleanupCount(),
-                        'skipped'  => $backup->cleanupSkippedCount(),
-                        'failed'   => $backup->cleanupFailedCount(),
-                    ),
+                        'skipped'  => $backup->cleanupCountSkipped(),
+                        'failed'   => $backup->cleanupCountFailed()
+                    )
                 );
             }
         }

@@ -178,7 +178,7 @@ class Backup
      *
      * @return number
      */
-    public function checkFailedCount()
+    public function checkCountFailed()
     {
         return count($this->checksFailed);
     }
@@ -218,7 +218,7 @@ class Backup
      *
      * @return number
      */
-    public function syncSkippedCount()
+    public function syncCountSkipped()
     {
         return count($this->syncsSkipped);
     }
@@ -238,7 +238,7 @@ class Backup
      *
      * @return number
      */
-    public function syncFailedCount()
+    public function syncCountFailed()
     {
         return count($this->syncsFailed);
     }
@@ -278,7 +278,7 @@ class Backup
      *
      * @return number
      */
-    public function cleanupSkippedCount()
+    public function cleanupCountSkipped()
     {
         return count($this->cleanupsSkipped);
     }
@@ -298,7 +298,7 @@ class Backup
      *
      * @return number
      */
-    public function cleanupFailedCount()
+    public function cleanupCountFailed()
     {
         return count($this->cleanupsFailed);
     }

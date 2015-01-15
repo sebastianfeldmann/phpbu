@@ -434,17 +434,17 @@ class Mail implements Listener, Logger
                 $html .= '<tr><td>checks</td>'
                        . '<td style="float:right;">' . $backup->checkCount() . '</td>'
                        . '<td></td>'
-                       . '<td style="float:right;">' . $backup->checkFailedCount() . '</td></tr>'
+                       . '<td style="float:right;">' . $backup->checkCountFailed() . '</td></tr>'
                        . '<tr><td>syncs</td>'
                        . '<td style="float:right;">' . $backup->syncCount() . '</td>'
-                       . '<td style="float:right;">' . $backup->syncSkippedCount() . '</td>'
-                       . '<td style="float:right;">' . $backup->syncFailedCount() . '</td></tr>'
+                       . '<td style="float:right;">' . $backup->syncCountSkipped() . '</td>'
+                       . '<td style="float:right;">' . $backup->syncCountFailed() . '</td></tr>'
                        . '<tr><td>cleanups</td>'
                        . '<td style="float:right;">' . $backup->cleanupCount() . '</td>'
-                       . '<td style="float:right;">' . $backup->cleanupSkippedCount() . '</td>'
-                       . '<td style="float:right;">' . $backup->cleanupFailedCount() . '</td></tr>';
+                       . '<td style="float:right;">' . $backup->cleanupCountSkipped() . '</td>'
+                       . '<td style="float:right;">' . $backup->cleanupCountFailed() . '</td></tr>';
             }
-            $html .= '</table>';
+            $html .= '</table><br /><br />';
         }
 
         return $html;

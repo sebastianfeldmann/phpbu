@@ -389,13 +389,13 @@ class ResultPrinter extends Printer implements Listener
             );
         }
         $chExecuted = str_pad($backup->checkCount(), 8, ' ', STR_PAD_LEFT);
-        $chFailed   = str_pad($backup->checkFailedCount(), 6, ' ', STR_PAD_LEFT);
+        $chFailed   = str_pad($backup->checkCountFailed(), 6, ' ', STR_PAD_LEFT);
         $syExecuted = str_pad($backup->syncCount(), 8, ' ', STR_PAD_LEFT);
-        $sySkipped  = str_pad($backup->syncSkippedCount(), 7, ' ', STR_PAD_LEFT);
-        $syFailed   = str_pad($backup->syncFailedCount(), 6, ' ', STR_PAD_LEFT);
+        $sySkipped  = str_pad($backup->syncCountSkipped(), 7, ' ', STR_PAD_LEFT);
+        $syFailed   = str_pad($backup->syncCountFailed(), 6, ' ', STR_PAD_LEFT);
         $clExecuted = str_pad($backup->cleanupCount(), 8, ' ', STR_PAD_LEFT);
-        $clSkipped  = str_pad($backup->cleanupSkippedCount(), 7, ' ', STR_PAD_LEFT);
-        $clFailed   = str_pad($backup->cleanupFailedCount(), 6, ' ', STR_PAD_LEFT);
+        $clSkipped  = str_pad($backup->cleanupCountSkipped(), 7, ' ', STR_PAD_LEFT);
+        $clFailed   = str_pad($backup->cleanupCountFailed(), 6, ' ', STR_PAD_LEFT);
 
         $out = '          | executed | skipped | failed |' . PHP_EOL
              . '----------+----------+---------+--------+' . PHP_EOL
