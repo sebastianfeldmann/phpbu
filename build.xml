@@ -127,7 +127,26 @@
     <exclude name="**/autoload.php" />
    </fileset>
   </copy>
+
+  <copy file="${basedir}/vendor/phpseclib/phpseclib/LICENSE" tofile="${basedir}/build/phar/phpseclib/LICENSE"/>
+  <copy todir="${basedir}/build/phar/phpseclib">
+   <fileset dir="${basedir}/vendor/phpseclib/phpseclib/phpseclib">
+    <include name="**/*.php" />
+    <include name="**/*.cnf" />
+    <exclude name="**/autoload.php" />
+   </fileset>
+  </copy>
+
+  <copy file="${basedir}/vendor/swiftmailer/swiftmailer/LICENSE" tofile="${basedir}/build/phar/swiftmailer/LICENSE"/>
+  <copy todir="${basedir}/build/phar/swiftmailer">
+   <fileset dir="${basedir}/vendor/swiftmailer/swiftmailer/lib">
+    <include name="**/*.php" />
+    <exclude name="**/swift_required_pear.php" />
+   </fileset>
+  </copy>
+
  </target>
+
 
  <target name="phar-build">
   <copy todir="${basedir}/build/phar">
