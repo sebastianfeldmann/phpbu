@@ -5,6 +5,7 @@ use phpbu\App\Exception;
 use phpbu\App\Listener;
 use phpbu\App\Result;
 use phpbu\Log\Logger;
+use phpbu\Util\String;
 use PHP_Timer;
 
 /**
@@ -84,6 +85,13 @@ class Mail implements Listener, Logger
     private $numCleanups = 0;
 
     /**
+     * Send mail only if there was an error
+     *
+     * @var boolean
+     */
+    private $sendOnlyOnError;
+
+    /**
      * @see \phpbu\Log\Logger::setup
      */
     public function setup(array $options)
@@ -91,21 +99,24 @@ class Mail implements Listener, Logger
         if (empty($options['recipients'])) {
             throw new Exception('no recipients given');
         }
-        $mails               = $options['recipients'];
-        $server              = gethostname();
-        $this->subject       = isset($options['subejct'])
-                             ? $options['subject']
-                             : 'PHPBU backup report from ' . $server;
-        $this->senderMail    = isset($options['sender.mail'])
-                             ? $options['sender.mail']
-                             : 'phpbu@' . $server;
-        $this->senderName    = isset($options['sender.name'])
-                             ? $options['sender.name']
-                             : null;
-        $this->transportType = isset($options['transport'])
-                             ? $options['transport']
-                             : 'mail';
-        $this->recepients    = array_map('trim', explode(';', $mails));
+        $mails                 = $options['recipients'];
+        $server                = gethostname();
+        $this->sendOnlyOnError = isset($options['sendOnlyOnError'])
+                               ? String::toBoolean($options['sendOnlyOnError'], false)
+                               : false;
+        $this->subject         = isset($options['subejct'])
+                               ? $options['subject']
+                               : 'PHPBU backup report from ' . $server;
+        $this->senderMail      = isset($options['sender.mail'])
+                               ? $options['sender.mail']
+                               : 'phpbu@' . $server;
+        $this->senderName      = isset($options['sender.name'])
+                               ? $options['sender.name']
+                               : null;
+        $this->transportType   = isset($options['transport'])
+                               ? $options['transport']
+                               : 'mail';
+        $this->recepients      = array_map('trim', explode(';', $mails));
 
         // create transport an mailer
         $transport    = $this->createTransport($this->transportType, $options);
@@ -117,7 +128,7 @@ class Mail implements Listener, Logger
      */
     public function phpbuStart($settings)
     {
-
+        // do something fooish
     }
 
     /**
@@ -125,21 +136,31 @@ class Mail implements Listener, Logger
      */
     public function phpbuEnd(Result $result)
     {
-        $header  = $this->getHeaderHtml($result);
-        $errors  = $this->getErrorHtml($result);
-        $info    = $this->getInfoHtml($result);
-        $footer  = $this->getFooterHtml();
-        $body    = $header . $errors . $info . $footer;
-        $message = \Swift_Message::newInstance();
-        $message->setSubject($this->subject)
-                ->setFrom($this->senderMail, $this->senderName)
-                ->setTo($this->recepients)
-                ->setBody($body)
-                ->addPart($body, 'text/html');
+        $allGood = $result->wasSuccessful() && $result->noneSkipped() && $result->noneFailed();
 
-        $sent = $this->mailer->send($message);
-        if (!$sent) {
-            throw new Exception('mail not send');
+        if (!$this->sendOnlyOnError || !$allGood) {
+            $header  = $this->getHeaderHtml($result);
+            $errors  = $this->getErrorHtml($result);
+            $info    = $this->getInfoHtml($result);
+            $footer  = $this->getFooterHtml();
+            $body    = $header . $errors . $info . $footer;
+            $sent    = false;
+
+            try{
+                $message = \Swift_Message::newInstance();
+                $message->setSubject($this->subject)
+                        ->setFrom($this->senderMail, $this->senderName)
+                        ->setTo($this->recepients)
+                        ->setBody($body)
+                        ->addPart($body, 'text/html');
+
+                $sent = $this->mailer->send($message);
+            } catch ( \Exception $e ) {
+                throw new Exception($e->getMessage());
+            }
+            if (!$sent) {
+                throw new Exception('mail could not sent');
+            }
         }
     }
 
@@ -380,6 +401,7 @@ class Mail implements Listener, Logger
                 ) .
                 '</p>';
         }
+        return $html;
     }
 
     /**
@@ -417,7 +439,9 @@ class Mail implements Listener, Logger
     {
         $html    = '';
         $backups = $result->getBackups();
-        if (count($backups) > 0) {
+        $amount  = count($backups);
+        if ($amount > 0) {
+            $i     = 0;
             $html .= '<table>';
             foreach ($backups as $backup) {
                 $html .= '<tr><td colspan="4">';
@@ -443,8 +467,12 @@ class Mail implements Listener, Logger
                        . '<td style="float:right;">' . $backup->cleanupCount() . '</td>'
                        . '<td style="float:right;">' . $backup->cleanupCountSkipped() . '</td>'
                        . '<td style="float:right;">' . $backup->cleanupCountFailed() . '</td></tr>';
+
+                // put spacing row between backups but not at the end of the table
+                $i++;
+                $html .= ( $i < $amount ? '<tr><td colspan="4">&nbsp;</td>' : '' );
             }
-            $html .= '</table><br /><br />';
+            $html .= '</table>';
         }
 
         return $html;
