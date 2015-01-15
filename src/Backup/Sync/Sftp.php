@@ -81,13 +81,17 @@ class Sftp implements Sync
             $remoteDirs = explode('/', $this->remotePath);
             foreach ($remoteDirs as $dir) {
                 if (!$sftp->is_dir($dir)) {
+                    $result->debug(sprintf('creating remote dir \'%s\'', $dir));
                     $sftp->mkdir($dir);
                 }
+                $result->debug(sprintf('change to remoted dir \'%s\'', $dir));
                 $sftp->chdir($dir);
             }
         }
+        $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
+        $result->debug(sprintf('last error \'%s\'', $sftp->getLastSFTPError()));
         if (!$sftp->put($remoteFilename, $localFile, phpseclib\Net\SFTP::SOURCE_LOCAL_FILE)) {
-            throw new Exception(sprintf('error uploading file: %s', $localFile));
+            throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $sftp->getLastSFTPError()));
         }
     }
 }
