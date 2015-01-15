@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\Backup\Sync;
 
-use NET_SFTP;
+use phpseclib;
 use phpbu\App\Result;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Target;
@@ -38,8 +38,8 @@ class Sftp implements Sync
 
     public function setup(array $config)
     {
-        if (!class_exists('\\Net_SFTP')) {
-            throw new Exception('phpseclib not installed - use composer to install "phpseclib/phpseclib"');
+        if (!class_exists('\\phpseclib\\Net\\SFTP')) {
+            throw new Exception('phpseclib not installed - use composer to install "phpseclib/phpseclib" version 2.x');
         }
         if (empty($config['host'])) {
             throw new Exception('option \'host\' is missing');
@@ -60,7 +60,7 @@ class Sftp implements Sync
     {
         // silence phpseclib
         $old  = error_reporting(0);
-        $sftp = new Net_SFTP($this->host);
+        $sftp = new phpseclib\Net\SFTP($this->host);
         if (!$sftp->login($this->user, $this->password)) {
             error_reporting($old);
             throw new Exception(
@@ -86,7 +86,7 @@ class Sftp implements Sync
                 $sftp->chdir($dir);
             }
         }
-        if (!$sftp->put($remoteFilename, $localFile, NET_SFTP_LOCAL_FILE)) {
+        if (!$sftp->put($remoteFilename, $localFile, phpseclib\Net\SFTP::SOURCE_LOCAL_FILE)) {
             throw new Exception(sprintf('error uploading file: %s', $localFile));
         }
     }
