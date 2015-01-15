@@ -45,7 +45,9 @@ class Json extends Printer implements Listener, Logger
      * @see \phpbu\App\Listener::phpbuStart()
      */
     public function phpbuStart($settings)
-    {}
+    {
+        // do something fooish
+    }
 
     /**
      *
@@ -93,7 +95,9 @@ class Json extends Printer implements Listener, Logger
      * @see \phpbu\App\Listener::checkStart()
      */
     public function checkStart($check)
-    {}
+    {
+        // do something fooish
+    }
 
     /**
      *

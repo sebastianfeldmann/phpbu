@@ -9,7 +9,6 @@ use phpbu\Backup\Source;
 use phpbu\Backup\Sync;
 use phpbu\Log\Logger;
 
-
 /**
  * Source Factory
  *

@@ -146,7 +146,7 @@ class Mail implements Listener, Logger
             $body    = $header . $errors . $info . $footer;
             $sent    = false;
 
-            try{
+            try {
                 $message = \Swift_Message::newInstance();
                 $message->setSubject($this->subject)
                         ->setFrom($this->senderMail, $this->senderName)
