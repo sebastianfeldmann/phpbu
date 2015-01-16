@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<source type="mysqldump">
+  <!-- optional, default=localhost -->
+  <option name="host" value="myhost" />
+
+  <!-- optional, default=system user -->
+  <option name="user" value="myUserName" />
+
+  <!-- optional, default=none -->
+  <option name="password" value="mySecretPassword" />
+
+  <!-- optional, default=all -->
+  <option name="databases" value="myDB1,mydB2" />
+
+  <!-- optional, default=all -->
+  <option name="tables" value="myTable1,myTable2,myTable3" />
+
+  <!-- optional, default=none -->
+  <option name="ignoreTables" value="myTableToIgnore1,myTableToIgnore2" />
+
+  <!-- optional, default=none -->
+  <option name="structureOnly" value="myTableWithoutData1,myTableWithoutData2" />
+
+  <!-- optional, default=false -->
+  <option name="quick" value="true" />
+
+  <!-- optional, default=false -->
+  <option name="compress" value="true" />
+
+  <!-- optional, default=false -->
+  <!-- checks the mysql connection before actualy starting mysqldump, requires EXT-MYSQLI -->
+  <option name="validateConnection" value="true" />
+</source>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sync type="sftp">
+  <!-- mandatory -->
+  <option name="host" value="backup.example.com" />
+
+  <!-- mandatory -->
+  <option name="user" value="use.name" />
+
+  <!-- mandatory -->
+  <option name="password" value="mysecret" />
+
+  <!-- optional, default=none -->
+  <option name="path" value="somedir/somesubdir" />
+</sync>

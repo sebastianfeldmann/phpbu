@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<php>
+  <!-- optional -->
+  <includePath>.</includePath>
+
+  <!-- optional -->
+  <ini name="some-ini-setting" value="some-value" />
+  <ini name="other-ini-setting" value="other-value" />
+</php>
