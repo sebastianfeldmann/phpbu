@@ -24,17 +24,17 @@
         }
     },
     "require": {
+        "ext-dom": "*",
+        "ext-json": "*",
+        "ext-spl": "*",
+        "phpseclib/phpseclib": "2.0.*@dev",
         "phpunit/php-timer": "~1.0.2",
         "sebastian/environment": "~1.1",
         "sebastian/version": "~1.0",
-        "swiftmailer/swiftmailer": "@stable",
-        "ext-dom": "*",
-        "ext-json": "*",
-        "ext-spl": "*"
+        "swiftmailer/swiftmailer": "@stable"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "1.*",
-        "phpseclib/phpseclib": "2.0.*@dev",
         "dropbox/dropbox-sdk": "1.1.*"
     },
     "bin": [
