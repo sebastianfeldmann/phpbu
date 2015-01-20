@@ -2,7 +2,7 @@
 
 PHP Backup Utility
 
-Get detailed information about all the features and a 'getting startet' tutorial at the [PHPBU Website](http://phpbu.de).
+Get detailed information about all the features and a 'getting started' tutorial at the [PHPBU Website](http://phpbu.de).
 
 [![Latest Stable Version](https://poser.pugx.org/phpbu/phpbu/v/stable.svg)](https://packagist.org/packages/phpbu/phpbu)
 [![Build Status](https://travis-ci.org/sebastianfeldmann/phpbu.svg?branch=master)](https://travis-ci.org/sebastianfeldmann/phpbu)
