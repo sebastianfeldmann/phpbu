@@ -75,6 +75,10 @@ class Mysqldump implements Source
         $cmd = new Cli\Cmd($mysqldump);
         $this->exec->addCommand($cmd);
 
+        // no std error unless it is activated
+        if (empty($this->conf['showStdErr']) || !Util\String::toBoolean($this->conf['showStdErr'], false)) {
+            $cmd->silence();
+        }
         if (!empty($this->conf['user'])) {
             $user = $this->conf['user'];
             $cmd->addOption('--user', $user);

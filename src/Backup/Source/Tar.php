@@ -68,6 +68,12 @@ class Tar implements Source
         $path = isset($this->conf['pathToTar']) ? $this->conf['pathToTar'] : null;
         $tar  = Util\Cli::detectCmdLocation('tar', $path);
         $cmd  = new Cli\Cmd($tar);
+
+        // no std error unless it is activated
+        if (empty($this->conf['showStdErr']) || !Util\String::toBoolean($this->conf['showStdErr'], false)) {
+            $cmd->silence();
+        }
+
         $cmd->addOption(
             '-' . $compressOption . 'cf',
             array(

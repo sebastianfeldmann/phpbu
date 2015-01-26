@@ -22,6 +22,13 @@ class Cmd
     private $name;
 
     /**
+     * Display stderr
+     *
+     * @var boolean
+     */
+    private $isSilent = false;
+
+    /**
      * Command options
      *
      * @var array<string>
@@ -49,6 +56,16 @@ class Cmd
     }
 
     /**
+     * Silent setter
+     *
+     * @param boolean $bool
+     */
+    public function silence($bool = true)
+    {
+        $this->isSilent = $bool;
+    }
+
+    /**
      * Add option to list
      *
      * @param string              $option
@@ -73,6 +90,6 @@ class Cmd
      */
     public function __toString()
     {
-        return $this->name . ' ' . implode(' ', $this->options);
+        return $this->name . ' ' . implode(' ', $this->options) . ( $this->isSilent ? ' 2> /dev/null' : '');
     }
 }
