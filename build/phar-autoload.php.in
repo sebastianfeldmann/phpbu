@@ -31,8 +31,6 @@ spl_autoload_register(
   }
 );
 
-require __PHPBU_PHAR_ROOT__ . '/swiftmailer/swift_init.php';
-
 Phar::mapPhar('___PHAR___');
 
 if ($execute) {
@@ -40,6 +38,8 @@ if ($execute) {
         print file_get_contents(__PHPBU_PHAR_ROOT__ . '/manifest.txt');
         exit;
     }
+
+    require __PHPBU_PHAR_ROOT__ . '/swiftmailer/swift_init.php';
 
     phpbu\App::main();
 }
