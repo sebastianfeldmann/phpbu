@@ -294,16 +294,23 @@ class Mail implements Listener, Logger
     protected function createTransport($type, array $options)
     {
         switch ($type) {
+            //
+            // null transport, don't send andy mails
+            //
             case 'null':
                  /* @var $transport \Swift_NullTransport */
                 $transport = \Swift_NullTransport::newInstance();
                 break;
-
+            //
+            // php mail config
+            //
             case 'mail':
                 /* @var $transport \Swift_MailTransport */
                 $transport = \Swift_MailTransport::newInstance();
                 break;
-
+            //
+            // smtp config
+            //
             case 'smtp':
                 if (!isset($options['smtp.host'])) {
                     throw new Exception('option \'smtp.host\' ist missing');
@@ -333,7 +340,9 @@ class Mail implements Listener, Logger
                     $transport->setEncryption($encryption);
                 }
                 break;
-
+            //
+            // sendmail configuration
+            //
             case 'sendmail':
                 if (!isset($options['sendmail.path'])) {
                     throw new Exception('option \'sendmail.path\' ist missing');
@@ -344,7 +353,9 @@ class Mail implements Listener, Logger
                 /* @var $transport \Swift_SendmailTransport */
                 $transport = \Swift_SendmailTransport::newInstance($path . $options);
                 break;
-
+            //
+            // UPS! no transport given
+            //
             default:
                 throw new Exception('mail transport not supported');
                 break;
