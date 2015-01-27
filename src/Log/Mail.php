@@ -285,6 +285,7 @@ class Mail implements Listener, Logger
     }
 
     /**
+     * Create a Swift_Mailer_Transport
      *
      * @param  string $type
      * @param  array  $options
