@@ -36,6 +36,10 @@ class Sftp implements Sync
      */
     protected $remotePath;
 
+    /**
+     * (non-PHPdoc)
+     * @see \phpbu\Backup\Sync::setup()
+     */
     public function setup(array $config)
     {
         if (!class_exists('\\phpseclib\\Net\\SFTP')) {
@@ -56,6 +60,10 @@ class Sftp implements Sync
         $this->remotePath = !empty($config['path']) ? $config['path'] : '';
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see \phpbu\Backup\Sync::sync()
+     */
     public function sync(Target $target, Result $result)
     {
         // silence phpseclib
