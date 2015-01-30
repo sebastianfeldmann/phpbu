@@ -3,7 +3,8 @@ namespace phpbu\Backup\Source;
 
 use phpbu\App\Exception;
 use phpbu\App\Result;
-use phpbu\Backup\Cli;
+use phpbu\Backup\Cli\Cmd;
+use phpbu\Backup\Cli\Exec;
 use phpbu\Backup\Source;
 use phpbu\Backup\Target;
 use phpbu\Util;
@@ -19,15 +20,8 @@ use phpbu\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Mysqldump implements Source
+class Mysqldump extends Cli implements Source
 {
-    /**
-     * Executor to run the mysqldump shell commands.
-     *
-     * @var \phpbu\Cli\Exec
-     */
-    private $exec;
-
     /**
      * Configuration
      *
@@ -55,12 +49,12 @@ class Mysqldump implements Source
      */
     public function backup(Target $target, Result $result)
     {
-        $host       = 'localhost';
-        $user       = $_SERVER['USER'];
-        $password   = null;
-        $datbases   = array();
-        $this->exec = new Cli\Exec();
-        $this->exec->setTarget($target);
+        $host     = 'localhost';
+        $user     = $_SERVER['USER'];
+        $password = null;
+        $datbases = array();
+        $exec     = new Exec();
+
 
         $path      = isset($this->conf['pathToMysqldump']) ? $this->conf['pathToMysqldump'] : null;
         $mysqldump = Util\Cli::detectCmdLocation(
@@ -72,8 +66,8 @@ class Mysqldump implements Source
             )
         );
 
-        $cmd = new Cli\Cmd($mysqldump);
-        $this->exec->addCommand($cmd);
+        $cmd = new Cmd($mysqldump);
+        $exec->addCommand($cmd);
 
         // no std error unless it is activated
         if (empty($this->conf['showStdErr']) || !Util\String::toBoolean($this->conf['showStdErr'], false)) {
@@ -140,10 +134,10 @@ class Mysqldump implements Source
                 $cmd2->addOption('--skip-add-drop-table');
                 $cmd2->addOption('--no-create-db');
                 $cmd2->addOption('--no-create-info');
-                $this->exec->addCommand($cmd2);
+                $exec->addCommand($cmd2);
             }
         }
-        $r = $this->exec->execute();
+        $r = $this->execute($exec, $target);
 
         $result->debug($r->getCmd());
 

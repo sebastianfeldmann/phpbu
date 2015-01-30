@@ -25,81 +25,18 @@ class Exec
     private $commands = array();
 
     /**
-     * Backup target
-     *
-     * @var \phpbu\Backup\Target
-     */
-    private $target;
-
-    /**
-     * Do we use the commands output for compression
-     *
-     * @var boolean
-     */
-    private $compressOutput = true;
-
-    /**
-     * Target settter
-     *
-     * @param \phpbu\Backup\Target $target
-     */
-    public function setTarget(Target $target)
-    {
-        $this->target = $target;
-    }
-
-    /**
-     * OutputCompression setter
-     *
-     * @param boolean $bool
-     */
-    public function setOutputCompression($bool)
-    {
-        $this->compressOutput = $bool;
-    }
-
-    /**
+     * Executes the commands
      *
      * @throws \phpbu\App\Exception
      * @return \phpbu\Cli\Result
      */
-    public function execute()
+    public function execute($redirect = null)
     {
-        $cmd    = $this->getExec();
+        $cmd    = $this->getExec() . ( $redirect ? ' > ' . $redirect : '' );
         $output = array();
         $code   = 0;
         $old    = error_reporting(0);
         exec($cmd, $output, $code);
-
-        if ($code == 0) {
-            // run the compressor command
-            if ($this->compressOutput && $this->target->shouldBeCompressed()) {
-                $compressorCode   = 0;
-                $compressorOutput = array();
-                exec(
-                    $this->target->getCompressor()->getCommand()
-                    . ' -f '
-                    . $this->target->getPathname(),
-                    $compressorOutput,
-                    $compressorCode
-                );
-
-                if ($compressorCode !== 0) {
-                    // remove compressed file with errors
-                    if ($this->target->fileExists()) {
-                        $this->target->unlink();
-                    }
-                }
-
-                $code  += $compressorCode;
-                $output = array_merge($output, $compressorOutput);
-            }
-        } else {
-            // remove file with errors
-            if ($this->target->fileExists(false)) {
-                $this->target->unlink(false);
-            }
-        }
         error_reporting($old);
 
         return new Result($cmd, $code, $output);
@@ -119,9 +56,6 @@ class Exec
         }
         $cmd = $amount > 1 ? '(' . implode(' && ', $this->commands) . ')' : $this->commands[0];
 
-        if ($this->compressOutput) {
-            $cmd .= ' > ' . $this->target->getPathname();
-        }
         return $cmd;
     }
 

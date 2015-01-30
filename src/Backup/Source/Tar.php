@@ -1,21 +1,16 @@
 <?php
 namespace phpbu\Backup\Source;
 
+use phpbu\App\Exception;
 use phpbu\App\Result;
-use phpbu\Backup\Cli;
+use phpbu\Backup\Cli\Cmd;
+use phpbu\Backup\Cli\Exec;
 use phpbu\Backup\Source;
 use phpbu\Backup\Target;
 use phpbu\Util;
 
-class Tar implements Source
+class Tar extends Cli implements Source
 {
-    /**
-     * Executor to run the tar shell command.
-     *
-     * @var \phpbu\Cli\Exec
-     */
-    private $exec;
-
     /**
      * Configuration
      *
@@ -36,6 +31,7 @@ class Tar implements Source
     }
 
     /**
+     * Executes the backup
      *
      * @param  \phpbu\Backup\Target $target
      * @param  \phpbu\App\Result    $result
@@ -43,10 +39,7 @@ class Tar implements Source
      */
     public function backup(Target $target, Result $result)
     {
-        $this->exec = new Cli\Exec();
-        $this->exec->setTarget($target);
-        $this->exec->setOutputCompression(false);
-
+        $exec               = new Exec();
         $compressOption     = '';
         $allowedCompressors = array(
             'bzip2' => 'j',
@@ -67,7 +60,7 @@ class Tar implements Source
 
         $path = isset($this->conf['pathToTar']) ? $this->conf['pathToTar'] : null;
         $tar  = Util\Cli::detectCmdLocation('tar', $path);
-        $cmd  = new Cli\Cmd($tar);
+        $cmd  = new Cmd($tar);
 
         // no std error unless it is activated
         if (empty($this->conf['showStdErr']) || !Util\String::toBoolean($this->conf['showStdErr'], false)) {
@@ -81,9 +74,9 @@ class Tar implements Source
                 $this->conf['path'],
             )
         );
-        $this->exec->addCommand($cmd);
+        $exec->addCommand($cmd);
 
-        $r = $this->exec->execute();
+        $r = $this->execute($exec, $target, false);
 
         $result->debug($r->getCmd());
 
