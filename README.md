@@ -22,7 +22,7 @@ Get detailed information about all the features and a 'getting started' tutorial
     + Amazon s3 (planned)
     + Dropbox (work in progress)
     + FTP (postponed)
-    + rsync (planned)
+    + rsync
     + SFTP
 * Cleanup you backup location
     + Delete backups older x
