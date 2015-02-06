@@ -14,7 +14,7 @@
   <option name="dirsync" value="true" />
 
   <!-- optional, default=false -->
-  <!-- adds the --delete option to the rsync command -->
+  <!-- adds the "delete" option to the rsync command to also delete files remotely -->
   <option name="delete" value="true" />
 
   <!-- optional, default=none -->
