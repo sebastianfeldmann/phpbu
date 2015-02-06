@@ -148,12 +148,12 @@ class Rsync extends Cli implements Sync
 
             // target handling
             $syncTarget = '';
-            // remote user
-            if (null !== $this->user) {
-                $syncTarget .= $this->user . '@';
-            }
             // remote host
             if (null !== $this->host) {
+                // remote user
+                if (null !== $this->user) {
+                    $syncTarget .= $this->user . '@';
+                }
                 $syncTarget .= $this->host . ':';
             }
             // remote path
