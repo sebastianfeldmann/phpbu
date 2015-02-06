@@ -36,6 +36,13 @@ class Cmd
     private $options = array();
 
     /**
+     * Command arguments
+     *
+     * @var array<string>
+     */
+    private $args = array();
+
+    /**
      * Constructor
      *
      * @param string $name
@@ -85,11 +92,32 @@ class Cmd
     }
 
     /**
+     * Add argument to list
+     *
+     * @param miyed<string|array> $argument
+     * @param string              $glue
+     */
+    public function addArgument($argument)
+    {
+        if (is_array($argument)) {
+            $argument        = array_map('escapeshellarg', $argument);
+            $glue            = ' ';
+            $escapedArgument = implode(' ', $argument);
+        } else {
+            $escapedArgument = escapeshellarg($argument);
+        }
+        $this->args[] = $escapedArgument;
+    }
+
+    /**
      *
      * @return string
      */
     public function __toString()
     {
-        return $this->name . ' ' . implode(' ', $this->options) . ( $this->isSilent ? ' 2> /dev/null' : '');
+        return $this->name
+            . ( count($this->options) ? ' ' . implode(' ', $this->options) : '' )
+            . ( count($this->args)    ? ' ' . implode(' ', $this->args)    : '' )
+            . ( $this->isSilent       ? ' 2> /dev/null'                    : '' );
     }
 }

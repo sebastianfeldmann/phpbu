@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\Backup\Sync;
 
-use phpbu\Backup\Cli\Command;
+use phpbu\Backup\Cli\Cmd;
 use phpbu\Backup\Cli\Exec;
 use phpbu\Backup\Target;
 
@@ -23,17 +23,18 @@ abstract class Cli
     /**
      * Executes a cli command
      *
-     * @return \phpbu\Cli\Result
+     * @param  \phpbu\Backup\Cli\Cmd
      * @throws \phpbu\Backup\Sync\Exception
      */
-    protected function execute(Command $command)
+    protected function execute(Cmd $command)
     {
         $exec = new Exec();
-        $exec->addCommand($cmd);
+        $exec->addCommand($command);
 
+        /* @var $res \phpbu\Backup\Cli\Result */
         $res = $exec->execute();
         if ($res->getCode()) {
-            throw new Exception('sync failed: ' . PHP_EOL . $res->getOutput());
+            throw new Exception('sync failed: ' . PHP_EOL . $res->getOutputAsString());
         }
     }
 
@@ -46,7 +47,7 @@ abstract class Cli
      */
     protected function replaceTargetPlaceholder($string, Target $target)
     {
-        $targetFile = $target->getFilenameCompressed();
+        $targetFile = $target->getPathnameCompressed();
         $targetDir  = dirname($targetFile);
         $search     = array('%TARGET_DIR%', '%TARGET_FILE%');
         $replace    = array($targetDir, $targetFile);

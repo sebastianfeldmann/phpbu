@@ -95,10 +95,10 @@ class Rsync extends Cli implements Sync
                              ? array_map('trim', explode(':', $config['exclude']))
                              : array();
             $this->delete    = isset($config['delete'])
-                             ? Util\String::toBoolean($this->config['delete'], false)
+                             ? Util\String::toBoolean($config['delete'], false)
                              : false;
             $this->isDirSync = isset($config['dirsync'])
-                             ? Util\String::toBoolean($this->config['dirsync'], false)
+                             ? Util\String::toBoolean($config['dirsync'], false)
                              : false;
         }
     }
@@ -109,20 +109,22 @@ class Rsync extends Cli implements Sync
      */
     public function sync(Target $target, Result $result)
     {
-        $rsync      = new Cmd(Util\Cli::detectCmdLocation('rsync'));
-        $targetFile = $target->getFilenameCompressed();
-        $targetDir  = dirname($targetFile);
-        // std err > dev null
-        $rsync->silence();
+        $rsync = new Cmd(Util\Cli::detectCmdLocation('rsync'));
 
         if ($this->args) {
             // pro mode define all arguments yourself
             // WARNING! no escaping is done by phpbu
             $result->debug('WARNING: phpbu uses your rsync args without escaping');
-            $rsync->addOption($this->replaceTargetPlaceholder($this->args), $target);
+            $rsync->addOption($this->replaceTargetPlaceholder($this->args, $target));
         } else {
+            // std err > dev null
+            $rsync->silence();
+
+            $targetFile = $target->getPathnameCompressed();
+            $targetDir  = dirname($targetFile);
+
             // use archive mode, verbose and compress if not allready done
-            $options = '-av' . $target->shouldBeCompressed() ? '' : 'z';
+            $options = '-av' . ( $target->shouldBeCompressed() ? '' : 'z' );
             $rsync->addOption($options);
 
             if (count($this->excludes)) {
@@ -138,10 +140,10 @@ class Rsync extends Cli implements Sync
                 if ($this->delete) {
                     $rsync->addOption('--delete');
                 }
-                $rsync->addOption($targetDir);
+                $rsync->addArgument($targetDir);
             } else {
                 // sync just the created backup
-                $rsync->addOption($targetFile);
+                $rsync->addArgument($targetFile);
             }
 
             // target handling
@@ -157,9 +159,11 @@ class Rsync extends Cli implements Sync
             // remote path
             $syncTarget .= $this->path;
 
-            $rsync->addOption($syncTarget);
-
-            $this->execute($rsync);
+            $rsync->addArgument($syncTarget);
         }
+        // add some debug output
+        $result->debug((string) $rsync);
+
+        $this->execute($rsync);
     }
 }
