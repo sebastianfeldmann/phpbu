@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sync type="rsync">
+  <!-- mandatory -->
+  <option name="path" value="/tmp" />
+
+  <!-- optional, default=none -->
+  <option name="user" value="root" />
+
+  <!-- optional, default=none -->
+  <option name="host" value="127.0.0.1" />
+
+  <!-- optional, default=false -->
+  <option name="dirsync" value="true" />
+
+  <!-- optional, default=false -->
+  <option name="delete" value="true" />
+
+  <!-- optional, default=none -->
+  <!-- !!!WARNING!!! advanced mode without escaping -->
+  <!-- use %TARGET_DIR% and %TARGET_FILE% as reference to the created backup -->
+  <option name="args" value="-avz '%TARGET_FILE%' ." />
+</sync>
