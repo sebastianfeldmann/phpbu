@@ -10,10 +10,16 @@
   <option name="host" value="127.0.0.1" />
 
   <!-- optional, default=false -->
+  <!--  syncs the whole directory  where yout taget is stored -->
   <option name="dirsync" value="true" />
 
   <!-- optional, default=false -->
+  <!-- adds the --delete option to the rsync command -->
   <option name="delete" value="true" />
+
+  <!-- optional, default=none -->
+  <!-- file you want to ignore seperated by ":" -->
+  <option name="exclude" value="*.cvs:*.jpg" />
 
   <!-- optional, default=none -->
   <!-- !!!WARNING!!! advanced mode without escaping -->
