@@ -57,7 +57,7 @@ Installing PHPBU via Composer is also supported.
 
 ```json
   "require": {
-    "phpbu/phpbu": "1.0.*"
+    "phpbu/phpbu": "1.1.*"
   }
 ```
 
