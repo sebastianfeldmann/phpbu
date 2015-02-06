@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/1.0/phpbu.xsd"
-       bootstrap="backup/bootstrap.php"
+       xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/1.1/phpbu.xsd"
        verbose="true">
 
   <php>
@@ -9,10 +8,8 @@
     <ini name="max_execution_time" value="0"/>
   </php>
 
-
   <logging>
     <log type="json" target="/tmp/logfile.json"/>
-    <log type="plain" target="/tmp/logfile.txt"/>
   </logging>
 
 
@@ -30,14 +27,14 @@
       <target dirname="/tmp/backup" filename="mysqldump-%Y%m%d-%H%i.sql" compress="bzip2"/>
 
       <!-- do some sanity checks to make sure everything worked as planned -->
-      <check type="Foo" value="Bar"/>
-      <check type="Fiz" value="Baz"/>
+      <check type="MinSize" value="2M"/>
 
       <!-- sync backup to some location or service -->
-      <sync type="ftp" skipOnCheckFailure="true">
+      <sync type="sftp" skipOnCheckFailure="true">
+        <option name="host" value="example.com"/>
         <option name="user" value="user.name"/>
         <option name="password" value="topsecret"/>
-        <option name="target" value="backup"/>
+        <option name="path" value="some/dir"/>
       </sync>
 
       <!-- deletes old backups -->
