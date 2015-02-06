@@ -15,7 +15,7 @@ use phpbu\Util;
  * @package    phpbu
  * @subpackage Backup
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
- * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
@@ -160,10 +160,9 @@ class Mysqldump extends Cli implements Source
      */
     public function canConnect($host, $user, $password = null, array $databases = array())
     {
-        // no special database given all-databases a requested
-        // use 'mysql' because is has to exist
+        // no special database configured
         if (empty($databases)) {
-            $databases[] = 'mysql';
+            $databases[] = null;
         }
 
         // check all databases
