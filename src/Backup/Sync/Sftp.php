@@ -94,7 +94,7 @@ class Sftp implements Sync
         error_reporting($old);
 
         $remoteFilename = $target->getFilenameCompressed();
-        $localFile      = $target->getPathname(true);
+        $localFile      = $target->getPathnameCompressed();
 
         if ('' !== $this->remotePath) {
             $remoteDirs = explode('/', $this->remotePath);
