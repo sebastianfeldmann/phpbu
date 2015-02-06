@@ -2,7 +2,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:annotation>
     <xs:documentation source="http://www.phpbu.de/">
-    This schema file defines the rules by which the XML configuration file of phpbu 1.0 may be structured.
+    This schema file defines the rules by which the XML configuration file of phpbu 1.1 may be structured.
     </xs:documentation>
   </xs:annotation>
 
@@ -80,7 +80,7 @@
       <xs:element name="option" type="nameValueType" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="type" use="required" type="xs:string"/>
-    <xs:attribute name="skipOnCheckFail" use="required" type="xs:boolean"/>
+    <xs:attribute name="skipOnCheckFail" type="xs:boolean"/>
   </xs:complexType>
 
   <xs:complexType name="cleanupType">
