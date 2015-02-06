@@ -87,7 +87,7 @@ class Rsync extends Cli implements Sync
             if (isset($config['user'])) {
                 $this->user = $config['user'];
             }
-            if (isset($config['hots'])) {
+            if (isset($config['host'])) {
                 $this->host = $config['host'];
             }
 
