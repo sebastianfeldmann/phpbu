@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sync type="dropbox">
+  <!-- mandatory -->
+  <option name="token" value="mycrazylongapitokenthatigotfromdropbox" />
+
+  <!-- mandatory -->
+  <option name="path" value="/some/dir" />
+</sync>

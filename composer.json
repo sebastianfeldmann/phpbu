@@ -27,6 +27,7 @@
         "ext-dom": "*",
         "ext-json": "*",
         "ext-spl": "*",
+        "dropbox/dropbox-sdk": "1.1.*"
         "phpseclib/phpseclib": "2.0.*@dev",
         "phpunit/php-timer": "~1.0.2",
         "sebastian/environment": "~1.1",
@@ -35,7 +36,6 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "1.*",
-        "dropbox/dropbox-sdk": "1.1.*"
     },
     "bin": [
         "phpbu"
