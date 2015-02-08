@@ -210,7 +210,7 @@ class Result
      * @param array $check
      */
     public function checkStart($check)
-    {;
+    {
         $this->backupActive->checkAdd($check);
         foreach ($this->listeners as $l) {
             $l->checkStart($check);

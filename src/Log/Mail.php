@@ -155,7 +155,7 @@ class Mail implements Listener, Logger
                         ->addPart($body, 'text/html');
 
                 $sent = $this->mailer->send($message);
-            } catch ( \Exception $e ) {
+            } catch (\Exception $e) {
                 throw new Exception($e->getMessage());
             }
             if (!$sent) {
