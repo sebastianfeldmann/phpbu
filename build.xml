@@ -103,7 +103,7 @@
  <target name="phar-prepare" depends="clean">
   <mkdir dir="${basedir}/build/phar"/>
 
- <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
+  <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
 
   <copy file="${basedir}/vendor/dropbox/dropbox-sdk/License.txt" tofile="${basedir}/build/phar/dropbox/LICENSE"/>
     <copy todir="${basedir}/build/phar/dropbox">
@@ -154,6 +154,8 @@
     <exclude name="**/swift_required_pear.php" />
    </fileset>
   </copy>
+
+  <exec executable="${basedir}/build/phar-patch.php"/>
 
  </target>
 
