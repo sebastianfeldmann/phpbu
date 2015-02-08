@@ -20,7 +20,7 @@ Get detailed information about all the features and a 'getting started' tutorial
     + Comparing with previous backups
 * Sync backups to other locations
     + Amazon s3 (planned)
-    + Dropbox (work in progress)
+    + Dropbox
     + FTP (postponed)
     + rsync
     + SFTP
