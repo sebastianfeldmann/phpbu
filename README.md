@@ -19,9 +19,8 @@ Get detailed information about all the features and a 'getting started' tutorial
     + Check min size
     + Comparing with previous backups
 * Sync backups to other locations
-    + Amazon s3 (planned)
+    + Amazon s3 (work in progress)
     + Dropbox
-    + FTP (postponed)
     + rsync
     + SFTP
 * Cleanup you backup location
@@ -32,6 +31,7 @@ Get detailed information about all the features and a 'getting started' tutorial
 ## Requirements
 
 * PHP 5.3+
+    + ext/curl
     + ext/dom
     + ext/json
     + ext/spl
@@ -39,6 +39,7 @@ Get detailed information about all the features and a 'getting started' tutorial
     + mysqldump
     + tar
     + bzip2 or gzip
+    + rsync
 
 ## Installation
 
