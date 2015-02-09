@@ -27,6 +27,7 @@
         "ext-dom": "*",
         "ext-json": "*",
         "ext-spl": "*",
+        "barracuda/copy": "1.1.*",
         "dropbox/dropbox-sdk": "1.1.*",
         "phpseclib/phpseclib": "2.0.*@dev",
         "phpunit/php-timer": "~1.0.2",

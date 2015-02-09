@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sync type="copycom">
+  <!-- mandatory -->
+  <option name="app.key" value="myappkey" />
+
+  <!-- mandatory -->
+  <option name="app.secret" value="mycrazylongapisecret" />
+
+  <!-- mandatory -->
+  <option name="user.key" value="oauthuserkey" />
+
+  <!-- mandatory -->
+  <option name="user.secret" value="oauthusersecret" />
+
+  <!-- mandatory -->
+  <option name="path" value="/some/dir" />
+</sync>

@@ -7,6 +7,11 @@ $patches = array(
         'search'  => array('$this->set(CURLOPT_CAINFO', '$this->set(CURLOPT_CAPATH'),
         'replace' => array('//$this->set(CURLOPT_CAINFO', '//$this->set(CURLOPT_CAPATH'),
     ),
+    array(
+        'path'    => __DIR__ . '/phar/copy/Api.php',
+        'search'  => array('curl_setopt($this->curl, CURLOPT_CAINFO'),
+        'replace' => array('//curl_setopt($this->curl, CURLOPT_CAINFO'),
+    ),
 );
 
 foreach ( $patches as $file ) {

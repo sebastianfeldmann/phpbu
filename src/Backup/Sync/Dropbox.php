@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\Backup\Sync;
 
-use Dropbox as dbx;
 use phpbu\App\Result;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Target;
@@ -47,6 +46,9 @@ class Dropbox implements Sync
      */
     public function setup(array $config)
     {
+        if (!class_exists('\\Dropbox\\Client')) {
+            throw new Exception('Dropbox sdk not loaded: use composer "dropbox/dropbox-sdk": "1.1.*" to install');
+        }
         if (!isset($config['token']) || '' == $config['token']) {
             throw new Exception('API access token is mandatory');
         }
@@ -66,9 +68,9 @@ class Dropbox implements Sync
         $sourcePath  = $target->getPathnameCompressed();
         $dropboxPath = $this->path . $target->getFilenameCompressed();
 
-        $client      = new dbx\Client($this->token, "phpbu/1.1.0");
+        $client      = new \Dropbox\Client($this->token, "phpbu/1.1.0");
 
-        $pathError = dbx\Path::findErrorNonRoot($dropboxPath);
+        $pathError = \Dropbox\Path::findErrorNonRoot($dropboxPath);
         if ($pathError !== null) {
             throw new Exception('Invalid <dropbox-path>: ' . $pathError);
         }

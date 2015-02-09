@@ -43,6 +43,7 @@ abstract class Factory
             'sizediffavgpercent'      => '\\phpbu\\Backup\\Check\\SizeDiffAvgPercent',
         ),
         'sync'    => array(
+            'copycom'   => '\\phpbu\\Backup\\Sync\\Copycom',
             'dropbox'   => '\\phpbu\\Backup\\Sync\\Dropbox',
             'ftp'       => '\\phpbu\\Backup\\Sync\\Ftp',
             'rsync'     => '\\phpbu\\Backup\\Sync\\Rsync',

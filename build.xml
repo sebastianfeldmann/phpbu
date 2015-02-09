@@ -105,8 +105,21 @@
 
   <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
 
+  <copy file="${basedir}/vendor/barracuda/copy/LICENSE" tofile="${basedir}/build/phar/copy/LICENSE"/>
+  <copy todir="${basedir}/build/phar/copy">
+    <fileset dir="${basedir}/vendor/barracuda/copy/src">
+      <include name="**/*.php" />
+      <include name="**/*.crt" />
+    </fileset>
+  </copy>
+  <copy todir="${basedir}/build/phar/eher">
+    <fileset dir="${basedir}/vendor/eher/oauth/src">
+      <include name="**/*.php" />
+    </fileset>
+  </copy>
+
   <copy file="${basedir}/vendor/dropbox/dropbox-sdk/License.txt" tofile="${basedir}/build/phar/dropbox/LICENSE"/>
-    <copy todir="${basedir}/build/phar/dropbox">
+  <copy todir="${basedir}/build/phar/dropbox">
     <fileset dir="${basedir}/vendor/dropbox/dropbox-sdk/lib/Dropbox">
       <include name="**/*.php" />
       <include name="**/*.crt" />
