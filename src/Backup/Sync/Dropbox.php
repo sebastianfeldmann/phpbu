@@ -67,10 +67,9 @@ class Dropbox implements Sync
     {
         $sourcePath  = $target->getPathnameCompressed();
         $dropboxPath = $this->path . $target->getFilenameCompressed();
-
         $client      = new \Dropbox\Client($this->token, "phpbu/1.1.0");
+        $pathError   = \Dropbox\Path::findErrorNonRoot($dropboxPath);
 
-        $pathError = \Dropbox\Path::findErrorNonRoot($dropboxPath);
         if ($pathError !== null) {
             throw new Exception('Invalid <dropbox-path>: ' . $pathError);
         }
@@ -82,7 +81,7 @@ class Dropbox implements Sync
 
         try {
             $fp  = fopen($sourcePath, 'rb');
-            $res = $client->uploadFile($dropboxPath, dbx\WriteMode::add(), $fp, $size);
+            $res = $client->uploadFile($dropboxPath, \Dropbox\WriteMode::add(), $fp, $size);
             fclose($fp);
         } catch (\Exception $e) {
             fclose($fp);
