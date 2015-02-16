@@ -33,7 +33,8 @@
         "phpunit/php-timer": "~1.0.2",
         "sebastian/environment": "~1.1",
         "sebastian/version": "~1.0",
-        "swiftmailer/swiftmailer": "5.3.*"
+        "swiftmailer/swiftmailer": "5.3.*",
+        "aws/aws-sdk-php": "2.7.*"
     },
     "bin": [
         "phpbu"

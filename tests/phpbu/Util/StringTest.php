@@ -131,6 +131,16 @@ class StringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test trailing slash
+     */
+    public function testWidthTrailingSlash()
+    {
+        $this->assertEquals('foo/', String::withTrailingSlash('foo'), 'should be foo/');
+        $this->assertEquals('foo/bar/', String::withTrailingSlash('foo/bar'), 'should be foo/bar/');
+        $this->assertEquals('baz/', String::withTrailingSlash('baz/'), 'should be baz/');
+    }
+
+    /**
      * Return local test time.
      * Not changing in one testrun.
      *

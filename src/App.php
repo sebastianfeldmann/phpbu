@@ -85,13 +85,6 @@ class App
     private $isVersionStringPrinted = false;
 
     /**
-     * Config.
-     *
-     * @var string
-     */
-    private $configuration;
-
-    /**
      * List of given arguments
      *
      * @var array
@@ -285,7 +278,7 @@ class App
             throw new Exception(sprintf('Cannot open bootstrap file "%s".' . "\n", $filename));
         }
 
-        include_once $pathToFile;
+        require $pathToFile;
     }
 
     /**
@@ -378,6 +371,7 @@ EOT;
      * Shows some given error message.
      *
      * @param string $message
+     * @param bool   $hint
      */
     private function printError($message, $hint = false)
     {
@@ -388,13 +382,11 @@ EOT;
     }
 
     /**
-     * Main method, is called by phpbu command and the pahr file.
-     *
-     * @param boolean $exit
+     * Main method, is called by phpbu command and the phar file.
      */
     public static function main()
     {
         $app = new static();
-        return $app->run($_SERVER['argv']);
+        $app->run($_SERVER['argv']);
     }
 }

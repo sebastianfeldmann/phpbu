@@ -43,11 +43,12 @@ abstract class Factory
             'sizediffavgpercent'      => '\\phpbu\\Backup\\Check\\SizeDiffAvgPercent',
         ),
         'sync'    => array(
-            'copycom'   => '\\phpbu\\Backup\\Sync\\Copycom',
-            'dropbox'   => '\\phpbu\\Backup\\Sync\\Dropbox',
-            'ftp'       => '\\phpbu\\Backup\\Sync\\Ftp',
-            'rsync'     => '\\phpbu\\Backup\\Sync\\Rsync',
-            'sftp'      => '\\phpbu\\Backup\\Sync\\Sftp',
+            'amazons3' => '\\phpbu\\Backup\\Sync\\AmazonS3',
+            'copycom'  => '\\phpbu\\Backup\\Sync\\Copycom',
+            'dropbox'  => '\\phpbu\\Backup\\Sync\\Dropbox',
+            'ftp'      => '\\phpbu\\Backup\\Sync\\Ftp',
+            'rsync'    => '\\phpbu\\Backup\\Sync\\Rsync',
+            'sftp'     => '\\phpbu\\Backup\\Sync\\Sftp',
         ),
         'cleaner' => array(
             'capacity'  => '\\phpbu\\Backup\\Cleaner\\Capacity',

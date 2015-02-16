@@ -38,7 +38,7 @@ class String
     /**
      * Create a regex that matches the raw path considering possible date placeholders.
      *
-     * @param  string $pathRaw
+     * @param  string $stringWithDatePlaceholders
      * @return string
      */
     public static function datePlaceholdersToRegex($stringWithDatePlaceholders)
@@ -124,5 +124,16 @@ class String
         $number = intval(substr($offset, 0, -1));
 
         return $number * $units[$unit];
+    }
+
+    /**
+     * Adds trailing slash to a string/path if not already there
+     *
+     * @param  string $string
+     * @return string
+     */
+    public static function withTrailingSlash($string)
+    {
+        return $string . ( substr($string, -1) !== '/' ? '/' : '' );
     }
 }

@@ -1,11 +1,10 @@
 <?php
 namespace phpbu\Backup\Sync;
 
-use Dropbox as dbx;
 use phpbu\App\Result;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Target;
-
+use phpbu\Util\String;
 /**
  * Copycom
  *
@@ -76,13 +75,13 @@ class Copycom implements Sync
             throw new Exception('User access secret is mandatory');
         }
         if (!isset($config['path']) || '' == $config['path']) {
-            throw new Exception('dropbox path is mandatory');
+            throw new Exception('copy.com path is mandatory');
         }
         $this->appKey     = $config['app.key'];
         $this->appSecret  = $config['app.secret'];
         $this->userKey    = $config['user.key'];
         $this->userSecret = $config['user.secret'];
-        $this->path  = $config['path'] . ( substr($config['path'], -1) !== '/' ? '/' : '' );
+        $this->path       = String::withTrailingSlash($config['path']);
     }
 
     /**
