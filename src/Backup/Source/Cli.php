@@ -21,11 +21,15 @@ abstract class Cli
     /**
      * Executes the cli commands and handles compression
      *
+     * @param  \phpbu\Backup\Cli\Exec $exec
+     * @param  \phpbu\Backup\Target   $target
+     * @param  bool                   $compressOutput
+     * @return \phpbu\Backup\Cli\Result
      * @throws \phpbu\App\Exception
-     * @return \phpbu\Cli\Result
      */
     protected function execute(Exec $exec, Target $target, $compressOutput = true)
     {
+        /** @var \phpbu\Backup\Cli\Result $res */
         $res    = $exec->execute($compressOutput ? $target->getPathname() : null);
         $code   = $res->getCode();
         $cmd    = $res->getCmd();
