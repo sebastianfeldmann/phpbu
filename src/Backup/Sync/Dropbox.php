@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\Backup\Sync;
 
+use Dropbox as DropboxApi;
 use phpbu\App\Result;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Target;
@@ -23,7 +24,7 @@ class Dropbox implements Sync
      *
      * Goto https://www.dropbox.com/developers/apps
      * create your app
-     *  - dropbox api app
+     *  - Dropbox api app
      *  - files and datastore
      *  - yes
      *  - provide some app name "my-dropbox-app"
@@ -41,8 +42,11 @@ class Dropbox implements Sync
     protected $path;
 
     /**
-     * (non-PHPdoc)
-     * @see \phpbu\Backup\Sync::setup()
+     * (non-PHPDoc)
+     *
+     * @see    \phpbu\Backup\Sync::setup()
+     * @param  array $config
+     * @throws \phpbu\Backup\Sync\Exception
      */
     public function setup(array $config)
     {
@@ -60,15 +64,19 @@ class Dropbox implements Sync
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \phpbu\Backup\Sync::sync()
+     * (non-PHPDoc)
+     *
+     * @see    \phpbu\Backup\Sync::sync()
+     * @param  \phpbu\backup\Target $target
+     * @param  \phpbu\App\Result    $result
+     * @throws \phpbu\Backup\Sync\Exception
      */
     public function sync(Target $target, Result $result)
     {
         $sourcePath  = $target->getPathnameCompressed();
         $dropboxPath = $this->path . $target->getFilenameCompressed();
-        $client      = new \Dropbox\Client($this->token, "phpbu/1.1.0");
-        $pathError   = \Dropbox\Path::findErrorNonRoot($dropboxPath);
+        $client      = new DropboxApi\Client($this->token, "phpbu/1.1.0");
+        $pathError   = DropboxApi\Path::findErrorNonRoot($dropboxPath);
 
         if ($pathError !== null) {
             throw new Exception('Invalid <dropbox-path>: ' . $pathError);
@@ -81,28 +89,11 @@ class Dropbox implements Sync
 
         try {
             $fp  = fopen($sourcePath, 'rb');
-            $res = $client->uploadFile($dropboxPath, \Dropbox\WriteMode::add(), $fp, $size);
+            $res = $client->uploadFile($dropboxPath, DropboxApi\WriteMode::add(), $fp, $size);
             fclose($fp);
         } catch (\Exception $e) {
-            fclose($fp);
             throw new Exception($e->getMessage(), null, $e);
         }
         $result->debug('upload: done  (' . $res['size'] . ')');
-        /*
-        $res
-        [revision]     => somerevisionmumber
-        [bytes]        => 12345
-        [thumb_exists] =>
-        [rev]          => somerevisionhash
-        [modified]     => Day, DD Mon YYYY HH:MM:SS +0000
-        [shareable]    =>
-        [mime_type]    => application/octet-stream
-        [path]         => uploaded file
-        [is_dir]       =>
-        [size]         => XX.X KB
-        [root]         => dropbox
-        [client_mtime] => Fri, 06 Feb 2015 21:44:33 +0000
-        [icon]         => page_white_compressed
-        */
     }
 }

@@ -41,7 +41,7 @@ abstract class Cli
     /**
      * Replaces %TARGET_DIR% and %TARGET_FILE%
      *
-     * @param  string $args
+     * @param  string $string
      * @param  Target $target
      * @return string
      */

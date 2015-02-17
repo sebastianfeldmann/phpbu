@@ -8,7 +8,7 @@ use phpbu\Backup\Target;
 use phpbu\Util\String;
 
 /**
- * Copycom
+ * Amazon S3 Sync
  *
  * @package    phpbu
  * @subpackage Backup
@@ -16,7 +16,7 @@ use phpbu\Util\String;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpbu.de/
- * @since      Class available since Release 1.1.3
+ * @since      Class available since Release 1.1.4
  */
 class AmazonS3 implements Sync
 {
@@ -64,8 +64,11 @@ class AmazonS3 implements Sync
     protected $acl;
 
     /**
-     * (non-PHPdoc)
-     * @see \phpbu\Backup\Sync::setup()
+     * (non-PHPDoc)
+     *
+     * @see    \phpbu\Backup\Sync::setup()
+     * @param  array $config
+     * @throws \phpbu\Backup\Sync\Exception
      */
     public function setup(array $config)
     {
@@ -85,7 +88,7 @@ class AmazonS3 implements Sync
             throw new Exception('AWS S3 region is mandatory');
         }
         if (!isset($config['path']) || '' == $config['path']) {
-            throw new Exception('AWS S3 path / object key is mandatory');
+            throw new Exception('AWS S3 path / object-key is mandatory');
         }
         $this->key    = $config['key'];
         $this->secret = $config['secret'];
@@ -96,8 +99,12 @@ class AmazonS3 implements Sync
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \phpbu\Backup\Sync::sync()
+     * Execute the sync
+     *
+     * @see    \phpbu\Backup\Sync::sync()
+     * @param  \phpbu\backup\Target $target
+     * @param  \phpbu\App\Result    $result
+     * @throws \phpbu\Backup\Sync\Exception
      */
     public function sync(Target $target, Result $result)
     {
@@ -106,7 +113,7 @@ class AmazonS3 implements Sync
 
         $s3 = S3Client::factory(array(
             'signature' => 'v4',
-            'region'  => $this->region,
+            'region'    => $this->region,
             'credentials' => array(
                 'key'    => $this->key,
                 'secret' => $this->secret,

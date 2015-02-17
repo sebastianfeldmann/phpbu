@@ -48,8 +48,11 @@ class Sftp implements Sync
     protected $remotePath;
 
     /**
-     * (non-PHPdoc)
-     * @see \phpbu\Backup\Sync::setup()
+     * (non-PHPDoc)
+     *
+     * @see    \phpbu\Backup\Sync::setup()
+     * @param  array $config
+     * @throws \phpbu\Backup\Sync\Exception
      */
     public function setup(array $config)
     {
@@ -72,8 +75,12 @@ class Sftp implements Sync
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \phpbu\Backup\Sync::sync()
+     * (non-PHPDoc)
+     *
+     * @see    \phpbu\Backup\Sync::sync()
+     * @param  \phpbu\backup\Target $target
+     * @param  \phpbu\App\Result    $result
+     * @throws \phpbu\Backup\Sync\Exception
      */
     public function sync(Target $target, Result $result)
     {
@@ -109,6 +116,8 @@ class Sftp implements Sync
         }
         $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
         $result->debug(sprintf('last error \'%s\'', $sftp->getLastSFTPError()));
+
+        /** @noinspection PhpInternalEntityUsedInspection */
         if (!$sftp->put($remoteFilename, $localFile, phpseclib\Net\SFTP::SOURCE_LOCAL_FILE)) {
             throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $sftp->getLastSFTPError()));
         }

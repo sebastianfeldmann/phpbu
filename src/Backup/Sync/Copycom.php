@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\Backup\Sync;
 
+use Barracuda\Copy\API as CopycomApi;
 use phpbu\App\Result;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Target;
@@ -54,8 +55,11 @@ class Copycom implements Sync
     protected $path;
 
     /**
-     * (non-PHPdoc)
-     * @see \phpbu\Backup\Sync::setup()
+     * (non-PHPDoc)
+     *
+     * @see    \phpbu\Backup\Sync::setup()
+     * @param  array $config
+     * @throws \phpbu\Backup\Sync\Exception
      */
     public function setup(array $config)
     {
@@ -85,15 +89,19 @@ class Copycom implements Sync
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \phpbu\Backup\Sync::sync()
+     * (non-PHPDoc)
+     *
+     * @see    \phpbu\Backup\Sync::sync()
+     * @param  \phpbu\backup\Target $target
+     * @param  \phpbu\App\Result    $result
+     * @throws \phpbu\Backup\Sync\Exception
      */
     public function sync(Target $target, Result $result)
     {
         $sourcePath = $target->getPathnameCompressed();
         $targetPath = $this->path . $target->getFilenameCompressed();
 
-        $copy = new \Barracuda\Copy\API($this->appKey, $this->appSecret, $this->userKey, $this->userSecret);
+        $copy = new CopycomApi($this->appKey, $this->appSecret, $this->userKey, $this->userSecret);
 
         try {
             // open a file to upload

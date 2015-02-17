@@ -3,7 +3,6 @@ namespace phpbu\Backup\Sync;
 
 use phpbu\App\Result;
 use phpbu\Backup\Cli\Cmd;
-use phpbu\Backup\Cli\Exec;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Target;
 use phpbu\Util;
@@ -71,8 +70,11 @@ class Rsync extends Cli implements Sync
     protected $delete;
 
     /**
-     * (non-PHPdoc)
-     * @see \phpbu\Backup\Sync::setup()
+     * (non-PHPDoc)
+     *
+     * @see    \phpbu\Backup\Sync::setup()
+     * @param  array $config
+     * @throws \phpbu\Backup\Sync\Exception
      */
     public function setup(array $config)
     {
@@ -104,8 +106,12 @@ class Rsync extends Cli implements Sync
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \phpbu\Backup\Sync::sync()
+     * (non-PHPDoc)
+     *
+     * @see    \phpbu\Backup\Sync::sync()
+     * @param  \phpbu\backup\Target $target
+     * @param  \phpbu\App\Result    $result
+     * @throws \phpbu\Backup\Sync\Exception
      */
     public function sync(Target $target, Result $result)
     {
