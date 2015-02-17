@@ -43,19 +43,18 @@ class Mysqldump extends Cli implements Source
 
     /**
      *
-     * @param  \phpbu\App\Target $target
-     * @param  \phpbu\App\Result $result
+     * @param  \phpbu\Backup\Target $target
+     * @param  \phpbu\App\Result    $result
      * @return \phpbu\App\Result
+     * @throws \phpbu\App\Exception
      */
     public function backup(Target $target, Result $result)
     {
-        $host     = 'localhost';
-        $user     = $_SERVER['USER'];
-        $password = null;
-        $datbases = array();
-        $exec     = new Exec();
-
-
+        $host      = 'localhost';
+        $user      = $_SERVER['USER'];
+        $password  = null;
+        $databases = array();
+        $exec      = new Exec();
         $path      = isset($this->conf['pathToMysqldump']) ? $this->conf['pathToMysqldump'] : null;
         $mysqldump = Util\Cli::detectCmdLocation(
             'mysqldump',
@@ -93,9 +92,8 @@ class Mysqldump extends Cli implements Source
             $cmd->addOption('-C');
         }
         if (!empty($this->conf['tables'])) {
-            foreach ($tables as $table) {
-                $cmd->addOption('--tables', $this->conf['tables']);
-            }
+            $tables = explode(',', $this->conf['tables']);
+            $cmd->addOption('--tables', $tables);
         } else {
             if (!empty($this->conf['databases'])) {
                 if (empty($this->conf['databases']) || $this->conf['databases'] == '__ALL__') {
