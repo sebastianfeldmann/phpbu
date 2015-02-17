@@ -2,8 +2,6 @@
 namespace phpbu\Backup;
 
 use phpbu\App\Result;
-use phpbu\Backup\Collector;
-use phpbu\Backup\Target;
 
 /**
  * Cleanup

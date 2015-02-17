@@ -2,6 +2,7 @@
 namespace phpbu\Backup;
 
 use SplFileInfo;
+use phpbu\App\Exception;
 
 /**
  * File
@@ -106,7 +107,7 @@ class File
     /**
      * Deletes the file
      *
-     * @throws Exception
+     * @throws \phpbu\App\Exception
      */
     public function unlink()
     {

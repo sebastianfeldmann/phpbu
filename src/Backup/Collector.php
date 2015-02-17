@@ -2,8 +2,6 @@
 namespace phpbu\Backup;
 
 use DirectoryIterator;
-use phpbu\Backup\File;
-use phpbu\Backup\Target;
 use phpbu\Util\String;
 
 /**

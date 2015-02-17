@@ -2,7 +2,6 @@
 namespace phpbu\Backup;
 
 use phpbu\App\Result;
-use phpbu\Backup\Target;
 
 /**
  * Source interface
@@ -27,8 +26,8 @@ interface Source
     /**
      * Runner the backup
      *
-     * @param  \phpbu\App\Target $target
-     * @param  \phpbu\App\Result $result
+     * @param  \phpbu\Backup\Target $target
+     * @param  \phpbu\App\Result    $result
      */
     public function backup(Target $target, Result $result);
 }

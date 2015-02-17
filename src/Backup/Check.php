@@ -2,7 +2,6 @@
 namespace phpbu\Backup;
 
 use phpbu\App\Result;
-use phpbu\Backup\Target;
 
 /**
  * Check
