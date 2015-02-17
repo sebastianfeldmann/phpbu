@@ -87,7 +87,7 @@ class Backup
     /**
      * Constructor
      *
-     * @param string $type
+     * @param string $name
      */
     public function __construct($name)
     {
