@@ -2,7 +2,6 @@
 namespace phpbu\Backup;
 
 use phpbu\App\Exception;
-use phpbu\Backup\Compressor;
 use phpbu\Util\String;
 
 /**
@@ -84,7 +83,7 @@ class Target
     /**
      * Permissions for potential directory or file creation.
      *
-     * @var octal integer
+     * @var integer (octal)
      */
     private $permissions;
 
@@ -285,7 +284,8 @@ class Target
     /**
      * Deletes the target file
      *
-     * @throws Exception
+     * @param  bool $compressed
+     * @throws \phpbu\App\Exception
      */
     public function unlink($compressed = true)
     {
@@ -299,7 +299,7 @@ class Target
     }
 
     /**
-     * Returns the name to the backup file
+     * Returns the filename of the backup file
      *
      * @return string
      */
@@ -310,7 +310,7 @@ class Target
 
 
     /**
-     * Path and filename off the target file.
+     * Returns path and filename of the backup file.
      *
      * @param  boolean $compressed
      * @return string
@@ -324,7 +324,7 @@ class Target
     }
 
     /**
-     * Path and compressed filename off the target file.
+     * Returns the path and compressed filename of the backup file.
      *
      * @return string
      */
@@ -334,7 +334,7 @@ class Target
     }
 
     /**
-     * Dirname configured with any date placeholders
+     * Is dirname configured with any date placeholders
      *
      * @return boolean
      */
