@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\App;
 
-use phpbu\App\Exception;
-use phpbu\App\Listener;
 use phpbu\Backup\Check;
 use phpbu\Backup\Cleaner;
 use phpbu\Backup\Source;
@@ -15,7 +13,7 @@ use phpbu\Log\Logger;
  * @package    phpbu
  * @subpackage App
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
- * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
@@ -88,6 +86,7 @@ abstract class Factory
      */
     public static function createLogger($alias, $conf = array())
     {
+        /** @var \phpbu\Log\Logger $logger */
         $logger = self::create('logger', $alias);
         if (!($logger instanceof Logger)) {
             throw new Exception(sprintf('logger \'%s\' has to implement the \'Logger\' interfaces', $alias));
@@ -109,6 +108,7 @@ abstract class Factory
      */
     public static function createSource($alias, $conf = array())
     {
+        /** @var \phpbu\Backup\Source $source */
         $source = self::create('source', $alias);
         if (!($source instanceof Source)) {
             throw new Exception(sprintf('source \'%s\' has to implement the \'Source\' interface', $alias));
@@ -121,12 +121,12 @@ abstract class Factory
      * Check Factory.
      *
      * @param  string $alias
-     * @param  array  $conf
      * @throws \phpbu\App\Exception
      * @return \phpbu\Backup\Check
      */
     public static function createCheck($alias)
     {
+        /** @var \phpbu\Backup\Check $check */
         $check = self::create('check', $alias);
         if (!($check instanceof Check)) {
             throw new Exception(sprintf('Check \'%s\' has to implement the \'Check\' interface', $alias));
@@ -144,6 +144,7 @@ abstract class Factory
      */
     public static function createSync($alias, $conf = array())
     {
+        /** @var \phpbu\Backup\Sync $sync */
         $sync = self::create('sync', $alias);
         if (!($sync instanceof Sync)) {
             throw new Exception(sprintf('sync \'%s\' has to implement the \'Sync\' interface', $alias));
@@ -162,6 +163,7 @@ abstract class Factory
      */
     public static function createCleaner($alias, $conf = array())
     {
+        /** @var \phpbu\Backup\Cleaner $cleaner */
         $cleaner = self::create('cleaner', $alias);
         if (!($cleaner instanceof Cleaner)) {
             throw new Exception(sprintf('cleaner \'%s\' has to implement the \'Cleaner\' interface', $alias));
@@ -173,10 +175,10 @@ abstract class Factory
     /**
      * Extend the backup factory.
      *
-     * @param  string $type        Type to create 'source', 'check', 'sync' or 'cleaner'
-     * @param  string $alias       Name the class is registered at
-     * @param  string $fqcn        Full Qualified Class Name
-     * @param  string $force       Overwrite already registered class
+     * @param  string  $type        Type to create 'source', 'check', 'sync' or 'cleaner'
+     * @param  string  $alias       Name the class is registered at
+     * @param  string  $fqcn        Full Qualified Class Name
+     * @param  boolean $force       Overwrite already registered class
      * @throws \phpbu\App\Exception
      */
     public static function register($type, $alias, $fqcn, $force = false)
@@ -191,7 +193,7 @@ abstract class Factory
     }
 
     /**
-     * Throws an excepton if type is invalid.
+     * Throws an exception if type is invalid.
      *
      * @param  string $type
      * @throws \phpbu\App\Exception
