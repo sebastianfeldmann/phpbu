@@ -18,9 +18,9 @@ use SebastianBergmann\Environment\Console;
  * @subpackage App
  * @author     Sebastian Bergmann <sebastian@phpunit.de>
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
- * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
- * @link       http://www.phpbu.de/
+ * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class ResultPrinter extends Printer implements Listener

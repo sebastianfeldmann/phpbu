@@ -2,7 +2,7 @@
 /**
  * phpbu
  *
- * Copyright (c) 2014, Sebastian Feldmann <sebastian@phpbu.de>
+ * Copyright (c) 2014 - 2015, Sebastian Feldmann <sebastian@phpbu.de>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,9 +35,9 @@
  *
  * @package    phpbu
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
- * @copyright  2014 Sebastian Feldmann
+ * @copyright  Sebastian Feldmann
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
- * @link       http://www.phpbu.de/
+ * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 namespace phpbu;
@@ -53,9 +53,9 @@ use phpbu\App\Version;
  *
  * @package    phpbu
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
- * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
- * @link       http://www.phpbu.de/
+ * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class App

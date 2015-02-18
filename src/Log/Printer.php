@@ -12,9 +12,9 @@ use InvalidArgumentException;
  * @subpackage Log
  * @author     Sebastian Bergmann <sebastian@phpunit.de>
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
- * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
- * @link       http://www.phpbu.de/
+ * @link       http://phpbu.de/
  */
 class Printer
 {
