@@ -1,8 +1,8 @@
 # PHPBU
 
-*PHP Backup Utility*
+**PHP Backup Utility**
 
-PHPBU is a php framework that creates backups and moves your backups to other servers or cloud services
+*PHPBU* is a php framework that creates backups and sync your backups to other servers or cloud services
 and by the way it assists you monitoring your backup creation.
 
 Get detailed information about all the features and a 'getting started' tutorial at the [PHPBU Website](http://phpbu.de).
@@ -47,7 +47,7 @@ Get detailed information about all the features and a 'getting started' tutorial
 
 ## Installation
 
-You can [download](http://phar.phpbu.de/phpbu.phar) a PHP Archive [(PHAR)](http://php.net/phar) that bundles everything you need to run phpbu in a single file.
+You can [download](http://phar.phpbu.de/phpbu.phar) a PHP Archive [(PHAR)](http://php.net/phar) that bundles everything you need to run *PHPBU* in a single file.
 
     wget http://phar.phpbu.de/phpbu.phar
     chmod +x phpbu.phar
@@ -58,7 +58,7 @@ For convenience, you can move the PHAR to a directory that is in your [PATH](htt
     mv phpbu.phar /usr/local/bin/phpbu
     phpbu --version
 
-Installing PHPBU via Composer is also supported.
+Installing *PHPBU* via Composer is also supported.
 
 ```json
   "require": {
@@ -83,8 +83,8 @@ phpbu [option]
 
     $ phpbu
 
-This requires a valid XML phpbu configuration file (phpbu.xml or phpbu.xml.dist) in your current working directory.
-Alternatively, you can specify the path to your configuration file
+This requires a valid XML *PHPBU* configuration file (phpbu.xml or phpbu.xml.dist) in your current working directory.
+Alternatively, you can specify the path to your configuration file.
 
     $ phpbu --configuration=backup/config.xml
 
