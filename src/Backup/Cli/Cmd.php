@@ -43,7 +43,7 @@ class Cmd
     private $args = array();
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $name
      */
@@ -73,10 +73,10 @@ class Cmd
     }
 
     /**
-     * Add option to list
+     * Add option to list.
      *
      * @param string              $option
-     * @param miyed<string|array> $argument
+     * @param mixed<string|array> $argument
      * @param string              $glue
      */
     public function addOption($option, $argument = null, $glue = '=')
@@ -92,16 +92,14 @@ class Cmd
     }
 
     /**
-     * Add argument to list
+     * Add argument to list.
      *
-     * @param miyed<string|array> $argument
-     * @param string              $glue
+     * @param mixed<string|array> $argument
      */
     public function addArgument($argument)
     {
         if (is_array($argument)) {
             $argument        = array_map('escapeshellarg', $argument);
-            $glue            = ' ';
             $escapedArgument = implode(' ', $argument);
         } else {
             $escapedArgument = escapeshellarg($argument);
@@ -110,7 +108,8 @@ class Cmd
     }
 
     /**
-     *
+     * Magic to string method.
+     * 
      * @return string
      */
     public function __toString()

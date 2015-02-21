@@ -49,7 +49,7 @@ class Rsync extends Cli implements Sync
     protected $path;
 
     /**
-     * Files to ignore, extracted from config string seperated by ":"
+     * Files to ignore, extracted from config string separated by ":"
      *
      * @var array
      */
@@ -129,7 +129,7 @@ class Rsync extends Cli implements Sync
             $targetFile = $target->getPathnameCompressed();
             $targetDir  = dirname($targetFile);
 
-            // use archive mode, verbose and compress if not allready done
+            // use archive mode, verbose and compress if not already done
             $options = '-av' . ( $target->shouldBeCompressed() ? '' : 'z' );
             $rsync->addOption($options);
 

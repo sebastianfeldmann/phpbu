@@ -1,9 +1,7 @@
 <?php
 namespace phpbu\App;
 
-use phpbu\App\Factory;
 use phpbu\App\Result;
-use phpbu\App\ResultPrinter;
 use phpbu\Backup;
 
 /**
@@ -115,7 +113,7 @@ class Runner
                     try {
                         $result->syncStart($sync);
                         if ($checkFailed && $sync['skipOnCheckFail']) {
-                            $result->syncSkippe($sync);
+                            $result->syncSkipped($sync);
                         } else {
                             $s = Factory::createSync($sync['type'], $sync['options']);
                             $s->sync($target, $result);
@@ -148,7 +146,7 @@ class Runner
                             $cleaner->cleanup($target, $collector, $result);
                             $result->cleanupEnd($cleanup);
                         }
-                    } catch (Backup\Cleanup\Exception $e) {
+                    } catch (Backup\Cleaner\Exception $e) {
                         $result->debug('exception: ' . $e->getMessage());
                         $result->addError($e);
                         $result->cleanupFailed($cleanup);
@@ -203,7 +201,7 @@ class Runner
     }
 
     /**
-     * Create all configured loggers
+     * Create all configured loggers.
      *
      * @param  array $arguments
      * @return array<Logger>

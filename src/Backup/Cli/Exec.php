@@ -1,8 +1,7 @@
 <?php
 namespace phpbu\Backup\Cli;
 
-use phpbu\Backup\Cli\Cmd;
-use phpbu\Backup\Target;
+use phpbu\App\Exception;
 
 /**
  * Cli Runner
@@ -25,10 +24,11 @@ class Exec
     private $commands = array();
 
     /**
-     * Executes the commands
+     * Executes the commands.
      *
+     * @param  string $redirect
+     * @return \phpbu\Backup\Cli\Result
      * @throws \phpbu\App\Exception
-     * @return \phpbu\Cli\Result
      */
     public function execute($redirect = null)
     {
@@ -44,9 +44,9 @@ class Exec
 
     /**
      * Generates the system command.
-     *
-     * @throws \phpbu\App\Exception
+     * 
      * @return string
+     * @throws \phpbu\App\Exception
      */
     public function getExec()
     {

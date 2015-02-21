@@ -277,7 +277,7 @@ class App
         if (!$pathToFile || !is_readable($pathToFile)) {
             throw new Exception(sprintf('Cannot open bootstrap file "%s".' . "\n", $filename));
         }
-
+        
         require $pathToFile;
     }
 
@@ -298,7 +298,7 @@ class App
         $phar = file_get_contents($remoteFilename);
         error_reporting($old);
         if (!$phar) {
-            print ' failed' . PHP_EOL . 'Couldn\'t reach phpbu update site' . PHP_EOL;
+            print ' failed' . PHP_EOL . 'Could not reach phpbu update site' . PHP_EOL;
             exit(self::EXIT_EXCEPTION);
         }
         file_put_contents($tempFilename, $phar);

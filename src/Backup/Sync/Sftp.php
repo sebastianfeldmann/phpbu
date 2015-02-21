@@ -110,7 +110,7 @@ class Sftp implements Sync
                     $result->debug(sprintf('creating remote dir \'%s\'', $dir));
                     $sftp->mkdir($dir);
                 }
-                $result->debug(sprintf('change to remoted dir \'%s\'', $dir));
+                $result->debug(sprintf('change to remote dir \'%s\'', $dir));
                 $sftp->chdir($dir);
             }
         }

@@ -71,7 +71,7 @@ class Backup
     protected $cleanups = array();
 
     /**
-     * List of skipped clanup
+     * List of skipped cleanups
      *
      * @var array
      */
@@ -194,7 +194,7 @@ class Backup
     }
 
     /**
-     * Return count of executed syncs
+     * Return count of executed syncs.
      *
      * @return number
      */
@@ -204,7 +204,7 @@ class Backup
     }
 
     /**
-     * Add sync to skippded syncs list
+     * Add sync to skipped syncs list.
      *
      * @param array $sync
      */
@@ -214,7 +214,7 @@ class Backup
     }
 
     /**
-     * Return amount of skipped syncs
+     * Return amount of skipped syncs.
      *
      * @return number
      */
@@ -224,7 +224,7 @@ class Backup
     }
 
     /**
-     * Add sync to failed syncs list
+     * Add sync to failed syncs list.
      *
      * @param array $sync
      */
@@ -234,7 +234,7 @@ class Backup
     }
 
     /**
-     * Return amount of failed syncs
+     * Return amount of failed syncs.
      *
      * @return number
      */
@@ -244,7 +244,7 @@ class Backup
     }
 
     /**
-     * Add cleanup to executed cleanups list
+     * Add cleanup to executed cleanups list.
      *
      * @param array $cleanup
      */
@@ -254,7 +254,7 @@ class Backup
     }
 
     /**
-     * Return amount of executed cleanups
+     * Return amount of executed cleanups.
      *
      * @return number
      */
@@ -264,7 +264,7 @@ class Backup
     }
 
     /**
-     * Add cleanup to skipped cleanups list
+     * Add cleanup to skipped cleanups list.
      *
      * @param array $cleanup
      */
@@ -284,7 +284,7 @@ class Backup
     }
 
     /**
-     * Add cleanup to failed cleanups list
+     * Add cleanup to failed cleanups list.
      *
      * @param array $cleanup
      */
@@ -294,7 +294,7 @@ class Backup
     }
 
     /**
-     * Return amount of failed cleanups
+     * Return amount of failed cleanups.
      *
      * @return number
      */

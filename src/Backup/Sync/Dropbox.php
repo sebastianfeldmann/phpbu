@@ -78,8 +78,12 @@ class Dropbox implements Sync
         $client      = new DropboxApi\Client($this->token, "phpbu/1.1.0");
         $pathError   = DropboxApi\Path::findErrorNonRoot($dropboxPath);
 
+        if (substr(__FILE__, 0, 7) == 'phar://') {
+            DropboxApi\RootCertificates::useExternalPaths();
+        }
+
         if ($pathError !== null) {
-            throw new Exception('Invalid <dropbox-path>: ' . $pathError);
+            throw new Exception(sprintf('Invalid \'dropbox-path\': %s', $pathError));
         }
 
         $size = null;

@@ -4,7 +4,7 @@ namespace phpbu\Backup\Cleaner;
 use phpbu\App;
 
 /**
- * Exception occuring during Cleanups
+ * Exception occurring during Cleanups
  *
  * @package    phpbu
  * @subpackage App

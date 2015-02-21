@@ -4,7 +4,7 @@ namespace phpbu\Backup\Sync;
 use phpbu\App;
 
 /**
- * Exception occuring during Syncs
+ * Exception occurring during Syncs
  *
  * @package    phpbu
  * @subpackage App

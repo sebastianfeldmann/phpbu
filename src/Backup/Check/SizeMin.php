@@ -23,7 +23,13 @@ use phpbu\Util\String;
 class SizeMin implements Check
 {
     /**
-     * @see \phpbu\Backup\Check::pass()
+     * @see    \phpbu\Backup\Check::pass()
+     * @param  \phpbu\Backup\Target    $target
+     * @param  string                  $value
+     * @param  \phpbu\Backup\Collector $collector
+     * @param  \phpbu\App\Result       $result
+     * @return boolean
+     * @throws \phpbu\App\Exception
      */
     public function pass(Target $target, $value, Collector $collector, Result $result)
     {

@@ -2,9 +2,7 @@
 namespace phpbu\App;
 
 use InvalidArgumentException;
-use phpbu\App\Listener;
 use phpbu\App\Result;
-use phpbu\App\Version;
 use phpbu\Log\Printer;
 use PHP_Timer;
 use SebastianBergmann\Environment\Console;
@@ -94,10 +92,10 @@ class ResultPrinter extends Printer implements Listener
     /**
      * Constructor
      *
-     * @param  string $out
-     * @param  string $verbose
-     * @param  string $colors
-     * @param  string $debug
+     * @param  string  $out
+     * @param  boolean $verbose
+     * @param  boolean $colors
+     * @param  boolean $debug
      * @throws \InvalidArgumentException
      */
     public function __construct($out = null, $verbose = false, $colors = false, $debug = false)
@@ -125,7 +123,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::phpbuStart()
+     * phpbu start event.
+     * 
+     * @see   \phpbu\App\Listener::phpbuStart()
+     * @param array $settings
      */
     public function phpbuStart($settings)
     {
@@ -138,7 +139,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::phpbuEnd()
+     * phpbu end event.
+     * 
+     * @see   \phpbu\App\Listener::phpbuEnd()
+     * @param \phpbu\App\Result $result
      */
     public function phpbuEnd(Result $result)
     {
@@ -146,7 +150,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::backupStart()
+     * Backup start event.
+     * 
+     * @see   \phpbu\App\Listener::backupStart()
+     * @param array $backup
      */
     public function backupStart($backup)
     {
@@ -157,7 +164,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::backupFailed()
+     * Backup failed event.
+     *
+     * @see   \phpbu\App\Listener::backupFailed()
+     * @param array $backup
      */
     public function backupFailed($backup)
     {
@@ -170,7 +180,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::backupEnd()
+     * Backup end event.
+     * 
+     * @see   \phpbu\App\Listener::backupEnd()
+     * @param array $backup
      */
     public function backupEnd($backup)
     {
@@ -180,7 +193,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::checkStart()
+     * Check start event.
+     * 
+     * @see   \phpbu\App\Listener::checkStart()
+     * @param array $check
      */
     public function checkStart($check)
     {
@@ -191,7 +207,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::checkFailed()
+     * Check failed event.
+     *
+     * @see   \phpbu\App\Listener::checkFailed()
+     * @param array $check
      */
     public function checkFailed($check)
     {
@@ -204,7 +223,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::checkEnd()
+     * Check end event.
+     * 
+     * @see   \phpbu\App\Listener::checkEnd()
+     * @param array $check
      */
     public function checkEnd($check)
     {
@@ -214,7 +236,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::syncStart()
+     * Sync start event.
+     *
+     * @see   \phpbu\App\Listener::syncStart()
+     * @param array $sync
      */
     public function syncStart($sync)
     {
@@ -225,7 +250,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::syncSkipped()
+     * Sync skipped event.
+     * 
+     * @see   \phpbu\App\Listener::syncSkipped()
+     * @param array $sync
      */
     public function syncSkipped($sync)
     {
@@ -238,7 +266,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::syncFailed()
+     * Sync failed event.
+     *
+     * @see   \phpbu\App\Listener::syncFailed()
+     * @param array $sync
      */
     public function syncFailed($sync)
     {
@@ -251,7 +282,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::syncEnd()
+     * Sync end event.
+     * 
+     * @see   \phpbu\App\Listener::syncEnd()
+     * @param array $sync
      */
     public function syncEnd($sync)
     {
@@ -261,7 +295,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::cleanupStart()
+     * Cleanup start event.
+     * 
+     * @see   \phpbu\App\Listener::cleanupStart()
+     * @param array $cleanup
      */
     public function cleanupStart($cleanup)
     {
@@ -272,7 +309,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::cleanupSkipped()
+     * Cleanup skipped event.
+     *
+     * @see   \phpbu\App\Listener::cleanupSkipped()
+     * @param array $cleanup
      */
     public function cleanupSkipped($cleanup)
     {
@@ -285,7 +325,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::cleanupFailed()
+     * Cleanup failed event.
+     * 
+     * @see   \phpbu\App\Listener::cleanupFailed()
+     * @param array $cleanup
      */
     public function cleanupFailed($cleanup)
     {
@@ -298,7 +341,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::cleanupEnd()
+     * Cleanup end event.
+     * 
+     * @see   \phpbu\App\Listener::cleanupEnd()
+     * @param array $cleanup
      */
     public function cleanupEnd($cleanup)
     {
@@ -308,7 +354,10 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * @see \phpbu\App\Listener::debug()
+     * Debugging.
+     * 
+     * @see   \phpbu\App\Listener::debug()
+     * @param string $msg
      */
     public function debug($msg)
     {
@@ -318,7 +367,7 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * Prints a result summary
+     * Prints a result summary.
      *
      * @param \phpbu\App\Result $result
      */
@@ -336,7 +385,7 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * Prints the result header with memory usage info
+     * Prints the result header with memory usage info.
      */
     protected function printHeader()
     {
@@ -344,7 +393,7 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * Print Error informations
+     * Print error information.
      *
      * @param \phpbu\App\Result $result
      */
@@ -365,7 +414,7 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * Prints verbose backup informations
+     * Prints verbose backup information.
      *
      * @param \phpbu\App\Result\Backup $backup
      */
@@ -408,7 +457,7 @@ class ResultPrinter extends Printer implements Listener
     }
 
     /**
-     * Prints 'OK' or 'FAILURE' footer
+     * Prints 'OK' or 'FAILURE' footer.
      *
      * @param Result $result
      */

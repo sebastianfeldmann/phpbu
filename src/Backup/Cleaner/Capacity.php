@@ -45,7 +45,11 @@ class Capacity implements Cleaner
     protected $deleteTarget;
 
     /**
-     * @see \phpbu\Backup\Cleanup::setup()
+     * Setup the the Cleaner.
+     * 
+     * @see    \phpbu\Backup\Cleanup::setup()
+     * @param  array $options
+     * @throws \phpbu\Backup\Cleaner\Exception
      */
     public function setup(array $options)
     {
@@ -68,13 +72,20 @@ class Capacity implements Cleaner
     }
 
     /**
-     * @see \phpbu\Backup\Cleanup::cleanup()
+     * Cleanup your backup directory.
+     * 
+     * @see    \phpbu\Backup\Cleanup::cleanup()
+     * @param  \phpbu\Backup\Target    $target
+     * @param  \phpbu\Backup\Collector $collector
+     * @param  \phpbu\App\Result       $result
+     * @throws \phpbu\Backup\Cleaner\Exception
      */
     public function cleanup(Target $target, Collector $collector, Result $result)
     {
         $files = $collector->getBackupFiles();
         $size  = $target->getSize();
-
+        
+        /** @var \phpbu\Backup\File $file */
         foreach ($files as $file) {
             $size += $file->getSize();
         }
@@ -88,7 +99,7 @@ class Capacity implements Cleaner
                 $file  = array_shift($files);
                 $size -= $file->getSize();
                 if (!$file->isWritable()) {
-                    throw new Exception(sprintf('can\'t detele file: %s', $file->getPathname()));
+                    throw new Exception(sprintf('can\'t delete file: %s', $file->getPathname()));
                 }
                 $result->debug(sprintf('delete %s', $file->getPathname()));
                 $file->unlink();

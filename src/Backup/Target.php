@@ -209,7 +209,7 @@ class Target
     }
 
     /**
-     * Returns the path to the backup file
+     * Return the path to the backup file.
      *
      * @return string
      */
@@ -219,7 +219,7 @@ class Target
     }
 
     /**
-     * Returns the path to the backup file
+     * Return the path to the backup file.
      *
      * @return string
      */
@@ -229,7 +229,7 @@ class Target
     }
 
     /**
-     * Returns the name to the backup file
+     * Return the name to the backup file.
      *
      * @param  boolean $compressed
      * @return string
@@ -244,7 +244,7 @@ class Target
     }
 
     /**
-     * Returns the name to the backup file
+     * Return the name to the backup file.
      *
      * @return string
      */
@@ -254,7 +254,7 @@ class Target
     }
 
     /**
-     * Returns the actual filesize in bytes
+     * Return the actual filesize in bytes
      *
      * @throws Exception
      * @return integer
@@ -299,7 +299,7 @@ class Target
     }
 
     /**
-     * Returns the filename of the backup file
+     * Return the filename of the backup file
      *
      * @return string
      */
@@ -310,7 +310,7 @@ class Target
 
 
     /**
-     * Returns path and filename of the backup file.
+     * Return path and filename of the backup file.
      *
      * @param  boolean $compressed
      * @return string
@@ -324,7 +324,7 @@ class Target
     }
 
     /**
-     * Returns the path and compressed filename of the backup file.
+     * Return the path and compressed filename of the backup file.
      *
      * @return string
      */
@@ -344,7 +344,7 @@ class Target
     }
 
     /**
-     * Returns the part of the path that is not changing
+     * Return the part of the path that is not changing
      *
      * @return string
      */
@@ -364,7 +364,7 @@ class Target
     }
 
     /**
-     * Returns amount of changing path elements
+     * Return amount of changing path elements
      *
      * @return integer
      */

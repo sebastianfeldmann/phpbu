@@ -50,7 +50,7 @@ class Collector
     }
 
     /**
-     * Recursive backup collecting
+     * Recursive backup collecting.
      *
      * @param string  $path
      * @param integer $depth

@@ -3,7 +3,6 @@ namespace phpbu\App;
 
 use DOMElement;
 use DOMXPath;
-use phpbu\App\Exception;
 use phpbu\Util\Cli;
 use phpbu\Util\String;
 
@@ -66,14 +65,14 @@ use phpbu\Util\String;
 class Configuration
 {
     /**
-     * Path to configfile.
+     * Path to config file.
      *
      * @var string
      */
     private $filename;
 
     /**
-     * Configfile DOMDocument
+     * Config file DOMDocument
      *
      * @var \DOMDocument
      */
@@ -140,6 +139,7 @@ class Configuration
             }
         }
         foreach ($this->xpath->query('php/ini') as $ini) {
+            /** @var DOMElement $ini */
             $name  = (string) $ini->getAttribute('name');
             $value = (string) $ini->getAttribute('value');
 
@@ -180,12 +180,14 @@ class Configuration
         if ($sources->length !== 1) {
             throw new Exception('backup requires exactly one source config');
         }
+        /** @var DOMElement $sourceNode */
         $sourceNode = $sources->item(0);
         $type       = (string) $sourceNode->getAttribute('type');
         if (!$type) {
             throw new Exception('source requires type attribute');
         }
         $source['type'] = $type;
+        /** @var DOMElement $optionNode */
         foreach ($sourceNode->getElementsByTagName('option') as $optionNode) {
             $name                     = (string) $optionNode->getAttribute('name');
             $value                    = (string) $optionNode->getAttribute('value');
@@ -197,6 +199,7 @@ class Configuration
         if ($targets->length !== 1) {
             throw new Exception('backup requires exactly one target config');
         }
+        /** @var DOMElement $targetNode */
         $targetNode = $targets->item(0);
         $compress   = (string) $targetNode->getAttribute('compress');
         $filename   = (string) $targetNode->getAttribute('filename');
@@ -211,8 +214,9 @@ class Configuration
             'compress' => $compress,
         );
 
-        // get check informations
+        // get check information
         $checks = array();
+        /** @var DOMElement $checkNode */
         foreach ($backupNode->getElementsByTagName('check') as $checkNode) {
             $type      = (string) $checkNode->getAttribute('type');
             $value     = (string) $checkNode->getAttribute('value');
@@ -225,6 +229,7 @@ class Configuration
 
         // get sync configurations
         $syncs = array();
+        /** @var DOMElement $syncNode */
         foreach ($backupNode->getElementsByTagName('sync') as $syncNode) {
             $sync = array(
                 'type'            => (string) $syncNode->getAttribute('type'),
@@ -241,6 +246,7 @@ class Configuration
 
         // get cleanup configuration
         $cleanup = array();
+        /** @var DOMElement $cleanupNode */
         foreach ($backupNode->getElementsByTagName('cleanup') as $cleanupNode) {
             $cleanup = array(
                 'type'            => (string) $cleanupNode->getAttribute('type'),
@@ -248,6 +254,7 @@ class Configuration
                 'skipOnSyncFail'  => String::toBoolean((string) $cleanupNode->getAttribute('skipOnSyncFail'), true),
                 'options'         => array()
             );
+            /** @var DOMElement $optionNode */
             foreach ($cleanupNode->getElementsByTagName('option') as $optionNode) {
                 $name                      = (string) $optionNode->getAttribute('name');
                 $value                     = (string) $optionNode->getAttribute('value');
@@ -273,7 +280,8 @@ class Configuration
      */
     public function getLoggingSettings()
     {
-        $loggers   = array();
+        $loggers = array();
+        /** @var DOMElement $logNode */
         foreach ($this->xpath->query('logging/log') as $logNode) {
             $log    = array(
                 'type'    => (string) $logNode->getAttribute('type'),
@@ -284,6 +292,7 @@ class Configuration
                 $log['options']['target'] = $this->toAbsolutePath($tarAtr);
             }
 
+            /** @var DOMElement $optionNode */
             foreach ($logNode->getElementsByTagName('option') as $optionNode) {
                 $name  = (string) $optionNode->getAttribute('name');
                 $value = (string) $optionNode->getAttribute('value');

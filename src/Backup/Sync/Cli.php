@@ -8,7 +8,7 @@ use phpbu\Backup\Target;
 /**
  * Cli
  *
- * Baseclass for all cli based sync tools e.g. 'rsync'
+ * Base class for all cli based sync tools e.g. 'rsync'.
  *
  * @package    phpbu
  * @subpackage Backup
@@ -21,7 +21,7 @@ use phpbu\Backup\Target;
 abstract class Cli
 {
     /**
-     * Executes a cli command
+     * Executes a cli command.
      *
      * @param  \phpbu\Backup\Cli\Cmd
      * @throws \phpbu\Backup\Sync\Exception
@@ -39,7 +39,7 @@ abstract class Cli
     }
 
     /**
-     * Replaces %TARGET_DIR% and %TARGET_FILE%
+     * Replaces %TARGET_DIR% and %TARGET_FILE% in given string.
      *
      * @param  string $string
      * @param  Target $target

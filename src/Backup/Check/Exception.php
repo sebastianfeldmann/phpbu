@@ -4,7 +4,7 @@ namespace phpbu\Backup\Check;
 use phpbu\App;
 
 /**
- * Exception occuring during Checks
+ * Exception occurring during checks.
  *
  * @package    phpbu
  * @subpackage App

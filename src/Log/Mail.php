@@ -4,9 +4,10 @@ namespace phpbu\Log;
 use phpbu\App\Exception;
 use phpbu\App\Listener;
 use phpbu\App\Result;
-use phpbu\Log\Logger;
 use phpbu\Util\String;
 use PHP_Timer;
+use Swift_Mailer;
+use Swift_Message;
 
 /**
  * Mail Logger
@@ -21,6 +22,13 @@ use PHP_Timer;
  */
 class Mail implements Listener, Logger
 {
+    /**
+     * Mailer instance
+     * 
+     * @var Swift_Mailer
+     */
+    protected $mailer;
+    
     /**
      * Mail subject
      *
@@ -43,7 +51,7 @@ class Mail implements Listener, Logger
     protected $senderName;
 
     /**
-     * Transport type mail | smtp
+     * Transport type [mail|smtp|null]
      *
      * @var string
      */
@@ -92,7 +100,11 @@ class Mail implements Listener, Logger
     private $sendOnlyOnError;
 
     /**
-     * @see \phpbu\Log\Logger::setup
+     * Setup the Logger.
+     * 
+     * @see    \phpbu\Log\Logger::setup
+     * @param  array $options
+     * @throws \phpbu\App\Exception
      */
     public function setup(array $options)
     {
@@ -104,7 +116,7 @@ class Mail implements Listener, Logger
         $this->sendOnlyOnError = isset($options['sendOnlyOnError'])
                                ? String::toBoolean($options['sendOnlyOnError'], false)
                                : false;
-        $this->subject         = isset($options['subejct'])
+        $this->subject         = isset($options['subject'])
                                ? $options['subject']
                                : 'PHPBU backup report from ' . $server;
         $this->senderMail      = isset($options['sender.mail'])
@@ -120,11 +132,12 @@ class Mail implements Listener, Logger
 
         // create transport an mailer
         $transport    = $this->createTransport($this->transportType, $options);
-        $this->mailer = \Swift_Mailer::newInstance($transport);
+        $this->mailer = Swift_Mailer::newInstance($transport);
     }
 
     /**
-     * @see \phpbu\App\Listener::phpbuStart()
+     * @see   \phpbu\App\Listener::phpbuStart()
+     * @param array $settings
      */
     public function phpbuStart($settings)
     {
@@ -132,7 +145,9 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::phpbuEnd()
+     * @see    \phpbu\App\Listener::phpbuEnd()
+     * @param  \phpbu\App\Result $result
+     * @throws \phpbu\App\Exception
      */
     public function phpbuEnd(Result $result)
     {
@@ -144,10 +159,11 @@ class Mail implements Listener, Logger
             $info    = $this->getInfoHtml($result);
             $footer  = $this->getFooterHtml();
             $body    = $header . $errors . $info . $footer;
-            $sent    = false;
+            $sent    = null;
 
             try {
-                $message = \Swift_Message::newInstance();
+                /** @var Swift_Message $message */
+                $message = Swift_Message::newInstance();
                 $message->setSubject($this->subject)
                         ->setFrom($this->senderMail, $this->senderName)
                         ->setTo($this->recepients)
@@ -159,13 +175,14 @@ class Mail implements Listener, Logger
                 throw new Exception($e->getMessage());
             }
             if (!$sent) {
-                throw new Exception('mail could not sent');
+                throw new Exception('mail could not be sent');
             }
         }
     }
 
     /**
-     * @see \phpbu\App\Listener::backupStart()
+     * @see   \phpbu\App\Listener::backupStart()
+     * @param array $backup
      */
     public function backupStart($backup)
     {
@@ -173,7 +190,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::backupEnd()
+     * @see   \phpbu\App\Listener::backupEnd()
+     * @param array $backup
      */
     public function backupEnd($backup)
     {
@@ -181,7 +199,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::backupFailed()
+     * @see   \phpbu\App\Listener::backupFailed()
+     * @param array $backup
      */
     public function backupFailed($backup)
     {
@@ -189,7 +208,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::checkStart()
+     * @see   \phpbu\App\Listener::checkStart()
+     * @param array $check
      */
     public function checkStart($check)
     {
@@ -197,7 +217,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::checkEnd()
+     * @see   \phpbu\App\Listener::checkEnd()
+     * @param array $check
      */
     public function checkEnd($check)
     {
@@ -205,7 +226,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::checkFailed()
+     * @see   \phpbu\App\Listener::checkFailed()
+     * @param array $check
      */
     public function checkFailed($check)
     {
@@ -213,7 +235,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::syncStart()
+     * @see   \phpbu\App\Listener::syncStart()
+     * @param array $sync
      */
     public function syncStart($sync)
     {
@@ -221,7 +244,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::syncEnd()
+     * @see   \phpbu\App\Listener::syncEnd()
+     * @param array $sync
      */
     public function syncEnd($sync)
     {
@@ -229,7 +253,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::syncSkipped()
+     * @see   \phpbu\App\Listener::syncSkipped()
+     * @param array $sync
      */
     public function syncSkipped($sync)
     {
@@ -237,7 +262,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::syncFailed()
+     * @see   \phpbu\App\Listener::syncFailed()
+     * @param array $sync
      */
     public function syncFailed($sync)
     {
@@ -245,7 +271,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::cleanupStart()
+     * @see   \phpbu\App\Listener::cleanupStart()
+     * @param array $cleanup
      */
     public function cleanupStart($cleanup)
     {
@@ -253,7 +280,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::cleanupEnd()
+     * @see   \phpbu\App\Listener::cleanupEnd()
+     * @param array $cleanup
      */
     public function cleanupEnd($cleanup)
     {
@@ -261,7 +289,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::cleanupSkipped()
+     * @see   \phpbu\App\Listener::cleanupSkipped()
+     * @param array $cleanup
      */
     public function cleanupSkipped($cleanup)
     {
@@ -269,7 +298,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::cleanupFailed()
+     * @see   \phpbu\App\Listener::cleanupFailed()
+     * @param array $cleanup
      */
     public function cleanupFailed($cleanup)
     {
@@ -277,7 +307,8 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see \phpbu\App\Listener::debug()
+     * @see   \phpbu\App\Listener::debug()
+     * @param string $msg
      */
     public function debug($msg)
     {
@@ -285,7 +316,7 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * Create a Swift_Mailer_Transport
+     * Create a Swift_Mailer_Transport.
      *
      * @param  string $type
      * @param  array  $options
@@ -365,7 +396,7 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * Returns mail header html
+     * Return mail header html
      *
      * @param  \phpbu\App\Result $result
      * @return string
@@ -417,7 +448,7 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * Get error informations
+     * Get error information.
      *
      * @param  \phpbu\App\Result $result
      * @return string
@@ -442,7 +473,7 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * Returns backup informations html
+     * Return backup html information.
      *
      * @param  \phpbu\App\Result $result
      * @return string
@@ -455,6 +486,7 @@ class Mail implements Listener, Logger
         if ($amount > 0) {
             $i     = 0;
             $html .= '<table>';
+            /** @var \phpbu\App\Result\Backup $backup */
             foreach ($backups as $backup) {
                 $html .= '<tr><td colspan="4">';
                 $html .= sprintf('backup %s ', $backup->getName());

@@ -1,12 +1,10 @@
 <?php
 namespace phpbu\App;
 
-use phpbu\App\Listener;
-
 /**
  * Runner result.
  *
- * Heavily 'inspired' by Sebastian Bermann's phpunit PHPUnit_Framework_TestResult.
+ * Heavily 'inspired' by Sebastian Bergmann's phpunit PHPUnit_Framework_TestResult.
  *
  * @package    phpbu
  * @subpackage App
@@ -22,7 +20,7 @@ class Result
     /**
      * List of Logging listeners
      *
-     * @var array
+     * @var array<\phpbu\App\Listener>
      */
     protected $listeners = array();
 
@@ -104,7 +102,7 @@ class Result
     /**
      * Add Exception to error list
      *
-     * @param Exception $e
+     * @param \Exception $e
      */
     public function addError(\Exception $e)
     {
@@ -112,7 +110,7 @@ class Result
     }
 
     /**
-     * Return currnet error count.
+     * Return current error count.
      *
      * @return integer
      */
@@ -122,7 +120,7 @@ class Result
     }
 
     /**
-     * Returns list of errors
+     * Return list of errors.
      *
      * @return array<Exception>
      */
@@ -142,38 +140,48 @@ class Result
     }
 
     /**
+     * phpbu start event.
+     * 
      * @param array $settings
      */
     public function phpbuStart(array $settings)
     {
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->phpbuStart($settings);
         }
     }
 
     /**
+     * phpbu end event.
      */
     public function phpbuEnd()
     {
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->phpbuEnd($this);
         }
     }
 
     /**
+     * Backup start event.
+     * 
      * @param array $backup
      */
     public function backupStart($backup)
     {
         $this->backupActive = new Result\Backup(!empty($backup['name']) ? $backup['name'] : $backup['source']['type']);
         $this->backups[]    = $this->backupActive;
-
+        
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->backupStart($backup);
         }
     }
 
     /**
+     * Backup failed event.
+     * 
      * @param array $backup
      */
     public function backupFailed($backup)
@@ -181,6 +189,7 @@ class Result
         $this->backupsFailed++;
         $this->backupActive->fail();
 
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->backupFailed($backup);
         }
@@ -197,27 +206,36 @@ class Result
     }
 
     /**
+     * Backup end event.
+     * 
      * @param array $backup
      */
     public function backupEnd($backup)
     {
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->backupEnd($backup);
         }
     }
 
     /**
+     * Check start event.
+     * 
      * @param array $check
      */
     public function checkStart($check)
     {
         $this->backupActive->checkAdd($check);
+
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->checkStart($check);
         }
     }
 
     /**
+     * Check failed event.
+     * 
      * @param array $check
      */
     public function checkFailed($check)
@@ -225,6 +243,8 @@ class Result
         $this->checksFailed++;
         $this->backupActive->fail();
         $this->backupActive->checkFailed($check);
+
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->checkFailed($check);
         }
@@ -241,35 +261,44 @@ class Result
     }
 
     /**
+     * Check end event.
+     * 
      * @param array $check
      */
     public function checkEnd($check)
     {
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->checkEnd($check);
         }
     }
 
     /**
+     * Sync start event.
+     * 
      * @param array $sync
      */
     public function syncStart($sync)
     {
         $this->backupActive->syncAdd($sync);
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->syncStart($sync);
         }
     }
 
     /**
+     * Sync skipped event.
+     * 
      * @param array $sync
      */
     public function syncSkipped($sync)
     {
         $this->syncsSkipped++;
         $this->backupActive->syncSkipped($sync);
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
-            $l->syncSkip($sync);
+            $l->syncSkipped($sync);
         }
     }
 
@@ -284,12 +313,15 @@ class Result
     }
 
     /**
+     * Sync failed event.
+     * 
      * @param array $sync
      */
     public function syncFailed($sync)
     {
         $this->syncsFailed++;
         $this->backupActive->syncFailed($sync);
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->syncFailed($sync);
         }
@@ -306,33 +338,42 @@ class Result
     }
 
     /**
-     * @param array $cleanup
+     * Sync end event.
+     * 
+     * @param array $sync
      */
     public function syncEnd($sync)
     {
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->syncEnd($sync);
         }
     }
 
     /**
+     * Cleanup start event.
+     * 
      * @param array $cleanup
      */
     public function cleanupStart($cleanup)
     {
         $this->backupActive->cleanupAdd($cleanup);
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->cleanupStart($cleanup);
         }
     }
 
     /**
+     * Cleanup skipped event.
+     * 
      * @param array $cleanup
      */
     public function cleanupSkipped($cleanup)
     {
         $this->cleanupsSkipped++;
         $this->backupActive->cleanupSkipped($cleanup);
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->cleanupSkipped($cleanup);
         }
@@ -349,12 +390,15 @@ class Result
     }
 
     /**
+     * Cleanup failed event.
+     * 
      * @param array $cleanup
      */
     public function cleanupFailed($cleanup)
     {
         $this->cleanupsFailed++;
         $this->backupActive->cleanupFailed($cleanup);
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->cleanupFailed($cleanup);
         }
@@ -371,20 +415,26 @@ class Result
     }
 
     /**
+     * Cleanup end event.
+     * 
      * @param array $cleanup
      */
     public function cleanupEnd($cleanup)
     {
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->cleanupEnd($cleanup);
         }
     }
 
     /**
+     * Debug.
+     * 
      * @param string $msg
      */
     public function debug($msg)
     {
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $l) {
             $l->debug($msg);
         }
@@ -401,13 +451,14 @@ class Result
     }
 
     /**
-     * Unregisters a Listener.
+     * Remove a Listener.
      *
      * @author Sebastian Bergmann <sebastian@phpunit.de>
      * @param  \phpbu\App\Listener $listener
      */
     public function removeListener(Listener $listener)
     {
+        /** @var \phpbu\App\Listener $l */
         foreach ($this->listeners as $key => $l) {
             if ($listener === $l) {
                 unset($this->listeners[$key]);

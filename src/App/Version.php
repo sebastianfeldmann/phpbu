@@ -33,7 +33,7 @@ class Version
     private static $version;
 
     /**
-     * Returns the current version of PHPUnit.
+     * Return the current version of PHPUnit.
      *
      * @return string
      */
@@ -52,7 +52,7 @@ class Version
     }
 
     /**
-     * Returns the version string.
+     * Return the version string.
      *
      * @return string
      */
@@ -62,7 +62,7 @@ class Version
     }
 
     /**
-     * Returns the current release channel ('alpha', 'beta', '')
+     * Return the current release channel ('alpha', 'beta', '')
      *
      * @return string
      */

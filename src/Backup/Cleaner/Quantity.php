@@ -5,7 +5,6 @@ use phpbu\App\Result;
 use phpbu\Backup\Cleaner;
 use phpbu\Backup\Collector;
 use phpbu\Backup\Target;
-use phpbu\Util\String;
 
 /**
  * Cleanup backup directory.
@@ -30,7 +29,11 @@ class Quantity implements Cleaner
     protected $amount;
 
     /**
-     * @see \phpbu\Backup\Cleanup::setup()
+     * Setup the Cleaner.
+     *
+     * @see    \phpbu\Backup\Cleanup::setup()
+     * @param  array $options
+     * @throws \phpbu\Backup\Cleaner\Exception
      */
     public function setup(array $options)
     {
@@ -47,11 +50,16 @@ class Quantity implements Cleaner
     }
 
     /**
-     * @see \phpbu\Backup\Cleanup::cleanup()
+     * Cleanup your backup directory.
+     *
+     * @see    \phpbu\Backup\Cleanup::cleanup()
+     * @param  \phpbu\Backup\Target    $target
+     * @param  \phpbu\Backup\Collector $collector
+     * @param  \phpbu\App\Result       $result
+     * @throws \phpbu\Backup\Cleaner\Exception
      */
     public function cleanup(Target $target, Collector $collector, Result $result)
     {
-        $path  = dirname($target);
         $files = $collector->getBackupFiles($target);
 
         // backups exceed capacity?
@@ -64,7 +72,7 @@ class Quantity implements Cleaner
                 $file = array_shift($files);
                 $result->debug(sprintf('delete %s', $file->getPathname()));
                 if (!$file->isWritable()) {
-                    throw new Exception(sprintf('can\'t detele file: %s', $file->getPathname()));
+                    throw new Exception(sprintf('can\'t delete file: %s', $file->getPathname()));
                 }
                 $result->debug(sprintf('delete %s', $file->getPathname()));
                 $file->unlink();

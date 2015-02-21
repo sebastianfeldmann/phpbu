@@ -53,7 +53,7 @@ abstract class Cli
             }
         }
 
-        // some more pathes we came accross that where added manualy
+        // some more paths we came across that where added manually
         foreach ($optionalLocations as $path) {
             $command = $path . DIRECTORY_SEPARATOR . $cmd;
             if (is_executable($command)) {
@@ -64,7 +64,7 @@ abstract class Cli
     }
 
     /**
-     * Is given path absolute
+     * Is given path absolute.
      *
      * @param  string $path
      * @return boolean

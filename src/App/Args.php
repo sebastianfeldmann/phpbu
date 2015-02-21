@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\App;
 
-use phpbu\App\Exception;
-
 /**
  * Cli argument parser.
  *
@@ -63,7 +61,7 @@ class Args
      */
     public function getOptions(array $args)
     {
-        // remove scriptname from args
+        // remove script name from args
         if (isset($args[0][0]) && $args[0][0] != '-') {
             array_shift($args);
         }

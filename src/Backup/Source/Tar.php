@@ -34,8 +34,9 @@ class Tar extends Cli implements Source
      * Executes the backup
      *
      * @param  \phpbu\Backup\Target $target
-     * @param  \phpbu\App\Result    $result
-     * @return \phpbu\App\Result
+     * @param  \phpbu\App\Result $result
+     * @return Result
+     * @throws \phpbu\App\Exception
      */
     public function backup(Target $target, Result $result)
     {

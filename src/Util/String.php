@@ -21,6 +21,7 @@ class String
      * Replaces %{somevalue} with date({somevalue}).
      *
      * @param  string $string
+     * @param  null   $time
      * @return string
      */
     public static function replaceDatePlaceholders($string, $time = null)
@@ -65,7 +66,7 @@ class String
     }
 
     /**
-     * Returns given size in bytes.
+     * Return given size in bytes.
      * Allowed units:
      *   B => byte
      *   K => kilo byte
@@ -96,7 +97,7 @@ class String
     }
 
     /**
-     * Returns time in seconds for a given value.
+     * Return time in seconds for a given value.
      * Allowed units:
      *   S => second
      *   I => minute
@@ -127,7 +128,7 @@ class String
     }
 
     /**
-     * Adds trailing slash to a string/path if not already there
+     * Adds trailing slash to a string/path if not already there.
      *
      * @param  string $string
      * @return string

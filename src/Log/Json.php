@@ -4,19 +4,17 @@ namespace phpbu\Log;
 use phpbu\App\Exception;
 use phpbu\App\Listener;
 use phpbu\App\Result;
-use phpbu\Log\Logger;
-use phpbu\Log\Printer;
 
 /**
  * Json Logger
  *
- * @package phpbu
+ * @package    phpbu
  * @subpackage Log
- * @author Sebastian Feldmann <sebastian@phpbu.de>
- * @copyright Sebastian Feldmann <sebastian@phpbu.de>
- * @license http://www.opensource.org/licenses/BSD-3-Clause The BSD 3-Clause License
- * @link http://phpbu.de/
- * @since Class available since Release 1.0.0
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause The BSD 3-Clause License
+ * @link       http://phpbu.de/
+ * @since      Class available since Release 1.0.0
  */
 class Json extends Printer implements Listener, Logger
 {
@@ -29,8 +27,11 @@ class Json extends Printer implements Listener, Logger
     protected $debug = array();
 
     /**
-     *
-     * @see \phpbu\Log\Logger::setup
+     * Setup the logger.
+     * 
+     * @see    \phpbu\Log\Logger::setup
+     * @param  array $options
+     * @throws \phpbu\App\Exception
      */
     public function setup(array $options)
     {
@@ -41,8 +42,9 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
-     *
-     * @see \phpbu\App\Listener::phpbuStart()
+     * 
+     * @see   \phpbu\App\Listener::phpbuStart()
+     * @param array $settings
      */
     public function phpbuStart($settings)
     {
@@ -50,8 +52,9 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
-     *
-     * @see \phpbu\App\Listener::phpbuEnd()
+     * 
+     * @see   \phpbu\App\Listener::phpbuEnd()
+     * @param \phpbu\App\Result $result
      */
     public function phpbuEnd(Result $result)
     {
@@ -65,7 +68,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::backupStart()
+     * @see   \phpbu\App\Listener::backupStart()
+     * @param array $backup
      */
     public function backupStart($backup)
     {
@@ -74,7 +78,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::backupEnd()
+     * @see   \phpbu\App\Listener::backupEnd()
+     * @param array $backup
      */
     public function backupEnd($backup)
     {
@@ -83,7 +88,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::backupFailed()
+     * @see   \phpbu\App\Listener::backupFailed()
+     * @param array $backup
      */
     public function backupFailed($backup)
     {
@@ -92,7 +98,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::checkStart()
+     * @see   \phpbu\App\Listener::checkStart()
+     * @param array $check
      */
     public function checkStart($check)
     {
@@ -101,7 +108,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::checkEnd()
+     * @see   \phpbu\App\Listener::checkEnd()
+     * @param array $check
      */
     public function checkEnd($check)
     {
@@ -110,7 +118,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::checkFailed()
+     * @see   \phpbu\App\Listener::checkFailed()
+     * @param array $check
      */
     public function checkFailed($check)
     {
@@ -119,7 +128,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::syncStart()
+     * @see   \phpbu\App\Listener::syncStart()
+     * @param array $sync
      */
     public function syncStart($sync)
     {
@@ -128,7 +138,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::syncEnd()
+     * @see   \phpbu\App\Listener::syncEnd()
+     * @param array $sync
      */
     public function syncEnd($sync)
     {
@@ -137,7 +148,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::syncSkipped()
+     * @see   \phpbu\App\Listener::syncSkipped()
+     * @param array $sync
      */
     public function syncSkipped($sync)
     {
@@ -146,7 +158,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::syncFailed()
+     * @see   \phpbu\App\Listener::syncFailed()
+     * @param array $sync
      */
     public function syncFailed($sync)
     {
@@ -155,7 +168,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::cleanupStart()
+     * @see   \phpbu\App\Listener::cleanupStart()
+     * @param array $cleanup
      */
     public function cleanupStart($cleanup)
     {
@@ -164,7 +178,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::cleanupEnd()
+     * @see   \phpbu\App\Listener::cleanupEnd()
+     * @param array $cleanup
      */
     public function cleanupEnd($cleanup)
     {
@@ -173,7 +188,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::cleanupSkipped()
+     * @see   \phpbu\App\Listener::cleanupSkipped()
+     * @param array $cleanup
      */
     public function cleanupSkipped($cleanup)
     {
@@ -182,7 +198,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::cleanupFailed()
+     * @see   \phpbu\App\Listener::cleanupFailed()
+     * @param array $cleanup
      */
     public function cleanupFailed($cleanup)
     {
@@ -191,7 +208,8 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @see \phpbu\App\Listener::debug()
+     * @see   \phpbu\App\Listener::debug()
+     * @param string $msg
      */
     public function debug($msg)
     {
@@ -208,7 +226,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
-     * Get error informations
+     * Get error information.
      *
      * @param \phpbu\App\Result $result
      * @return array
@@ -216,7 +234,7 @@ class Json extends Printer implements Listener, Logger
     protected function extractErrors(Result $result)
     {
         $errors = array();
-        /* @var $e Exception */
+        /** @var Exception $e */
         foreach ($result->getErrors() as $e) {
             $errors[] = array(
                 'class' => get_class($e),
@@ -229,9 +247,9 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
-     * Returns backup informations
+     * Return backup information.
      *
-     * @param \phpbu\App\Result $result
+     * @param  \phpbu\App\Result $result
      * @return array
      */
     protected function extractBackups(Result $result)
@@ -239,6 +257,7 @@ class Json extends Printer implements Listener, Logger
         $output = array();
         $backups = $result->getBackups();
         if (count($backups) > 0) {
+            /** @var \phpbu\App\Result\Backup $backup */
             foreach ($backups as $backup) {
                 $output[] = array(
                     'name' => $backup->getName(),

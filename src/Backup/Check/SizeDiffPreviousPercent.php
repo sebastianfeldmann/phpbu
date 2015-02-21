@@ -24,7 +24,13 @@ use phpbu\Util\Math;
 class SizeDiffPreviousPercent implements Check
 {
     /**
-     * @see \phpbu\Backup\Check::pass()
+     * @see    \phpbu\Backup\Check::pass()
+     * @param  \phpbu\Backup\Target    $target
+     * @param  string                  $value
+     * @param  \phpbu\Backup\Collector $collector
+     * @param  \phpbu\App\Result       $result
+     * @return boolean
+     * @throws \phpbu\App\Exception
      */
     public function pass(Target $target, $value, Collector $collector, Result $result)
     {
@@ -32,7 +38,7 @@ class SizeDiffPreviousPercent implements Check
         $backupSize   = $target->getSize();
         $history      = $collector->getBackupFiles();
         $historyCount = count($history);
-        $result       = true;
+        $pass         = true;
 
         if ($historyCount > 0) {
             // oldest backups first
@@ -42,9 +48,9 @@ class SizeDiffPreviousPercent implements Check
             $prevSize    = $prevFile->getSize();
             $diffPercent = Math::getDiffInPercent($backupSize, $prevSize);
 
-            $result = $diffPercent < $value;
+            $pass = $diffPercent < $value;
         }
 
-        return $result;
+        return $pass;
     }
 }

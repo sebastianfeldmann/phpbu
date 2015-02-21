@@ -35,7 +35,7 @@ class File
     }
 
     /**
-     * FileInfo getter
+     * FileInfo getter.
      *
      * @return SplFileInfo
      */
@@ -45,7 +45,7 @@ class File
     }
 
     /**
-     * Return the filesize
+     * Return the filesize.
      *
      * @return integer
      */
@@ -55,7 +55,7 @@ class File
     }
 
     /**
-     * Return the filename
+     * Return the filename.
      *
      * @return string
      */
@@ -65,7 +65,7 @@ class File
     }
 
     /**
-     * Return the full path and filename
+     * Return the full path and filename.
      *
      * @return string
      */
@@ -75,7 +75,7 @@ class File
     }
 
     /**
-     * Return the path
+     * Return the path.
      *
      * @return string
      */
@@ -85,7 +85,7 @@ class File
     }
 
     /**
-     * Return last modified date as unix timestamp
+     * Return last modified date as unix timestamp.
      *
      * @return integer
      */
@@ -95,7 +95,7 @@ class File
     }
 
     /**
-     * Returns wether the file is writabe or not
+     * Return whether the file is writable or not.
      *
      * @return boolean
      */
@@ -105,7 +105,7 @@ class File
     }
 
     /**
-     * Deletes the file
+     * Deletes the file.
      *
      * @throws \phpbu\App\Exception
      */

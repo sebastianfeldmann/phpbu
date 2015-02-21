@@ -29,7 +29,7 @@ class Result
     private $code;
 
     /**
-     * Outputbuffer.
+     * Output buffer.
      *
      * @var array
      */
@@ -57,7 +57,7 @@ class Result
     }
 
     /**
-     * Cmd getter
+     * Cmd getter.
      *
      * @return string
      */
@@ -77,7 +77,7 @@ class Result
     }
 
     /**
-     * Command executed successful
+     * Command executed successful.
      */
     public function wasSuccessful()
     {
@@ -85,7 +85,7 @@ class Result
     }
 
     /**
-     * Output getter
+     * Output getter.
      *
      * @param  boolean $asString
      * @return mixed<array|string>
@@ -99,7 +99,8 @@ class Result
     }
 
     /**
-     *
+     * Return the output ins string format.
+     * 
      * @return string
      */
     public function getOutputAsString()
@@ -121,7 +122,8 @@ class Result
     }
 
     /**
-     *
+     * Magic to string method.
+     * 
      * @return string
      */
     public function __toString()
