@@ -112,8 +112,16 @@
       <include name="**/*.crt" />
     </fileset>
   </copy>
+
   <copy todir="${basedir}/build/phar/eher">
     <fileset dir="${basedir}/vendor/eher/oauth/src">
+      <include name="**/*.php" />
+    </fileset>
+  </copy>
+
+  <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE.md" tofile="${basedir}/build/phar/aws-sdk/LICENSE"/>
+  <copy todir="${basedir}/build/phar/aws-sdk">
+    <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src/Aws">
       <include name="**/*.php" />
     </fileset>
   </copy>
@@ -125,6 +133,14 @@
       <include name="**/*.crt" />
       <exclude name="**/autoload.php" />
       <exclude name="**/strict.php" />
+    </fileset>
+  </copy>
+
+  <copy file="${basedir}/vendor/guzzle/guzzle/LICENSE" tofile="${basedir}/build/phar/guzzle/LICENSE"/>
+  <copy todir="${basedir}/build/phar/guzzle">
+    <fileset dir="${basedir}/vendor/guzzle/guzzle/src">
+      <include name="**/*.php" />
+      <include name="**/*.pem" />
     </fileset>
   </copy>
 
@@ -166,6 +182,14 @@
     <include name="**/*.php" />
     <exclude name="**/swift_required_pear.php" />
    </fileset>
+  </copy>
+
+  <copy file="${basedir}/vendor/symfony/event-dispatcher/Symfony/Component/EventDispatcher/LICENSE" tofile="${basedir}/build/phar/symfony/event-dispatcher/LICENSE"/>
+  <copy todir="${basedir}/build/phar/symfony/event-dispatcher">
+    <fileset dir="${basedir}/vendor/symfony/event-dispatcher/Symfony/Component/EventDispatcher">
+      <include name="**/*.php" />
+      <exclude name="**/Test*" />
+    </fileset>
   </copy>
 
   <exec executable="${basedir}/build/phar-patch.php"/>
