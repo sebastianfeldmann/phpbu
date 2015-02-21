@@ -1,6 +1,9 @@
 # PHPBU
 
-PHP Backup Utility
+*PHP Backup Utility*
+
+PHPBU is a php framework that creates backups and moves your backups to other servers or cloud services
+and by the way it assists you monitoring your backup creation.
 
 Get detailed information about all the features and a 'getting started' tutorial at the [PHPBU Website](http://phpbu.de).
 
