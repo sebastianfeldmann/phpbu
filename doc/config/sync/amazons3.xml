@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sync type="amazons3">
+  <!-- mandatory -->
+  <option name="key" value="MYAMAZONAPPKEY" />
+
+  <!-- mandatory -->
+  <option name="secret" value="my+amazon-aws+secret" />
+
+  <!-- mandatory -->
+  <option name="bucket" value="some-s3-bucket" />
+
+  <!-- mandatory, e.g. 'eu-central-1' -->
+  <option name="region" value="aws-region" />
+
+  <!-- optional, default / -->
+  <option name="path" value="backup" />
+</sync>
