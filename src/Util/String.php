@@ -29,7 +29,7 @@ class String
         $time = $time === null ? time() : $time;
         return preg_replace_callback(
             '#%([a-zA-Z])#',
-            function ($match) use ($time) {
+            function($match) use ($time) {
                 return date($match[1], $time);
             },
             $string
@@ -135,7 +135,7 @@ class String
      */
     public static function withTrailingSlash($string)
     {
-        return $string . ( substr($string, -1) !== '/' ? '/' : '' );
+        return $string . (substr($string, -1) !== '/' ? '/' : '');
     }
 
     /**
@@ -146,6 +146,6 @@ class String
      */
     public static function withoutTrailingSlash($string)
     {
-        return strlen($string) > 1 && substr($string, -1) === '/' ? substr($string,0, -1) : $string;
+        return strlen($string) > 1 && substr($string, -1) === '/' ? substr($string, 0, -1) : $string;
     }
 }
