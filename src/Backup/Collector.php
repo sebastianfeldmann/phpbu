@@ -64,13 +64,13 @@ class Collector
     protected function collect($path, $depth)
     {
         $dItter = new DirectoryIterator($path);
-        // collect all matching subdirs and get there backup files
+        // collect all matching subdirs and get all the backup files
         if ($depth < $this->target->countChangingPathElements()) {
             foreach ($dItter as $i => $file) {
                 if ($file->isDot()) {
                     continue;
                 }
-                // TODO: match directory against dir-regex $target->getChangingPathElements()[$depth]
+                // TODO: match directory against dir-regex Target::getChangingPathElements
                 if ($file->isDir()) {
                     $this->collect($file->getPathname(), $depth + 1);
                 }

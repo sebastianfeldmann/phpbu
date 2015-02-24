@@ -75,9 +75,9 @@ class Cmd
     /**
      * Add option to list.
      *
-     * @param string              $option
-     * @param mixed<string|array> $argument
-     * @param string              $glue
+     * @param string               $option
+     * @param mixed <string|array> $argument
+     * @param string               $glue
      */
     public function addOption($option, $argument = null, $glue = '=')
     {
@@ -94,7 +94,7 @@ class Cmd
     /**
      * Add argument to list.
      *
-     * @param mixed<string|array> $argument
+     * @param mixed <string|array> $argument
      */
     public function addArgument($argument)
     {
@@ -109,7 +109,7 @@ class Cmd
 
     /**
      * Magic to string method.
-     * 
+     *
      * @return string
      */
     public function __toString()

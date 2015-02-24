@@ -31,7 +31,7 @@ class Printer
     protected $out;
 
     /**
-     * @var string
+     * @var mixed
      */
     protected $outTarget;
 
@@ -43,7 +43,7 @@ class Printer
     /**
      * Constructor
      *
-     * @param string $out
+     * @param mixed $out
      */
     public function __construct($out = null)
     {
@@ -63,7 +63,7 @@ class Printer
                 if (strpos($out, 'socket://') === 0) {
                     $out = explode(':', str_replace('socket://', '', $out));
 
-                    if (sizeof($out) != 2) {
+                    if (count($out) != 2) {
                         throw new InvalidArgumentException(sprintf('Invalid socket: %s', $out));
                     }
                     $this->out = fsockopen($out[0], $out[1]);
@@ -136,7 +136,7 @@ class Printer
             if (PHP_SAPI != 'cli') {
                 $buffer = htmlspecialchars($buffer);
             }
-            print $buffer;
+            echo $buffer;
 
             if ($this->autoFlush) {
                 $this->incrementalFlush();
