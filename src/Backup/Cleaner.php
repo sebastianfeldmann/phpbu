@@ -29,7 +29,7 @@ interface Cleaner
      *
      * @param  \phpbu\Backup\Target    $target
      * @param  \phpbu\Backup\Collector $collector
-     * @param  \phpbu\App\Result       $result;
+     * @param  \phpbu\App\Result       $result
      * @return void
      */
     public function cleanup(Target $target, Collector $collector, Result $result);
