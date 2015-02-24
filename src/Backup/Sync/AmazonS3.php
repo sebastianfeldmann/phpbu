@@ -96,7 +96,7 @@ class AmazonS3 implements Sync
         $this->bucket = $config['bucket'];
         $this->region = $config['region'];
         $this->path   = String::withTrailingSlash($config['path']);
-        $this->acl    = isset($config['acl']) ? $config['acl'] : 'private';
+        $this->acl    = Arr::getValue($config, 'acl', 'private');
     }
 
     /**
