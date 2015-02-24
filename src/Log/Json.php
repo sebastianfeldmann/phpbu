@@ -28,7 +28,7 @@ class Json extends Printer implements Listener, Logger
 
     /**
      * Setup the logger.
-     * 
+     *
      * @see    \phpbu\Log\Logger::setup
      * @param  array $options
      * @throws \phpbu\App\Exception
@@ -42,7 +42,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
-     * 
+     *
      * @see   \phpbu\App\Listener::phpbuStart()
      * @param array $settings
      */
@@ -52,7 +52,7 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
-     * 
+     *
      * @see   \phpbu\App\Listener::phpbuEnd()
      * @param \phpbu\App\Result $result
      */
@@ -218,7 +218,7 @@ class Json extends Printer implements Listener, Logger
 
     /**
      *
-     * @param string $buffer
+     * @param array $buffer
      */
     public function write($buffer)
     {
@@ -234,7 +234,7 @@ class Json extends Printer implements Listener, Logger
     protected function extractErrors(Result $result)
     {
         $errors = array();
-        /** @var Exception $e */
+        /** @var \Exception $e */
         foreach ($result->getErrors() as $e) {
             $errors[] = array(
                 'class' => get_class($e),

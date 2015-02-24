@@ -88,7 +88,7 @@ class Result
      * Output getter.
      *
      * @param  boolean $asString
-     * @return mixed<array|string>
+     * @return mixed <array|string>
      */
     public function getOutput($asString = false)
     {
@@ -100,7 +100,7 @@ class Result
 
     /**
      * Return the output ins string format.
-     * 
+     *
      * @return string
      */
     public function getOutputAsString()
@@ -123,7 +123,7 @@ class Result
 
     /**
      * Magic to string method.
-     * 
+     *
      * @return string
      */
     public function __toString()
