@@ -52,15 +52,19 @@ class Compressor
     }
 
     /**
-     * @param  $includingPath
+     * Return the cli command.
+     *
+     * @param  boolean $includingPath
      * @return string
      */
     public function getCommand($includingPath = true)
     {
-        return ($includingPath ? $this->path : '' ) . $this->cmd;
+        return ($includingPath ? $this->path : '') . $this->cmd;
     }
 
     /**
+     * Returns the compressor suffix e.g. 'bzip2'
+     *
      * @return string
      */
     public function getSuffix()

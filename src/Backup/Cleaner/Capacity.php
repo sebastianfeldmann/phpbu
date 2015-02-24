@@ -33,7 +33,7 @@ class Capacity implements Cleaner
     /**
      * Capacity in bytes.
      *
-     * @var integer
+     * @var double
      */
     protected $capacityBytes;
 
@@ -46,7 +46,7 @@ class Capacity implements Cleaner
 
     /**
      * Setup the the Cleaner.
-     * 
+     *
      * @see    \phpbu\Backup\Cleanup::setup()
      * @param  array $options
      * @throws \phpbu\Backup\Cleaner\Exception
@@ -73,7 +73,7 @@ class Capacity implements Cleaner
 
     /**
      * Cleanup your backup directory.
-     * 
+     *
      * @see    \phpbu\Backup\Cleanup::cleanup()
      * @param  \phpbu\Backup\Target    $target
      * @param  \phpbu\Backup\Collector $collector
@@ -84,7 +84,7 @@ class Capacity implements Cleaner
     {
         $files = $collector->getBackupFiles();
         $size  = $target->getSize();
-        
+
         /** @var \phpbu\Backup\File $file */
         foreach ($files as $file) {
             $size += $file->getSize();

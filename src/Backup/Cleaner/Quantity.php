@@ -24,7 +24,7 @@ class Quantity implements Cleaner
     /**
      * Amount of backups to keep
      *
-     * @var string
+     * @var integer
      */
     protected $amount;
 
@@ -60,7 +60,7 @@ class Quantity implements Cleaner
      */
     public function cleanup(Target $target, Collector $collector, Result $result)
     {
-        $files = $collector->getBackupFiles($target);
+        $files = $collector->getBackupFiles();
 
         // backups exceed capacity?
         if (count($files) > $this->amount) {

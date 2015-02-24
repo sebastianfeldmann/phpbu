@@ -318,9 +318,9 @@ class Target
     public function getPathname($compressed = false)
     {
         return $this->path
-               . DIRECTORY_SEPARATOR
-               . $this->filename
-               . ($compressed && $this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
+        . DIRECTORY_SEPARATOR
+        . $this->filename
+        . ($compressed && $this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
     }
 
     /**

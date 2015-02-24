@@ -84,7 +84,7 @@ class Collector
                     continue;
                 }
                 if (preg_match('#' . $fileRegex . '#i', $file->getFilename())) {
-                    $index         = date('YmdHis', $file->getMTime()) . '-' . $i . '-' . $file->getPathname();
+                    $index = date('YmdHis', $file->getMTime()) . '-' . $i . '-' . $file->getPathname();
                     $this->files[$index] = new File($file->getFileInfo());
                 }
             }

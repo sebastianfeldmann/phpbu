@@ -130,7 +130,7 @@ class Rsync extends Cli implements Sync
             $targetDir  = dirname($targetFile);
 
             // use archive mode, verbose and compress if not already done
-            $options = '-av' . ( $target->shouldBeCompressed() ? '' : 'z' );
+            $options = '-av' . ($target->shouldBeCompressed() ? '' : 'z');
             $rsync->addOption($options);
 
             if (count($this->excludes)) {

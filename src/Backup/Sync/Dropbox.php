@@ -60,7 +60,7 @@ class Dropbox implements Sync
             throw new Exception('dropbox path is mandatory');
         }
         $this->token = $config['token'];
-        $this->path  = $config['path'] . ( substr($config['path'], -1) !== '/' ? '/' : '' );
+        $this->path  = $config['path'] . (substr($config['path'], -1) !== '/' ? '/' : '');
     }
 
     /**

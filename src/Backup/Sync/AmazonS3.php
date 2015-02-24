@@ -111,14 +111,16 @@ class AmazonS3 implements Sync
         $sourcePath = $target->getPathnameCompressed();
         $targetPath = $this->path . $target->getFilenameCompressed();
 
-        $s3 = S3Client::factory(array(
-            'signature' => 'v4',
-            'region'    => $this->region,
-            'credentials' => array(
-                'key'    => $this->key,
-                'secret' => $this->secret,
+        $s3 = S3Client::factory(
+            array(
+                'signature' => 'v4',
+                'region'    => $this->region,
+                'credentials' => array(
+                    'key'    => $this->key,
+                    'secret' => $this->secret,
+                )
             )
-        ));
+        );
 
         try {
             $fh = fopen($sourcePath, 'r');
