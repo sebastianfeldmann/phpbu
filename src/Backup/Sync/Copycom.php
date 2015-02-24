@@ -6,6 +6,7 @@ use phpbu\App\Result;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Target;
 use phpbu\Util\String;
+use phpbu\Util\Arr;
 
 /**
  * Copycom
@@ -67,19 +68,19 @@ class Copycom implements Sync
         if (!class_exists('\\Barracuda\\Copy\\API')) {
             throw new Exception('Copy api not loaded: use composer "barracuda/copy": "1.1.*" to install');
         }
-        if (!isset($config['app.key']) || '' == $config['app.key']) {
+        if (!Arr::isSetAndNotEmptyString($config, 'app.key')) {
             throw new Exception('API access key is mandatory');
         }
-        if (!isset($config['app.secret']) || '' == $config['app.secret']) {
+        if (!Arr::isSetAndNotEmptyString($config, 'app.secret')) {
             throw new Exception('API access secret is mandatory');
         }
-        if (!isset($config['user.key']) || '' == $config['user.key']) {
+        if (!Arr::isSetAndNotEmptyString($config, 'user.key')) {
             throw new Exception('User access key is mandatory');
         }
-        if (!isset($config['user.secret']) || '' == $config['user.secret']) {
+        if (!Arr::isSetAndNotEmptyString($config, 'user.secret')) {
             throw new Exception('User access secret is mandatory');
         }
-        if (!isset($config['path']) || '' == $config['path']) {
+        if (!Arr::isSetAndNotEmptyString($config, 'path')) {
             throw new Exception('copy.com path is mandatory');
         }
         $this->appKey     = $config['app.key'];

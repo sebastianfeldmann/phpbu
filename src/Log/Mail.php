@@ -5,6 +5,7 @@ use phpbu\App\Exception;
 use phpbu\App\Listener;
 use phpbu\App\Result;
 use phpbu\Util\String;
+use phpbu\Util\Arr;
 use PHP_Timer;
 use Swift_Mailer;
 use Swift_Message;
@@ -113,21 +114,11 @@ class Mail implements Listener, Logger
         }
         $mails                 = $options['recipients'];
         $server                = gethostname();
-        $this->sendOnlyOnError = isset($options['sendOnlyOnError'])
-                               ? String::toBoolean($options['sendOnlyOnError'], false)
-                               : false;
-        $this->subject         = isset($options['subject'])
-                               ? $options['subject']
-                               : 'PHPBU backup report from ' . $server;
-        $this->senderMail      = isset($options['sender.mail'])
-                               ? $options['sender.mail']
-                               : 'phpbu@' . $server;
-        $this->senderName      = isset($options['sender.name'])
-                               ? $options['sender.name']
-                               : null;
-        $this->transportType   = isset($options['transport'])
-                               ? $options['transport']
-                               : 'mail';
+        $this->sendOnlyOnError = String::toBoolean(Arr::getValue($options, 'sendOnlyOnError'), false);
+        $this->subject         = Arr::getValue($options, 'subject', 'PHPBU backup report from ' . $server);
+        $this->senderMail      = Arr::getValue($options, 'sender.mail', 'phpbu@' . $server);
+        $this->senderName      = Arr::getValue($options, 'sender.name');
+        $this->transportType   = Arr::getValue($options, 'transport', 'mail');
         $this->recepients      = array_map('trim', explode(';', $mails));
 
         // create transport an mailer
@@ -326,71 +317,81 @@ class Mail implements Listener, Logger
     protected function createTransport($type, array $options)
     {
         switch ($type) {
-            //
-            // null transport, don't send andy mails
-            //
+            // null transport, don't send any mails
             case 'null':
                  /* @var $transport \Swift_NullTransport */
                 $transport = \Swift_NullTransport::newInstance();
                 break;
-            //
-            // php mail config
-            //
+
             case 'mail':
                 /* @var $transport \Swift_MailTransport */
                 $transport = \Swift_MailTransport::newInstance();
                 break;
-            //
-            // smtp config
-            //
+
             case 'smtp':
-                if (!isset($options['smtp.host'])) {
-                    throw new Exception('option \'smtp.host\' ist missing');
-                }
-                $host       = $options['smtp.host'];
-                $port       = isset($options['smtp.port'])
-                            ? $options['smtp.port']
-                            : 25;
-                $username   = isset($options['smtp.username'])
-                            ? $options['smtp.username']
-                            : null;
-                $password   = isset($options['smtp.password'])
-                            ? $options['smtp.password']
-                            : null;
-                $encryption = isset($options['smtp.encryption'])
-                            ? $options['smtp.encryption']
-                            : null;
-
-                /* @var $transport \Swift_SmtpTransport */
-                $transport = \Swift_SmtpTransport::newInstance($host, $port);
-
-                if ($username && $password) {
-                    $transport->setUsername($username)
-                              ->setPassword($password);
-                }
-                if ($encryption) {
-                    $transport->setEncryption($encryption);
-                }
+                $transport = $this->getSmtpTransport($options);
                 break;
-            //
-            // sendmail configuration
-            //
+
             case 'sendmail':
-                if (!isset($options['sendmail.path'])) {
-                    throw new Exception('option \'sendmail.path\' ist missing');
-                }
-                $path    = $options['sendmail.path'];
-                $options = isset($options['sendmail.options']) ? ' ' . $options['sendmail.options'] : '';
-
-                /* @var $transport \Swift_SendmailTransport */
-                $transport = \Swift_SendmailTransport::newInstance($path . $options);
+                $transport = $this->getSendmailTransport($options);
                 break;
-            //
+
             // UPS! no transport given
-            //
             default:
-                throw new Exception('mail transport not supported');
+                throw new Exception(sprintf('mail transport not supported: \'%s\'', $type));
         }
+        return $transport;
+    }
+
+    /**
+     * Create Swift Smtp Transport.
+     *
+     * @param  array $options
+     * @return \Swift_SmtpTransport
+     * @throws \phpbu\App\Exception
+     */
+    protected function getSmtpTransport(array $options)
+    {
+        if (!isset($options['smtp.host'])) {
+            throw new Exception('option \'smtp.host\' ist missing');
+        }
+        $host       = $options['smtp.host'];
+        $port       = Arr::getValue($options, 'smtp.port', 25);
+        $username   = Arr::getValue($options, 'smtp.username');
+        $password   = Arr::getValue($options, 'smtp.password');
+        $encryption = Arr::getValue($options, 'smtp.encryption');
+
+        /* @var $transport \Swift_SmtpTransport */
+        $transport = \Swift_SmtpTransport::newInstance($host, $port);
+
+        if ($username && $password) {
+            $transport->setUsername($username)
+                      ->setPassword($password);
+        }
+        if ($encryption) {
+            $transport->setEncryption($encryption);
+        }
+        return $transport;
+    }
+
+    /**
+     * Create a Swift Sendmail Transport.
+     *
+     * @param  array $options
+     * @return \Swift_SendmailTransport
+     * @throws \phpbu\App\Exception
+     */
+    protected function getSendmailTransport(array $options)
+    {
+        if (!isset($options['sendmail.path'])) {
+            throw new Exception('option \'sendmail.path\' ist missing');
+        }
+        $path    = $options['sendmail.path'];
+        $options = isset($options['sendmail.options']) ? ' ' . $options['sendmail.options'] : '';
+
+        /* @var $transport \Swift_SendmailTransport */
+        $transport = \Swift_SendmailTransport::newInstance($path . $options);
+
         return $transport;
     }
 
