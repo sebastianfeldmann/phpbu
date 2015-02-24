@@ -163,7 +163,7 @@ class Runner
             }
         }
 
-        $result->phpbuEnd($result);
+        $result->phpbuEnd();
 
         $this->printer->printResult($result);
 

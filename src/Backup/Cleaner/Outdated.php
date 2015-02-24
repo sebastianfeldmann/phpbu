@@ -39,7 +39,7 @@ class Outdated implements Cleaner
 
     /**
      * Setup the Cleaner.
-     * 
+     *
      * @see    \phpbu\Backup\Cleanup::setup()
      * @param  array $options
      * @throws \phpbu\Backup\Cleaner\Exception
@@ -73,8 +73,8 @@ class Outdated implements Cleaner
     public function cleanup(Target $target, Collector $collector, Result $result)
     {
         $minTime = time() - $this->offsetSeconds;
-        $files   = $collector->getBackupFiles($target);
-        
+        $files   = $collector->getBackupFiles();
+
         /** @var \phpbu\Backup\File $file */
         foreach ($files as $file) {
             // last mod date < min date? delete!
