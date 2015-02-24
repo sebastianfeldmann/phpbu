@@ -1,0 +1,52 @@
+<?php
+namespace phpbu\Util;
+
+/**
+ * Array utility test
+ *
+ * @package    phpbu
+ * @subpackage tests
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @link       http://www.phpbu.de/
+ * @since      Class available since Release 1.0.5
+ */
+class ArrTest extends \PHPUnit_Framework_TestCase
+{
+    /**
+     * Test isSetAndNotEmptyString
+     */
+    public function testIsSetAndNotEmptyString()
+    {
+        $arr = array('foo' => 'bar', 'baz' => '', 'fiz' => 0);
+
+        $this->assertTrue(Arr::isSetAndNotEmptyString($arr, 'foo'), 'foo should be set and not the empty string');
+        $this->assertFalse(Arr::isSetAndNotEmptyString($arr, 'baz'), 'baz should be set but the empty string');
+        $this->assertTrue(Arr::isSetAndNotEmptyString($arr, 'fiz'), 'fiz should be set and not the empty string');
+    }
+
+    /**
+     * Test getValue
+     */
+    public function testGetValue()
+    {
+        $arr = array('foo' => 'bar', 'baz' => '', 'fiz' => 0);
+        
+        $this->assertEquals('bar', Arr::getValue($arr, 'foo'), 'foo should be bar');
+        $this->assertEquals(null, Arr::getValue($arr, 'buz'), 'buz should be null');
+        $this->assertEquals(0, Arr::getValue($arr, 'fiz'), 'fiz should be 0');
+    }
+
+    /**
+     * Test getValue
+     */
+    public function testGetValueDefault()
+    {
+        $arr = array('foo' => 'bar', 'baz' => '', 'fiz' => 0);
+
+        $this->assertEquals('bar', Arr::getValue($arr, 'foo', 'default'), 'foo should be bar');
+        $this->assertEquals('default', Arr::getValue($arr, 'buz', 'default'), 'default should be step in');
+        $this->assertEquals(0, Arr::getValue($arr, 'fiz', 'default'), 'fiz should be 0');
+    }
+}
