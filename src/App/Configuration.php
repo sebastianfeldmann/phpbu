@@ -89,7 +89,6 @@ class Configuration
      * Constructor
      *
      * @param  string $filename
-     * @return \phpbu\App\Configuration
      */
     public function __construct($filename)
     {
@@ -186,13 +185,8 @@ class Configuration
         if (!$type) {
             throw new Exception('source requires type attribute');
         }
-        $source['type'] = $type;
-        /** @var DOMElement $optionNode */
-        foreach ($sourceNode->getElementsByTagName('option') as $optionNode) {
-            $name                     = (string) $optionNode->getAttribute('name');
-            $value                    = (string) $optionNode->getAttribute('value');
-            $source['options'][$name] = $value;
-        }
+        $source['type']    = $type;
+        $source['options'] = $this->getOptions($sourceNode);
 
         // get target configuration
         $targets = $backupNode->getElementsByTagName('target');
@@ -236,12 +230,9 @@ class Configuration
                 'skipOnCheckFail' => String::toBoolean((string) $syncNode->getAttribute('skipOnCheckFail'), true),
                 'options'         => array()
             );
-            foreach ($syncNode->getElementsByTagName('option') as $optionNode) {
-                $name                   = (string) $optionNode->getAttribute('name');
-                $value                  = (string) $optionNode->getAttribute('value');
-                $sync['options'][$name] = $value;
-            }
-            $syncs[] = $sync;
+
+            $sync['options'] = $this->getOptions($syncNode);
+            $syncs[]         = $sync;
         }
 
         // get cleanup configuration
@@ -254,12 +245,7 @@ class Configuration
                 'skipOnSyncFail'  => String::toBoolean((string) $cleanupNode->getAttribute('skipOnSyncFail'), true),
                 'options'         => array()
             );
-            /** @var DOMElement $optionNode */
-            foreach ($cleanupNode->getElementsByTagName('option') as $optionNode) {
-                $name                      = (string) $optionNode->getAttribute('name');
-                $value                     = (string) $optionNode->getAttribute('value');
-                $cleanup['options'][$name] = $value;
-            }
+            $cleanup['options'] = $this->getOptions($cleanupNode);
         }
 
         return array(
@@ -274,6 +260,24 @@ class Configuration
     }
 
     /**
+     * Extracts all option tags.
+     *
+     * @param  DOMElement $node
+     * @return array
+     */
+    protected function getOptions(DOMElement $node)
+    {
+        $options = array();
+        /** @var DOMElement $optionNode */
+        foreach ($node->getElementsByTagName('option') as $optionNode) {
+            $name           = (string) $optionNode->getAttribute('name');
+            $value          = (string) $optionNode->getAttribute('value');
+            $options[$name] = $value;
+        }
+        return $options;
+    }
+
+    /**
      * Get the log configuration.
      *
      * @return array
@@ -283,7 +287,7 @@ class Configuration
         $loggers = array();
         /** @var DOMElement $logNode */
         foreach ($this->xpath->query('logging/log') as $logNode) {
-            $log    = array(
+            $log = array(
                 'type'    => (string) $logNode->getAttribute('type'),
                 'options' => array(),
             );
