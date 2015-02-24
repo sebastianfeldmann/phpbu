@@ -24,11 +24,11 @@ class Mail implements Listener, Logger
 {
     /**
      * Mailer instance
-     * 
+     *
      * @var Swift_Mailer
      */
     protected $mailer;
-    
+
     /**
      * Mail subject
      *
@@ -101,7 +101,7 @@ class Mail implements Listener, Logger
 
     /**
      * Setup the Logger.
-     * 
+     *
      * @see    \phpbu\Log\Logger::setup
      * @param  array $options
      * @throws \phpbu\App\Exception
@@ -390,7 +390,6 @@ class Mail implements Listener, Logger
             //
             default:
                 throw new Exception('mail transport not supported');
-                break;
         }
         return $transport;
     }
