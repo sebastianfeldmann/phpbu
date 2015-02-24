@@ -7,7 +7,7 @@ namespace phpbu\Util;
  * @package    phpbu
  * @subpackage tests
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
- * @copyright  2014 Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
@@ -81,6 +81,8 @@ class StringTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(String::toBoolean('FOO', true));
         $this->assertFalse(String::toBoolean('BAR', false));
+        $this->assertTrue(String::toBoolean('', true));
+        $this->assertTrue(String::toBoolean(null, true));
     }
 
     /**
@@ -131,9 +133,9 @@ class StringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test trailing slash
+     * Test with trailing slash.
      */
-    public function testWidthTrailingSlash()
+    public function testWithTrailingSlash()
     {
         $this->assertEquals('foo/', String::withTrailingSlash('foo'), 'should be foo/');
         $this->assertEquals('foo/bar/', String::withTrailingSlash('foo/bar'), 'should be foo/bar/');
@@ -141,8 +143,19 @@ class StringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test without trailing slash.
+     */
+    public function testWithoutTrailingSlash()
+    {
+        $this->assertEquals('foo', String::withoutTrailingSlash('foo/'), 'should be foo');
+        $this->assertEquals('foo/bar', String::withoutTrailingSlash('foo/bar/'), 'should be foo/bar');
+        $this->assertEquals('baz', String::withoutTrailingSlash('baz'), 'should be baz');
+        $this->assertEquals('/', String::withoutTrailingSlash('/'), '/ should be stay /');
+    }
+
+    /**
      * Return local test time.
-     * Not changing in one testrun.
+     * Not changing in one test run.
      *
      * @return integer
      */

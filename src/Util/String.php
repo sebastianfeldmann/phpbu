@@ -137,4 +137,15 @@ class String
     {
         return $string . ( substr($string, -1) !== '/' ? '/' : '' );
     }
+
+    /**
+     * Removes the trailing slash from a string/path.
+     *
+     * @param  string $string
+     * @return string
+     */
+    public static function withoutTrailingSlash($string)
+    {
+        return strlen($string) > 1 && substr($string, -1) === '/' ? substr($string,0, -1) : $string;
+    }
 }
