@@ -18,6 +18,12 @@ use phpbu\Util\String;
 class Collector
 {
     /**
+     * Backup target
+     *
+     * @var \phpbu\Backup\Target
+     */
+    protected $target;
+    /**
      * Collection cache
      *
      * @var array<\phpbu\Backup\File>
