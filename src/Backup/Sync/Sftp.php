@@ -6,6 +6,7 @@ use phpbu\App\Result;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Target;
 use phpbu\Util\Arr;
+use phpbu\Util\String;
 
 /**
  * Sftp sync
@@ -69,10 +70,14 @@ class Sftp implements Sync
         if (!Arr::isSetAndNotEmptyString($config, 'password')) {
             throw new Exception('option \'password\' is missing');
         }
+        $path = Arr::getValue($config, 'path', '');
+        if ('/' === substr($path, 0, 1)) {
+            throw new Exception('absolute path is not allowed');
+        }
         $this->host       = $config['host'];
         $this->user       = $config['user'];
         $this->password   = $config['password'];
-        $this->remotePath = Arr::getValue($config, 'path', '');
+        $this->remotePath = String::withoutTrailingSlash(String::replaceDatePlaceholders($path));
     }
 
     /**

@@ -5,7 +5,9 @@ use phpbu\App\Result;
 use phpbu\Backup\Cli\Cmd;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Target;
-use phpbu\Util;
+use phpbu\Util\Arr;
+use phpbu\Util\Cli as CliUtil;
+use phpbu\Util\String;
 
 /**
  * Rsync
@@ -78,13 +80,13 @@ class Rsync extends Cli implements Sync
      */
     public function setup(array $config)
     {
-        if (isset($config['args'])) {
+        if (Arr::isSetAndNotEmptyString($config, 'args')) {
             $this->args = $config['args'];
         } else {
-            if (empty($config['path'])) {
+            if (!Arr::isSetAndNotEmptyString($config, 'path')) {
                 throw new Exception('option \'path\' is missing');
             }
-            $this->path = $config['path'];
+            $this->path = String::replaceDatePlaceholders($config['path']);
 
             if (isset($config['user'])) {
                 $this->user = $config['user'];
@@ -93,15 +95,9 @@ class Rsync extends Cli implements Sync
                 $this->host = $config['host'];
             }
 
-            $this->excludes  = isset($config['exclude'])
-                             ? array_map('trim', explode(':', $config['exclude']))
-                             : array();
-            $this->delete    = isset($config['delete'])
-                             ? Util\String::toBoolean($config['delete'], false)
-                             : false;
-            $this->isDirSync = isset($config['dirsync'])
-                             ? Util\String::toBoolean($config['dirsync'], false)
-                             : false;
+            $this->excludes  = array_map('trim', explode(':', Arr::getValue($config, 'exclude', '')));
+            $this->delete    = String::toBoolean(Arr::getValue($config, 'delete', ''), false);
+            $this->isDirSync = String::toBoolean(Arr::getValue($config, 'dirsync', ''), false);
         }
     }
 
@@ -115,7 +111,7 @@ class Rsync extends Cli implements Sync
      */
     public function sync(Target $target, Result $result)
     {
-        $rsync = new Cmd(Util\Cli::detectCmdLocation('rsync'));
+        $rsync = new Cmd(CliUtil::detectCmdLocation('rsync'));
 
         if ($this->args) {
             // pro mode define all arguments yourself

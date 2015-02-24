@@ -87,7 +87,7 @@ class Copycom implements Sync
         $this->appSecret  = $config['app.secret'];
         $this->userKey    = $config['user.key'];
         $this->userSecret = $config['user.secret'];
-        $this->path       = String::withTrailingSlash($config['path']);
+        $this->path       = String::withTrailingSlash(String::replaceDatePlaceholders($config['path']));
     }
 
     /**
