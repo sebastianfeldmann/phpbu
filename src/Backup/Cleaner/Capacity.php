@@ -33,7 +33,7 @@ class Capacity implements Cleaner
     /**
      * Capacity in bytes.
      *
-     * @var double
+     * @var mixed <integer|double>
      */
     protected $capacityBytes;
 
