@@ -5,6 +5,7 @@ use Dropbox as DropboxApi;
 use phpbu\App\Result;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Target;
+use phpbu\Util\Arr;
 
 /**
  * Dropbox
@@ -53,10 +54,10 @@ class Dropbox implements Sync
         if (!class_exists('\\Dropbox\\Client')) {
             throw new Exception('Dropbox sdk not loaded: use composer "dropbox/dropbox-sdk": "1.1.*" to install');
         }
-        if (!isset($config['token']) || '' == $config['token']) {
+        if (!Arr::isSetAndNotEmptyString($config, 'token')) {
             throw new Exception('API access token is mandatory');
         }
-        if (!isset($config['path']) || '' == $config['path']) {
+        if (!Arr::isSetAndNotEmptyString($config, 'path')) {
             throw new Exception('dropbox path is mandatory');
         }
         $this->token = $config['token'];

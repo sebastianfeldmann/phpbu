@@ -5,6 +5,7 @@ use phpseclib;
 use phpbu\App\Result;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Target;
+use phpbu\Util\Arr;
 
 /**
  * Sftp sync
@@ -59,19 +60,19 @@ class Sftp implements Sync
         if (!class_exists('\\phpseclib\\Net\\SFTP')) {
             throw new Exception('phpseclib not installed - use composer to install "phpseclib/phpseclib" version 2.x');
         }
-        if (empty($config['host'])) {
+        if (!Arr::isSetAndNotEmptyString($config, 'host')) {
             throw new Exception('option \'host\' is missing');
         }
-        if (!isset($config['user'])) {
+        if (!Arr::isSetAndNotEmptyString($config, 'user')) {
             throw new Exception('option \'user\' is missing');
         }
-        if (!isset($config['password'])) {
+        if (!Arr::isSetAndNotEmptyString($config, 'password')) {
             throw new Exception('option \'password\' is missing');
         }
         $this->host       = $config['host'];
         $this->user       = $config['user'];
         $this->password   = $config['password'];
-        $this->remotePath = !empty($config['path']) ? $config['path'] : '';
+        $this->remotePath = Arr::getValue($config, 'path', '');
     }
 
     /**

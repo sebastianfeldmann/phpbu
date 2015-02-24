@@ -5,6 +5,7 @@ use Aws\S3\S3Client;
 use phpbu\App\Result;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Target;
+use phpbu\Util\Arr;
 use phpbu\Util\String;
 
 /**
@@ -75,19 +76,19 @@ class AmazonS3 implements Sync
         if (!class_exists('\\Aws\\S3\\S3Client')) {
             throw new Exception('Amazon SDK not loaded: use composer "aws/aws-sdk-php": "2.7.*" to install');
         }
-        if (!isset($config['key']) || '' == $config['key']) {
+        if (!Arr::isSetAndNotEmptyString($config, 'key')) {
             throw new Exception('AWS key is mandatory');
         }
-        if (!isset($config['secret']) || '' == $config['secret']) {
+        if (!Arr::isSetAndNotEmptyString($config, 'secret')) {
             throw new Exception('AWS secret is mandatory');
         }
-        if (!isset($config['bucket']) || '' == $config['bucket']) {
+        if (!Arr::isSetAndNotEmptyString($config, 'bucket')) {
             throw new Exception('AWS S3 bucket name is mandatory');
         }
-        if (!isset($config['region']) || '' == $config['region']) {
+        if (!Arr::isSetAndNotEmptyString($config, 'region')) {
             throw new Exception('AWS S3 region is mandatory');
         }
-        if (!isset($config['path']) || '' == $config['path']) {
+        if (!Arr::isSetAndNotEmptyString($config, 'path')) {
             throw new Exception('AWS S3 path / object-key is mandatory');
         }
         $this->key    = $config['key'];
