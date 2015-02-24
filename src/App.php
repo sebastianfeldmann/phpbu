@@ -105,7 +105,7 @@ class App
         try {
             $result = $runner->run($this->arguments);
         } catch (\Exception $e) {
-            print $e->getMessage() . PHP_EOL;
+            echo $e->getMessage() . PHP_EOL;
         }
 
         $ret = self::EXIT_FAILURE;
@@ -275,9 +275,9 @@ class App
         $pathToFile = stream_resolve_include_path($filename);
 
         if (!$pathToFile || !is_readable($pathToFile)) {
-            throw new Exception(sprintf('Cannot open bootstrap file "%s".' . "\n", $filename));
+            throw new Exception(sprintf('Cannot open bootstrap file "%s".' . PHP_EOL, $filename));
         }
-        
+
         require $pathToFile;
     }
 
@@ -292,13 +292,13 @@ class App
         $localFilename  = realpath($_SERVER['argv'][0]);
         $tempFilename   = basename($localFilename, '.phar') . '-temp.phar';
 
-        print 'Updating the phpbu PHAR ... ';
+        echo 'Updating the phpbu PHAR ... ';
 
         $old  = error_reporting(0);
         $phar = file_get_contents($remoteFilename);
         error_reporting($old);
         if (!$phar) {
-            print ' failed' . PHP_EOL . 'Could not reach phpbu update site' . PHP_EOL;
+            echo ' failed' . PHP_EOL . 'Could not reach phpbu update site' . PHP_EOL;
             exit(self::EXIT_EXCEPTION);
         }
         file_put_contents($tempFilename, $phar);
@@ -314,11 +314,11 @@ class App
         } catch (Exception $e) {
             // cleanup crappy phar
             unlink($tempFilename);
-            print 'failed' . PHP_EOL . $e->getMessage() . PHP_EOL;
+            echo 'failed' . PHP_EOL . $e->getMessage() . PHP_EOL;
             exit(self::EXIT_EXCEPTION);
         }
 
-        print 'done' . PHP_EOL;
+        echo 'done' . PHP_EOL;
         exit(self::EXIT_SUCCESS);
     }
 
@@ -331,7 +331,7 @@ class App
             return;
         }
 
-        print Version::getVersionString() . PHP_EOL;
+        echo Version::getVersionString() . PHP_EOL;
         $this->isVersionStringPrinted = true;
     }
 
@@ -340,7 +340,7 @@ class App
      */
     protected function printLogo()
     {
-        print self::$logo . PHP_EOL;
+        echo self::$logo . PHP_EOL;
     }
 
     /**
@@ -349,7 +349,7 @@ class App
     protected function printHelp()
     {
         $this->printVersionString();
-        print <<<EOT
+        echo <<<EOT
 
 Usage: phpbu [option]
 
@@ -363,7 +363,7 @@ Usage: phpbu [option]
 
 EOT;
         if (defined('__PHPBU_PHAR__')) {
-            print '  --self-update          Update phpbu to the latest version.' . PHP_EOL;
+            echo '  --self-update          Update phpbu to the latest version.' . PHP_EOL;
         }
     }
 
@@ -377,7 +377,7 @@ EOT;
     {
         $help = $hint ? ', use "phpbu -h" for help' : '';
         $this->printVersionString();
-        print $message . $help . PHP_EOL;
+        echo $message . $help . PHP_EOL;
         exit(self::EXIT_EXCEPTION);
     }
 
