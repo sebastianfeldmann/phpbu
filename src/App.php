@@ -151,7 +151,6 @@ class App
                 case '--help':
                     $this->printHelp();
                     exit(self::EXIT_SUCCESS);
-                    break;
                 case 'include-path':
                     $this->arguments['include-path'] = $argument;
                     break;
@@ -167,7 +166,6 @@ class App
                 case '--version':
                     $this->printVersionString();
                     exit(self::EXIT_SUCCESS);
-                    break;
             }
         }
 
