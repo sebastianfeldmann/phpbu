@@ -406,7 +406,7 @@ class Mail implements Listener, Logger
         $html = '';
         if (count($result->getBackups()) === 0) {
             $html = '<p style="color:orange;">No backups executed!</p>';
-        } elseif ($result->wasSuccessful() && $result->noneSkipped() && $result->noneFailed()) {
+        } elseif ($result->allOk()) {
             $html .= '<p>' .
                 sprintf(
                     'OK (%d backup%s, %d check%s, %d sync%s, %d cleanup%s)',
@@ -420,8 +420,8 @@ class Mail implements Listener, Logger
                     ($this->numCleanups == 1) ? '' : 's'
                 ) .
                 '</p>';
-        } elseif ((!$result->noneSkipped() || !$result->noneFailed()) && $result->wasSuccessful()) {
-            $html .= '<p style="color:orange;">' .
+        } elseif ($result->backupOkButSkipsOrFails()) {
+            $html .= '<p style="color:#ffa500;">' .
                 sprintf(
                     'OK, but skipped or failed Syncs or Cleanups!<br />' .
                     'Backups: %d, Syncs: skipped|failed %d|%d, Cleanups: skipped|failed %d|%d.',

@@ -78,6 +78,22 @@ class Result
     /**
      * @return boolean
      */
+    public function allOk()
+    {
+        return $this->wasSuccessful() && $this->noneSkipped() && $this->noneFailed();
+    }
+
+    /**
+     * @return boolean
+     */
+    public function backupOkButSkipsOrFails()
+    {
+        return $this->wasSuccessful() && (!$this->noneSkipped() || !$this->noneFailed());
+    }
+
+    /**
+     * @return boolean
+     */
     public function wasSuccessful()
     {
         return $this->backupsFailed === 0;

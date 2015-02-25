@@ -468,7 +468,7 @@ class ResultPrinter extends Printer implements Listener
                 'fg-black, bg-yellow',
                 'No backups executed!'
             );
-        } elseif ($result->wasSuccessful() && $result->noneSkipped() && $result->noneFailed()) {
+        } elseif ($result->allOk()) {
             $this->writeWithColor(
                 'fg-black, bg-green',
                 sprintf(
@@ -483,7 +483,7 @@ class ResultPrinter extends Printer implements Listener
                     ($this->numCleanups == 1) ? '' : 's'
                 )
             );
-        } elseif ((!$result->noneSkipped() || !$result->noneFailed()) && $result->wasSuccessful()) {
+        } elseif ($result->backupOkButSkipsOrFails()) {
             $this->writeWithColor(
                 'fg-black, bg-yellow',
                 sprintf(

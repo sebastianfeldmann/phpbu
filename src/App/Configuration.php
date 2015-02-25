@@ -170,12 +170,37 @@ class Configuration
      */
     private function getBackupConfig(DOMElement $backupNode)
     {
-        // stop on error
         $stopOnError = String::toBoolean((string) $backupNode->getAttribute('stopOnError'), false);
         $backupName  = $backupNode->getAttribute('name');
-        // get source configuration
+
+        $source  = $this->getSource($backupNode);        
+        $target  = $this->getTarget($backupNode);
+        $checks  = $this->getChecks($backupNode);
+        $syncs   = $this->getSyncs($backupNode);
+        $cleanup = $this->getCleanup($backupNode);
+
+        return array(
+            'name'        => $backupName,
+            'stopOnError' => $stopOnError,
+            'source'      => $source,
+            'target'      => $target,
+            'checks'      => $checks,
+            'syncs'       => $syncs,
+            'cleanup'     => $cleanup,
+        );
+    }
+
+    /**
+     * Get source configuration.
+     * 
+     * @param  \DOMElement $node
+     * @return array
+     * @throws \phpbu\App\Exception
+     */
+    protected function getSource(DOMElement $node)
+    {
         $source  = array();
-        $sources = $backupNode->getElementsByTagName('source');
+        $sources = $node->getElementsByTagName('source');
         if ($sources->length !== 1) {
             throw new Exception('backup requires exactly one source config');
         }
@@ -187,9 +212,20 @@ class Configuration
         }
         $source['type']    = $type;
         $source['options'] = $this->getOptions($sourceNode);
+        
+        return $source;
+    }
 
-        // get target configuration
-        $targets = $backupNode->getElementsByTagName('target');
+    /**
+     * Get Target configuration.
+     * 
+     * @param  \DOMElement $node
+     * @return array
+     * @throws \phpbu\App\Exception
+     */
+    protected function getTarget(DOMElement $node)
+    {
+        $targets = $node->getElementsByTagName('target');
         if ($targets->length !== 1) {
             throw new Exception('backup requires exactly one target config');
         }
@@ -198,33 +234,51 @@ class Configuration
         $compress   = (string) $targetNode->getAttribute('compress');
         $filename   = (string) $targetNode->getAttribute('filename');
         $dirname    = (string) $targetNode->getAttribute('dirname');
+        
         if ($dirname) {
             $dirname = $this->toAbsolutePath($dirname);
         }
 
-        $target = array(
+        return array(
             'dirname'  => $dirname,
             'filename' => $filename,
             'compress' => $compress,
         );
+    }
 
-        // get check information
+    /**
+     * Get backup checks.
+     * 
+     * @param  \DOMElement $node
+     * @return array
+     */
+    protected function getChecks(DOMElement $node)
+    {
         $checks = array();
         /** @var DOMElement $checkNode */
-        foreach ($backupNode->getElementsByTagName('check') as $checkNode) {
-            $type      = (string) $checkNode->getAttribute('type');
-            $value     = (string) $checkNode->getAttribute('value');
+        foreach ($node->getElementsByTagName('check') as $checkNode) {
+            $type  = (string) $checkNode->getAttribute('type');
+            $value = (string) $checkNode->getAttribute('value');
             // skip invalid sanity checks
             if (!$type || !$value) {
                 continue;
             }
             $checks[] = array('type' => $type, 'value' => $value);
         }
+        return $checks;
+    }
 
-        // get sync configurations
+    /**
+     * Get backup sync configurations.
+     * 
+     * @param  \DOMElement $node
+     * @return array
+     */
+    protected function getSyncs(DOMElement $node)
+    {
         $syncs = array();
         /** @var DOMElement $syncNode */
-        foreach ($backupNode->getElementsByTagName('sync') as $syncNode) {
+        foreach ($node->getElementsByTagName('sync') as $syncNode) {
             $sync = array(
                 'type'            => (string) $syncNode->getAttribute('type'),
                 'skipOnCheckFail' => String::toBoolean((string) $syncNode->getAttribute('skipOnCheckFail'), true),
@@ -234,11 +288,20 @@ class Configuration
             $sync['options'] = $this->getOptions($syncNode);
             $syncs[]         = $sync;
         }
+        return $syncs;
+    }
 
-        // get cleanup configuration
+    /**
+     * Get the cleanup configuration.
+     * 
+     * @param  \DOMElement $node
+     * @return array
+     */
+    protected function getCleanup(DOMElement $node)
+    {
         $cleanup = array();
         /** @var DOMElement $cleanupNode */
-        foreach ($backupNode->getElementsByTagName('cleanup') as $cleanupNode) {
+        foreach ($node->getElementsByTagName('cleanup') as $cleanupNode) {
             $cleanup = array(
                 'type'            => (string) $cleanupNode->getAttribute('type'),
                 'skipOnCheckFail' => String::toBoolean((string) $cleanupNode->getAttribute('skipOnCheckFail'), true),
@@ -247,16 +310,7 @@ class Configuration
             );
             $cleanup['options'] = $this->getOptions($cleanupNode);
         }
-
-        return array(
-            'name'        => $backupName,
-            'stopOnError' => $stopOnError,
-            'source'      => $source,
-            'target'      => $target,
-            'checks'      => $checks,
-            'syncs'       => $syncs,
-            'cleanup'     => $cleanup,
-        );
+        return $cleanup;
     }
 
     /**
