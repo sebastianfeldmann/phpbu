@@ -92,7 +92,7 @@ class App
     private $arguments;
 
     /**
-     * Runs the application
+     * Runs the application.
      *
      * @param array $args
      */
@@ -100,22 +100,22 @@ class App
     {
         $this->handleOpt($args);
 
+        $ret    = self::EXIT_FAILURE;
         $runner = new Runner();
 
         try {
             $result = $runner->run($this->arguments);
+
+            if ($result->wasSuccessful()) {
+                $ret = self::EXIT_SUCCESS;
+            } elseif ($result->errorCount() > 0) {
+                $ret = self::EXIT_EXCEPTION;
+            }
         } catch (\Exception $e) {
             echo $e->getMessage() . PHP_EOL;
-        }
-
-        $ret = self::EXIT_FAILURE;
-
-        if (isset($result) && $result->wasSuccessful()) {
-            $ret = self::EXIT_SUCCESS;
-        } elseif (!isset($result) || $result->errorCount() > 0) {
             $ret = self::EXIT_EXCEPTION;
         }
-
+        
         exit($ret);
     }
 
@@ -129,10 +129,37 @@ class App
         try {
             $parser  = new App\Args();
             $options = $parser->getOptions($args);
+            $this->handleArgs($options);
         } catch (Exception $e) {
             $this->printError($e->getMessage(), true);
         }
 
+        if (isset($this->arguments['include-path'])) {
+            $this->handleIncludePath($this->arguments['include-path']);
+        }
+
+        try {
+            $this->handleConfiguration();
+        } catch (Exception $e) {
+            $this->printError($e->getMessage());
+        }
+
+        // no backups to handle
+        if (!isset($this->arguments['backups'])) {
+            $this->printLogo();
+            $this->printHelp();
+            exit(self::EXIT_EXCEPTION);
+        }
+    }
+
+    /**
+     * Handle the parsed command line options
+     * 
+     * @param  array $options
+     * @return void
+     */
+    protected function handleArgs(array $options)
+    {
         foreach ($options as $option => $argument) {
             switch ($option) {
                 case '--bootstrap':
@@ -167,22 +194,6 @@ class App
                     $this->printVersionString();
                     exit(self::EXIT_SUCCESS);
             }
-        }
-        
-        $this->handleIncludePath();
-
-        try {
-            $this->handleConfiguration();
-        } catch (Exception $e) {
-            $this->printError($e->getMessage());
-            exit(self::EXIT_FAILURE);
-        }
-
-        // no backups to handle
-        if (!isset($this->arguments['backups'])) {
-            $this->printLogo();
-            $this->printHelp();
-            exit(self::EXIT_EXCEPTION);
         }
     }
 
@@ -277,18 +288,16 @@ class App
     /**
      * Handles the php include_path settings.
      *
+     * @param  mixed $path
      * @return void
      */
-    protected function handleIncludePath()
+    protected function handleIncludePath($path)
     {
-        if (isset($this->arguments['include-path'])) {
-            $path = $this->arguments['include-path'];
-            if (is_array($path)) {
-                $path = implode(PATH_SEPARATOR, $path);
-            }
-
-            ini_set('include_path', $path . PATH_SEPARATOR . ini_get('include_path'));
+        if (is_array($path)) {
+            $path = implode(PATH_SEPARATOR, $path);
         }
+
+        ini_set('include_path', $path . PATH_SEPARATOR . ini_get('include_path'));
     }
 
     /**
