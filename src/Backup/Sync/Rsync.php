@@ -88,10 +88,10 @@ class Rsync extends Cli implements Sync
             }
             $this->path = String::replaceDatePlaceholders($config['path']);
 
-            if (isset($config['user'])) {
+            if (Arr::isSetAndNotEmptyString($config, 'user')) {
                 $this->user = $config['user'];
             }
-            if (isset($config['host'])) {
+            if (Arr::isSetAndNotEmptyString($config, 'host')) {
                 $this->host = $config['host'];
             }
 
@@ -149,15 +149,8 @@ class Rsync extends Cli implements Sync
             }
 
             // target handling
-            $syncTarget = '';
-            // remote host
-            if (null !== $this->host) {
-                // remote user
-                if (null !== $this->user) {
-                    $syncTarget .= $this->user . '@';
-                }
-                $syncTarget .= $this->host . ':';
-            }
+            // get rsync host string
+            $syncTarget = $this->getRsyncHostString();
             // remote path
             $syncTarget .= $this->path;
 
@@ -167,5 +160,24 @@ class Rsync extends Cli implements Sync
         $result->debug((string) $rsync);
 
         $this->execute($rsync);
+    }
+
+    /**
+     * Return rsync host string.
+     *
+     * @return string
+     */
+    public function getRsyncHostString()
+    {
+        $host = '';
+        // remote host
+        if (null !== $this->host) {
+            // remote user
+            if (null !== $this->user) {
+                $host .= $this->user . '@';
+            }
+            $host .= $this->host . ':';
+        }
+        return $host;
     }
 }
