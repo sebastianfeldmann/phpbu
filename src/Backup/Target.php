@@ -156,7 +156,7 @@ class Target
             foreach ($dirs as $d) {
                 if ($foundChangingElement || false !== strpos($d, '%')) {
                     $this->pathElementsChanging[] = $d;
-                    $foundChangingElement = true;
+                    $foundChangingElement         = true;
                 } else {
                     $this->pathNotChanging .= DIRECTORY_SEPARATOR . $d;
                 }
@@ -180,7 +180,7 @@ class Target
         $this->filenameRaw = $file;
         if (false !== strpos($file, '%')) {
             $this->filenameIsChanging = true;
-            $file                    = String::replaceDatePlaceholders($file, $time);
+            $file                     = String::replaceDatePlaceholders($file, $time);
         }
         $this->filename = $file;
     }

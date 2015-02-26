@@ -514,7 +514,7 @@ class Mail implements Listener, Logger
 
                 // put spacing row between backups but not at the end of the table
                 $i++;
-                $html .= ( $i < $amount ? '<tr><td colspan="4">&nbsp;</td>' : '' );
+                $html .= ($i < $amount ? '<tr><td colspan="4">&nbsp;</td>' : '');
             }
             $html .= '</table>';
         }
