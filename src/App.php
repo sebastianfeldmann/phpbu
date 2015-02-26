@@ -168,76 +168,14 @@ class App
                     exit(self::EXIT_SUCCESS);
             }
         }
+        
+        $this->handleIncludePath();
 
-        if (isset($this->arguments['include-path'])) {
-            $this->handleIncludePath($this->arguments['include-path']);
-        }
-
-        // check configuration argument
-        // if configuration argument is a directory check for default configuration files
-        // phpbu.xml, phpbu.xml.dist
-        if (isset($this->arguments['configuration']) && is_dir($this->arguments['configuration'])) {
-            $configurationFile = $this->arguments['configuration'] . '/phpbu.xml';
-
-            if (file_exists($configurationFile)) {
-                $this->arguments['configuration'] = realpath($configurationFile);
-            } elseif (file_exists($configurationFile . '.dist')) {
-                $this->arguments['configuration'] = realpath($configurationFile . '.dist');
-            }
-        } elseif (!isset($this->arguments['configuration'])) {
-            // no configuration argument search for default configuration files
-            // phpbu.xml, phpbu.xml.dist in current working directory
-            if (file_exists('phpbu.xml')) {
-                $this->arguments['configuration'] = realpath('phpbu.xml');
-            } elseif (file_exists('phpbu.xml.dist')) {
-                $this->arguments['configuration'] = realpath('phpbu.xml.dist');
-            }
-        }
-
-        if (isset($this->arguments['configuration'])) {
-            try {
-                $configuration = new Configuration($this->arguments['configuration']);
-
-                $phpbu                      = $configuration->getAppSettings();
-                $phpSettings                = $configuration->getPhpSettings();
-                $this->arguments['logging'] = $configuration->getLoggingSettings();
-                $this->arguments['backups'] = $configuration->getBackupSettings();
-
-                // argument bootstrap overrules config bootstrap
-                if (isset($this->arguments['bootstrap'])) {
-                    $this->handleBootstrap($this->arguments['bootstrap']);
-                } elseif (isset($phpbu['bootstrap'])) {
-                    $this->handleBootstrap($phpbu['bootstrap']);
-                }
-
-                if (isset($phpbu['verbose']) && $phpbu['verbose'] === true) {
-                    $this->arguments['verbose'] = true;
-                }
-
-                if (isset($phpbu['colors']) && $phpbu['colors'] === true) {
-                    $this->arguments['colors'] = true;
-                }
-
-                if (isset($phpbu['debug']) && $phpbu['debug'] === true) {
-                    $this->arguments['debug'] = true;
-                }
-
-                if (!empty($phpSettings['include_path'])) {
-                    $this->handleIncludePath($phpSettings['include_path']);
-                }
-
-                // handle php.ini settings
-                foreach ($phpSettings['ini'] as $name => $value) {
-                    if (defined($value)) {
-                        $value = constant($value);
-                    }
-                    ini_set($name, $value);
-                }
-
-            } catch (Exception $e) {
-                $this->printError($e->getMessage());
-                exit(self::EXIT_FAILURE);
-            }
+        try {
+            $this->handleConfiguration();
+        } catch (Exception $e) {
+            $this->printError($e->getMessage());
+            exit(self::EXIT_FAILURE);
         }
 
         // no backups to handle
@@ -249,17 +187,108 @@ class App
     }
 
     /**
+     * Check all configuration possibilities.
+     * 
+     * @return void
+     */
+    protected function handleConfiguration()
+    {
+        // check configuration argument
+        // if configuration argument is a directory check for default configuration files
+        // phpbu.xml, phpbu.xml.dist
+        if (isset($this->arguments['configuration']) && is_dir($this->arguments['configuration'])) {
+            $this->handleConfigurationDir();
+        } elseif (!isset($this->arguments['configuration'])) {
+            // no configuration argument search for default configuration files
+            // phpbu.xml, phpbu.xml.dist in current working directory
+            $this->handleConfigurationDefault();
+        }
+        if (isset($this->arguments['configuration'])) {
+            $configuration = new Configuration($this->arguments['configuration']);
+
+            $phpbu                      = $configuration->getAppSettings();
+            $phpSettings                = $configuration->getPhpSettings();
+            $this->arguments['logging'] = $configuration->getLoggingSettings();
+            $this->arguments['backups'] = $configuration->getBackupSettings();
+
+            // argument bootstrap overrules config bootstrap
+            if (isset($this->arguments['bootstrap'])) {
+                $this->handleBootstrap($this->arguments['bootstrap']);
+            } elseif (isset($phpbu['bootstrap'])) {
+                $this->handleBootstrap($phpbu['bootstrap']);
+            }
+
+            if (isset($phpbu['verbose']) && $phpbu['verbose'] === true) {
+                $this->arguments['verbose'] = true;
+            }
+
+            if (isset($phpbu['colors']) && $phpbu['colors'] === true) {
+                $this->arguments['colors'] = true;
+            }
+
+            if (isset($phpbu['debug']) && $phpbu['debug'] === true) {
+                $this->arguments['debug'] = true;
+            }
+
+            if (!empty($phpSettings['include_path'])) {
+                $this->handleIncludePath($phpSettings['include_path']);
+            }
+
+            // handle php.ini settings
+            foreach ($phpSettings['ini'] as $name => $value) {
+                if (defined($value)) {
+                    $value = constant($value);
+                }
+                ini_set($name, $value);
+            }
+        }
+    }
+
+    /**
+     * Check directory for default configuration files phpbu.xml, phpbu.xml.dist.
+     * 
+     * @return void
+     */
+    protected function handleConfigurationDir()
+    {
+        $configurationFile = $this->arguments['configuration'] . '/phpbu.xml';
+
+        if (file_exists($configurationFile)) {
+            $this->arguments['configuration'] = realpath($configurationFile);
+        } elseif (file_exists($configurationFile . '.dist')) {
+            $this->arguments['configuration'] = realpath($configurationFile . '.dist');
+        }
+    }
+
+    /**
+     * Check default configuration files phpbu.xml, phpbu.xml.dist in current working directory.
+     * 
+     * @return void
+     */
+    protected function handleConfigurationDefault()
+    {
+        if (file_exists('phpbu.xml')) {
+            $this->arguments['configuration'] = realpath('phpbu.xml');
+        } elseif (file_exists('phpbu.xml.dist')) {
+            $this->arguments['configuration'] = realpath('phpbu.xml.dist');
+        }
+    }
+
+    /**
      * Handles the php include_path settings.
      *
-     * @param string|array $path
+     * @return void
      */
-    protected function handleIncludePath($path)
+    protected function handleIncludePath()
     {
-        if (is_array($path)) {
-            $path = implode(PATH_SEPARATOR, $path);
-        }
+        if (isset($this->arguments['include-path'])) {
+            $path = $this->arguments['include-path'];
+            if (is_array($path)) {
+                $path = implode(PATH_SEPARATOR, $path);
+            }
 
-        ini_set('include_path', $path . PATH_SEPARATOR . ini_get('include_path'));
+            ini_set('include_path', $path . PATH_SEPARATOR . ini_get('include_path'));
+        }
     }
 
     /**
