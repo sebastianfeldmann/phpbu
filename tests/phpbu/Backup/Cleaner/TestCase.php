@@ -40,7 +40,8 @@ class TestCase extends \PHPUnit_Framework_TestCase
             $list[$index] = $this->getFileMock(
                 isset($file['size'])            ? $file['size']            : null,
                 isset($file['shouldBeDeleted']) ? $file['shouldBeDeleted'] : null,
-                isset($file['mTime'])           ? $file['mTime']           : null
+                isset($file['mTime'])           ? $file['mTime']           : null,
+                isset($file['writable'])        ? $file['writable']        : true
             );
         }
         return $list;
@@ -52,9 +53,10 @@ class TestCase extends \PHPUnit_Framework_TestCase
      * @param  integer $size            Size in byte the stubs will return on getSize()
      * @param  boolean $shouldBeDeleted Should this file be deleted after cleanup
      * @param  integer $mTime           Last modification date the stub will return on getMTime()
+     * @param  boolean $writable        Is the file writable
      * @return array<splFileInfo>
      */
-    protected function getFileMock($size, $shouldBeDeleted, $mTime)
+    protected function getFileMock($size, $shouldBeDeleted, $mTime, $writable)
     {
         /* @var $fileStub PHPUnit_Framework_MockObject */
         $fileStub = $this->getMockBuilder('\\phpbu\\Backup\\File')
@@ -62,7 +64,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
                          ->getMock();
         $fileStub->method('getMTime')->willReturn($mTime);
         $fileStub->method('getSize')->willReturn($size);
-        $fileStub->method('isWritable')->willReturn(true);
+        $fileStub->method('isWritable')->willReturn($writable);
         if ($shouldBeDeleted) {
             $fileStub->expects($this->once())
                      ->method('unlink');

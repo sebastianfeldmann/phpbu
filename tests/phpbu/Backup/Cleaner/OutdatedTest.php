@@ -17,7 +17,7 @@ class OutdatedTest extends TestCase
     /**
      * Tests Outdated::setUp
      *
-     * @expectedException phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\Backup\Cleaner\Exception
      */
     public function testSetUpNoOlder()
     {
@@ -28,7 +28,7 @@ class OutdatedTest extends TestCase
     /**
      * Tests Outdated::setUp
      *
-     * @expectedException phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\Backup\Cleaner\Exception
      */
     public function testSetUpInvalidValue()
     {
@@ -39,9 +39,20 @@ class OutdatedTest extends TestCase
     /**
      * Tests Outdated::setUp
      *
-     * @expectedException phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\Backup\Cleaner\Exception
      */
     public function testSetUpAmountToLow()
+    {
+        $cleaner = new Outdated();
+        $cleaner->setup(array('older' => '0S'));
+    }
+
+    /**
+     * Tests Outdated::setUp
+     *
+     * @expectedException \phpbu\Backup\Cleaner\Exception
+     */
+    public function testSetUpOlderToLow()
     {
         $cleaner = new Outdated();
         $cleaner->setup(array('older' => '0S'));
@@ -135,6 +146,45 @@ class OutdatedTest extends TestCase
 
         $cleaner = new Outdated();
         $cleaner->setup(array('older' => '5d'));
+
+        $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
+    }
+
+    /**
+     * Tests Outdated::cleanup
+     *
+     * @expectedException \phpbu\Backup\Cleaner\Exception
+     */
+    public function testCleanupNotWritable()
+    {
+        $fileList      = $this->getFileMockList(
+            array(
+                array(
+                    'size'            => 100,
+                    'shouldBeDeleted' => false,
+                    'mTime'           => $this->getMTime('4d'),
+                    'writable'        => false,
+                ),
+                array(
+                    'size'            => 100,
+                    'shouldBeDeleted' => false,
+                    'mTime'           => $this->getMTime('3d'),
+                ),
+            )
+        );
+        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
+                              ->getMock();
+        $collectorStub = $this->getMockBuilder('\\phpbu\\Backup\\Collector')
+                              ->disableOriginalConstructor()
+                              ->getMock();
+        $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+                              ->disableOriginalConstructor()
+                              ->getMock();
+
+        $collectorStub->method('getBackupFiles')->willReturn($fileList);
+
+        $cleaner = new Outdated();
+        $cleaner->setup(array('older' => '3d'));
 
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }
