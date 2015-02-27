@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/1.1/phpbu.xsd"
+       bootstrap="backup/bootstrap.php"
+       verbose="false"
+       colors="true">
+
+  <php>
+    <includePath>.</includePath>
+    <ini name="max_execution_time" value="0"/>
+  </php>
+
+  <logging>
+    <log type="json" target="backup/json.log"/>
+    <log type="mail">
+      <option name="recipients" value="forename.lastname@example.com" />
+      <option name="sendOnlyOnError" value="true" />
+      <option name="sender.mail" value="no-replay@example.com" />
+      <option name="transport" value="mail" />
+    </log>
+  </logging>
+
+  <backups>
+    <backup name="tarball">
+      <source type="tar">
+        <option name="path" value="src"/>
+      </source>
+
+      <target dirname="backup/src" filename="tarball-%Y%m%d-%H%i.tar" compress="bzip2"/>
+      
+      <check type="MinSize" value="10M" />
+      
+      <sync type="sftp" skipOnCheckFail="true">
+        <option name="host" value="example.com"/>
+        <option name="user" value="nobody"/>
+        <option name="password" value="secret"/>
+        <option name="path" value="phpbu-backup/%Y"/>
+      </sync>
+
+      <cleanup type="Capacity">
+        <option name="size" value="50k"/>
+      </cleanup>
+    </backup>
+  </backups>
+</phpbu>
