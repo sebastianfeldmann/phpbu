@@ -17,7 +17,7 @@ class QuantityTest extends TestCase
     /**
      * Tests Capacity::setUp
      *
-     * @expectedException phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\Backup\Cleaner\Exception
      */
     public function testSetUpNoAmout()
     {
@@ -28,7 +28,7 @@ class QuantityTest extends TestCase
     /**
      * Tests Capacity::setUp
      *
-     * @expectedException phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\Backup\Cleaner\Exception
      */
     public function testSetUpInvalidValue()
     {
@@ -39,7 +39,7 @@ class QuantityTest extends TestCase
     /**
      * Tests Capacity::setUp
      *
-     * @expectedException phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\Backup\Cleaner\Exception
      */
     public function testSetUpAmountToLow()
     {
@@ -68,6 +68,38 @@ class QuantityTest extends TestCase
         $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
                               ->disableOriginalConstructor()
                               ->getMock();
+
+        $collectorStub->method('getBackupFiles')->willReturn($fileList);
+
+        $cleaner = new Quantity();
+        $cleaner->setup(array('amount' => '3'));
+
+        $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
+    }
+
+    /**
+     * Tests Capacity::cleanup
+     *
+     * @expectedException \phpbu\Backup\Cleaner\Exception
+     */
+    public function testCleanupFileNotWritable()
+    {
+        $fileList      = $this->getFileMockList(
+            array(
+                array('size' => 100, 'shouldBeDeleted' => false, 'writable' => false),
+                array('size' => 100, 'shouldBeDeleted' => false),
+                array('size' => 100, 'shouldBeDeleted' => false),
+                array('size' => 100, 'shouldBeDeleted' => false),
+            )
+        );
+        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
+            ->getMock();
+        $collectorStub = $this->getMockBuilder('\\phpbu\\Backup\\Collector')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
 

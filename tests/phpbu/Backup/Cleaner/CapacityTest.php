@@ -17,7 +17,7 @@ class CapacityTest extends TestCase
     /**
      * Tests Quantity::setUp
      *
-     * @expectedException phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\Backup\Cleaner\Exception
      */
     public function testSetUpNoSize()
     {
@@ -28,7 +28,7 @@ class CapacityTest extends TestCase
     /**
      * Tests Quantity::setUp
      *
-     * @expectedException phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\Backup\Cleaner\Exception
      */
     public function testSetUpInvalidValue()
     {
@@ -57,6 +57,39 @@ class CapacityTest extends TestCase
         $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
                               ->disableOriginalConstructor()
                               ->getMock();
+
+        $collectorStub->method('getBackupFiles')->willReturn($fileList);
+        $targetStub->method('getSize')->willReturn(100);
+
+        $cleaner = new Capacity();
+        $cleaner->setup(array('size' => '400B'));
+
+        $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
+    }
+
+    /**
+     * Tests Capacity::cleanup
+     *
+     * @expectedException \phpbu\Backup\Cleaner\Exception
+     */
+    public function testCleanupFileNotWritable()
+    {
+        $fileList      = $this->getFileMockList(
+            array(
+                array('size' => 100, 'shouldBeDeleted' => false, 'writable' => false),
+                array('size' => 100, 'shouldBeDeleted' => false),
+                array('size' => 100, 'shouldBeDeleted' => false),
+                array('size' => 100, 'shouldBeDeleted' => false),
+            )
+        );
+        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
+            ->getMock();
+        $collectorStub = $this->getMockBuilder('\\phpbu\\Backup\\Collector')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
         $targetStub->method('getSize')->willReturn(100);
