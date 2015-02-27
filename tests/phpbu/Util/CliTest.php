@@ -15,9 +15,43 @@ namespace phpbu\Util;
 class CliTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * Test detectCmdLocation Exception
+     *
+     * @expectedException \RuntimeException
+     */
+    public function testDetectCmdFail()
+    {
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            // can't be tested on windows system
+            $this->assertTrue(true);
+        } else {
+            // assume ls should be there
+            $cmd = Cli::detectCmdLocation('someStupidCommand');
+            $this->assertFalse(true, $cmd . ' should not be found');
+        }
+    }
+
+    /**
+     * Test detectCmdLocation Exception with path.
+     *
+     * @expectedException \RuntimeException
+     */
+    public function testDetectCmdFailWithPath()
+    {
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            // can't be tested on windows system
+            $this->assertTrue(true);
+        } else {
+            // assume ls should be there
+            $cmd = Cli::detectCmdLocation('someStupidCommand', '/tmp');
+            $this->assertFalse(true, $cmd . ' should not be found');
+        }
+    }
+
+    /**
      * Test detectCmdLocation
      */
-    public function testdetectCmdLocationWhich()
+    public function testDetectCmdLocationWhich()
     {
         if (defined('PHP_WINDOWS_VERSION_BUILD')) {
             // can't be tested on windows system
@@ -32,7 +66,7 @@ class CliTest extends \PHPUnit_Framework_TestCase
     /**
      * Test detectCmdLocation
      */
-    public function testdetectCmdLocationWithProvidedPath()
+    public function testDetectCmdLocationWithProvidedPath()
     {
         $cmd     = 'foo';
         $cmdPath = $this->createTempCommand($cmd);
@@ -46,7 +80,7 @@ class CliTest extends \PHPUnit_Framework_TestCase
     /**
      * Test detectCmdLocation
      */
-    public function testdetectCmdLocationWithOptionalLocation()
+    public function testDetectCmdLocationWithOptionalLocation()
     {
         $cmd     = 'bar';
         $cmdPath = $this->createTempCommand($cmd);
@@ -55,6 +89,57 @@ class CliTest extends \PHPUnit_Framework_TestCase
         $this->removeTempCommand($cmdPath);
 
         $this->assertEquals($cmdPath, $result, 'foo command should be found');
+    }
+
+    /**
+     * Tests Cli::isAbsolutePath
+     */
+    public function testIsAbsolutePathTrue()
+    {
+        $path = '/foo/bar';
+        $res  = Cli::isAbsolutePath($path);
+
+        $this->assertTrue($res, 'should be detected as absolute path');
+    }
+
+    /**
+     * Tests Cli::isAbsolutePath
+     */
+    public function testIsAbsolutePathFalse()
+    {
+        $path = '../foo/bar';
+        $res  = Cli::isAbsolutePath($path);
+
+        $this->assertFalse($res, 'should not be detected as absolute path');
+    }
+
+    /**
+     * Tests Cli::isAbsolutePath
+     *
+     * @dataProvider providerWindowsPaths
+     *
+     * @param string  $path
+     * @param boolean $expected
+     */
+    public function testIsAbsolutePathWindows($path, $expected)
+    {
+        $res = Cli::isAbsoluteWindowsPath($path);
+
+        $this->assertEquals($expected, $res, 'should be detected as expected');
+    }
+
+    /**
+     * Data provider testIsAbsolutePathWindows.
+     *
+     * @return return array
+     */
+    public function providerWindowsPaths()
+    {
+        return array(
+            array('C:\foo', true),
+            array('\\foo\\bar', true),
+            array('..\\foo', false),
+        );
     }
 
     /**

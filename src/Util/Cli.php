@@ -84,9 +84,7 @@ abstract class Cli
         //  - C:\windows
         //  - C:/windows
         //  - c:/windows
-        if (defined('PHP_WINDOWS_VERSION_BUILD')
-            && ($path[0] === '\\' || (strlen($path) >= 3 && preg_match('#^[A-Z]\:[/\\\]#i', substr($path, 0, 3))))
-        ) {
+        if (defined('PHP_WINDOWS_VERSION_BUILD') && self::isAbsoluteWindowsPath($path)) {
             return true;
         }
 
@@ -96,6 +94,17 @@ abstract class Cli
         }
 
         return false;
+    }
+
+    /**
+     * Is given path an absolute windows path.
+     *
+     * @param  string $path
+     * @return bool
+     */
+    public static function isAbsoluteWindowsPath($path)
+    {
+        return ($path[0] === '\\' || (strlen($path) >= 3 && preg_match('#^[A-Z]\:[/\\\]#i', substr($path, 0, 3))));
     }
 
     /**

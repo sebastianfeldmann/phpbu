@@ -16,6 +16,10 @@ class MathTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider providerPercentValues
+     *
+     * @param integer $whole
+     * @param integer $part
+     * @param integer $expected
      */
     public function testGetDiffInPercent($whole, $part, $expected)
     {
@@ -28,7 +32,7 @@ class MathTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Data provider date placeholder
+     * Data provider date testGetDiffInPercent.
      *
      * @return return array
      */
@@ -38,6 +42,8 @@ class MathTest extends \PHPUnit_Framework_TestCase
             array(100, 90, 10),
             array(100, 80, 20),
             array(100, 50, 50),
+            array(80, 100, 20),
+            array(60, 100, 40),
         );
     }
 }
