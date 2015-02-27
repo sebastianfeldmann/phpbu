@@ -61,9 +61,6 @@ class Capacity implements Cleaner
         } catch (RuntimeException $e) {
             throw new Exception($e->getMessage());
         }
-        if ($bytes < 0) {
-            throw new Exception(sprintf('invalid value for \'size\': %s', $options['size']));
-        }
         $this->deleteTarget  = isset($options['deleteTarget'])
                              ? String::toBoolean($options['deleteTarget'], false)
                              : false;
