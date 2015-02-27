@@ -54,9 +54,6 @@ class Outdated implements Cleaner
         } catch (RuntimeException $e) {
             throw new Exception($e->getMessage());
         }
-        if ($seconds < 1) {
-            throw new Exception(sprintf('invalid value for \'older\': %s', $options['older']));
-        }
         $this->offsetRaw     = $options['older'];
         $this->offsetSeconds = $seconds;
     }
