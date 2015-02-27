@@ -13,7 +13,9 @@ use phpbu\Util\String;
  * Example XML configuration file:
  * <code>
  * <?xml version="1.0" encoding="UTF-8" ?>
- * <phpbu bootstrap="backup/bootstrap.php"
+ * <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ *        xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/1.1/phpbu.xsd"
+ *        bootstrap="backup/bootstrap.php"
  *        verbose="true">
  *
  *   <php>
@@ -23,7 +25,6 @@ use phpbu\Util\String;
  *
  *   <logging>
  *     <log type="json" target="/tmp/logfile.json" />
- *     <log type="plain" target="/tmp/logfile.txt" />
  *   </logging>
  *
  *   <backups>
@@ -37,17 +38,17 @@ use phpbu\Util\String;
  *
  *       <target dirname="/tmp/backup" filename="mysqldump-%Y%m%d-%H%i.sql" compress="bzip2" />
  *
- *       <sanitycheck type="SomeName" value="10MB" />
- *       <sanitycheck type="SomeName" value="20MB" />
+ *       <check type="MinSize" value="10MB" />
  *
- *       <sync type="rsync" skipOnSanityFail="true">
+ *       <sync type="sftp" skipOnSanityFail="true">
+ *         <option name="host" value="example.com" />
  *         <option name="user" value="user.name" />
  *         <option name="password" value="topsecret" />
+ *         <option name="path" value="backup" />
  *       </sync>
  *
- *       <cleanup skipOnSanityFail="true">
- *         <option name="amount" value="50" />
- *         <option name="outdated" value="2W" />
+ *       <cleanup type="Outdated" skipOnSanityFail="true">
+ *         <option name="older" value="2W" />
  *       </cleanup>
  *     </backup>
  *   </backups>

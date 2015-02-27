@@ -3,15 +3,9 @@
        xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/1.1/phpbu.xsd"
        verbose="true">
 
-  <php>
-    <includePath>.</includePath>
-    <ini name="max_execution_time" value="0"/>
-  </php>
-
   <logging>
     <log type="json" target="/tmp/logfile.json"/>
   </logging>
-
 
   <backups>
     <backup stopOnError="true">
@@ -38,8 +32,8 @@
       </sync>
 
       <!-- deletes old backups -->
-      <cleanup type="age" skipOnCheckFailure="true" skipOnSyncFailure="true">
-        <option name="lifetime" value="1m"/>
+      <cleanup type="Capacity" skipOnCheckFailure="true" skipOnSyncFailure="true">
+        <option name="size" value="100M"/>
       </cleanup>
     </backup>
   </backups>
