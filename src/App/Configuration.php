@@ -38,7 +38,7 @@ use phpbu\Util\String;
  *
  *       <target dirname="/tmp/backup" filename="mysqldump-%Y%m%d-%H%i.sql" compress="bzip2" />
  *
- *       <check type="MinSize" value="10MB" />
+ *       <check type="sizemin" value="10MB" />
  *
  *       <sync type="sftp" skipOnSanityFail="true">
  *         <option name="host" value="example.com" />

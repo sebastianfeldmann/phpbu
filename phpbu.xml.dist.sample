@@ -21,7 +21,7 @@
       <target dirname="/tmp/backup" filename="mysqldump-%Y%m%d-%H%i.sql" compress="bzip2"/>
 
       <!-- do some sanity checks to make sure everything worked as planned -->
-      <check type="MinSize" value="2M"/>
+      <check type="sizemin" value="2M"/>
 
       <!-- sync backup to some location or service -->
       <sync type="sftp" skipOnCheckFailure="true">
