@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\Backup\Source;
 
+use phpbu\Backup\Cli\Cmd;
 use phpbu\Backup\Cli\Exec;
 use phpbu\Backup\Cli\Result;
 use phpbu\Backup\Target;
@@ -70,5 +71,24 @@ abstract class Cli
         }
 
         return new Result($cmd, $code, $output);
+    }
+
+    /**
+     * Adds an option to a command if it is not empty.
+     *
+     * @param \phpbu\Backup\Cli\Cmd $cmd
+     * @param string                $option
+     * @param mixed                 $check
+     * @param bool                  $asValue
+     */
+    protected function addOptionIfNotEmpty(Cmd $cmd, $option, $check, $asValue = true)
+    {
+        if (!empty($check)) {
+            if ($asValue) {
+                $cmd->addOption($option, $check);
+            } else {
+                $cmd->addOption($option);
+            }
+        }
     }
 }

@@ -218,21 +218,12 @@ class Mysqldump extends Cli implements Source
             $cmd->silence();
             // i kill you
         }
-        if (!empty($this->user)) {
-            $cmd->addOption('--user', $this->user);
-        }
-        if (!empty($this->password)) {
-            $cmd->addOption('--password', $this->password);
-        }
-        if (!empty($this->host)) {
-            $cmd->addOption('--host', $this->host);
-        }
-        if ($this->quick) {
-            $cmd->addOption('-q');
-        }
-        if ($this->compress) {
-            $cmd->addOption('-C');
-        }
+        $this->addOptionIfNotEmpty($cmd, '--user', $this->user);
+        $this->addOptionIfNotEmpty($cmd, '--password', $this->password);
+        $this->addOptionIfNotEmpty($cmd, '--host', $this->host);
+        $this->addOptionIfNotEmpty($cmd, '-q', $this->quick, false);
+        $this->addOptionIfNotEmpty($cmd, '-C', $this->compress, false);
+
         if (count($this->tables)) {
             $cmd->addOption('--tables', $this->tables);
         } else {
@@ -244,9 +235,7 @@ class Mysqldump extends Cli implements Source
         }
 
         if ($this->validateConnection) {
-            if (!$this->canConnect($this->host, $this->user, $this->password, $this->databases)) {
-                throw new Exception('Can\'t connect to mysql server');
-            }
+            $this->checkConnection($this->host, $this->user, $this->password, $this->databases);
         }
 
         if (count($this->ignoreTables)) {
@@ -279,10 +268,9 @@ class Mysqldump extends Cli implements Source
      * @param  string $user
      * @param  string $password
      * @param  array  $databases
-     * @return boolean
      * @throws \phpbu\App\Exception
      */
-    public function canConnect($host, $user, $password, array $databases = array())
+    public function checkConnection($host, $user, $password, array $databases = array())
     {
         // no host configured
         if (empty($host)) {
@@ -307,13 +295,13 @@ class Mysqldump extends Cli implements Source
         foreach ($databases as $db) {
             $mysqli = @new \mysqli($host, $user, $password, $db);
             if (0 != $mysqli->connect_errno) {
+                $msg = $mysqli->error;
                 unset($mysqli);
-                return false;
+                throw new Exception(sprintf('Can\'t connect to mysql server: %s', $msg));
             }
 
             $mysqli->close();
             unset($mysqli);
         }
-        return true;
     }
 }
