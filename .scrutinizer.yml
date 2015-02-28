@@ -1,2 +1,4 @@
 tools:
     external_code_coverage: true
+      runs: 5
+      timeout: 600 # 10 minutes
