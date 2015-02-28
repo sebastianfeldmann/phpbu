@@ -286,7 +286,7 @@ class Mysqldump extends Cli implements Source
     {
         // no host configured
         if (empty($host)) {
-            // use localhost as default
+            // localhost by default
             $host = 'localhost';
         }
         // no user configured
@@ -297,7 +297,7 @@ class Mysqldump extends Cli implements Source
             // in cli mode we use the system user as default
             $user = $_SERVER['USER'];
         }
-        // no special database configured
+        // no databases configured
         if (empty($databases)) {
             // add the null database to trigger foreach anyway
             $databases[] = null;
