@@ -23,11 +23,95 @@ use phpbu\Util;
 class Mysqldump extends Cli implements Source
 {
     /**
-     * Configuration
+     * Path to mysqldump command
+     * 
+     * @var string
+     */
+    private $binary;
+
+    /**
+     * Show stdErr
+     * 
+     * @var boolean
+     */
+    private $showStdErr;
+    
+    /**
+     * Host to connect to
+     * 
+     * @var string
+     */
+    private $host;
+
+    /**
+     * User to connect with
+     * 
+     * @var string
+     */
+    private $user;
+
+    /**
+     * Password to authenticate with
+     * 
+     * @var string
+     */
+    private $password;
+
+    /**
+     * List of tables to backup
+     * 
+     * @var array
+     */
+    private $tables;
+
+    /**
+     * List of databases to backup
+     * 
+     * @var array
+     */
+    private $databases;
+    
+    /**
+     * List of tables to ignore
      *
      * @var array
      */
-    private $conf;
+    private $ignoreTables;
+
+    /**
+     * List of tables where only the table structure is stored
+     * 
+     * @var array
+     */
+    private $structureOnly;
+
+    /**
+     * Use mysqldump quick mode
+     * 
+     * @var boolean
+     */
+    private $quick;
+
+    /**
+     * Use mysqldump with compression
+     * 
+     * @var boolean
+     */
+    private $compress;
+
+    /**
+     * Dump only table structures
+     *
+     * @var boolean
+     */
+    private $noData;
+
+    /**
+     * Use php to validate the mysql connection
+     * 
+     * @var boolean
+     */
+    private $validateConnection;
 
     /**
      * Setup.
@@ -38,11 +122,66 @@ class Mysqldump extends Cli implements Source
      */
     public function setup(array $conf = array())
     {
-        $this->conf = $conf;
+        $this->setupMysqldump($conf);
+        $this->setupSourceData($conf);
+        
+        $this->host               = Util\Arr::getValue($conf, 'host');
+        $this->user               = Util\Arr::getValue($conf, 'user');
+        $this->password           = Util\Arr::getValue($conf, 'password');
+        $this->showStdErr         = Util\String::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
+        $this->quick              = Util\String::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
+        $this->compress           = Util\String::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
+        $this->validateConnection = Util\String::toBoolean(Util\Arr::getValue($conf, 'validateConnection', ''), false);
+        $this->noData             = Util\String::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);       
     }
 
     /**
-     *
+     * Binary setter, mostly for test purposes.
+     * 
+     * @param string $pathToMysqldump
+     */
+    public function setBinary($pathToMysqldump)
+    {
+        $this->binary = $pathToMysqldump;
+    }
+
+    /**
+     * Search for mysqldump command.
+     * 
+     * @param array $conf
+     */
+    protected function setupMysqldump(array $conf)
+    {
+        if (empty($this->binary)) {
+            $path = isset($conf['pathToMysqldump']) ? $conf['pathToMysqldump'] : null;
+            $this->binary = Util\Cli::detectCmdLocation(
+                'mysqldump',
+                $path,
+                array(
+                    '/usr/local/mysql/bin/mysqldump', // Mac OS X
+                    '/usr/mysql/bin/mysqldump'        // Linux
+                )
+            );
+        }
+    }
+
+    /**
+     * Get tables and databases to backup.
+     * 
+     * @param array $conf
+     */
+    protected function setupSourceData(array $conf)
+    {
+        $this->tables        = Util\String::toList(Util\Arr::getValue($conf, 'tables'));
+        $this->databases     = Util\String::toList(Util\Arr::getValue($conf, 'databases'));
+        $this->ignoreTables  = Util\String::toList(Util\Arr::getValue($conf, 'ignoreTables'));
+        $this->structureOnly = Util\String::toList(Util\Arr::getValue($conf, 'structureOnly'));
+    }
+
+    /**
+     * (non-PHPDoc)
+     * 
+     * @see    \phpbu\Backup\Source
      * @param  \phpbu\Backup\Target $target
      * @param  \phpbu\App\Result    $result
      * @return \phpbu\App\Result
@@ -50,83 +189,78 @@ class Mysqldump extends Cli implements Source
      */
     public function backup(Target $target, Result $result)
     {
-        $host      = 'localhost';
-        $user      = $_SERVER['USER'];
-        $password  = null;
-        $databases = array();
-        $exec      = new Exec();
-        $path      = isset($this->conf['pathToMysqldump']) ? $this->conf['pathToMysqldump'] : null;
-        $mysqldump = Util\Cli::detectCmdLocation(
-            'mysqldump',
-            $path,
-            array(
-                '/usr/local/mysql/bin/mysqldump', // Mac OS X
-                '/usr/mysql/bin/mysqldump'        // Linux
-            )
-        );
+        $exec      = $this->getExec();
+        $cmdResult = $this->execute($exec, $target);
 
-        $cmd = new Cmd($mysqldump);
+        $result->debug($cmdResult->getCmd());
+
+        if (!$cmdResult->wasSuccessful()) {
+            throw new Exception('mysqldump failed');
+        }
+
+        return $result;
+    }
+
+    /**
+     * Create the Exec to run the mysqldump command
+     * 
+     * @return Exec
+     * @throws Exception
+     */
+    public function getExec()
+    {
+        $exec = new Exec();
+        $cmd  = new Cmd($this->binary);
         $exec->addCommand($cmd);
 
         // no std error unless it is activated
-        if (empty($this->conf['showStdErr']) || !Util\String::toBoolean($this->conf['showStdErr'], false)) {
+        if (!$this->showStdErr) {
             $cmd->silence();
+            // i kill you
         }
-        if (!empty($this->conf['user'])) {
-            $user = $this->conf['user'];
-            $cmd->addOption('--user', $user);
+        if (!empty($this->user)) {
+            $cmd->addOption('--user', $this->user);
         }
-        if (!empty($this->conf['password'])) {
-            $password = $this->conf['password'];
-            $cmd->addOption('--password', $password);
+        if (!empty($this->password)) {
+            $cmd->addOption('--password', $this->password);
         }
-        if (!empty($this->conf['host'])) {
-            $host = $this->conf['host'];
-            $cmd->addOption('--host', $host);
+        if (!empty($this->host)) {
+            $cmd->addOption('--host', $this->host);
         }
-
-        if (!empty($this->conf['quick']) && Util\String::toBoolean($this->conf['quick'], false)) {
+        if ($this->quick) {
             $cmd->addOption('-q');
         }
-        if (!empty($this->conf['compress']) && Util\String::toBoolean($this->conf['compress'], false)) {
+        if ($this->compress) {
             $cmd->addOption('-C');
         }
-        if (!empty($this->conf['tables'])) {
-            $tables = explode(',', $this->conf['tables']);
-            $cmd->addOption('--tables', $tables);
+        if (count($this->tables)) {
+            $cmd->addOption('--tables', $this->tables);
         } else {
-            if (!empty($this->conf['databases'])) {
-                if (empty($this->conf['databases']) || $this->conf['databases'] == '__ALL__') {
-                    $cmd->addOption('--all-databases');
-                } else {
-                    $databases = explode(',', $this->conf['databases']);
-                    $cmd->addOption('--databases', $databases);
-                }
+            if (count($this->databases)) {
+                $cmd->addOption('--databases', $this->databases);
+            } else {
+                $cmd->addOption('--all-databases');
             }
         }
 
-        // validate mysql connection
-        if (!empty($this->conf['validateConnection'])
-         && Util\String::toBoolean($this->conf['validateConnection'], false)) {
-            if (!$this->canConnect($host, $user, $password, $databases)) {
+        if ($this->validateConnection) {
+            if (!$this->canConnect($this->host, $this->user, $this->password, $this->databases)) {
                 throw new Exception('Can\'t connect to mysql server');
             }
         }
 
-        if (!empty($this->conf['ignoreTables'])) {
-            $tables = explode(' ', $this->conf['ignoreTables']);
-            foreach ($tables as $table) {
+        if (count($this->ignoreTables)) {
+            foreach ($this->ignoreTables as $table) {
                 $cmd->addOption('--ignore-table', $table);
             }
         }
-        if (!empty($this->conf['structureOnly'])) {
-            if ($this->conf['structureOnly'] == '__ALL__') {
+        if ($this->noData) {
+            $cmd->addOption('--no-data');
+        } else {
+            if (count($this->structureOnly)) {
                 $cmd->addOption('--no-data');
-            } else {
-                $tables = explode(',', $this->conf['structureOnly']);
                 $cmd2   = clone($cmd);
-                $cmd->addOption('--no-data');
-                foreach ($tables as $table) {
+                foreach ($this->structureOnly as $table) {
                     $cmd2->addOption('--ignore-table', $table);
                 }
                 $cmd2->addOption('--skip-add-drop-table');
@@ -135,15 +269,7 @@ class Mysqldump extends Cli implements Source
                 $exec->addCommand($cmd2);
             }
         }
-        $r = $this->execute($exec, $target);
-
-        $result->debug($r->getCmd());
-
-        if (!$r->wasSuccessful()) {
-            throw new Exception('mysqldump failed');
-        }
-
-        return $result;
+        return $exec;
     }
 
     /**
@@ -156,14 +282,23 @@ class Mysqldump extends Cli implements Source
      * @return boolean
      * @throws \phpbu\App\Exception
      */
-    public function canConnect($host, $user, $password = null, array $databases = array())
+    public function canConnect($host, $user, $password, array $databases = array())
     {
+        // no special host, use localhost
+        if (empty($host)) {
+            $host = 'localhost';
+        }
+        // no special user, use system user
+        if (empty($user)) {
+            $user = $_SERVER['USER'];
+        }
         // no special database configured
         if (empty($databases)) {
+            // add the null database to trigger foreach anyway
             $databases[] = null;
         }
 
-        // check all databases
+        // check all configured databases
         foreach ($databases as $db) {
             $mysqli = @new \mysqli($host, $user, $password, $db);
             if (0 != $mysqli->connect_errno) {
