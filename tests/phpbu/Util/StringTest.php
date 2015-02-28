@@ -133,6 +133,48 @@ class StringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests String::toList
+     */
+    public function testToListFull()
+    {
+        $list = String::toList('foo,bar');        
+        $this->assertEquals(2, count($list), 'list should contain 2 elements');
+    }
+
+    /**
+     * Tests String::toList
+     */
+    public function testToListEmpty()
+    {
+        $list = String::toList('');
+        $this->assertEquals(0, count($list), 'list should be empty');
+    }
+
+    /**
+     * Tests String::toList
+     */
+    public function testToListEmptyTrim()
+    {
+        $list = String::toList('foo , bar , baz  ');
+        $this->assertEquals(3, count($list), 'list should be empty');
+        $this->assertEquals('foo', $list[0], 'should not contain spaces');
+        $this->assertEquals('bar', $list[1], 'should not contain spaces');
+        $this->assertEquals('baz', $list[2], 'should noz contain spaces');
+    }
+
+    /**
+     * Tests String::toList
+     */
+    public function testToListEmptyNoTrim()
+    {
+        $list = String::toList('foo  , bar ,  baz', ',', false);
+        $this->assertEquals(3, count($list), 'list should be empty');
+        $this->assertEquals('foo  ', $list[0], 'should still contain spaces');
+        $this->assertEquals(' bar ', $list[1], 'should still contain spaces');
+        $this->assertEquals('  baz', $list[2], 'should still contain spaces');
+    }
+
+    /**
      * Test with trailing slash.
      */
     public function testWithTrailingSlash()

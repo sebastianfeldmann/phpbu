@@ -128,6 +128,23 @@ class String
     }
 
     /**
+     * Explodes string to array but empty string results in empty array not array with empty string in it.
+     * 
+     * @param  string  $separated
+     * @param  string  $separator
+     * @param  boolean $trim
+     * @return array
+     */
+    public static function toList($separated, $separator = ',', $trim = true)
+    {
+        $list = empty($separated) ? array() : explode($separator, $separated);
+        if ($trim) {
+            $list = array_map('trim', $list);
+        }
+        return $list;
+    }
+
+    /**
      * Adds trailing slash to a string/path if not already there.
      *
      * @param  string $string
