@@ -24,53 +24,53 @@ class Mysqldump extends Cli implements Source
 {
     /**
      * Path to mysqldump command
-     * 
+     *
      * @var string
      */
     private $binary;
 
     /**
      * Show stdErr
-     * 
+     *
      * @var boolean
      */
     private $showStdErr;
-    
+
     /**
      * Host to connect to
-     * 
+     *
      * @var string
      */
     private $host;
 
     /**
      * User to connect with
-     * 
+     *
      * @var string
      */
     private $user;
 
     /**
      * Password to authenticate with
-     * 
+     *
      * @var string
      */
     private $password;
 
     /**
      * List of tables to backup
-     * 
+     *
      * @var array
      */
     private $tables;
 
     /**
      * List of databases to backup
-     * 
+     *
      * @var array
      */
     private $databases;
-    
+
     /**
      * List of tables to ignore
      *
@@ -80,21 +80,21 @@ class Mysqldump extends Cli implements Source
 
     /**
      * List of tables where only the table structure is stored
-     * 
+     *
      * @var array
      */
     private $structureOnly;
 
     /**
      * Use mysqldump quick mode
-     * 
+     *
      * @var boolean
      */
     private $quick;
 
     /**
      * Use mysqldump with compression
-     * 
+     *
      * @var boolean
      */
     private $compress;
@@ -108,7 +108,7 @@ class Mysqldump extends Cli implements Source
 
     /**
      * Use php to validate the mysql connection
-     * 
+     *
      * @var boolean
      */
     private $validateConnection;
@@ -124,7 +124,7 @@ class Mysqldump extends Cli implements Source
     {
         $this->setupMysqldump($conf);
         $this->setupSourceData($conf);
-        
+
         $this->host               = Util\Arr::getValue($conf, 'host');
         $this->user               = Util\Arr::getValue($conf, 'user');
         $this->password           = Util\Arr::getValue($conf, 'password');
@@ -132,12 +132,12 @@ class Mysqldump extends Cli implements Source
         $this->quick              = Util\String::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
         $this->compress           = Util\String::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
         $this->validateConnection = Util\String::toBoolean(Util\Arr::getValue($conf, 'validateConnection', ''), false);
-        $this->noData             = Util\String::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);       
+        $this->noData             = Util\String::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
     }
 
     /**
      * Binary setter, mostly for test purposes.
-     * 
+     *
      * @param string $pathToMysqldump
      */
     public function setBinary($pathToMysqldump)
@@ -147,7 +147,7 @@ class Mysqldump extends Cli implements Source
 
     /**
      * Search for mysqldump command.
-     * 
+     *
      * @param array $conf
      */
     protected function setupMysqldump(array $conf)
@@ -167,7 +167,7 @@ class Mysqldump extends Cli implements Source
 
     /**
      * Get tables and databases to backup.
-     * 
+     *
      * @param array $conf
      */
     protected function setupSourceData(array $conf)
@@ -180,7 +180,7 @@ class Mysqldump extends Cli implements Source
 
     /**
      * (non-PHPDoc)
-     * 
+     *
      * @see    \phpbu\Backup\Source
      * @param  \phpbu\Backup\Target $target
      * @param  \phpbu\App\Result    $result
@@ -203,7 +203,7 @@ class Mysqldump extends Cli implements Source
 
     /**
      * Create the Exec to run the mysqldump command
-     * 
+     *
      * @return Exec
      * @throws Exception
      */
@@ -259,7 +259,7 @@ class Mysqldump extends Cli implements Source
         } else {
             if (count($this->structureOnly)) {
                 $cmd->addOption('--no-data');
-                $cmd2   = clone($cmd);
+                $cmd2 = clone($cmd);
                 foreach ($this->structureOnly as $table) {
                     $cmd2->addOption('--ignore-table', $table);
                 }
@@ -284,12 +284,17 @@ class Mysqldump extends Cli implements Source
      */
     public function canConnect($host, $user, $password, array $databases = array())
     {
-        // no special host, use localhost
+        // no host configured
         if (empty($host)) {
+            // use localhost as default
             $host = 'localhost';
         }
-        // no special user, use system user
+        // no user configured
         if (empty($user)) {
+            if (php_sapi_name() != 'cli') {
+                throw new Exception('user is required for connection validation');
+            }
+            // in cli mode we use the system user as default
             $user = $_SERVER['USER'];
         }
         // no special database configured
