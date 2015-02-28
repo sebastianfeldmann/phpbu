@@ -47,6 +47,7 @@ use phpbu\App\Configuration;
 use phpbu\App\Exception;
 use phpbu\App\Runner;
 use phpbu\App\Version;
+use phpbu\Util\Arr;
 
 /**
  * Main application class.
@@ -115,7 +116,7 @@ class App
             echo $e->getMessage() . PHP_EOL;
             $ret = self::EXIT_EXCEPTION;
         }
-        
+
         exit($ret);
     }
 
@@ -154,7 +155,7 @@ class App
 
     /**
      * Handle the parsed command line options
-     * 
+     *
      * @param  array $options
      * @return void
      */
@@ -199,19 +200,19 @@ class App
 
     /**
      * Check all configuration possibilities.
-     * 
+     *
      * @return void
      */
     protected function handleConfiguration()
     {
         // check configuration argument
-        // if configuration argument is a directory check for default configuration files
-        // phpbu.xml, phpbu.xml.dist
+        // if configuration argument is a directory
+        // check for default configuration files 'phpbu.xml' and 'phpbu.xml.dist'
         if (isset($this->arguments['configuration']) && is_dir($this->arguments['configuration'])) {
             $this->handleConfigurationDir();
         } elseif (!isset($this->arguments['configuration'])) {
             // no configuration argument search for default configuration files
-            // phpbu.xml, phpbu.xml.dist in current working directory
+            // 'phpbu.xml' and 'phpbu.xml.dist' in current working directory
             $this->handleConfigurationDefault();
         }
         if (isset($this->arguments['configuration'])) {
@@ -229,15 +230,15 @@ class App
                 $this->handleBootstrap($phpbu['bootstrap']);
             }
 
-            if (isset($phpbu['verbose']) && $phpbu['verbose'] === true) {
+            if (Arr::getValue($phpbu, 'verbose') === true) {
                 $this->arguments['verbose'] = true;
             }
 
-            if (isset($phpbu['colors']) && $phpbu['colors'] === true) {
+            if (Arr::getValue($phpbu, 'colors') === true) {
                 $this->arguments['colors'] = true;
             }
 
-            if (isset($phpbu['debug']) && $phpbu['debug'] === true) {
+            if (Arr::getValue($phpbu, 'debug') === true) {
                 $this->arguments['debug'] = true;
             }
 
@@ -257,7 +258,7 @@ class App
 
     /**
      * Check directory for default configuration files phpbu.xml, phpbu.xml.dist.
-     * 
+     *
      * @return void
      */
     protected function handleConfigurationDir()
@@ -273,7 +274,7 @@ class App
 
     /**
      * Check default configuration files phpbu.xml, phpbu.xml.dist in current working directory.
-     * 
+     *
      * @return void
      */
     protected function handleConfigurationDefault()
