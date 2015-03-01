@@ -30,6 +30,22 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test the Backup collector with no dynamic directory
+     * Files not matching foo-%d.txt.zip should be ignored.
+     */
+    public function testMatchFilesCompressed()
+    {
+        $path      = $this->getTestDataDir() . '/collector/static-dir-compressed';
+        $filename  = 'foo-%d.txt';
+        $target    = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip'));
+        $collector = new Collector($target);
+        $files     = $collector->getBackupFiles();
+
+        $this->assertEquals(4, count($files), '4 files should be found');
+    }
+
+    /**
      * Test the Backup collector with one dynamic directory
      */
     public function testSingleDynamicDirectory()
@@ -86,7 +102,25 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Return testdata directory
+     * Create Compressor Mock.
+     *
+     * @param  string $cmd
+     * @param  string $suffix
+     * @return \phpbu\Backup\Compressor
+     */
+    protected function getCompressorMockForCmd($cmd, $suffix)
+    {
+        $compressorStub = $this->getMockBuilder('\\phpbu\\Backup\\Compressor')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $compressorStub->method('getCommand')->willReturn($cmd);
+        $compressorStub->method('getSuffix')->willReturn($suffix);
+
+        return $compressorStub;
+    }
+
+    /**
+     * Return test data directory
      *
      * @return string
      */
