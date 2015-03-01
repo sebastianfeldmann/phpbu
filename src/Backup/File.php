@@ -111,8 +111,11 @@ class File
      */
     public function unlink()
     {
+        $old = error_reporting(0);
         if (!unlink($this->fileInfo->getPathname())) {
+            error_reporting($old);
             throw new Exception(sprintf('can\'t delete file: %s', $this->fileInfo->getPathname()));
         }
+        error_reporting($old);
     }
 }
