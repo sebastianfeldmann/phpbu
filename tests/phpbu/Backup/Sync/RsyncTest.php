@@ -16,6 +16,21 @@ class RsyncTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Tests Rsync::setUp
+     */
+    public function testSetUpOk()
+    {
+        $rsync = new Rsync();
+        $rsync->setup(array(
+            'path' => 'foo',
+            'user' => 'dummy-user',
+            'host' => 'dummy-host'
+        ));
+
+        $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
+     * Tests Rsync::setUp
      *
      * @expectedException \phpbu\Backup\Sync\Exception
      */

@@ -16,6 +16,23 @@ class CopycomTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Tests Copycom::setUp
+     */
+    public function testSetUpOk()
+    {
+        $copycom = new Copycom();
+        $copycom->setup(array(
+            'app.key'     => 'dummy-app-key',
+            'app.secret'  => 'dummy-app-secret',
+            'user.key'    => 'dummy-user-key',
+            'user.secret' => 'dummy-user-secret',
+            'path'        => '/'
+        ));
+
+        $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
+     * Tests Copycom::setUp
      *
      * @expectedException \phpbu\Backup\Sync\Exception
      */

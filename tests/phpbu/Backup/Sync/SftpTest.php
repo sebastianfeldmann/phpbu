@@ -16,6 +16,22 @@ class SftpTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Tests Sftp::setUp
+     */
+    public function testSetUpOk()
+    {
+        $sftp = new Sftp();
+        $sftp->setup(array(
+            'host'     => 'example.com',
+            'user'     => 'user.name',
+            'password' => 'secret',
+            'path'     => 'foo'
+        ));
+
+        $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
+     * Tests Sftp::setUp
      *
      * @expectedException \phpbu\Backup\Sync\Exception
      */
@@ -38,6 +54,21 @@ class SftpTest extends \PHPUnit_Framework_TestCase
         $sftp = new Sftp();
         $sftp->setup(array(
             'host' => 'example.com',
+            'path' => 'foo'
+        ));
+    }
+
+    /**
+     * Tests Sftp::setUp
+     *
+     * @expectedException \phpbu\Backup\Sync\Exception
+     */
+    public function testSetUpNoPassword()
+    {
+        $sftp = new Sftp();
+        $sftp->setup(array(
+            'host' => 'example.com',
+            'user' => 'user.name',
             'path' => 'foo'
         ));
     }

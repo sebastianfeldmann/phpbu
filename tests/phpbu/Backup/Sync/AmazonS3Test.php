@@ -16,6 +16,23 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
 {
     /**
      * Tests AmazonS3::setUp
+     */
+    public function testSetUpOk()
+    {
+        $amazonS3 = new AmazonS3();
+        $amazonS3->setup(array(
+            'key'    => 'dummy-key',
+            'secret' => 'dummy-secret',
+            'bucket' => 'dummy-bucket',
+            'region' => 'dummy-region',
+            'path'   => '/'
+        ));
+
+        $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
+     * Tests AmazonS3::setUp
      *
      * @expectedException \phpbu\Backup\Sync\Exception
      */

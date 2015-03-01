@@ -16,6 +16,20 @@ class DropboxTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Tests Dropbox::setUp
+     */
+    public function testSetUpOk()
+    {
+        $dropbox = new Dropbox();
+        $dropbox->setup(array(
+            'token' => 'this-is-no-token',
+            'path'  => '/'
+        ));
+
+        $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
+     * Tests Dropbox::setUp
      *
      * @expectedException \phpbu\Backup\Sync\Exception
      */

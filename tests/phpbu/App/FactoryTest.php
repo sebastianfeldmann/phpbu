@@ -3,6 +3,7 @@ namespace phpbu\App;
 
 use phpbu\Backup\Check;
 use phpbu\Backup\Collector;
+use phpbu\Backup\Source;
 use phpbu\Backup\Target;
 
 /**
@@ -23,9 +24,11 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateSource()
     {
-        $source = Factory::createSource('tar', array());
-        
-        $this->assertEquals(get_class($source), 'phpbu\\Backup\\Source\\Tar', 'classes should match');
+        // register dummy source, all default sources have system dependencies like cli binaries
+        Factory::register('source', 'dummy', '\\phpbu\\App\\phpbuAppFactoryTestSource');
+        $source = Factory::createSource('dummy', array());
+
+        $this->assertEquals(get_class($source), 'phpbu\\App\\phpbuAppFactoryTestSource', 'classes should match');
     }
 
     /**
@@ -70,12 +73,12 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Factory::createType
-     * 
+     *
      * @expectedException \phpbu\App\Exception
      */
     public function testCreateUnknown()
     {
-        $failed = Factory::create('sync', 'Unknown', array('foo' => 'bar'));
+        $sync = Factory::create('sync', 'Unknown', array('foo' => 'bar'));
 
         $this->assertFalse(true, 'exception should be thrown');
     }
@@ -86,7 +89,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     public function testRegisterCheckOk()
     {
         Factory::register('check', 'dummy', '\\phpbu\\App\\phpbuAppFactoryTestCheck');
-        
+
         $dummy = Factory::create('check', 'dummy');
 
         $this->assertEquals(get_class($dummy), 'phpbu\\App\\phpbuAppFactoryTestCheck', 'Factory should create dummy object');
@@ -106,8 +109,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Factory::register
-     * 
-     * @expectedException \phpbu\App\Exception 
+     *
+     * @expectedException \phpbu\App\Exception
      */
     public function testRegisterExistingCheck()
     {
@@ -134,8 +137,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 /**
  * Class phpbuAppFactoryTestObject
  */
-class phpbuAppFactoryTestCheck implements Check {
-
+class phpbuAppFactoryTestCheck implements Check
+{
     /**
      * Checks the created backup.
      *
@@ -146,6 +149,33 @@ class phpbuAppFactoryTestCheck implements Check {
      * @return boolean
      */
     public function pass(Target $target, $value, Collector $collector, Result $result)
+    {
+        // do something fooish
+    }
+}
+
+/**
+ * Class phpbuAppFactoryTestObject
+ */
+class phpbuAppFactoryTestSource implements Source
+{
+    /**
+     * Setup the source.
+     *
+     * @param array $conf
+     */
+    public function setup(array $conf = array())
+    {
+        // do something fooish
+    }
+
+    /**
+     * Runner the backup
+     *
+     * @param  \phpbu\Backup\Target $target
+     * @param  \phpbu\App\Result $result
+     */
+    public function backup(Target $target, Result $result)
     {
         // do something fooish
     }
