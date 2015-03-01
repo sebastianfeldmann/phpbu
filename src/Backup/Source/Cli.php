@@ -46,29 +46,19 @@ abstract class Cli
         if ($code == 0) {
             // run the compressor command
             if ($compressOutput && $target->shouldBeCompressed()) {
-                $compressorCode   = 0;
-                $compressorOutput = array();
-                $compressorCmd    = $target->getCompressor()->getCommand();
-                $old              = error_reporting(0);
-                exec(
-                    $compressorCmd
-                    . ' -f '
-                    . $target->getPathname(),
-                    $compressorOutput,
-                    $compressorCode
-                );
-                error_reporting($old);
+                // compress the generated output with configured compressor
+                $res = $this->compressOutput($target);
 
-                if ($compressorCode !== 0) {
+                if ($res->getCode() !== 0) {
                     // remove compressed file with errors
                     if ($target->fileExists()) {
                         $target->unlink();
                     }
                 }
 
-                $cmd   .= PHP_EOL . $compressorCmd;
-                $code  += $compressorCode;
-                $output = array_merge($output, $compressorOutput);
+                $cmd   .= PHP_EOL . $res->getCmd();
+                $code  += $res->getCode();
+                $output = array_merge($output, $res->getOutput());
             }
         } else {
             // remove file with errors
@@ -78,6 +68,24 @@ abstract class Cli
         }
 
         return new Result($cmd, $code, $output);
+    }
+
+    /**
+     * Compress the generated output.
+     *
+     * @param  \phpbu\Backup\Target Target $target
+     * @return \phpbu\Backup\Cli\Result
+     */
+    protected function compressOutput(Target $target)
+    {
+        $exec = $target->getCompressor()
+                       ->getExec($target->getPathname(false), array('-f'));
+
+        $old = error_reporting(0);
+        $res = $exec->execute();
+        error_reporting($old);
+
+        return $res;
     }
 
     /**
