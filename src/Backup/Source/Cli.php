@@ -20,6 +20,13 @@ use phpbu\Backup\Target;
 abstract class Cli
 {
     /**
+     * Path to mysqldump command
+     *
+     * @var string
+     */
+    protected $binary;
+
+    /**
      * Executes the cli commands and handles compression
      *
      * @param  \phpbu\Backup\Cli\Exec $exec
@@ -71,6 +78,16 @@ abstract class Cli
         }
 
         return new Result($cmd, $code, $output);
+    }
+
+    /**
+     * Binary setter, mostly for test purposes.
+     *
+     * @param string $pathToMysqldump
+     */
+    public function setBinary($pathToMysqldump)
+    {
+        $this->binary = $pathToMysqldump;
     }
 
     /**

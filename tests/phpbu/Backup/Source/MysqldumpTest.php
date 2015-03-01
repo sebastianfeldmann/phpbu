@@ -2,7 +2,7 @@
 namespace phpbu\Backup\Source;
 
 /**
- * CopycomTest
+ * MysqldumpTest
  *
  * @package    phpbu
  * @subpackage tests

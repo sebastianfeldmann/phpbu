@@ -23,13 +23,6 @@ use phpbu\Util;
 class Mysqldump extends Cli implements Source
 {
     /**
-     * Path to mysqldump command
-     *
-     * @var string
-     */
-    private $binary;
-
-    /**
      * Show stdErr
      *
      * @var boolean
@@ -117,7 +110,7 @@ class Mysqldump extends Cli implements Source
      * Setup.
      *
      * @see    \phpbu\Backup\Source
-     * @param  array                $conf
+     * @param  array conf
      * @throws \phpbu\App\Exception
      */
     public function setup(array $conf = array())
@@ -136,16 +129,6 @@ class Mysqldump extends Cli implements Source
     }
 
     /**
-     * Binary setter, mostly for test purposes.
-     *
-     * @param string $pathToMysqldump
-     */
-    public function setBinary($pathToMysqldump)
-    {
-        $this->binary = $pathToMysqldump;
-    }
-
-    /**
      * Search for mysqldump command.
      *
      * @param array $conf
@@ -153,10 +136,9 @@ class Mysqldump extends Cli implements Source
     protected function setupMysqldump(array $conf)
     {
         if (empty($this->binary)) {
-            $path = isset($conf['pathToMysqldump']) ? $conf['pathToMysqldump'] : null;
             $this->binary = Util\Cli::detectCmdLocation(
                 'mysqldump',
-                $path,
+                Util\Arr::getValue($conf, 'pathToMysqldump'),
                 array(
                     '/usr/local/mysql/bin/mysqldump', // Mac OS X
                     '/usr/mysql/bin/mysqldump'        // Linux
