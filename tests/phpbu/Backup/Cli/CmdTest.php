@@ -2,7 +2,7 @@
 namespace phpbu\Backup\Cli;
 
 /**
- * ExecTest
+ * CmdTest
  *
  * @package    phpbu
  * @subpackage tests
@@ -12,34 +12,37 @@ namespace phpbu\Backup\Cli;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.5
  */
-class ExecTest extends \PHPUnit_Framework_TestCase
+class CmdTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Tests Exec::getExec
-     *
-     * @expectedException \phpbu\App\Exception
+     * Tests Cmd::getName
      */
-    public function testGetExecFail()
+    public function testGetName()
     {
-        $exec = new Exec();
-        $exec->getExec();
+        $cmd = new Cmd('foo');
 
-        $this->assertFalse(true, 'exception should be thrown');
+        $this->assertEquals('foo', $cmd->getName(), 'name getter should work properly');
     }
 
     /**
      * Tests Cmd::addArgument
      */
-    public function testGetExecOk()
+    public function testAddArgumentPlain()
+    {
+        $cmd = new Cmd('foo');
+        $cmd->addArgument('bar');
+
+        $this->assertEquals('foo \'bar\'', (string) $cmd, 'argument should be added');
+    }
+
+    /**
+     * Tests Cmd::addArgument
+     */
+    public function testAddArgumentArray()
     {
         $cmd = new Cmd('foo');
         $cmd->addArgument(array('bar', 'baz'));
 
-        $exec = new Exec();
-        $exec->addCommand($cmd);
-
-        $res = $exec->getExec();
-
-        $this->assertEquals('foo \'bar\' \'baz\'', $res, 'command should be as planned');
+        $this->assertEquals('foo \'bar\' \'baz\'', (string) $cmd, 'arguments should be added');
     }
 }
