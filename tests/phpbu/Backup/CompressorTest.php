@@ -15,6 +15,16 @@ namespace phpbu\Backup;
 class CompressorTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * Tests Compressor::create
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testCreateInvalid()
+    {
+        Compressor::create('/foo/bar');
+        $this->assertFalse(true, 'Exception should be thrown');
+    }
+    /**
      * Test gzip compressor
      */
     public function testGzip()
@@ -52,5 +62,15 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
         $gzip = Compressor::create('/usr/local/bin/gzip');
         $this->assertEquals('gz', $gzip->getSuffix());
         $this->assertEquals('/usr/local/bin/gzip', $gzip->getCommand());
+    }
+
+    /**
+     * Tests Compressor::getExec
+     */
+    public function testGetExec()
+    {
+        $zip = Compressor::create('zip');
+        $exec = $zip->getExec(__FILE__, array('-f'));
+        $this->assertEquals('zip -f \'' . __FILE__ . '\'', $exec->getExec());
     }
 }

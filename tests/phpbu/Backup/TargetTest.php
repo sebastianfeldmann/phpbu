@@ -15,7 +15,7 @@ namespace phpbu\Backup;
 class TargetTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Test detecting date placeholder in path
+     * Test detecting date placeholder in path.
      */
     public function testHasChangingPath()
     {
@@ -28,7 +28,7 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test recognizing that there are no date placeholder in path
+     * Test recognizing that there are no date placeholder in path.
      */
     public function testHasNoChangingPath()
     {
@@ -41,7 +41,7 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test detecting date placeholder in filename
+     * Test detecting date placeholder in filename.
      */
     public function testHasChangingFilename()
     {
@@ -53,7 +53,7 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test recognizing that there are no date placeholder in filename
+     * Test recognizing that there are no date placeholder in filename.
      */
     public function testHasNoChangingFilename()
     {
@@ -65,7 +65,7 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test date placeholder replacement in filename
+     * Test date placeholder replacement in filename.
      */
     public function testGetFilename()
     {
@@ -73,11 +73,84 @@ class TargetTest extends \PHPUnit_Framework_TestCase
         $filename = '%Y-test-%d.txt';
         $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
 
-        $this->assertEquals('2014-test-01.txt', $target->getFilename(), 'filename should as expected');
+        $this->assertEquals('2014-test-01.txt', $target->getFilename());
     }
 
     /**
-     * Test date placeholder replacement in path
+     * Tests Target::getChangingPathElements
+     */
+    public function testGetChangingPathElements()
+    {
+        $path     = '/tmp/foo/%Y/%m';
+        $filename = 'foo.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+
+        $this->assertEquals(array('%Y', '%m'), $target->getChangingPathElements());
+    }
+
+    /**
+     * Tests Target::getCompressor
+     */
+    public function testGetCompressor()
+    {
+        $compressor = $this->getCompressorMockForCmd('zip', 'zip');
+
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setCompressor($compressor);
+
+        $this->assertEquals($compressor, $target->getCompressor());
+    }
+
+    /**
+     * Tests Target::getFilename
+     */
+    public function testGetFilenameCompressed()
+    {
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip'));
+
+        $this->assertEquals('2014-test-01.txt.zip', $target->getFilename(true));
+    }
+
+    /**
+     * Tests Target::disableCompression
+     */
+    public function testDisableEnableCompression()
+    {
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip'));
+        $target->disableCompression();
+
+        $this->assertEquals('2014-test-01.txt', $target->getFilename(true));
+
+        $target->enableCompression();
+
+        $this->assertEquals('2014-test-01.txt.zip', $target->getFilename(true));
+    }
+
+    /**
+     * Tests Target::enableCompression
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testEnableCompressionFail()
+    {
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->enableCompression();
+
+        $this->assertFalse(true, 'exception should be thrown');
+    }
+
+    /**
+     * Test date placeholder replacement in path.
      */
     public function testGetPath()
     {
@@ -85,6 +158,116 @@ class TargetTest extends \PHPUnit_Framework_TestCase
         $filename = 'foo.txt';
         $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
 
-        $this->assertEquals('/tmp/12/01', $target->getPath(), 'path should as expected');
+        $this->assertEquals('/tmp/12/01', $target->getPath());
+    }
+
+    /**
+     * Tests Target::setPermission
+     */
+    public function testSetPermissionEmpty()
+    {
+        $path     = '/tmp/%m/%d';
+        $filename = 'foo.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setPermissions('');
+
+        $this->assertEquals(0700, $target->getPermissions());
+    }
+
+    /**
+     * Tests Target::setPermission
+     */
+    public function testSetPermissionOk()
+    {
+        $path     = '/tmp/%m/%d';
+        $filename = 'foo.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setPermissions('0644');
+
+        $this->assertEquals(0644, $target->getPermissions());
+    }
+
+    /**
+     * Tests Target::setPermission
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testSetPermissionFail()
+    {
+        $path     = '/tmp/%m/%d';
+        $filename = 'foo.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setPermissions('0999');
+
+        $this->assertFalse(true, 'exception should be thrown');
+    }
+
+    /**
+     * Tests Target::getPathRaw
+     */
+    public function testGetPathRaw()
+    {
+        $path     = '/tmp/%m/%d';
+        $filename = 'foo.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+
+        $this->assertEquals('/tmp/%m/%d', $target->getPathRaw());
+    }
+
+    /**
+     * Tests Target::fileExists
+     */
+    public function testFileExists()
+    {
+        $path     = dirname(__FILE__);
+        $filename = basename(__FILE__);
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+
+        $this->assertEquals(true, $target->fileExists());
+    }
+
+    /**
+     * Tests Target::getSize
+     */
+    public function testGetSizeOk()
+    {
+        $path     = dirname(__FILE__);
+        $filename = basename(__FILE__);
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+
+        $this->assertEquals(filesize(__FILE__), $target->getSize());
+    }
+
+    /**
+     * Tests Target::getSize
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testGetSizeFail()
+    {
+        $path     = '.';
+        $filename = 'foo.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->getSize();
+
+        $this->assertFalse(true, 'exception should be thrown');
+    }
+
+    /**
+     * Create Compressor Mock.
+     *
+     * @param  string $cmd
+     * @param  string $suffix
+     * @return \phpbu\Backup\Compressor
+     */
+    protected function getCompressorMockForCmd($cmd, $suffix)
+    {
+        $compressorStub = $this->getMockBuilder('\\phpbu\\Backup\\Compressor')
+                               ->disableOriginalConstructor()
+                               ->getMock();
+        $compressorStub->method('getCommand')->willReturn($cmd);
+        $compressorStub->method('getSuffix')->willReturn($suffix);
+
+        return $compressorStub;
     }
 }

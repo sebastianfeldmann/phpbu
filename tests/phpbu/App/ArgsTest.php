@@ -25,6 +25,18 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test short option -x
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testGetOptionsFail()
+    {
+        $args    = new Args();
+        $options = $args->getOptions(array('-x'));
+        $this->assertFalse(true, 'short option x is invalid');
+    }
+
+    /**
      * Test short option -V
      */
     public function testGetOptionsShortUpperV()
