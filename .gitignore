@@ -4,6 +4,7 @@
 .project
 .settings
 /backup
+/build/coverage
 /build/logs
 /build/phar
 /composer.lock
