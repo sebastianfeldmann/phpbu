@@ -115,6 +115,17 @@ class CliTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Cli::isAbsolutePath
+     */
+    public function testIsAbsolutePathStream()
+    {
+        $path = 'php://foo/bar';
+        $res  = Cli::isAbsolutePath($path);
+
+        $this->assertTrue($res, 'should not be detected as absolute path');
+    }
+
+    /**
+     * Tests Cli::isAbsolutePathWindows
      *
      * @dataProvider providerWindowsPaths
      *
@@ -126,6 +137,16 @@ class CliTest extends \PHPUnit_Framework_TestCase
         $res = Cli::isAbsoluteWindowsPath($path);
 
         $this->assertEquals($expected, $res, 'should be detected as expected');
+    }
+
+    /**
+     * Tests Cli::toAbsolutePath
+     */
+    public function testToAbsolutePathAlreadyAbsolute()
+    {
+        $res = Cli::toAbsolutePath('/foo/bar', '');
+
+        $this->assertEquals('/foo/bar', $res, 'should be detected as absolute');
     }
 
     /**
