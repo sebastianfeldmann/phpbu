@@ -127,13 +127,23 @@ class Target
             $permissions = 0700;
         } else {
             $oct = intval($permissions, 8);
-            $dec = octdec($permissions);
-            if ($dec < 1 || $dec > 261) {
+            $dec = octdec($oct);
+            if ($dec < 1 || $dec > octdec(0777)) {
                 throw new Exception(sprintf('invalid permissions: %s', $permissions));
             }
             $permissions = $oct;
         }
         $this->permissions = $permissions;
+    }
+
+    /**
+     * Permission getter.
+     *
+     * @return integer
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
     }
 
     /**
@@ -193,7 +203,7 @@ class Target
      */
     public function setupPath()
     {
-        //if directory doesn't exist, create it
+        // if directory doesn't exist, create it
         if (!is_dir($this->path)) {
             $reporting = error_reporting();
             error_reporting(0);
