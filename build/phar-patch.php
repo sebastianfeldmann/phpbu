@@ -1,13 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-$patches = array(
-    array(
-        'path'    => __DIR__ . '/phar/copy/Api.php',
-        'search'  => array('curl_setopt($this->curl, CURLOPT_CAINFO'),
-        'replace' => array('//curl_setopt($this->curl, CURLOPT_CAINFO'),
-    ),
-);
+$patches = array();
 
 $replacements = array(
     array(
