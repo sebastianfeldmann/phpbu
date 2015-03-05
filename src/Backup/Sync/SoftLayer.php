@@ -11,15 +11,15 @@ use ObjectStorage_Http_Client;
 use ObjectStorage;
 
 /**
- * Amazon S3 Sync
+ * SoftLayer  ObjectStorage Sync
  *
  * @package    phpbu
  * @subpackage Backup
  * @author     Petr Cervenka  <petr@nanosolutions.io>
- * @copyright  Petr Cervenka  <petr@nanosolutions.io>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://phpbu.de/
- * @since      Class available since Release ?
+ * @since      Class available since Release 1.1.6
  */
 class SoftLayer implements Sync
 {
@@ -87,11 +87,11 @@ class SoftLayer implements Sync
         if (!Arr::isSetAndNotEmptyString($config, 'path')) {
             throw new Exception('SoftLayer path / object-key is mandatory');
         }
-        $this->username    = $config['username'];
-        $this->secret =		 $config['secret'];
-        $this->container = 	 $config['container'];
-        $this->host = 		 $config['host'];
-        $this->path   = 	 String::withTrailingSlash(String::replaceDatePlaceholders($config['path']));
+        $this->username     = $config['username'];
+        $this->secret       = $config['secret'];
+        $this->container    = $config['container'];
+        $this->host         = $config['host'];
+        $this->path         = String::withTrailingSlash(String::replaceDatePlaceholders($config['path']));
 
     }
 
@@ -109,19 +109,19 @@ class SoftLayer implements Sync
         $targetPath = $this->path . $target->getFilenameCompressed();
 
 
-		// If no adapter option is provided, CURL will be used.
-		$options = array('adapter' => ObjectStorage_Http_Client::SOCKET, 'timeout' => 20);
-		$objectStorage = new ObjectStorage($this->host, $this->username, $this->secret, $options);
+        // If no adapter option is provided, CURL will be used.
+        $options = array('adapter' => ObjectStorage_Http_Client::SOCKET, 'timeout' => 20);
+        $objectStorage = new ObjectStorage($this->host, $this->username, $this->secret, $options);
 
 
 
 
         try {
-			$newObject = $objectStorage->with($this->container."/".$targetPath)
-				->setLocalFile($sourcePath)
-				->setMeta('description', 'Backup made '.date("r",time()))
-				->setHeader('Content-type', 'application/x-bzip2')
-				->create();
+            $newObject = $objectStorage->with($this->container."/".$targetPath)
+                ->setLocalFile($sourcePath)
+                ->setMeta('description', 'Backup made '.date("r",time()))
+                ->setHeader('Content-type', 'application/x-bzip2')
+                ->create();
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }

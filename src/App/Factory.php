@@ -47,7 +47,7 @@ abstract class Factory
             'ftp'       => '\\phpbu\\Backup\\Sync\\Ftp',
             'rsync'     => '\\phpbu\\Backup\\Sync\\Rsync',
             'sftp'      => '\\phpbu\\Backup\\Sync\\Sftp',
-			'softlayer' => '\\phpbu\\Backup\\Sync\\SoftLayer',
+            'softlayer' => '\\phpbu\\Backup\\Sync\\SoftLayer',
         ),
         'cleaner' => array(
             'capacity'  => '\\phpbu\\Backup\\Cleaner\\Capacity',
