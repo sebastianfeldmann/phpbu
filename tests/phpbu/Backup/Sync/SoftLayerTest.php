@@ -21,7 +21,7 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     {
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup(array(
-            'username'  => 'dummy-username',
+            'user'      => 'dummy-username',
             'secret'    => 'dummy-secret',
             'container' => 'dummy-container',
             'host'      => 'dummy-host',
@@ -56,7 +56,7 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     {
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup(array(
-            'username'  => 'dummy-username',
+            'user'      => 'dummy-username',
             'container' => 'dummy-container',
             'host'      => 'dummy-host',
             'path'      => '/'
@@ -72,10 +72,10 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     {
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup(array(
-            'username' => 'dummy-username',
-            'secret'   => 'dummy-secret',
-            'host'     => 'dummy-host',
-            'path'     => '/'
+            'user'   => 'dummy-username',
+            'secret' => 'dummy-secret',
+            'host'   => 'dummy-host',
+            'path'   => '/'
         ));
     }
 
@@ -88,7 +88,7 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     {
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup(array(
-            'username'  => 'dummy-username',
+            'user'      => 'dummy-username',
             'secret'    => 'dummy-secret',
             'container' => 'dummy-container',
             'path'      => '/'
@@ -104,7 +104,7 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     {
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup(array(
-            'username'  => 'dummy-username',
+            'user'      => 'dummy-username',
             'secret'    => 'dummy-secret',
             'container' => 'dummy-container',
             'host'      => 'dummy-host'
