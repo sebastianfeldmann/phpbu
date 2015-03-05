@@ -6,11 +6,11 @@ namespace phpbu\Backup\Sync;
  *
  * @package    phpbu
  * @subpackage tests
- * @author     Petr Cervenka  <petr@nanosolutions.io>
+ * @author     Petr Cervenka <petr@nanosolutions.io>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpbu.de/
- * @since      Class available since Release 1.1.4
+ * @since      Class available since Release 1.1.6
  */
 class SoftLayerTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,11 +21,11 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     {
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup(array(
-            'username'    => 'dummy-username',
-            'secret' => 'dummy-secret',
+            'username'  => 'dummy-username',
+            'secret'    => 'dummy-secret',
             'container' => 'dummy-container',
-            'host' => 'dummy-host',
-            'path'   => '/'
+            'host'      => 'dummy-host',
+            'path'      => '/'
         ));
 
         $this->assertTrue(true, 'no exception should occur');
@@ -36,14 +36,14 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \phpbu\Backup\Sync\Exception
      */
-    public function testSetUpNousername()
+    public function testSetUpNoUsername()
     {
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup(array(
-            'secret' => 'dummy-secret',
+            'secret'    => 'dummy-secret',
             'container' => 'dummy-container',
-            'host' => 'dummy-host',
-            'path'   => '/'
+            'host'      => 'dummy-host',
+            'path'      => '/'
         ));
     }
 
@@ -56,10 +56,10 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     {
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup(array(
-            'username'    => 'dummy-username',
+            'username'  => 'dummy-username',
             'container' => 'dummy-container',
-            'host' => 'dummy-host',
-            'path'   => '/'
+            'host'      => 'dummy-host',
+            'path'      => '/'
         ));
     }
 
@@ -72,10 +72,10 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     {
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup(array(
-            'username'    => 'dummy-username',
-            'secret' => 'dummy-secret',
-            'host' => 'dummy-host',
-            'path'   => '/'
+            'username' => 'dummy-username',
+            'secret'   => 'dummy-secret',
+            'host'     => 'dummy-host',
+            'path'     => '/'
         ));
     }
 
@@ -84,14 +84,14 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \phpbu\Backup\Sync\Exception
      */
-    public function testSetUpNohost()
+    public function testSetUpNoHost()
     {
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup(array(
-            'username'    => 'dummy-username',
-            'secret' => 'dummy-secret',
+            'username'  => 'dummy-username',
+            'secret'    => 'dummy-secret',
             'container' => 'dummy-container',
-            'path'   => '/'
+            'path'      => '/'
         ));
     }
 
@@ -104,10 +104,10 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     {
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup(array(
-            'username'    => 'dummy-username',
-            'secret' => 'dummy-secret',
+            'username'  => 'dummy-username',
+            'secret'    => 'dummy-secret',
             'container' => 'dummy-container',
-            'host' => 'dummy-host'
+            'host'      => 'dummy-host'
         ));
     }
 }

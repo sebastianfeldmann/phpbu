@@ -19,38 +19,65 @@ use phpbu\Backup\Cli\Exec;
 class Compressor
 {
     /**
-     * Path to command binary.
+     * Path to command binary
      *
      * @var string
      */
-    private $path;
+    protected $path;
 
     /**
-     * Command name.
+     * Command name
      *
      * @var string
      */
-    private $cmd;
+    protected $cmd;
 
     /**
-     * Suffix for compressed files.
+     * Suffix for compressed files
      *
      * @var string
      */
-    private $suffix;
+    protected $suffix;
+
+    /**
+     * MIME type for compressed files
+     *
+     * @var string
+     */
+    protected $mimeType;
+
+    /**
+     * List of available compressors
+     *
+     * @var array
+     */
+    protected static $availableCompressors = array(
+        'gzip' => array(
+            'suffix' => 'gz',
+            'mime'   => 'application/x-gzip'
+        ),
+        'bzip2' => array(
+            'suffix' => 'bz2',
+            'mime'   => 'application/x-bzip2'
+        ),
+        'zip' => array(
+            'suffix' => 'zip',
+            'mime'   => 'application/zip'
+        )
+    );
 
     /**
      * Constructor.
      *
      * @param string $cmd
-     * @param string $suffix
      * @param string $pathToCmd without trailing slash
      */
-    protected function __construct($cmd, $suffix, $pathToCmd = null)
+    protected function __construct($cmd, $pathToCmd = null)
     {
-        $this->path   = $pathToCmd . (!empty($pathToCmd) ? DIRECTORY_SEPARATOR : '');
-        $this->cmd    = $cmd;
-        $this->suffix = $suffix;
+        $this->path     = $pathToCmd . (!empty($pathToCmd) ? DIRECTORY_SEPARATOR : '');
+        $this->cmd      = $cmd;
+        $this->suffix   = self::$availableCompressors[$cmd]['suffix'];
+        $this->mimeType = self::$availableCompressors[$cmd]['mime'];
     }
 
     /**
@@ -96,6 +123,16 @@ class Compressor
     }
 
     /**
+     * Returns the compressor mime type.
+     *
+     * @return string
+     */
+    public function getMimeType()
+    {
+        return $this->mimeType;
+    }
+
+    /**
      * Factory method.
      *
      * @param  string $name
@@ -111,23 +148,9 @@ class Compressor
             $name = basename($name);
         }
 
-        $availableCompressors = array(
-            'gzip' => array(
-                'gzip',
-                'gz'
-            ),
-            'bzip2' => array(
-                'bzip2',
-                'bz2'
-            ),
-            'zip' => array(
-                'zip',
-                'zip'
-            )
-        );
-        if (!isset($availableCompressors[$name])) {
+        if (!isset(self::$availableCompressors[$name])) {
             throw new Exception('invalid compressor:' . $name);
         }
-        return new static($availableCompressors[$name][0], $availableCompressors[$name][1], $path);
+        return new static($name, $path);
     }
 }

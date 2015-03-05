@@ -77,6 +77,9 @@ class Tar extends Cli implements Source
      */
     public function backup(Target $target, Result $result)
     {
+        // set uncompressed default MIME type
+        $target->setMimeType('application/x-tar');
+
         $compressA = $target->shouldBeCompressed();
         $exec      = $this->getExec($target);
         $compressB = $target->shouldBeCompressed();

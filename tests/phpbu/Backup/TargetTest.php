@@ -93,7 +93,7 @@ class TargetTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCompressor()
     {
-        $compressor = $this->getCompressorMockForCmd('zip', 'zip');
+        $compressor = $this->getCompressorMockForCmd('zip', 'zip', 'application/zip');
 
         $path     = '/tmp/foo/bar';
         $filename = '%Y-test-%d.txt';
@@ -104,6 +104,44 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Target::getMimeType
+     */
+    public function testGetMimeTypeDefault()
+    {
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+
+        $this->assertEquals('text/plain', $target->getMimeType());
+    }
+
+    /**
+     * Tests Target::getMimeType
+     */
+    public function testSetMimeType()
+    {
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setMimeType('application/x-tar');
+
+        $this->assertEquals('application/x-tar', $target->getMimeType());
+    }
+
+    /**
+     * Tests Target::getMimeType
+     */
+    public function testGetMimeTypeCompressed()
+    {
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip', 'application/zip'));
+
+        $this->assertEquals('application/zip', $target->getMimeType());
+    }
+
+    /**
      * Tests Target::getFilename
      */
     public function testGetFilenameCompressed()
@@ -111,7 +149,7 @@ class TargetTest extends \PHPUnit_Framework_TestCase
         $path     = '/tmp/foo/bar';
         $filename = '%Y-test-%d.txt';
         $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip'));
+        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip', 'application/zip'));
 
         $this->assertEquals('2014-test-01.txt.zip', $target->getFilename(true));
     }
@@ -124,7 +162,7 @@ class TargetTest extends \PHPUnit_Framework_TestCase
         $path     = '/tmp/foo/bar';
         $filename = '%Y-test-%d.txt';
         $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip'));
+        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip', 'application/zip'));
         $target->disableCompression();
 
         $this->assertEquals('2014-test-01.txt', $target->getFilename(true));
@@ -258,15 +296,17 @@ class TargetTest extends \PHPUnit_Framework_TestCase
      *
      * @param  string $cmd
      * @param  string $suffix
+     * @param  string $mimeType
      * @return \phpbu\Backup\Compressor
      */
-    protected function getCompressorMockForCmd($cmd, $suffix)
+    protected function getCompressorMockForCmd($cmd, $suffix, $mimeType)
     {
         $compressorStub = $this->getMockBuilder('\\phpbu\\Backup\\Compressor')
                                ->disableOriginalConstructor()
                                ->getMock();
         $compressorStub->method('getCommand')->willReturn($cmd);
         $compressorStub->method('getSuffix')->willReturn($suffix);
+        $compressorStub->method('getMimeType')->willReturn($mimeType);
 
         return $compressorStub;
     }

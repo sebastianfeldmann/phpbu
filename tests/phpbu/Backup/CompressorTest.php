@@ -24,6 +24,7 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
         Compressor::create('/foo/bar');
         $this->assertFalse(true, 'Exception should be thrown');
     }
+
     /**
      * Test gzip compressor
      */
@@ -32,6 +33,7 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
         $gzip = Compressor::create('gzip');
         $this->assertEquals('gz', $gzip->getSuffix());
         $this->assertEquals('gzip', $gzip->getCommand());
+        $this->assertEquals('application/x-gzip', $gzip->getMimeType());
     }
 
     /**
@@ -42,6 +44,7 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
         $gzip = Compressor::create('bzip2');
         $this->assertEquals('bz2', $gzip->getSuffix());
         $this->assertEquals('bzip2', $gzip->getCommand());
+        $this->assertEquals('application/x-bzip2', $gzip->getMimeType());
     }
 
     /**
@@ -52,6 +55,7 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
         $gzip = Compressor::create('zip');
         $this->assertEquals('zip', $gzip->getSuffix());
         $this->assertEquals('zip', $gzip->getCommand());
+        $this->assertEquals('application/zip', $gzip->getMimeType());
     }
 
     /**

@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\Backup\Sync;
 
-
 use phpbu\App\Result;
 use phpbu\Backup\Sync;
 use phpbu\Backup\Target;
@@ -15,7 +14,8 @@ use ObjectStorage;
  *
  * @package    phpbu
  * @subpackage Backup
- * @author     Petr Cervenka  <petr@nanosolutions.io>
+ * @author     Petr Cervenka <petr@nanosolutions.io>
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://phpbu.de/
@@ -24,7 +24,7 @@ use ObjectStorage;
 class SoftLayer implements Sync
 {
     /**
-     * SoftLayer key
+     * SoftLayer username
      *
      * @var  string
      */
@@ -38,27 +38,25 @@ class SoftLayer implements Sync
     protected $secret;
 
     /**
-     * SoftLayer S3 bucket
+     * SoftLayer container
      *
      * @var string
      */
     protected $container;
 
     /**
-     * SoftLayer S3 region
+     * SoftLayer host
      *
      * @var string
      */
     protected $host;
 
     /**
-     * SoftLayer remote path / object key
+     * SoftLayer remote path
      *
      * @var string
      */
     protected $path;
-
-
 
     /**
      * (non-PHPDoc)
@@ -70,7 +68,7 @@ class SoftLayer implements Sync
     public function setup(array $config)
     {
         if (!class_exists('\\ObjectStorage')) {
-            throw new Exception('SofltLayer SDK not loaded: use composer "softlayer/objectstorage": "dev-master" to install');
+            throw new Exception('SoftLayer SDK not loaded: use composer "softlayer/objectstorage": "dev-master" to install');
         }
         if (!Arr::isSetAndNotEmptyString($config, 'username')) {
             throw new Exception('SoftLayer username is mandatory');
@@ -85,18 +83,17 @@ class SoftLayer implements Sync
             throw new Exception('SoftLayer host is mandatory');
         }
         if (!Arr::isSetAndNotEmptyString($config, 'path')) {
-            throw new Exception('SoftLayer path / object-key is mandatory');
+            throw new Exception('SoftLayer path is mandatory');
         }
-        $this->username     = $config['username'];
-        $this->secret       = $config['secret'];
-        $this->container    = $config['container'];
-        $this->host         = $config['host'];
-        $this->path         = String::withTrailingSlash(String::replaceDatePlaceholders($config['path']));
-
+        $this->username  = $config['username'];
+        $this->secret    = $config['secret'];
+        $this->container = $config['container'];
+        $this->host      = $config['host'];
+        $this->path      = String::withTrailingSlash(String::replaceDatePlaceholders($config['path']));
     }
 
     /**
-     * Execute the sync
+     * Execute the sync.
      *
      * @see    \phpbu\Backup\Sync::sync()
      * @param  \phpbu\backup\Target $target
@@ -108,20 +105,16 @@ class SoftLayer implements Sync
         $sourcePath = $target->getPathnameCompressed();
         $targetPath = $this->path . $target->getFilenameCompressed();
 
-
-        // If no adapter option is provided, CURL will be used.
-        $options = array('adapter' => ObjectStorage_Http_Client::SOCKET, 'timeout' => 20);
+        $options       = array('adapter' => ObjectStorage_Http_Client::SOCKET, 'timeout' => 20);
         $objectStorage = new ObjectStorage($this->host, $this->username, $this->secret, $options);
 
-
-
-
         try {
-            $newObject = $objectStorage->with($this->container."/".$targetPath)
-                ->setLocalFile($sourcePath)
-                ->setMeta('description', 'Backup made '.date("r",time()))
-                ->setHeader('Content-type', 'application/x-bzip2')
-                ->create();
+            /** @var \ObjectStorage_Container $object */
+            $container = $objectStorage->with($this->container . '/' . $targetPath)
+                                       ->setLocalFile($sourcePath)
+                                       ->setMeta('description', 'PHPBU Backup: ' . date('r',time()))
+                                       ->setHeader('Content-Type', $target->getMimeType());
+            $container->create();
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }

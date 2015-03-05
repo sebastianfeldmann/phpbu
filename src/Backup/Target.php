@@ -74,6 +74,13 @@ class Target
     private $filenameIsChanging = false;
 
     /**
+     * Target MIME type
+     *
+     * @var string
+     */
+    private $mimeType = 'text/plain';
+
+    /**
      * Size in bytes
      *
      * @var integer
@@ -113,37 +120,6 @@ class Target
     {
         $this->setPath($path, $time);
         $this->setFile($filename, $time);
-    }
-
-    /**
-     * Permission setter.
-     *
-     * @param  string $permissions
-     * @throws \phpbu\App\Exception
-     */
-    public function setPermissions($permissions)
-    {
-        if (empty($permissions)) {
-            $permissions = 0700;
-        } else {
-            $oct = intval($permissions, 8);
-            $dec = octdec($oct);
-            if ($dec < 1 || $dec > octdec(0777)) {
-                throw new Exception(sprintf('invalid permissions: %s', $permissions));
-            }
-            $permissions = $oct;
-        }
-        $this->permissions = $permissions;
-    }
-
-    /**
-     * Permission getter.
-     *
-     * @return integer
-     */
-    public function getPermissions()
-    {
-        return $this->permissions;
     }
 
     /**
@@ -219,6 +195,47 @@ class Target
     }
 
     /**
+     * Target file MIME type setter.
+     *
+     * @param string $mime
+     */
+    public function setMimeType($mime)
+    {
+        $this->mimeType = $mime;
+    }
+
+    /**
+     * Permission setter.
+     *
+     * @param  string $permissions
+     * @throws \phpbu\App\Exception
+     */
+    public function setPermissions($permissions)
+    {
+        if (empty($permissions)) {
+            $permissions = 0700;
+        } else {
+            $oct = intval($permissions, 8);
+            $dec = octdec($oct);
+            if ($dec < 1 || $dec > octdec(0777)) {
+                throw new Exception(sprintf('invalid permissions: %s', $permissions));
+            }
+            $permissions = $oct;
+        }
+        $this->permissions = $permissions;
+    }
+
+    /**
+     * Permission getter.
+     *
+     * @return integer
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
+
+    /**
      * Return the path to the backup file.
      *
      * @return string
@@ -261,6 +278,20 @@ class Target
     public function getFilenameRaw()
     {
         return $this->filenameRaw;
+    }
+
+    /**
+     * Return file MIME type
+     *
+     * @return string
+     */
+    public function getMimeType()
+    {
+        $mimeType = $this->mimeType;
+        if ($this->shouldBeCompressed()) {
+            $mimeType = $this->compressor->getMimeType();
+        }
+        return $mimeType;
     }
 
     /**
