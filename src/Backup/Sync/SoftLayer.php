@@ -24,11 +24,11 @@ use ObjectStorage;
 class SoftLayer implements Sync
 {
     /**
-     * SoftLayer username
+     * SoftLayer user
      *
      * @var  string
      */
-    protected $username;
+    protected $user;
 
     /**
      * SoftLayer secret
@@ -70,8 +70,8 @@ class SoftLayer implements Sync
         if (!class_exists('\\ObjectStorage')) {
             throw new Exception('SoftLayer SDK not loaded: use composer "softlayer/objectstorage": "dev-master" to install');
         }
-        if (!Arr::isSetAndNotEmptyString($config, 'username')) {
-            throw new Exception('SoftLayer username is mandatory');
+        if (!Arr::isSetAndNotEmptyString($config, 'user')) {
+            throw new Exception('SoftLayer user is mandatory');
         }
         if (!Arr::isSetAndNotEmptyString($config, 'secret')) {
             throw new Exception('SoftLayer password is mandatory');
@@ -85,7 +85,7 @@ class SoftLayer implements Sync
         if (!Arr::isSetAndNotEmptyString($config, 'path')) {
             throw new Exception('SoftLayer path is mandatory');
         }
-        $this->username  = $config['username'];
+        $this->user      = $config['user'];
         $this->secret    = $config['secret'];
         $this->container = $config['container'];
         $this->host      = $config['host'];
@@ -93,7 +93,7 @@ class SoftLayer implements Sync
     }
 
     /**
-     * Execute the sync.
+     * (non-PHPDoc)
      *
      * @see    \phpbu\Backup\Sync::sync()
      * @param  \phpbu\backup\Target $target
@@ -106,13 +106,13 @@ class SoftLayer implements Sync
         $targetPath = $this->path . $target->getFilenameCompressed();
 
         $options       = array('adapter' => ObjectStorage_Http_Client::SOCKET, 'timeout' => 20);
-        $objectStorage = new ObjectStorage($this->host, $this->username, $this->secret, $options);
+        $objectStorage = new ObjectStorage($this->host, $this->user, $this->secret, $options);
 
         try {
             /** @var \ObjectStorage_Container $object */
             $container = $objectStorage->with($this->container . '/' . $targetPath)
                                        ->setLocalFile($sourcePath)
-                                       ->setMeta('description', 'PHPBU Backup: ' . date('r',time()))
+                                       ->setMeta('description', 'PHPBU Backup: ' . date('r', time()))
                                        ->setHeader('Content-Type', $target->getMimeType());
             $container->create();
         } catch (\Exception $e) {

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sync type="softlayer">
+  <!-- mandatory -->
+  <option name="user" value="softlayerusername" />
+
+  <!-- mandatory -->
+  <option name="secret" value="softlayersecret" />
+
+  <!-- mandatory -->
+  <option name="container" value="softlayercontainer" />
+
+  <!-- mandatory -->
+  <option name="host" value="softlayerhost" />
+
+  <!-- mandatory -->
+  <option name="path" value="/some/dir" />
+</sync>
