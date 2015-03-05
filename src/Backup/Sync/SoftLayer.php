@@ -119,7 +119,7 @@ class SoftLayer implements Sync
         try {
 			$newObject = $objectStorage->with($this->container."/".$targetPath)
 				->setLocalFile($sourcePath)
-				->setMeta('description', 'Backup as today '.time())
+				->setMeta('description', 'Backup made '.date("r",time()))
 				->setHeader('Content-type', 'application/x-bzip2')
 				->create();
         } catch (\Exception $e) {
