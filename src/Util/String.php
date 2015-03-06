@@ -128,8 +128,26 @@ class String
     }
 
     /**
+     * Pads all given strings to given length.
+     *
+     * @param  array   $strings
+     * @param  integer $length
+     * @param  string  $pad
+     * @param  integer $mode
+     * @return array
+     */
+    public static function padAll(array $strings, $length, $pad = ' ', $mode = STR_PAD_LEFT)
+    {
+        $result = array();
+        foreach ($strings as $key => $s) {
+            $result[$key] = str_pad($s, $length, $pad, $mode);
+        }
+        return $result;
+    }
+
+    /**
      * Explodes string to array but empty string results in empty array not array with empty string in it.
-     * 
+     *
      * @param  string  $separated
      * @param  string  $separator
      * @param  boolean $trim
@@ -164,5 +182,17 @@ class String
     public static function withoutTrailingSlash($string)
     {
         return strlen($string) > 1 && substr($string, -1) === '/' ? substr($string, 0, -1) : $string;
+    }
+
+    /**
+     * Appends a plural "s" or "'s".
+     *
+     * @param  string  $subject
+     * @param  integer $amount
+     * @return string
+     */
+    public static function appendPluralS($subject, $amount)
+    {
+        return $subject . ($amount == 1 ? '' : (substr($subject, -1) == 's' ? '\'s' : 's' ));
     }
 }

@@ -105,6 +105,26 @@ class Backup
     }
 
     /**
+     * Backup successful and nothing skipped or failed.
+     *
+     * @return boolean
+     */
+    public function allOk()
+    {
+        return $this->wasSuccessful() && $this->noneSkipped() && $this->noneFailed();
+    }
+
+    /**
+     * Backup successful but something was skipped or failed.
+     *
+     * @return boolean
+     */
+    public function okButSkipsOrFails()
+    {
+        return $this->wasSuccessful() && (!$this->noneFailed() || !$this->noneSkipped());
+    }
+
+    /**
      * Backup executed successfully and no checks failed
      *
      * @return boolean
@@ -113,6 +133,7 @@ class Backup
     {
         return $this->wasSuccessful;
     }
+
 
     /**
      * No skipped syncs or cleanups

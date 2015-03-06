@@ -4,6 +4,7 @@ namespace phpbu\App;
 use InvalidArgumentException;
 use phpbu\App\Result;
 use phpbu\Log\Printer;
+use phpbu\Util\String;
 use PHP_Timer;
 use SebastianBergmann\Environment\Console;
 
@@ -124,7 +125,7 @@ class ResultPrinter extends Printer implements Listener
 
     /**
      * phpbu start event.
-     * 
+     *
      * @see   \phpbu\App\Listener::phpbuStart()
      * @param array $settings
      */
@@ -140,7 +141,7 @@ class ResultPrinter extends Printer implements Listener
 
     /**
      * phpbu end event.
-     * 
+     *
      * @see   \phpbu\App\Listener::phpbuEnd()
      * @param \phpbu\App\Result $result
      */
@@ -151,7 +152,7 @@ class ResultPrinter extends Printer implements Listener
 
     /**
      * Backup start event.
-     * 
+     *
      * @see   \phpbu\App\Listener::backupStart()
      * @param array $backup
      */
@@ -181,7 +182,7 @@ class ResultPrinter extends Printer implements Listener
 
     /**
      * Backup end event.
-     * 
+     *
      * @see   \phpbu\App\Listener::backupEnd()
      * @param array $backup
      */
@@ -194,7 +195,7 @@ class ResultPrinter extends Printer implements Listener
 
     /**
      * Check start event.
-     * 
+     *
      * @see   \phpbu\App\Listener::checkStart()
      * @param array $check
      */
@@ -224,7 +225,7 @@ class ResultPrinter extends Printer implements Listener
 
     /**
      * Check end event.
-     * 
+     *
      * @see   \phpbu\App\Listener::checkEnd()
      * @param array $check
      */
@@ -251,7 +252,7 @@ class ResultPrinter extends Printer implements Listener
 
     /**
      * Sync skipped event.
-     * 
+     *
      * @see   \phpbu\App\Listener::syncSkipped()
      * @param array $sync
      */
@@ -283,7 +284,7 @@ class ResultPrinter extends Printer implements Listener
 
     /**
      * Sync end event.
-     * 
+     *
      * @see   \phpbu\App\Listener::syncEnd()
      * @param array $sync
      */
@@ -296,7 +297,7 @@ class ResultPrinter extends Printer implements Listener
 
     /**
      * Cleanup start event.
-     * 
+     *
      * @see   \phpbu\App\Listener::cleanupStart()
      * @param array $cleanup
      */
@@ -326,7 +327,7 @@ class ResultPrinter extends Printer implements Listener
 
     /**
      * Cleanup failed event.
-     * 
+     *
      * @see   \phpbu\App\Listener::cleanupFailed()
      * @param array $cleanup
      */
@@ -342,7 +343,7 @@ class ResultPrinter extends Printer implements Listener
 
     /**
      * Cleanup end event.
-     * 
+     *
      * @see   \phpbu\App\Listener::cleanupEnd()
      * @param array $cleanup
      */
@@ -355,7 +356,7 @@ class ResultPrinter extends Printer implements Listener
 
     /**
      * Debugging.
-     * 
+     *
      * @see   \phpbu\App\Listener::debug()
      * @param string $msg
      */
@@ -421,12 +422,12 @@ class ResultPrinter extends Printer implements Listener
     protected function printBackupVerbose(Result\Backup $backup)
     {
         $this->write(sprintf('backup %s: ', $backup->getName()));
-        if ($backup->wasSuccessful() && $backup->noneSkipped() && $backup->noneFailed()) {
+        if ($backup->allOk()) {
             $this->writeWithColor(
                 'fg-black, bg-green',
                 'OK'
             );
-        } elseif ((!$backup->noneSkipped() || !$backup->noneFailed()) && $backup->wasSuccessful()) {
+        } elseif (($backup->okButSkipsOrFails())) {
                 $this->writeWithColor(
                     'fg-black, bg-yellow',
                     'OK, but skipped or failed Syncs or Cleanups!'
@@ -437,20 +438,36 @@ class ResultPrinter extends Printer implements Listener
                 'FAILED'
             );
         }
-        $chExecuted = str_pad($backup->checkCount(), 8, ' ', STR_PAD_LEFT);
-        $chFailed   = str_pad($backup->checkCountFailed(), 6, ' ', STR_PAD_LEFT);
-        $syExecuted = str_pad($backup->syncCount(), 8, ' ', STR_PAD_LEFT);
-        $sySkipped  = str_pad($backup->syncCountSkipped(), 7, ' ', STR_PAD_LEFT);
-        $syFailed   = str_pad($backup->syncCountFailed(), 6, ' ', STR_PAD_LEFT);
-        $clExecuted = str_pad($backup->cleanupCount(), 8, ' ', STR_PAD_LEFT);
-        $clSkipped  = str_pad($backup->cleanupCountSkipped(), 7, ' ', STR_PAD_LEFT);
-        $clFailed   = str_pad($backup->cleanupCountFailed(), 6, ' ', STR_PAD_LEFT);
+
+        $exec = String::padAll(
+            array(
+                'ch' => $backup->checkCount(),
+                'sy' => $backup->syncCount(),
+                'cl' => $backup->cleanupCount(),
+            ),
+            8
+        );
+        $fail = String::padAll(
+            array(
+                'ch' => $backup->checkCountFailed(),
+                'sy' => $backup->syncCountFailed(),
+                'cl' => $backup->cleanupCountFailed(),
+            ),
+            6
+        );
+        $skip = String::padAll(
+            array(
+                'sy' => $backup->syncCountSkipped(),
+                'cl' => $backup->cleanupCountSkipped(),
+            ),
+            7
+        );
 
         $out = '          | executed | skipped | failed |' . PHP_EOL
              . '----------+----------+---------+--------+' . PHP_EOL
-             . ' checks   | ' . $chExecuted . ' |         | ' . $chFailed . ' |' . PHP_EOL
-             . ' syncs    | ' . $syExecuted . ' | ' . $sySkipped . ' | ' . $syFailed . ' |' . PHP_EOL
-             . ' cleanups | ' . $clExecuted . ' | ' . $clSkipped . ' | ' . $clFailed . ' |' . PHP_EOL
+             . ' checks   | ' . $exec['ch'] . ' |         | ' . $fail['ch'] . ' |' . PHP_EOL
+             . ' syncs    | ' . $exec['ch'] . ' | ' . $skip['sy'] . ' | ' . $fail['sy'] . ' |' . PHP_EOL
+             . ' cleanups | ' . $exec['ch'] . ' | ' . $skip['cl'] . ' | ' . $fail['cl'] . ' |' . PHP_EOL
              . '----------+----------+---------+--------+' . PHP_EOL . PHP_EOL;
 
         $this->write($out);
@@ -472,15 +489,15 @@ class ResultPrinter extends Printer implements Listener
             $this->writeWithColor(
                 'fg-black, bg-green',
                 sprintf(
-                    'OK (%d backup%s, %d check%s, %d sync%s, %d cleanup%s)',
+                    'OK (%d %s, %d %s, %d %s, %d %s)',
                     count($result->getBackups()),
-                    (count($result->getBackups()) == 1) ? '' : 's',
+                    String::appendPluralS('backup', count($result->getBackups())),
                     $this->numChecks,
-                    ($this->numChecks == 1) ? '' : 's',
+                    String::appendPluralS('check', $this->numChecks),
                     $this->numSyncs,
-                    ($this->numSyncs == 1) ? '' : 's',
+                    String::appendPluralS('sync', $this->numSyncs),
                     $this->numCleanups,
-                    ($this->numCleanups == 1) ? '' : 's'
+                    String::appendPluralS('cleanup', $this->numCleanups)
                 )
             );
         } elseif ($result->backupOkButSkipsOrFails()) {

@@ -59,11 +59,11 @@ class Mail implements Listener, Logger
     protected $transportType;
 
     /**
-     * List of mail recepients
+     * List of mail recipients
      *
      * @var array<string>
      */
-    protected $recepients = array();
+    protected $recipients = array();
 
     /**
      * Amount of executed backups
@@ -119,7 +119,7 @@ class Mail implements Listener, Logger
         $this->senderMail      = Arr::getValue($options, 'sender.mail', 'phpbu@' . $server);
         $this->senderName      = Arr::getValue($options, 'sender.name');
         $this->transportType   = Arr::getValue($options, 'transport', 'mail');
-        $this->recepients      = array_map('trim', explode(';', $mails));
+        $this->recipients      = array_map('trim', explode(';', $mails));
 
         // create transport an mailer
         $transport    = $this->createTransport($this->transportType, $options);
@@ -157,7 +157,7 @@ class Mail implements Listener, Logger
                 $message = Swift_Message::newInstance();
                 $message->setSubject($this->subject)
                         ->setFrom($this->senderMail, $this->senderName)
-                        ->setTo($this->recepients)
+                        ->setTo($this->recipients)
                         ->setBody($body)
                         ->addPart($body, 'text/html');
 
@@ -409,15 +409,15 @@ class Mail implements Listener, Logger
         } elseif ($result->allOk()) {
             $html .= '<p>' .
                 sprintf(
-                    'OK (%d backup%s, %d check%s, %d sync%s, %d cleanup%s)',
+                    'OK (%d %s, %d %s, %d %s, %d %s)',
                     count($result->getBackups()),
-                    (count($result->getBackups()) == 1) ? '' : 's',
+                    String::appendPluralS('backup', count($result->getBackups())),
                     $this->numChecks,
-                    ($this->numChecks == 1) ? '' : 's',
+                    String::appendPluralS('check', $this->numChecks),
                     $this->numSyncs,
-                    ($this->numSyncs == 1) ? '' : 's',
+                    String::appendPluralS('sync', $this->numSyncs),
                     $this->numCleanups,
-                    ($this->numCleanups == 1) ? '' : 's'
+                    String::appendPluralS('cleanup', $this->numCleanups)
                 ) .
                 '</p>';
         } elseif ($result->backupOkButSkipsOrFails()) {
@@ -490,9 +490,9 @@ class Mail implements Listener, Logger
             foreach ($backups as $backup) {
                 $html .= '<tr><td colspan="4">';
                 $html .= sprintf('backup %s ', $backup->getName());
-                if ($backup->wasSuccessful() && $backup->noneSkipped() && $backup->noneFailed()) {
+                if ($backup->allOk()) {
                     $html .= 'OK';
-                } elseif ((!$backup->noneSkipped() || !$backup->noneFailed()) && $backup->wasSuccessful()) {
+                } elseif (!$backup->okButSkipsOrFails()) {
                     $html .= 'OK, but skipped or failed Syncs or Cleanups!';
                 } else {
                     $html .= 'FAILED';

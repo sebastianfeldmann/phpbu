@@ -133,11 +133,24 @@ class StringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests String::padAll
+     */
+    public function testPadAll()
+    {
+        $padded = String::padAll(array('foo' => 'bar', 'fiz' => 'baz'), 8);
+        $this->assertEquals(8, strlen($padded['foo']), 'bar should be padded to a length of 8');
+        $this->assertEquals(8, strlen($padded['fiz']), 'baz should be padded to a length of 8');
+
+        $this->assertEquals('     baz', $padded['fiz'], 'baz should be padded with spaces');
+        $this->assertEquals('     bar', $padded['foo'], 'bar should be padded with spaces');
+    }
+
+    /**
      * Tests String::toList
      */
     public function testToListFull()
     {
-        $list = String::toList('foo,bar');        
+        $list = String::toList('foo,bar');
         $this->assertEquals(2, count($list), 'list should contain 2 elements');
     }
 
@@ -193,6 +206,22 @@ class StringTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo/bar', String::withoutTrailingSlash('foo/bar/'), 'should be foo/bar');
         $this->assertEquals('baz', String::withoutTrailingSlash('baz'), 'should be baz');
         $this->assertEquals('/', String::withoutTrailingSlash('/'), '/ should be stay /');
+    }
+
+    /**
+     * Tests String::appendPluralS
+     */
+    public function testAppendPluralS()
+    {
+        $a = String::appendPluralS('backup', 2);
+        $b = String::appendPluralS('backup', 0);
+        $c = String::appendPluralS('backup', 1);
+        $d = String::appendPluralS('class', 2);
+
+        $this->assertEquals('backups', $a);
+        $this->assertEquals('backups', $b);
+        $this->assertEquals('backup', $c);
+        $this->assertEquals('class\'s', $d);
     }
 
     /**
