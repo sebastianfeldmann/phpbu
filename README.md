@@ -17,6 +17,7 @@ Get detailed information about all the features and a 'getting started' tutorial
 
 * Creating backups
     + Directories
+    + MongoDB (in progress)
     + MySQL
     + PostgreSQL (planned)
 * Validate backups
