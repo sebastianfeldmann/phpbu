@@ -5,6 +5,7 @@ use InvalidArgumentException;
 use phpbu\App\Listener;
 use phpbu\App\Log\Printer;
 use phpbu\App\Result;
+use phpbu\App\Util\String;
 use phpbu\App\Version;
 use PHP_Timer;
 use SebastianBergmann\Environment\Console;
@@ -474,15 +475,15 @@ class PrinterCli extends Printer implements Listener
             $this->writeWithColor(
                 'fg-black, bg-green',
                 sprintf(
-                    'OK (%d backup%s, %d check%s, %d sync%s, %d cleanup%s)',
+                    'OK (%d %s, %d %s, %d %s, %d %s)',
                     count($result->getBackups()),
-                    (count($result->getBackups()) == 1) ? '' : 's',
+                    String::appendPluralS('backup', count($result->getBackups())),
                     $this->numChecks,
-                    ($this->numChecks == 1) ? '' : 's',
+                    String::appendPluralS('check', $this->numChecks),
                     $this->numSyncs,
-                    ($this->numSyncs == 1) ? '' : 's',
+                    String::appendPluralS('sync', $this->numSyncs),
                     $this->numCleanups,
-                    ($this->numCleanups == 1) ? '' : 's'
+                    String::appendPluralS('cleanup', $this->numCleanups)
                 )
             );
         } elseif ($result->backupOkButSkipsOrFails()) {
