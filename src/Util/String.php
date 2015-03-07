@@ -20,8 +20,8 @@ class String
      * Date placeholder replacement.
      * Replaces %{somevalue} with date({somevalue}).
      *
-     * @param  string $string
-     * @param  null   $time
+     * @param  string               $string
+     * @param  mixed <integer|null> $time
      * @return string
      */
     public static function replaceDatePlaceholders($string, $time = null)
