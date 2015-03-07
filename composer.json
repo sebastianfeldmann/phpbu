@@ -17,7 +17,7 @@
     "support": {
         "issues": "https://github.com/sebastianfeldmann/phpbu/issues"
     },
-
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "phpbu\\App\\": "src/"
