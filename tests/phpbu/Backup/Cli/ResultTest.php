@@ -65,7 +65,7 @@ class ResultTest extends \PHPUnit_Framework_TestCase
     public function testGetOutputAsString()
     {
         $result = new Result('echo 1', 0, array('foo', 'bar'));
-        $this->assertEquals('foo' . PHP_EOL . 'bar', $result->getOutput(true), 'outputAsString getter should work properly');
+        $this->assertEquals('foo' . PHP_EOL . 'bar', $result->getOutputAsString(), 'outputAsString getter should work properly');
     }
 
     /**

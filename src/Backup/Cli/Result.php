@@ -49,7 +49,7 @@ class Result
      * @param integer $code
      * @param array   $output
      */
-    public function __construct($cmd, $code, array $output)
+    public function __construct($cmd, $code, array $output = array())
     {
         $this->cmd    = $cmd;
         $this->code   = $code;
@@ -87,14 +87,10 @@ class Result
     /**
      * Output getter.
      *
-     * @param  boolean $asString
-     * @return mixed <array|string>
+     * @return mixed array
      */
-    public function getOutput($asString = false)
+    public function getOutput()
     {
-        if ($asString) {
-            return $this->getOutputAsString();
-        }
         return $this->buffer;
     }
 
