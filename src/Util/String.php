@@ -193,6 +193,6 @@ class String
      */
     public static function appendPluralS($subject, $amount)
     {
-        return $subject . ($amount == 1 ? '' : (substr($subject, -1) == 's' ? '\'s' : 's' ));
+        return $subject . ($amount == 1 ? '' : (substr($subject, -1) == 's' ? '\'s' : 's'));
     }
 }
