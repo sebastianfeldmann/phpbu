@@ -45,9 +45,9 @@ class Result
     /**
      * Constructor
      *
-     * @param string  $cmd
-     * @param integer $code
-     * @param array   $output
+     * @param string             $cmd
+     * @param integer            $code
+     * @param mixed <array|null> $output
      */
     public function __construct($cmd, $code, array $output = array())
     {
