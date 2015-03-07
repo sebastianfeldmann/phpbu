@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup;
+namespace phpbu\App\Backup;
 
 /**
  * Target test
@@ -297,11 +297,11 @@ class TargetTest extends \PHPUnit_Framework_TestCase
      * @param  string $cmd
      * @param  string $suffix
      * @param  string $mimeType
-     * @return \phpbu\Backup\Compressor
+     * @return \phpbu\App\Backup\Compressor
      */
     protected function getCompressorMockForCmd($cmd, $suffix, $mimeType)
     {
-        $compressorStub = $this->getMockBuilder('\\phpbu\\Backup\\Compressor')
+        $compressorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Compressor')
                                ->disableOriginalConstructor()
                                ->getMock();
         $compressorStub->method('getCommand')->willReturn($cmd);

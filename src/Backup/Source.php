@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup;
+namespace phpbu\App\Backup;
 
 use phpbu\App\Result;
 
@@ -26,8 +26,8 @@ interface Source
     /**
      * Runner the backup
      *
-     * @param  \phpbu\Backup\Target $target
-     * @param  \phpbu\App\Result    $result
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Result        $result
      */
     public function backup(Target $target, Result $result);
 }

@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup;
+namespace phpbu\App\Backup;
 
 use phpbu\App\Result;
 
@@ -27,8 +27,8 @@ interface Sync
      * Execute the Sync
      * Copy your backup to another location
      *
-     * @param \phpbu\Backup\Target $target
-     * @param \phpbu\App\Result    $result
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
      */
     public function sync(Target $target, Result $result);
 }

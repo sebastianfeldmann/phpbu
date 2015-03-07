@@ -3,8 +3,8 @@ namespace phpbu\App;
 
 use DOMElement;
 use DOMXPath;
-use phpbu\Util\Cli;
-use phpbu\Util\String;
+use phpbu\App\Util\Cli;
+use phpbu\App\Util\String;
 
 /**
  *
@@ -174,7 +174,7 @@ class Configuration
         $stopOnError = String::toBoolean((string) $backupNode->getAttribute('stopOnError'), false);
         $backupName  = $backupNode->getAttribute('name');
 
-        $source  = $this->getSource($backupNode);        
+        $source  = $this->getSource($backupNode);
         $target  = $this->getTarget($backupNode);
         $checks  = $this->getChecks($backupNode);
         $syncs   = $this->getSyncs($backupNode);
@@ -193,7 +193,7 @@ class Configuration
 
     /**
      * Get source configuration.
-     * 
+     *
      * @param  \DOMElement $node
      * @return array
      * @throws \phpbu\App\Exception
@@ -213,13 +213,13 @@ class Configuration
         }
         $source['type']    = $type;
         $source['options'] = $this->getOptions($sourceNode);
-        
+
         return $source;
     }
 
     /**
      * Get Target configuration.
-     * 
+     *
      * @param  \DOMElement $node
      * @return array
      * @throws \phpbu\App\Exception
@@ -235,7 +235,7 @@ class Configuration
         $compress   = (string) $targetNode->getAttribute('compress');
         $filename   = (string) $targetNode->getAttribute('filename');
         $dirname    = (string) $targetNode->getAttribute('dirname');
-        
+
         if ($dirname) {
             $dirname = $this->toAbsolutePath($dirname);
         }
@@ -249,7 +249,7 @@ class Configuration
 
     /**
      * Get backup checks.
-     * 
+     *
      * @param  \DOMElement $node
      * @return array
      */
@@ -271,7 +271,7 @@ class Configuration
 
     /**
      * Get backup sync configurations.
-     * 
+     *
      * @param  \DOMElement $node
      * @return array
      */
@@ -294,7 +294,7 @@ class Configuration
 
     /**
      * Get the cleanup configuration.
-     * 
+     *
      * @param  \DOMElement $node
      * @return array
      */

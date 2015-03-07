@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Source;
+namespace phpbu\App\Backup\Source;
 
 /**
  * CliTest
@@ -32,7 +32,7 @@ class CliTest extends \PHPUnit_Framework_TestCase
 
         $cliTester = new CliStub();
 
-        /** @var \phpbu\Backup\Cli\Result $res */
+        /** @var \phpbu\App\Backup\Cli\Result $res */
         $res = $cliTester->testExecute($exec, $target, false);
 
         $this->assertEquals(0, $res->getCode());
@@ -57,7 +57,7 @@ class CliTest extends \PHPUnit_Framework_TestCase
 
         $cliTester = new CliStub();
 
-        /** @var \phpbu\Backup\Cli\Result $res */
+        /** @var \phpbu\App\Backup\Cli\Result $res */
         $res = $cliTester->testExecute($exec, $target, false);
 
         $this->assertEquals(1, $res->getCode());
@@ -83,7 +83,7 @@ class CliTest extends \PHPUnit_Framework_TestCase
 
         $cliTester = new CliStub();
 
-        /** @var \phpbu\Backup\Cli\Result $res */
+        /** @var \phpbu\App\Backup\Cli\Result $res */
         $res = $cliTester->testExecute($exec, $target, true);
 
         $this->assertEquals(0, $res->getCode());
@@ -109,7 +109,7 @@ class CliTest extends \PHPUnit_Framework_TestCase
 
         $cliTester = new CliStub();
 
-        /** @var \phpbu\Backup\Cli\Result $res */
+        /** @var \phpbu\App\Backup\Cli\Result $res */
         $res = $cliTester->testExecute($exec, $target, true);
 
         $this->assertEquals(1, $res->getCode());
@@ -120,11 +120,11 @@ class CliTest extends \PHPUnit_Framework_TestCase
     /**
      * Create Target Mock.
      *
-     * @return \phpbu\Backup\Target
+     * @return \phpbu\App\Backup\Target
      */
     protected function getTargetMock()
     {
-        $targetStub = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                            ->disableOriginalConstructor()
                            ->getMock();
         $targetStub->method('getSize')->willReturn(1000);
@@ -138,14 +138,14 @@ class CliTest extends \PHPUnit_Framework_TestCase
      * @param  integer $code
      * @param  string  $cmd
      * @param  array   $output
-     * @return \phpbu\Backup\Compressor
+     * @return \phpbu\App\Backup\Compressor
      */
     protected function getCompressorMockForCmd($code, $cmd, array $output = array())
     {
         $exec   = $this->getExecMock();
         $exec->method('execute')->willReturn($this->getResultMock($code, $cmd, $output));
 
-        $compressorStub = $this->getMockBuilder('\\phpbu\\Backup\\Compressor')
+        $compressorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Compressor')
                                ->disableOriginalConstructor()
                                ->getMock();
         $compressorStub->method('getCommand')->willReturn($cmd);
@@ -158,11 +158,11 @@ class CliTest extends \PHPUnit_Framework_TestCase
     /**
      * Create Target Mock.
      *
-     * @return \phpbu\Backup\Cli\Exec
+     * @return \phpbu\App\Backup\Cli\Exec
      */
     protected function getExecMock()
     {
-        $execStub = $this->getMockBuilder('\\phpbu\\Backup\\Cli\\Exec')
+        $execStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cli\\Exec')
                          ->disableOriginalConstructor()
                          ->getMock();
 
@@ -175,11 +175,11 @@ class CliTest extends \PHPUnit_Framework_TestCase
      * @param  integer $code
      * @param  string  $cmd
      * @param  array   $output
-     * @return \phpbu\Backup\Cli\Result
+     * @return \phpbu\App\Backup\Cli\Result
      */
     protected function getResultMock($code, $cmd, $output = array())
     {
-        $resultStub = $this->getMockBuilder('\\phpbu\\Backup\\Cli\\Result')
+        $resultStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cli\\Result')
                            ->disableOriginalConstructor()
                            ->getMock();
 

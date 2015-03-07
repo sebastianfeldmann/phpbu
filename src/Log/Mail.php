@@ -1,11 +1,11 @@
 <?php
-namespace phpbu\Log;
+namespace phpbu\App\Log;
 
 use phpbu\App\Exception;
 use phpbu\App\Listener;
 use phpbu\App\Result;
-use phpbu\Util\Arr;
-use phpbu\Util\String;
+use phpbu\App\Util\Arr;
+use phpbu\App\Util\String;
 use PHP_Timer;
 use Swift_Mailer;
 use Swift_Message;

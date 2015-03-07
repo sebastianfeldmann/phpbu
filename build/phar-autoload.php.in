@@ -39,9 +39,9 @@ if ($execute) {
         exit;
     }
 
-    require __PHPBU_PHAR_ROOT__ . '/swiftmailer/swift_init.php';
+    require __PHPBU_PHAR_ROOT__ . '/lib/swiftmailer/swift_init.php';
 
-    phpbu\App::main();
+    phpbu\App\Cmd::main();
 }
 
 __HALT_COMPILER();

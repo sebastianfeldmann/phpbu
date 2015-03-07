@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\App;
+namespace phpbu\App\Cmd;
 
 /**
  * Args parser test
@@ -129,7 +129,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException phpbu\App\Exception
+     * @expectedException \phpbu\App\Exception
      */
     public function testGetOptionsLongMissingArgument()
     {
@@ -139,7 +139,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException phpbu\App\Exception
+     * @expectedException \phpbu\App\Exception
      */
     public function testGetOptionsLongUnneccesaryArgument()
     {
@@ -149,7 +149,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException phpbu\App\Exception
+     * @expectedException \phpbu\App\Exception
      */
     public function testGetOptionsLongInvalidArgument()
     {
@@ -159,7 +159,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException phpbu\App\Exception
+     * @expectedException \phpbu\App\Exception
      */
     public function testGetOptionsLongUnknownOption()
     {

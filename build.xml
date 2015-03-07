@@ -105,29 +105,23 @@
 
   <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
 
-  <copy file="${basedir}/vendor/barracuda/copy/LICENSE" tofile="${basedir}/build/phar/copy/LICENSE"/>
-  <copy todir="${basedir}/build/phar/copy">
+  <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE.md" tofile="${basedir}/build/phar/lib/aws-sdk/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/aws-sdk">
+    <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src/Aws">
+      <include name="**/*.php" />
+    </fileset>
+  </copy>
+
+  <copy file="${basedir}/vendor/barracuda/copy/LICENSE" tofile="${basedir}/build/phar/lib/copy/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/copy">
     <fileset dir="${basedir}/vendor/barracuda/copy/src">
       <include name="**/*.php" />
       <include name="**/*.crt" />
     </fileset>
   </copy>
 
-  <copy todir="${basedir}/build/phar/eher">
-    <fileset dir="${basedir}/vendor/eher/oauth/src">
-      <include name="**/*.php" />
-    </fileset>
-  </copy>
-
-  <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE.md" tofile="${basedir}/build/phar/aws-sdk/LICENSE"/>
-  <copy todir="${basedir}/build/phar/aws-sdk">
-    <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src/Aws">
-      <include name="**/*.php" />
-    </fileset>
-  </copy>
-
-  <copy file="${basedir}/vendor/dropbox/dropbox-sdk/License.txt" tofile="${basedir}/build/phar/dropbox/LICENSE"/>
-  <copy todir="${basedir}/build/phar/dropbox">
+  <copy file="${basedir}/vendor/dropbox/dropbox-sdk/License.txt" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/dropbox">
     <fileset dir="${basedir}/vendor/dropbox/dropbox-sdk/lib/Dropbox">
       <include name="**/*.php" />
       <include name="**/*.crt" />
@@ -136,16 +130,22 @@
     </fileset>
   </copy>
 
-  <copy file="${basedir}/vendor/guzzle/guzzle/LICENSE" tofile="${basedir}/build/phar/guzzle/LICENSE"/>
-  <copy todir="${basedir}/build/phar/guzzle">
+  <copy todir="${basedir}/build/phar/lib/eher">
+    <fileset dir="${basedir}/vendor/eher/oauth/src">
+      <include name="**/*.php" />
+    </fileset>
+  </copy>
+
+  <copy file="${basedir}/vendor/guzzle/guzzle/LICENSE" tofile="${basedir}/build/phar/lib/guzzle/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/guzzle">
     <fileset dir="${basedir}/vendor/guzzle/guzzle/src">
       <include name="**/*.php" />
       <include name="**/*.pem" />
     </fileset>
   </copy>
 
-  <copy file="${basedir}/vendor/phpseclib/phpseclib/LICENSE" tofile="${basedir}/build/phar/phpseclib/LICENSE"/>
-  <copy todir="${basedir}/build/phar/phpseclib">
+  <copy file="${basedir}/vendor/phpseclib/phpseclib/LICENSE" tofile="${basedir}/build/phar/lib/phpseclib/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/phpseclib">
    <fileset dir="${basedir}/vendor/phpseclib/phpseclib/phpseclib">
     <include name="**/*.php" />
     <include name="**/*.cnf" />
@@ -153,39 +153,39 @@
    </fileset>
   </copy>
 
-  <copy file="${basedir}/vendor/phpunit/php-timer/LICENSE" tofile="${basedir}/build/phar/php-timer/LICENSE"/>
-  <copy todir="${basedir}/build/phar/php-timer">
+  <copy file="${basedir}/vendor/phpunit/php-timer/LICENSE" tofile="${basedir}/build/phar/lib/php-timer/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/php-timer">
    <fileset dir="${basedir}/vendor/phpunit/php-timer/PHP">
     <include name="**/*.php" />
     <exclude name="**/Autoload.*" />
    </fileset>
   </copy>
 
-  <copy file="${basedir}/vendor/sebastian/environment/LICENSE" tofile="${basedir}/build/phar/sebastian-environment/LICENSE"/>
-  <copy todir="${basedir}/build/phar/sebastian-environment">
+  <copy file="${basedir}/vendor/sebastian/environment/LICENSE" tofile="${basedir}/build/phar/lib/sebastian-environment/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/sebastian-environment">
    <fileset dir="${basedir}/vendor/sebastian/environment/src">
     <include name="**/*.php" />
    </fileset>
   </copy>
 
-  <copy file="${basedir}/vendor/sebastian/version/LICENSE" tofile="${basedir}/build/phar/sebastian-version/LICENSE"/>
-  <copy todir="${basedir}/build/phar/sebastian-version">
+  <copy file="${basedir}/vendor/sebastian/version/LICENSE" tofile="${basedir}/build/phar/lib/sebastian-version/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/sebastian-version">
    <fileset dir="${basedir}/vendor/sebastian/version/src">
     <include name="**/*.php" />
     <exclude name="**/autoload.php" />
    </fileset>
   </copy>
 
-  <copy file="${basedir}/vendor/swiftmailer/swiftmailer/LICENSE" tofile="${basedir}/build/phar/swiftmailer/LICENSE"/>
-  <copy todir="${basedir}/build/phar/swiftmailer">
+  <copy file="${basedir}/vendor/swiftmailer/swiftmailer/LICENSE" tofile="${basedir}/build/phar/lib/swiftmailer/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/swiftmailer">
    <fileset dir="${basedir}/vendor/swiftmailer/swiftmailer/lib">
     <include name="**/*.php" />
     <exclude name="**/swift_required_pear.php" />
    </fileset>
   </copy>
 
-  <copy file="${basedir}/vendor/symfony/event-dispatcher/Symfony/Component/EventDispatcher/LICENSE" tofile="${basedir}/build/phar/symfony/event-dispatcher/LICENSE"/>
-  <copy todir="${basedir}/build/phar/symfony/event-dispatcher">
+  <copy file="${basedir}/vendor/symfony/event-dispatcher/Symfony/Component/EventDispatcher/LICENSE" tofile="${basedir}/build/phar/lib/symfony/event-dispatcher/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/symfony/event-dispatcher">
     <fileset dir="${basedir}/vendor/symfony/event-dispatcher/Symfony/Component/EventDispatcher">
       <include name="**/*.php" />
       <exclude name="**/Test*" />

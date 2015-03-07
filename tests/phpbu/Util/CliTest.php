@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Util;
+namespace phpbu\App\Util;
 
 /**
  * Cli utility test

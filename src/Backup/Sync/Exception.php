@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Sync;
+namespace phpbu\App\Backup\Sync;
 
 use phpbu\App;
 

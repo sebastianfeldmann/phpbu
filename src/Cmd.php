@@ -40,14 +40,11 @@
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-namespace phpbu;
+namespace phpbu\App;
 
 use Phar;
-use phpbu\App\Configuration;
-use phpbu\App\Exception;
-use phpbu\App\Runner;
-use phpbu\App\Version;
-use phpbu\Util\Arr;
+use phpbu\App\Cmd\Args;
+use phpbu\App\Util\Arr;
 
 /**
  * Main application class.
@@ -59,7 +56,7 @@ use phpbu\Util\Arr;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class App
+class Cmd
 {
     const EXIT_SUCCESS   = 0;
     const EXIT_FAILURE   = 1;
@@ -128,7 +125,7 @@ class App
     protected function handleOpt(array $args)
     {
         try {
-            $parser  = new App\Args();
+            $parser  = new Args();
             $options = $parser->getOptions($args);
             $this->handleArgs($options);
         } catch (Exception $e) {

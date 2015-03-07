@@ -16,7 +16,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Tests Configuration::loadXmlFile
-     * 
+     *
      * @expectedException \phpbu\App\Exception
      */
     public function testFileNotFound()
@@ -32,9 +32,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNoXml()
     {
-        $dir  = realpath(__DIR__ . '/../../_files/conf');
-        $file = 'config-no-target.xml';
-        $conf = new Configuration('some.xml');
+        $json = realpath(__DIR__ . '/../_files/conf/config-no-xml.json');
+        $conf = new Configuration($json);
         $this->assertFalse(true, 'exception should be thrown');
     }
 
@@ -45,7 +44,9 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupNoTarget()
     {
-        $conf = new Configuration('some.xml');
+        $xml  = realpath(__DIR__ . '/../_files/conf/config-no-target.xml');
+        $conf = new Configuration($xml);
+        $conf->getBackupSettings();
         $this->assertFalse(true, 'exception should be thrown');
     }
 
@@ -56,21 +57,36 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupNoSource()
     {
-        $conf = new Configuration('some.xml');
+        $xml  = realpath(__DIR__ . '/../_files/conf/config-no-source.xml');
+        $conf = new Configuration($xml);
+        $conf->getBackupSettings();
         $this->assertFalse(true, 'exception should be thrown');
     }
-    
+
+    /**
+     * Tests Configuration::loadXmlFile
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testFileNoSourceType()
+    {
+        $xml  = realpath(__DIR__ . '/../_files/conf/config-no-source-type.xml');
+        $conf = new Configuration($xml);
+        $conf->getBackupSettings();
+        $this->assertFalse(true, 'exception should be thrown');
+    }
+
     /**
      * Tests Configuration::getAppSettings
      */
     public function testAppSettings()
     {
-        $dir  = realpath(__DIR__ . '/../../_files/conf');
+        $dir  = realpath(__DIR__ . '/../_files/conf');
         $file = 'config-valid.xml';
         $conf = new Configuration($dir . '/' . $file);
 
         $settings = $conf->getAppSettings();
-        
+
         $this->assertEquals($dir . '/backup/bootstrap.php', $settings['bootstrap']);
         $this->assertEquals(true, $settings['colors']);
         $this->assertEquals(false, $settings['verbose']);
@@ -81,7 +97,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testPhpSettings()
     {
-        $dir  = realpath(__DIR__ . '/../../_files/conf');
+        $dir  = realpath(__DIR__ . '/../_files/conf');
         $file = 'config-valid.xml';
         $conf = new Configuration($dir . '/' . $file);
 
@@ -97,7 +113,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupSettings()
     {
-        $dir  = realpath(__DIR__ . '/../../_files/conf');
+        $dir  = realpath(__DIR__ . '/../_files/conf');
         $file = 'config-valid.xml';
         $conf = new Configuration($dir . '/' . $file);
 
@@ -120,17 +136,48 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Configuration::getAppSettings
      */
+    public function testBackupSettingsInvalidChecks()
+    {
+        $xml  = realpath(__DIR__ . '/../_files/conf/config-invalid-checks.xml');
+        $conf = new Configuration($xml);
+
+        $settings = $conf->getBackupSettings();
+
+        $this->assertTrue(is_array($settings));
+        $this->assertEquals(1, count($settings), 'should be exactly one backup');
+        $this->assertTrue(is_array($settings[0]['checks']));
+        $this->assertEquals(0, count($settings[0]['checks']));
+
+    }
+
+    /**
+     * Tests Configuration::getAppSettings
+     */
     public function testLoggingSettings()
     {
-        $dir  = realpath(__DIR__ . '/../../_files/conf');
+        $dir  = realpath(__DIR__ . '/../_files/conf');
         $file = 'config-valid.xml';
         $conf = new Configuration($dir . '/' . $file);
 
         $settings = $conf->getLoggingSettings();
-        
+
         $this->assertTrue(is_array($settings));
-        $this->assertEquals(2, count($settings), 'should be exactly one logger');
+        $this->assertEquals(2, count($settings), 'should be exactly two logger');
         $this->assertEquals('json', $settings[0]['type']);
         $this->assertEquals($dir . '/backup/json.log', $settings[0]['options']['target']);
+    }
+
+    /**
+     * Tests Configuration::getAppSettings
+     */
+    public function testAppLoggingSettingsWithOption()
+    {
+        $xml = realpath(__DIR__ . '/../_files/conf/config-logging.xml');
+        $conf = new Configuration($xml);
+
+        $settings = $conf->getLoggingSettings();
+
+        $this->assertTrue(is_array($settings));
+        $this->assertEquals(1, count($settings), 'should be exactly one logger');
     }
 }

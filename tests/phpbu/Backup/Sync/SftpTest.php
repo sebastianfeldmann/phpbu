@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Sync;
+namespace phpbu\App\Backup\Sync;
 
 /**
  * SftpTest
@@ -33,7 +33,7 @@ class SftpTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Sftp::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoHost()
     {
@@ -47,7 +47,7 @@ class SftpTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Sftp::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoUser()
     {
@@ -61,7 +61,7 @@ class SftpTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Sftp::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoPassword()
     {
@@ -76,7 +76,7 @@ class SftpTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Sftp::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpPathWithRootSlash()
     {

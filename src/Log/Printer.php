@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Log;
+namespace phpbu\App\Log;
 
 use InvalidArgumentException;
 

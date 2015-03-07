@@ -1,6 +1,6 @@
 <?php
-namespace phpbu\Backup\Source;
-use phpbu\Backup\Compressor;
+namespace phpbu\App\Backup\Source;
+use phpbu\App\Backup\Compressor;
 
 /**
  * TarTest
@@ -18,7 +18,7 @@ class TarTest extends \PHPUnit_Framework_TestCase
     /**
      * Mysqldump
      *
-     * @var \phpbu\Backup\Source\Tar
+     * @var \phpbu\App\Backup\Source\Tar
      */
     protected $tar;
 
@@ -61,7 +61,7 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $target->method('getPathname')->willReturn('/tmp/backup.tar');
 
         $this->tar->setup(array('path' => 'src'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->tar->getExec($target);
         $cmd  = (string) $exec->getExec();
 
@@ -78,7 +78,7 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $target->method('getPathname')->willReturn('/tmp/backup.tar');
 
         $this->tar->setup(array('path' => 'src', 'showStdErr' => 'true'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->tar->getExec($target);
         $cmd  = (string) $exec->getExec();
 
@@ -98,7 +98,7 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $target->method('getCompressor')->willReturn($compressor);
 
         $this->tar->setup(array('path' => 'src'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->tar->getExec($target);
         $cmd  = (string) $exec->getExec();
 
@@ -118,7 +118,7 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $target->method('getCompressor')->willReturn($compressor);
 
         $this->tar->setup(array('path' => 'src'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->tar->getExec($target);
         $cmd  = (string) $exec->getExec();
 
@@ -128,11 +128,11 @@ class TarTest extends \PHPUnit_Framework_TestCase
     /**
      * Create Target Mock.
      *
-     * @return \phpbu\Backup\Target
+     * @return \phpbu\App\Backup\Target
      */
     protected function getTargetMock()
     {
-        $targetStub = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
             ->disableOriginalConstructor()
             ->getMock();
 

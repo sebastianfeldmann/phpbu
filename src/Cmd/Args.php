@@ -1,11 +1,13 @@
 <?php
-namespace phpbu\App;
+namespace phpbu\App\Cmd;
+
+use phpbu\App\Exception;
 
 /**
  * Cli argument parser.
  *
  * @package    phpbu
- * @subpackage App
+ * @subpackage Cmd
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License

@@ -1,8 +1,8 @@
 <?php
-namespace phpbu\Backup;
+namespace phpbu\App\Backup;
 
 use phpbu\App\Exception;
-use phpbu\Util\String;
+use phpbu\App\Util\String;
 
 /**
  * Backup Target class.
@@ -104,7 +104,7 @@ class Target
     /**
      * File compression.
      *
-     * @var \phpbu\Backup\Compressor
+     * @var \phpbu\App\Backup\Compressor
      */
     private $compressor;
 
@@ -448,7 +448,7 @@ class Target
     /**
      * Compressor setter.
      *
-     * @param \phpbu\Backup\Compressor $compressor
+     * @param \phpbu\App\Backup\Compressor $compressor
      */
     public function setCompressor(Compressor $compressor)
     {
@@ -459,7 +459,7 @@ class Target
     /**
      * Compressor getter.
      *
-     * @return \phpbu\Backup\Compressor
+     * @return \phpbu\App\Backup\Compressor
      */
     public function getCompressor()
     {

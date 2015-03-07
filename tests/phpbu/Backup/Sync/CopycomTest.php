@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Sync;
+namespace phpbu\App\Backup\Sync;
 
 /**
  * CopycomTest
@@ -34,7 +34,7 @@ class CopycomTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Copycom::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoAppKey()
     {
@@ -50,7 +50,7 @@ class CopycomTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Copycom::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoApSecret()
     {
@@ -66,7 +66,7 @@ class CopycomTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Copycom::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpUserKey()
     {
@@ -82,7 +82,7 @@ class CopycomTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Copycom::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoUserSecret()
     {
@@ -98,7 +98,7 @@ class CopycomTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Copycom::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoPath()
     {

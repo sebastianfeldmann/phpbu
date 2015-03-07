@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Sync;
+namespace phpbu\App\Backup\Sync;
 
 /**
  * SoftLayerTest
@@ -34,7 +34,7 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests SoftLayer::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoUsername()
     {
@@ -50,7 +50,7 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests SoftLayer::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoSecret()
     {
@@ -66,9 +66,9 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests SoftLayer::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
-    public function testSetUpNocontainer()
+    public function testSetUpNoContainer()
     {
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup(array(
@@ -82,7 +82,7 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests SoftLayer::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoHost()
     {
@@ -98,7 +98,7 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests SoftLayer::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoPath()
     {

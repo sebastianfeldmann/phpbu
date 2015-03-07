@@ -54,4 +54,4 @@ if (!defined('PHPBU_COMPOSER_AUTOLOAD')) {
 
 require PHPBU_COMPOSER_AUTOLOAD;
 
-phpbu\App::main();
+phpbu\App\Cmd::main();

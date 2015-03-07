@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup;
+namespace phpbu\App\Backup;
 
 /**
  * File test
@@ -132,12 +132,22 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(true, 'exception should be thrown');
     }
 
+    /**
+     * Return dummy FileInfo
+     *
+     * @return \SplFileInfo
+     */
     protected function getFileInfo()
     {
         $spl  = new \SplFileInfo(__FILE__);
         return $spl;
     }
 
+    /**
+     * Create tmp file und return its FileInfo.
+     *
+     * @return \SplFileInfo
+     */
     protected function getDeletableFileInfo()
     {
         $file = tempnam('.', '');

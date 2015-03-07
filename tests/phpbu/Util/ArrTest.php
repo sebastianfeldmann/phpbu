@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Util;
+namespace phpbu\App\Util;
 
 /**
  * Array utility test
@@ -32,7 +32,7 @@ class ArrTest extends \PHPUnit_Framework_TestCase
     public function testGetValue()
     {
         $arr = array('foo' => 'bar', 'baz' => '', 'fiz' => 0);
-        
+
         $this->assertEquals('bar', Arr::getValue($arr, 'foo'), 'foo should be bar');
         $this->assertEquals(null, Arr::getValue($arr, 'buz'), 'buz should be null');
         $this->assertEquals(0, Arr::getValue($arr, 'fiz'), 'fiz should be 0');

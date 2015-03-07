@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Sync;
+namespace phpbu\App\Backup\Sync;
 
 /**
  * AmazonS3Test
@@ -34,7 +34,7 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
     /**
      * Tests AmazonS3::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoKey()
     {
@@ -50,7 +50,7 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
     /**
      * Tests AmazonS3::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoSecret()
     {
@@ -66,7 +66,7 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
     /**
      * Tests AmazonS3::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoBucket()
     {
@@ -82,7 +82,7 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
     /**
      * Tests AmazonS3::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoRegion()
     {
@@ -98,7 +98,7 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
     /**
      * Tests AmazonS3::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoPath()
     {

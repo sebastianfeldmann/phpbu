@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Cli;
+namespace phpbu\App\Backup\Cli;
 
 /**
  * ExecTest

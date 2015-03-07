@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup;
+namespace phpbu\App\Backup;
 
 /**
  * Collector test
@@ -106,13 +106,13 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
      *
      * @param  string $cmd
      * @param  string $suffix
-     * @return \phpbu\Backup\Compressor
+     * @return \phpbu\App\Backup\Compressor
      */
     protected function getCompressorMockForCmd($cmd, $suffix)
     {
-        $compressorStub = $this->getMockBuilder('\\phpbu\\Backup\\Compressor')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $compressorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Compressor')
+                               ->disableOriginalConstructor()
+                               ->getMock();
         $compressorStub->method('getCommand')->willReturn($cmd);
         $compressorStub->method('getSuffix')->willReturn($suffix);
 

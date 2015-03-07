@@ -1,11 +1,11 @@
 <?php
-namespace phpbu\Backup\Check;
+namespace phpbu\App\Backup\Check;
 
 use phpbu\App\Result;
-use phpbu\Backup\Check;
-use phpbu\Backup\Collector;
-use phpbu\Backup\Target;
-use phpbu\Util\String;
+use phpbu\App\Backup\Check;
+use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Target;
+use phpbu\App\Util\String;
 
 /**
  * SizeMin
@@ -23,11 +23,11 @@ use phpbu\Util\String;
 class SizeMin implements Check
 {
     /**
-     * @see    \phpbu\Backup\Check::pass()
-     * @param  \phpbu\Backup\Target    $target
-     * @param  string                  $value
-     * @param  \phpbu\Backup\Collector $collector
-     * @param  \phpbu\App\Result       $result
+     * @see    \phpbu\App\Backup\Check::pass()
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  string                      $value
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @param  \phpbu\App\Result           $result
      * @return boolean
      * @throws \phpbu\App\Exception
      */

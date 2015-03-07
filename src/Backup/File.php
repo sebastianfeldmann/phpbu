@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup;
+namespace phpbu\App\Backup;
 
 use SplFileInfo;
 use phpbu\App\Exception;

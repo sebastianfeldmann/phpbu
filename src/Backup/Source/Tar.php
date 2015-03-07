@@ -1,13 +1,13 @@
 <?php
-namespace phpbu\Backup\Source;
+namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Exception;
 use phpbu\App\Result;
-use phpbu\Backup\Cli\Cmd;
-use phpbu\Backup\Cli\Exec;
-use phpbu\Backup\Source;
-use phpbu\Backup\Target;
-use phpbu\Util;
+use phpbu\App\Backup\Cli\Cmd;
+use phpbu\App\Backup\Cli\Exec;
+use phpbu\App\Backup\Source;
+use phpbu\App\Backup\Target;
+use phpbu\App\Util;
 
 class Tar extends Cli implements Source
 {
@@ -38,7 +38,7 @@ class Tar extends Cli implements Source
     /**
      * Setup.
      *
-     * @see    \phpbu\Backup\Source
+     * @see    \phpbu\App\Backup\Source
      * @param  array $conf
      * @throws \phpbu\App\Exception
      */
@@ -69,9 +69,9 @@ class Tar extends Cli implements Source
     /**
      * (non-PHPDoc)
      *
-     * @see    \phpbu\Backup\Source
-     * @param  \phpbu\Backup\Target $target
-     * @param  \phpbu\App\Result    $result
+     * @see    \phpbu\App\Backup\Source
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Result        $result
      * @return \phpbu\App\Result
      * @throws \phpbu\App\Exception
      */
@@ -101,8 +101,8 @@ class Tar extends Cli implements Source
     /**
      * Create the Exec to run the 'tar' command
      *
-     * @param  \phpbu\Backup\Target $target
-     * @return \phpbu\Backup\Cli\Exec
+     * @param  \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Backup\Cli\Exec
      */
     public function getExec(Target $target)
     {

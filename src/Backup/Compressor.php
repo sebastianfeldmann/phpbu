@@ -1,9 +1,9 @@
 <?php
-namespace phpbu\Backup;
+namespace phpbu\App\Backup;
 
 use phpbu\App\Exception;
-use phpbu\Backup\Cli\Cmd;
-use phpbu\Backup\Cli\Exec;
+use phpbu\App\Backup\Cli\Cmd;
+use phpbu\App\Backup\Cli\Exec;
 
 /**
  * Compressor
@@ -96,7 +96,7 @@ class Compressor
      *
      * @param  string $fileToCompress
      * @param  array  $options
-     * @return \phpbu\Backup\CLi\Exec
+     * @return \phpbu\App\Backup\CLi\Exec
      */
     public function getExec($fileToCompress, array $options = array())
     {
@@ -136,8 +136,8 @@ class Compressor
      * Factory method.
      *
      * @param  string $name
+     * @return \phpbu\App\Backup\Compressor
      * @throws \phpbu\App\Exception
-     * @return \phpbu\Backup\Compressor
      */
     public static function create($name)
     {

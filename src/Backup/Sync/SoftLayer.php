@@ -1,11 +1,11 @@
 <?php
-namespace phpbu\Backup\Sync;
+namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Result;
-use phpbu\Backup\Sync;
-use phpbu\Backup\Target;
-use phpbu\Util\Arr;
-use phpbu\Util\String;
+use phpbu\App\Backup\Sync;
+use phpbu\App\Backup\Target;
+use phpbu\App\Util\Arr;
+use phpbu\App\Util\String;
 use ObjectStorage_Http_Client;
 use ObjectStorage;
 
@@ -61,9 +61,9 @@ class SoftLayer implements Sync
     /**
      * (non-PHPDoc)
      *
-     * @see    \phpbu\Backup\Sync::setup()
+     * @see    \phpbu\App\Backup\Sync::setup()
      * @param  array $config
-     * @throws \phpbu\Backup\Sync\Exception
+     * @throws \phpbu\App\Backup\Sync\Exception
      */
     public function setup(array $config)
     {
@@ -95,10 +95,10 @@ class SoftLayer implements Sync
     /**
      * (non-PHPDoc)
      *
-     * @see    \phpbu\Backup\Sync::sync()
-     * @param  \phpbu\backup\Target $target
-     * @param  \phpbu\App\Result    $result
-     * @throws \phpbu\Backup\Sync\Exception
+     * @see    \phpbu\App\Backup\Sync::sync()
+     * @param  \phpbu\App\backup\Target $target
+     * @param  \phpbu\App\Result        $result
+     * @throws \phpbu\App\Backup\Sync\Exception
      */
     public function sync(Target $target, Result $result)
     {

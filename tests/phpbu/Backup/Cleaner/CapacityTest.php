@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Cleaner;
+namespace phpbu\App\Backup\Cleaner;
 
 /**
  * CapacityTest
@@ -17,7 +17,7 @@ class CapacityTest extends TestCase
     /**
      * Tests Quantity::setUp
      *
-     * @expectedException \phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpNoSize()
     {
@@ -28,7 +28,7 @@ class CapacityTest extends TestCase
     /**
      * Tests Quantity::setUp
      *
-     * @expectedException \phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpInvalidValue()
     {
@@ -51,10 +51,10 @@ class CapacityTest extends TestCase
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\Backup\\Collector')
+        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
                               ->disableOriginalConstructor()
                               ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                               ->disableOriginalConstructor()
                               ->getMock();
 
@@ -70,7 +70,7 @@ class CapacityTest extends TestCase
     /**
      * Tests Capacity::cleanup
      *
-     * @expectedException \phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testCleanupFileNotWritable()
     {
@@ -84,10 +84,10 @@ class CapacityTest extends TestCase
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
             ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\Backup\\Collector')
+        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
             ->disableOriginalConstructor()
             ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -116,10 +116,10 @@ class CapacityTest extends TestCase
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\Backup\\Collector')
+        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
                               ->disableOriginalConstructor()
                               ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                               ->disableOriginalConstructor()
                               ->getMock();
 
@@ -148,10 +148,10 @@ class CapacityTest extends TestCase
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\Backup\\Collector')
+        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
                               ->disableOriginalConstructor()
                               ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                               ->disableOriginalConstructor()
                               ->getMock();
 

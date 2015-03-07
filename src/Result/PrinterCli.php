@@ -1,10 +1,11 @@
 <?php
-namespace phpbu\App;
+namespace phpbu\App\Result;
 
 use InvalidArgumentException;
+use phpbu\App\Listener;
+use phpbu\App\Log\Printer;
 use phpbu\App\Result;
-use phpbu\Log\Printer;
-use phpbu\Util\String;
+use phpbu\App\Version;
 use PHP_Timer;
 use SebastianBergmann\Environment\Console;
 
@@ -14,7 +15,7 @@ use SebastianBergmann\Environment\Console;
  * Heavily 'inspired' by Sebastian Bergmann's phpunit PHPUnit_TextUI_ResultPrinter.
  *
  * @package    phpbu
- * @subpackage App
+ * @subpackage Result
  * @author     Sebastian Bergmann <sebastian@phpunit.de>
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
@@ -22,7 +23,7 @@ use SebastianBergmann\Environment\Console;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class ResultPrinter extends Printer implements Listener
+class PrinterCli extends Printer implements Listener
 {
     /**
      * Verbose output
@@ -400,7 +401,7 @@ class ResultPrinter extends Printer implements Listener
      */
     protected function printErrors(Result $result)
     {
-        /* @var $e Exception */
+        /* @var $e \Exception */
         foreach ($result->getErrors() as $e) {
             $this->write(
                 sprintf(
@@ -427,7 +428,7 @@ class ResultPrinter extends Printer implements Listener
                 'fg-black, bg-green',
                 'OK'
             );
-        } elseif (($backup->okButSkipsOrFails())) {
+        } elseif ($backup->okButSkipsOrFails()) {
                 $this->writeWithColor(
                     'fg-black, bg-yellow',
                     'OK, but skipped or failed Syncs or Cleanups!'
@@ -438,36 +439,20 @@ class ResultPrinter extends Printer implements Listener
                 'FAILED'
             );
         }
-
-        $exec = String::padAll(
-            array(
-                'ch' => $backup->checkCount(),
-                'sy' => $backup->syncCount(),
-                'cl' => $backup->cleanupCount(),
-            ),
-            8
-        );
-        $fail = String::padAll(
-            array(
-                'ch' => $backup->checkCountFailed(),
-                'sy' => $backup->syncCountFailed(),
-                'cl' => $backup->cleanupCountFailed(),
-            ),
-            6
-        );
-        $skip = String::padAll(
-            array(
-                'sy' => $backup->syncCountSkipped(),
-                'cl' => $backup->cleanupCountSkipped(),
-            ),
-            7
-        );
+        $chExecuted = str_pad($backup->checkCount(), 8, ' ', STR_PAD_LEFT);
+        $chFailed   = str_pad($backup->checkCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $syExecuted = str_pad($backup->syncCount(), 8, ' ', STR_PAD_LEFT);
+        $sySkipped  = str_pad($backup->syncCountSkipped(), 7, ' ', STR_PAD_LEFT);
+        $syFailed   = str_pad($backup->syncCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $clExecuted = str_pad($backup->cleanupCount(), 8, ' ', STR_PAD_LEFT);
+        $clSkipped  = str_pad($backup->cleanupCountSkipped(), 7, ' ', STR_PAD_LEFT);
+        $clFailed   = str_pad($backup->cleanupCountFailed(), 6, ' ', STR_PAD_LEFT);
 
         $out = '          | executed | skipped | failed |' . PHP_EOL
              . '----------+----------+---------+--------+' . PHP_EOL
-             . ' checks   | ' . $exec['ch'] . ' |         | ' . $fail['ch'] . ' |' . PHP_EOL
-             . ' syncs    | ' . $exec['ch'] . ' | ' . $skip['sy'] . ' | ' . $fail['sy'] . ' |' . PHP_EOL
-             . ' cleanups | ' . $exec['ch'] . ' | ' . $skip['cl'] . ' | ' . $fail['cl'] . ' |' . PHP_EOL
+             . ' checks   | ' . $chExecuted . ' |         | ' . $chFailed . ' |' . PHP_EOL
+             . ' syncs    | ' . $syExecuted . ' | ' . $sySkipped . ' | ' . $syFailed . ' |' . PHP_EOL
+             . ' cleanups | ' . $clExecuted . ' | ' . $clSkipped . ' | ' . $clFailed . ' |' . PHP_EOL
              . '----------+----------+---------+--------+' . PHP_EOL . PHP_EOL;
 
         $this->write($out);
@@ -489,15 +474,15 @@ class ResultPrinter extends Printer implements Listener
             $this->writeWithColor(
                 'fg-black, bg-green',
                 sprintf(
-                    'OK (%d %s, %d %s, %d %s, %d %s)',
+                    'OK (%d backup%s, %d check%s, %d sync%s, %d cleanup%s)',
                     count($result->getBackups()),
-                    String::appendPluralS('backup', count($result->getBackups())),
+                    (count($result->getBackups()) == 1) ? '' : 's',
                     $this->numChecks,
-                    String::appendPluralS('check', $this->numChecks),
+                    ($this->numChecks == 1) ? '' : 's',
                     $this->numSyncs,
-                    String::appendPluralS('sync', $this->numSyncs),
+                    ($this->numSyncs == 1) ? '' : 's',
                     $this->numCleanups,
-                    String::appendPluralS('cleanup', $this->numCleanups)
+                    ($this->numCleanups == 1) ? '' : 's'
                 )
             );
         } elseif ($result->backupOkButSkipsOrFails()) {

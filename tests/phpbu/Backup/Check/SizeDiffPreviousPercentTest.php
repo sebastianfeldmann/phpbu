@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Check;
+namespace phpbu\App\Backup\Check;
 
 /**
  * SizeDiffPreviousPercentTest
@@ -22,10 +22,10 @@ class SizeDiffPreviousPercentTest extends \PHPUnit_Framework_TestCase
         $fileList      = $this->getFileListMock(1000);
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\Backup\\Collector')
+        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
                               ->disableOriginalConstructor()
                               ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                               ->disableOriginalConstructor()
                               ->getMock();
 
@@ -56,7 +56,7 @@ class SizeDiffPreviousPercentTest extends \PHPUnit_Framework_TestCase
     {
         $list = array();
         for ($i = 0; $i < $amount; $i++) {
-            $fileStub = $this->getMockBuilder('\\phpbu\\Backup\\File')
+            $fileStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\File')
                          ->disableOriginalConstructor()
                          ->getMock();
             $fileStub->method('getSize')->willReturn($size);

@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Cleaner;
+namespace phpbu\App\Backup\Cleaner;
 
 use phpbu\App;
 

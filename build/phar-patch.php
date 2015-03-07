@@ -5,7 +5,7 @@ $patches = array();
 
 $replacements = array(
     array(
-        'path'    => __DIR__ . '/phar/aws-sdk/DynamoDb/Session/SessionHandlerInterface.php',
+        'path'    => __DIR__ . '/phar/lib/aws-sdk/DynamoDb/Session/SessionHandlerInterface.php',
         'content' => '<?php
 
 namespace Aws\DynamoDb\Session;

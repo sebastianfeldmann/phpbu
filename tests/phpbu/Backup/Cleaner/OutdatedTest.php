@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Cleaner;
+namespace phpbu\App\Backup\Cleaner;
 
 /**
  * OutdatedTest
@@ -17,7 +17,7 @@ class OutdatedTest extends TestCase
     /**
      * Tests Outdated::setUp
      *
-     * @expectedException \phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpNoOlder()
     {
@@ -28,7 +28,7 @@ class OutdatedTest extends TestCase
     /**
      * Tests Outdated::setUp
      *
-     * @expectedException \phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpInvalidValue()
     {
@@ -39,7 +39,7 @@ class OutdatedTest extends TestCase
     /**
      * Tests Outdated::setUp
      *
-     * @expectedException \phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpAmountToLow()
     {
@@ -50,7 +50,7 @@ class OutdatedTest extends TestCase
     /**
      * Tests Outdated::setUp
      *
-     * @expectedException \phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpOlderToLow()
     {
@@ -89,10 +89,10 @@ class OutdatedTest extends TestCase
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\Backup\\Collector')
+        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
                               ->disableOriginalConstructor()
                               ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                               ->disableOriginalConstructor()
                               ->getMock();
 
@@ -135,10 +135,10 @@ class OutdatedTest extends TestCase
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\Backup\\Collector')
+        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
                               ->disableOriginalConstructor()
                               ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                               ->disableOriginalConstructor()
                               ->getMock();
 
@@ -153,7 +153,7 @@ class OutdatedTest extends TestCase
     /**
      * Tests Outdated::cleanup
      *
-     * @expectedException \phpbu\Backup\Cleaner\Exception
+     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testCleanupNotWritable()
     {
@@ -174,10 +174,10 @@ class OutdatedTest extends TestCase
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\Backup\\Collector')
+        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
                               ->disableOriginalConstructor()
                               ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                               ->disableOriginalConstructor()
                               ->getMock();
 

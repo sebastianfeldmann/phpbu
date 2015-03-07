@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Cli;
+namespace phpbu\App\Backup\Cli;
 
 use phpbu\App\Exception;
 
@@ -27,7 +27,7 @@ class Exec
      * Executes the commands.
      *
      * @param  string $redirect
-     * @return \phpbu\Backup\Cli\Result
+     * @return \phpbu\App\Backup\Cli\Result
      * @throws \phpbu\App\Exception
      */
     public function execute($redirect = null)
@@ -44,7 +44,7 @@ class Exec
 
     /**
      * Generates the system command.
-     * 
+     *
      * @return string
      * @throws \phpbu\App\Exception
      */
@@ -62,7 +62,7 @@ class Exec
     /**
      * Adds a system command to the command list.
      *
-     * @param \phpbu\Backup\Cli\Cmd $cmd
+     * @param \phpbu\App\Backup\Cli\Cmd $cmd
      */
     public function addCommand(Cmd $cmd)
     {

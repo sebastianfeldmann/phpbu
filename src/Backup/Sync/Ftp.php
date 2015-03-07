@@ -1,9 +1,9 @@
 <?php
-namespace phpbu\Backup\Sync;
+namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Result;
-use phpbu\Backup\Sync;
-use phpbu\Backup\Target;
+use phpbu\App\Backup\Sync;
+use phpbu\App\Backup\Target;
 
 class Ftp implements Sync
 {

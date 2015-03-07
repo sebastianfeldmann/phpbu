@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Source;
+namespace phpbu\App\Backup\Source;
 
 /**
  * MysqldumpTest
@@ -17,7 +17,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     /**
      * Mysqldump
      *
-     * @var \phpbu\Backup\Source\Mysqldump
+     * @var \phpbu\App\Backup\Source\Mysqldump
      */
     protected $mysqldump;
 
@@ -44,7 +44,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     public function testDefault()
     {
         $this->mysqldump->setup(array());
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->mysqldump->getExec();
         $cmd  = (string) $exec->getExec();
 
@@ -57,7 +57,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     public function testShowStdErr()
     {
         $this->mysqldump->setup(array('showStdErr' => 'true'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->mysqldump->getExec();
         $cmd  = (string) $exec->getExec();
 
@@ -70,7 +70,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     public function testUser()
     {
         $this->mysqldump->setup(array('user' => 'root'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->mysqldump->getExec();
         $cmd  = (string) $exec->getExec();
 
@@ -83,7 +83,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     public function testPassword()
     {
         $this->mysqldump->setup(array('password' => 'secret'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->mysqldump->getExec();
         $cmd  = (string) $exec->getExec();
 
@@ -96,7 +96,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     public function testHost()
     {
         $this->mysqldump->setup(array('host' => 'example.com'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->mysqldump->getExec();
         $cmd  = (string) $exec->getExec();
 
@@ -109,7 +109,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     public function testDatabases()
     {
         $this->mysqldump->setup(array('databases' => 'db1,db2'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->mysqldump->getExec();
         $cmd  = (string) $exec->getExec();
 
@@ -122,7 +122,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     public function testTables()
     {
         $this->mysqldump->setup(array('tables' => 'db1.table1,db2.table2'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->mysqldump->getExec();
         $cmd  = (string) $exec->getExec();
 
@@ -138,7 +138,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
             'tables'    => 'db1.table1,db2.table2',
             'databases' => 'db1,db2',
         ));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->mysqldump->getExec();
         $cmd  = (string) $exec->getExec();
 
@@ -151,7 +151,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     public function testNoData()
     {
         $this->mysqldump->setup(array('noData' => 'true'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->mysqldump->getExec();
         $cmd  = (string) $exec->getExec();
 
@@ -164,7 +164,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     public function testQuick()
     {
         $this->mysqldump->setup(array('quick' => 'true'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->mysqldump->getExec();
         $cmd  = (string) $exec->getExec();
 
@@ -177,7 +177,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     public function testCompress()
     {
         $this->mysqldump->setup(array('compress' => 'true'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->mysqldump->getExec();
         $cmd  = (string) $exec->getExec();
 
@@ -190,7 +190,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     public function testIgnoreTables()
     {
         $this->mysqldump->setup(array('ignoreTables' => 'db.table1,db.table2'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->mysqldump->getExec();
         $cmd  = (string) $exec->getExec();
 
@@ -203,7 +203,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     public function testStructureOnly()
     {
         $this->mysqldump->setup(array('structureOnly' => 'db.table1,db.table2'));
-        /** @var \phpbu\Backup\Cli\Exec $exec */
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
         $exec = $this->mysqldump->getExec();
         $cmd  = (string) $exec->getExec();
 

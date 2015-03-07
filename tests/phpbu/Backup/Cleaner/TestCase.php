@@ -1,7 +1,7 @@
 <?php
-namespace phpbu\Backup\Cleaner;
+namespace phpbu\App\Backup\Cleaner;
 
-use phpbu\Util\String;
+use phpbu\App\Util\String;
 
 /**
  * TestCase
@@ -24,10 +24,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected $time;
 
     /**
-     * Create a list of File stubs
+     * Create a list of File stubs.
      *
-     * @param  integer $size      Size in byte the stubs will return on getSize()
-     * @param  integer $amount    Amount of stubs in list
+     * @param  array $files List of files to mock
      * @return array<splFileInfo>
      */
     protected function getFileMockList(array $files)
@@ -48,7 +47,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Create a list of File stubs
+     * Create a list of File stubs.
      *
      * @param  integer $size            Size in byte the stubs will return on getSize()
      * @param  boolean $shouldBeDeleted Should this file be deleted after cleanup
@@ -59,7 +58,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getFileMock($size, $shouldBeDeleted, $mTime, $writable)
     {
         /* @var $fileStub PHPUnit_Framework_MockObject */
-        $fileStub = $this->getMockBuilder('\\phpbu\\Backup\\File')
+        $fileStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\File')
                          ->disableOriginalConstructor()
                          ->getMock();
         $fileStub->method('getMTime')->willReturn($mTime);
@@ -74,7 +73,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Get a fake last modified date
+     * Get a fake last modified date.
      *
      * @param  string $offset
      * @return integer
@@ -85,7 +84,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Return the current time
+     * Return the current time.
      *
      * @return integer
      */

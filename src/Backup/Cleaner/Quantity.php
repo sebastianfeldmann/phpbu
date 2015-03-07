@@ -1,10 +1,10 @@
 <?php
-namespace phpbu\Backup\Cleaner;
+namespace phpbu\App\Backup\Cleaner;
 
+use phpbu\App\Backup\Cleaner;
+use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Target;
 use phpbu\App\Result;
-use phpbu\Backup\Cleaner;
-use phpbu\Backup\Collector;
-use phpbu\Backup\Target;
 
 /**
  * Cleanup backup directory.
@@ -31,9 +31,9 @@ class Quantity implements Cleaner
     /**
      * Setup the Cleaner.
      *
-     * @see    \phpbu\Backup\Cleanup::setup()
+     * @see    \phpbu\App\Backup\Cleanup::setup()
      * @param  array $options
-     * @throws \phpbu\Backup\Cleaner\Exception
+     * @throws \phpbu\App\Backup\Cleaner\Exception
      */
     public function setup(array $options)
     {
@@ -52,11 +52,11 @@ class Quantity implements Cleaner
     /**
      * Cleanup your backup directory.
      *
-     * @see    \phpbu\Backup\Cleanup::cleanup()
-     * @param  \phpbu\Backup\Target    $target
-     * @param  \phpbu\Backup\Collector $collector
-     * @param  \phpbu\App\Result       $result
-     * @throws \phpbu\Backup\Cleaner\Exception
+     * @see    \phpbu\App\Backup\Cleanup::cleanup()
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @param  \phpbu\App\Result           $result
+     * @throws \phpbu\App\Backup\Cleaner\Exception
      */
     public function cleanup(Target $target, Collector $collector, Result $result)
     {

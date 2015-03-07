@@ -1,10 +1,10 @@
 <?php
-namespace phpbu\Backup\Source;
+namespace phpbu\App\Backup\Source;
 
-use phpbu\Backup\Cli\Cmd;
-use phpbu\Backup\Cli\Exec;
-use phpbu\Backup\Cli\Result;
-use phpbu\Backup\Target;
+use phpbu\App\Backup\Cli\Cmd;
+use phpbu\App\Backup\Cli\Exec;
+use phpbu\App\Backup\Cli\Result;
+use phpbu\App\Backup\Target;
 
 /**
  * Cli Runner
@@ -29,15 +29,15 @@ abstract class Cli
     /**
      * Executes the cli commands and handles compression
      *
-     * @param  \phpbu\Backup\Cli\Exec $exec
-     * @param  \phpbu\Backup\Target   $target
-     * @param  bool                   $compressOutput
-     * @return \phpbu\Backup\Cli\Result
+     * @param  \phpbu\App\Backup\Cli\Exec $exec
+     * @param  \phpbu\App\Backup\Target   $target
+     * @param  bool                       $compressOutput
+     * @return \phpbu\App\Backup\Cli\Result
      * @throws \phpbu\App\Exception
      */
     protected function execute(Exec $exec, Target $target, $compressOutput = true)
     {
-        /** @var \phpbu\Backup\Cli\Result $res */
+        /** @var \phpbu\App\Backup\Cli\Result $res */
         $res    = $exec->execute($compressOutput ? $target->getPathname() : null);
         $code   = $res->getCode();
         $cmd    = $res->getCmd();
@@ -73,8 +73,8 @@ abstract class Cli
     /**
      * Compress the generated output.
      *
-     * @param  \phpbu\Backup\Target Target $target
-     * @return \phpbu\Backup\Cli\Result
+     * @param  \phpbu\App\Backup\Target Target $target
+     * @return \phpbu\App\Backup\Cli\Result
      */
     protected function compressOutput(Target $target)
     {
@@ -101,10 +101,10 @@ abstract class Cli
     /**
      * Adds an option to a command if it is not empty.
      *
-     * @param \phpbu\Backup\Cli\Cmd $cmd
-     * @param string                $option
-     * @param mixed                 $check
-     * @param bool                  $asValue
+     * @param \phpbu\App\Backup\Cli\Cmd $cmd
+     * @param string                    $option
+     * @param mixed                     $check
+     * @param bool                      $asValue
      */
     protected function addOptionIfNotEmpty(Cmd $cmd, $option, $check, $asValue = true)
     {

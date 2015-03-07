@@ -1,8 +1,8 @@
 <?php
-namespace phpbu\Backup;
+namespace phpbu\App\Backup;
 
 use DirectoryIterator;
-use phpbu\Util\String;
+use phpbu\App\Util\String;
 
 /**
  * Collector
@@ -20,13 +20,13 @@ class Collector
     /**
      * Backup target
      *
-     * @var \phpbu\Backup\Target
+     * @var \phpbu\App\Backup\Target
      */
     protected $target;
     /**
      * Collection cache
      *
-     * @var array<\phpbu\Backup\File>
+     * @var array<\phpbu\App\Backup\File>
      */
     protected $files;
 
@@ -43,7 +43,7 @@ class Collector
     /**
      * Get all created backups.
      *
-     * @return array<\phpbu\Backup\File>
+     * @return array<\phpbu\App\Backup\File>
      */
     public function getBackupFiles()
     {

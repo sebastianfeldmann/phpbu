@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Log;
+namespace phpbu\App\Log;
 
 use phpbu\App\Exception;
 use phpbu\App\Listener;

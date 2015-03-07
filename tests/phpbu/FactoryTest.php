@@ -1,13 +1,14 @@
 <?php
 namespace phpbu\App;
 
-use phpbu\Backup\Check;
-use phpbu\Backup\Collector;
-use phpbu\Backup\Source;
-use phpbu\Backup\Target;
+use phpbu\App\Backup\Check;
+use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Source;
+use phpbu\App\Backup\Target;
+use phpbu\App\Log\Logger;
 
 /**
- * Args parser test
+ * Factory test
  *
  * @package    phpbu
  * @subpackage tests
@@ -38,7 +39,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         $logger = Factory::createLogger('mail', array('recipients' => 'no-reply@phpbu.de'));
 
-        $this->assertEquals(get_class($logger), 'phpbu\\Log\\Mail', 'classes should match');
+        $this->assertEquals(get_class($logger), 'phpbu\\App\\Log\\Mail', 'classes should match');
     }
 
     /**
@@ -48,7 +49,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         $check = Factory::createCheck('sizemin');
 
-        $this->assertEquals(get_class($check), 'phpbu\\Backup\\Check\\SizeMin', 'classes should match');
+        $this->assertEquals(get_class($check), 'phpbu\\App\\Backup\\Check\\SizeMin', 'classes should match');
     }
 
     /**
@@ -58,7 +59,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         $sync = Factory::createSync('Rsync', array('args' => 'foo'));
 
-        $this->assertEquals(get_class($sync), 'phpbu\\Backup\\Sync\\Rsync', 'classes should match');
+        $this->assertEquals(get_class($sync), 'phpbu\\App\\Backup\\Sync\\Rsync', 'classes should match');
     }
 
     /**
@@ -68,7 +69,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         $sync = Factory::createCleaner('Capacity', array('size' => '10M'));
 
-        $this->assertEquals(get_class($sync), 'phpbu\\Backup\\Cleaner\\Capacity', 'classes should match');
+        $this->assertEquals(get_class($sync), 'phpbu\\App\\Backup\\Cleaner\\Capacity', 'classes should match');
     }
 
     /**
@@ -108,6 +109,92 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Factory::createSource
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testCreateSourceThatIsNone()
+    {
+        Factory::register('source', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+
+        $source = Factory::createSource('nothing');
+
+        $this->assertFalse(true, 'Exception should be thrown');
+    }
+
+    /**
+     * Tests Factory::createLogger
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testCreateLoggerThatIsNone()
+    {
+        Factory::register('logger', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+
+        $logger = Factory::createLogger('nothing');
+
+        $this->assertFalse(true, 'Exception should be thrown');
+    }
+
+    /**
+     * Tests Factory::createLogger
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testCreateLoggerThatIsLoggerButNoListener()
+    {
+        Factory::register('logger', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTesLoggerButNoListener', true);
+
+        $logger = Factory::createLogger('nothing');
+
+        $this->assertFalse(true, 'Exception should be thrown');
+    }
+
+    /**
+     * Tests Factory::createCleaner
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testCreateCleanerThatIsNone()
+    {
+        Factory::register('cleaner', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+
+        $cleaner = Factory::createCleaner('nothing');
+
+        $this->assertFalse(true, 'Exception should be thrown');
+    }
+
+    /**
+     * Tests Factory::createCleaner
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testCreateSyncThatIsNone()
+    {
+        Factory::register('sync', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+
+        $sync = Factory::createSync('nothing');
+
+        $this->assertFalse(true, 'Exception should be thrown');
+    }
+
+    /**
+     * Tests Factory::createCleaner
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testCreateCheckThatIsNone()
+    {
+        Factory::register('check', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+
+        $check = Factory::createCheck('nothing');
+
+        $this->assertFalse(true, 'Exception should be thrown');
+    }
+
+
+
+    /**
      * Tests Factory::register
      *
      * @expectedException \phpbu\App\Exception
@@ -142,13 +229,43 @@ class phpbuAppFactoryTestCheck implements Check
     /**
      * Checks the created backup.
      *
-     * @param  \phpbu\Backup\Target $target
-     * @param  string $value
-     * @param  \phpbu\Backup\Collector
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  string                   $value
+     * @param  \phpbu\App\Backup\Collector
      * @param  \phpbu\App\Result
      * @return boolean
      */
     public function pass(Target $target, $value, Collector $collector, Result $result)
+    {
+        // do something fooish
+    }
+}
+
+/**
+ * Class phpbuAppFactoryTestNothing
+ */
+class phpbuAppFactoryTestNothing
+{
+    /**
+     * Do nothing.
+     */
+    public function doNothing()
+    {
+        // do something fooish
+    }
+}
+
+/**
+ * Class phpbuAppFactoryTestNothing
+ */
+class phpbuAppFactoryTesLoggerButNoListener implements Logger
+{
+    /**
+     * Setup the logger.
+     *
+     * @param array $options
+     */
+    public function setup(array $options)
     {
         // do something fooish
     }
@@ -172,8 +289,8 @@ class phpbuAppFactoryTestSource implements Source
     /**
      * Runner the backup
      *
-     * @param  \phpbu\Backup\Target $target
-     * @param  \phpbu\App\Result $result
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Result        $result
      */
     public function backup(Target $target, Result $result)
     {

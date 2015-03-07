@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup;
+namespace phpbu\App\Backup;
 
 use phpbu\App\Result;
 
@@ -19,9 +19,9 @@ interface Check
     /**
      * Checks the created backup.
      *
-     * @param  \phpbu\Backup\Target $target
-     * @param  string $value
-     * @param  \phpbu\Backup\Collector
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  string                      $value
+     * @param  \phpbu\App\Backup\Collector
      * @param  \phpbu\App\Result
      * @return boolean
      */

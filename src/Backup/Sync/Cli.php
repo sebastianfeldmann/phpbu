@@ -1,9 +1,9 @@
 <?php
-namespace phpbu\Backup\Sync;
+namespace phpbu\App\Backup\Sync;
 
-use phpbu\Backup\Cli\Cmd;
-use phpbu\Backup\Cli\Exec;
-use phpbu\Backup\Target;
+use phpbu\App\Backup\Cli\Cmd;
+use phpbu\App\Backup\Cli\Exec;
+use phpbu\App\Backup\Target;
 
 /**
  * Cli
@@ -23,15 +23,15 @@ abstract class Cli
     /**
      * Executes a cli command.
      *
-     * @param  \phpbu\Backup\Cli\Cmd
-     * @throws \phpbu\Backup\Sync\Exception
+     * @param  \phpbu\App\Backup\Cli\Cmd
+     * @throws \phpbu\App\Backup\Sync\Exception
      */
     protected function execute(Cmd $command)
     {
         $exec = new Exec();
         $exec->addCommand($command);
 
-        /* @var $res \phpbu\Backup\Cli\Result */
+        /* @var $res \phpbu\App\Backup\Cli\Result */
         $res = $exec->execute();
         if ($res->getCode()) {
             throw new Exception('sync failed: ' . PHP_EOL . $res->getOutputAsString());

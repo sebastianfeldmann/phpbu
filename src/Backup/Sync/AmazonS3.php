@@ -1,12 +1,12 @@
 <?php
-namespace phpbu\Backup\Sync;
+namespace phpbu\App\Backup\Sync;
 
 use Aws\S3\S3Client;
 use phpbu\App\Result;
-use phpbu\Backup\Sync;
-use phpbu\Backup\Target;
-use phpbu\Util\Arr;
-use phpbu\Util\String;
+use phpbu\App\Backup\Sync;
+use phpbu\App\Backup\Target;
+use phpbu\App\Util\Arr;
+use phpbu\App\Util\String;
 
 /**
  * Amazon S3 Sync
@@ -67,9 +67,9 @@ class AmazonS3 implements Sync
     /**
      * (non-PHPDoc)
      *
-     * @see    \phpbu\Backup\Sync::setup()
+     * @see    \phpbu\App\Backup\Sync::setup()
      * @param  array $config
-     * @throws \phpbu\Backup\Sync\Exception
+     * @throws \phpbu\App\Backup\Sync\Exception
      */
     public function setup(array $config)
     {
@@ -102,10 +102,10 @@ class AmazonS3 implements Sync
     /**
      * Execute the sync
      *
-     * @see    \phpbu\Backup\Sync::sync()
-     * @param  \phpbu\backup\Target $target
-     * @param  \phpbu\App\Result    $result
-     * @throws \phpbu\Backup\Sync\Exception
+     * @see    \phpbu\App\Backup\Sync::sync()
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Result        $result
+     * @throws \phpbu\App\Backup\Sync\Exception
      */
     public function sync(Target $target, Result $result)
     {

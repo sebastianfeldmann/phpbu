@@ -1,8 +1,7 @@
 <?php
 namespace phpbu\App;
 
-use phpbu\App\Result;
-use phpbu\Backup;
+use phpbu\App\Backup;
 
 /**
  * Runner actually executes all backup jobs.
@@ -186,11 +185,11 @@ class Runner
      * Creates the output printer.
      *
      * @param  array $arguments
-     * @return \phpbu\App\ResultPrinter
+     * @return \phpbu\App\Result\PrinterCli
      */
     protected function createPrinter(array $arguments)
     {
-        $printer = new ResultPrinter(
+        $printer = new Result\PrinterCli(
             isset($arguments['stderr']) ? 'php://stderr' : null,
             $arguments['verbose'],
             $arguments['colors'],

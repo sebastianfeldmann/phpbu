@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Check;
+namespace phpbu\App\Backup\Check;
 
 use phpbu\App;
 

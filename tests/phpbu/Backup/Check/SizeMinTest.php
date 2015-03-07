@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Check;
+namespace phpbu\App\Backup\Check;
 
 /**
  * SizeMinTest
@@ -21,10 +21,10 @@ class SizeMinTest extends \PHPUnit_Framework_TestCase
     {
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\Backup\\Collector')
+        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
                               ->disableOriginalConstructor()
                               ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\Backup\\Target')
+        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                               ->disableOriginalConstructor()
                               ->getMock();
         $targetStub->method('getSize')->willReturn(1030);

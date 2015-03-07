@@ -11,11 +11,11 @@ if ($argv[1] == 'alpha' || $argv[1] == 'beta') {
 }
 
 file_put_contents(
-    __DIR__ . '/phar/App/Version.php',
+    __DIR__ . '/phar/Version.php',
     str_replace(
         'private static $pharVersion;',
         'private static $pharVersion = "' . $version . '";',
-        file_get_contents(__DIR__ . '/phar/App/Version.php')
+        file_get_contents(__DIR__ . '/phar/Version.php')
     )
 );
 

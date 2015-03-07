@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\Backup\Sync;
+namespace phpbu\App\Backup\Sync;
 
 /**
  * DropboxTest
@@ -31,7 +31,7 @@ class DropboxTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Dropbox::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoToken()
     {
@@ -42,7 +42,7 @@ class DropboxTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Dropbox::setUp
      *
-     * @expectedException \phpbu\Backup\Sync\Exception
+     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoPath()
     {
