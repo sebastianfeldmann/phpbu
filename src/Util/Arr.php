@@ -10,7 +10,7 @@ namespace phpbu\App\Util;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://phpbu.de/
- * @since      Class available since Release 1.0.5
+ * @since      Class available since Release 1.1.5
  */
 abstract class Arr
 {

@@ -11,7 +11,7 @@ use phpbu\App\Backup\Check\Exception;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpbu.de/
- * @since      Class available since Release 1.0.6
+ * @since      Class available since Release 1.1.6
  */
 class ResultTest extends \PHPUnit_Framework_TestCase
 {
