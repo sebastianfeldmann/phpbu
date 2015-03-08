@@ -109,6 +109,13 @@ class Mongodump extends Cli implements Source
     private $validateConnection;
 
     /**
+     * Tar source to compress MongoDB dump directory
+     *
+     * @var \phpbu\App\Backup\Source\Tar
+     */
+    private $tar;
+
+    /**
      * (No PHPDoc)
      *
      * @see    \phpbu\App\Backup\Source
@@ -173,14 +180,21 @@ class Mongodump extends Cli implements Source
         }
 
         $exec      = $this->getExec($target);
-        $cmdResult = $this->execute($exec, $target);
+        $mongodump = $this->execute($exec, $target, false);
 
-        $result->debug($cmdResult->getCmd());
+        $result->debug($mongodump->getCmd());
 
-        if (!$cmdResult->wasSuccessful()) {
+        if (!$mongodump->wasSuccessful()) {
             throw new Exception('Mongodump failed');
         }
 
+        try {
+            $tar = $this->getTar($target);
+            $tar->backup($target, $result);
+            // ToDo: remove dump directory
+        } catch (\Exception $e) {
+            throw new Exception('Failed to \'tar\' Mongodump directory', 1, $e);
+        }
         return $result;
     }
 
@@ -193,7 +207,7 @@ class Mongodump extends Cli implements Source
     public function getExec(Target $target)
     {
         if (null == $this->exec) {
-            $dump       = dirname($target->getPath()) . '/dump';
+            $dump       = $this->getDumpDir($target);
             $this->exec = new Exec();
             $cmd        = new Cmd($this->binary);
             $this->exec->addCommand($cmd);
@@ -228,6 +242,43 @@ class Mongodump extends Cli implements Source
         }
 
         return $this->exec;
+    }
+
+    /**
+     * Tar setter, mostly for test purposes.
+     *
+     * @param \phpbu\App\Backup\Source\Tar $tar
+     */
+    public function setTar(Tar $tar)
+    {
+        $this->tar = $tar;
+    }
+
+    /**
+     * Create a Tar backup source to compress the MongoDB dump directory.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Backup\Source\Tar
+     * @throws \phpbu\App\Exception
+     */
+    public function getTar(Target $target)
+    {
+        if (null == $this->tar) {
+            $this->tar = new Tar();
+            $this->tar->setup(array('path' => $this->getDumpDir($target)));
+        }
+        return $this->tar;
+    }
+
+    /**
+     * Get the MongoDB dump directory.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return string
+     */
+    public function getDumpDir(Target $target)
+    {
+        return $target->getPath() . '/dump';
     }
 
     /**

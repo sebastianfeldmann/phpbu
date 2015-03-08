@@ -83,15 +83,15 @@ class Tar extends Cli implements Source
         $compressA = $target->shouldBeCompressed();
         $exec      = $this->getExec($target);
         $compressB = $target->shouldBeCompressed();
-        $cliResult = $this->execute($exec, $target, false);
+        $tar       = $this->execute($exec, $target, false);
 
         // maybe compression got deactivated because of an invalid compressor
         if ($compressA != $compressB) {
             $result->debug('deactivated compression');
         }
-        $result->debug($cliResult->getCmd());
+        $result->debug($tar->getCmd());
 
-        if (!$cliResult->wasSuccessful()) {
+        if (!$tar->wasSuccessful()) {
             throw new Exception('tar failed');
         }
 

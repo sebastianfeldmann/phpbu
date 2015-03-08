@@ -190,12 +190,17 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
         $exec      = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cli\\Exec')
                           ->disableOriginalConstructor()
                           ->getMock();
+        $tar       = $this->getMockBuilder('\\phpbu\\App\\Backup\\Source\\Tar')
+                          ->disableOriginalConstructor()
+                          ->getMock();
 
         $appResult->expects($this->once())->method('debug');
         $exec->expects($this->once())->method('execute')->willReturn($cliResult);
+        $tar->expects($this->once())->method('backup');
 
         $this->mongodump->setup(array());
         $this->mongodump->setExec($exec);
+        $this->mongodump->setTar($tar);
         $this->mongodump->backup($target, $appResult);
     }
 
@@ -246,15 +251,17 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
     /**
      * Create Target mock.
      *
+     * @param  string $path
      * @return \phpbu\App\Backup\Target
      */
-    protected function getTargetMock()
+    protected function getTargetMock($path = '.')
     {
         $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                        ->disableOriginalConstructor()
                        ->getMock();
-        $target->method('getPath')->willReturn('.');
+        $target->method('getPath')->willReturn($path);
         $target->method('fileExists')->willReturn(false);
+        $target->method('shouldBeCompressed')->willReturn(false);
 
         return $target;
     }

@@ -296,6 +296,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
                        ->getMock();
         $target->method('getPath')->willReturn('.');
         $target->method('fileExists')->willReturn(false);
+        $target->method('shouldBeCompressed')->willReturn(false);
 
         return $target;
     }

@@ -184,11 +184,11 @@ class Mysqldump extends Cli implements Source
         }
 
         $exec      = $this->getExec();
-        $cmdResult = $this->execute($exec, $target);
+        $mysqldump = $this->execute($exec, $target);
 
-        $result->debug($cmdResult->getCmd());
+        $result->debug($mysqldump->getCmd());
 
-        if (!$cmdResult->wasSuccessful()) {
+        if (!$mysqldump->wasSuccessful()) {
             throw new Exception('mysqldump failed');
         }
 
