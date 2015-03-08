@@ -10,7 +10,7 @@ namespace phpbu\App\Backup\Source;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpbu.de/
- * @since      Class available since Release 1.0.5
+ * @since      Class available since Release 1.1.5
  */
 class MysqldumpTest extends \PHPUnit_Framework_TestCase
 {
@@ -216,5 +216,87 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
             ')',
             $cmd
         );
+    }
+
+    /**
+     * Tests Mysqldump::backup
+     */
+    public function testBackupOk()
+    {
+        $target    = $this->getTargetMock();
+        $cliResult = $this->getCliResultMock(0);
+        $appResult = $this->getMockBuilder('\\phpbu\\App\\Result')
+                          ->disableOriginalConstructor()
+                          ->getMock();
+        $exec      = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cli\\Exec')
+                          ->disableOriginalConstructor()
+                          ->getMock();
+
+        $appResult->expects($this->once())->method('debug');
+        $exec->expects($this->once())->method('execute')->willReturn($cliResult);
+
+        $this->mysqldump->setup(array());
+        $this->mysqldump->setExec($exec);
+        $this->mysqldump->backup($target, $appResult);
+    }
+
+    /**
+     * Tests Mysqldump::backup
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testBackupFail()
+    {
+        $target    = $this->getTargetMock();
+        $cliResult = $this->getCliResultMock(1);
+        $appResult = $this->getMockBuilder('\\phpbu\\App\\Result')
+                          ->disableOriginalConstructor()
+                          ->getMock();
+        $exec      = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cli\\Exec')
+                          ->disableOriginalConstructor()
+                          ->getMock();
+
+        $appResult->expects($this->once())->method('debug');
+        $exec->expects($this->once())->method('execute')->willReturn($cliResult);
+
+        $this->mysqldump->setup(array());
+        $this->mysqldump->setExec($exec);
+        $this->mysqldump->backup($target, $appResult);
+    }
+
+    /**
+     * Create Cli\Result mock.
+     *
+     * @param  integer $code
+     * @return \phpbu\App\Backup\Cli\Result
+     */
+    protected function getCliResultMock($code)
+    {
+        $cliResult = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cli\\Result')
+                          ->disableOriginalConstructor()
+                          ->getMock();
+
+        $cliResult->method('getCmd')->willReturn('mysqldump');
+        $cliResult->method('getCode')->willReturn($code);
+        $cliResult->method('getOutput')->willReturn(array());
+        $cliResult->method('wasSuccessful')->willReturn($code == 0);
+
+        return $cliResult;
+    }
+
+    /**
+     * Create Target mock.
+     *
+     * @return \phpbu\App\Backup\Target
+     */
+    protected function getTargetMock()
+    {
+        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                       ->disableOriginalConstructor()
+                       ->getMock();
+        $target->method('getPath')->willReturn('.');
+        $target->method('fileExists')->willReturn(false);
+
+        return $target;
     }
 }

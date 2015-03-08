@@ -31,6 +31,7 @@ class Mysqldump extends Cli implements Source
 
     /**
      * Host to connect to
+     * --host <hostname>
      *
      * @var string
      */
@@ -38,6 +39,7 @@ class Mysqldump extends Cli implements Source
 
     /**
      * User to connect with
+     * --user <username>
      *
      * @var string
      */
@@ -45,6 +47,7 @@ class Mysqldump extends Cli implements Source
 
     /**
      * Password to authenticate with
+     * --password <password>
      *
      * @var string
      */
@@ -52,6 +55,7 @@ class Mysqldump extends Cli implements Source
 
     /**
      * List of tables to backup
+     * --tables array of strings
      *
      * @var array
      */
@@ -59,6 +63,7 @@ class Mysqldump extends Cli implements Source
 
     /**
      * List of databases to backup
+     * --databases array of strings
      *
      * @var array
      */
@@ -80,6 +85,7 @@ class Mysqldump extends Cli implements Source
 
     /**
      * Use mysqldump quick mode
+     * -q
      *
      * @var boolean
      */
@@ -87,6 +93,7 @@ class Mysqldump extends Cli implements Source
 
     /**
      * Use mysqldump with compression
+     * -C
      *
      * @var boolean
      */
@@ -94,6 +101,7 @@ class Mysqldump extends Cli implements Source
 
     /**
      * Dump only table structures
+     * --no-data
      *
      * @var boolean
      */
@@ -171,6 +179,10 @@ class Mysqldump extends Cli implements Source
      */
     public function backup(Target $target, Result $result)
     {
+        if ($this->validateConnection) {
+            $this->checkConnection($this->host, $this->user, $this->password, $this->databases);
+        }
+
         $exec      = $this->getExec();
         $cmdResult = $this->execute($exec, $target);
 
@@ -191,56 +203,54 @@ class Mysqldump extends Cli implements Source
      */
     public function getExec()
     {
-        $exec = new Exec();
-        $cmd  = new Cmd($this->binary);
-        $exec->addCommand($cmd);
+        if (null == $this->exec) {
+            $this->exec = new Exec();
+            $cmd        = new Cmd($this->binary);
+            $this->exec->addCommand($cmd);
 
-        // no std error unless it is activated
-        if (!$this->showStdErr) {
-            $cmd->silence();
-            // i kill you
-        }
-        $this->addOptionIfNotEmpty($cmd, '--user', $this->user);
-        $this->addOptionIfNotEmpty($cmd, '--password', $this->password);
-        $this->addOptionIfNotEmpty($cmd, '--host', $this->host);
-        $this->addOptionIfNotEmpty($cmd, '-q', $this->quick, false);
-        $this->addOptionIfNotEmpty($cmd, '-C', $this->compress, false);
+            // no std error unless it is activated
+            if (!$this->showStdErr) {
+                $cmd->silence();
+                // i kill you
+            }
+            $this->addOptionIfNotEmpty($cmd, '--user', $this->user);
+            $this->addOptionIfNotEmpty($cmd, '--password', $this->password);
+            $this->addOptionIfNotEmpty($cmd, '--host', $this->host);
+            $this->addOptionIfNotEmpty($cmd, '-q', $this->quick, false);
+            $this->addOptionIfNotEmpty($cmd, '-C', $this->compress, false);
 
-        if (count($this->tables)) {
-            $cmd->addOption('--tables', $this->tables);
-        } else {
-            if (count($this->databases)) {
-                $cmd->addOption('--databases', $this->databases);
+            if (count($this->tables)) {
+                $cmd->addOption('--tables', $this->tables);
             } else {
-                $cmd->addOption('--all-databases');
-            }
-        }
-
-        if ($this->validateConnection) {
-            $this->checkConnection($this->host, $this->user, $this->password, $this->databases);
-        }
-
-        if (count($this->ignoreTables)) {
-            foreach ($this->ignoreTables as $table) {
-                $cmd->addOption('--ignore-table', $table);
-            }
-        }
-        if ($this->noData) {
-            $cmd->addOption('--no-data');
-        } else {
-            if (count($this->structureOnly)) {
-                $cmd->addOption('--no-data');
-                $cmd2 = clone($cmd);
-                foreach ($this->structureOnly as $table) {
-                    $cmd2->addOption('--ignore-table', $table);
+                if (count($this->databases)) {
+                    $cmd->addOption('--databases', $this->databases);
+                } else {
+                    $cmd->addOption('--all-databases');
                 }
-                $cmd2->addOption('--skip-add-drop-table');
-                $cmd2->addOption('--no-create-db');
-                $cmd2->addOption('--no-create-info');
-                $exec->addCommand($cmd2);
+            }
+
+            if (count($this->ignoreTables)) {
+                foreach ($this->ignoreTables as $table) {
+                    $cmd->addOption('--ignore-table', $table);
+                }
+            }
+            if ($this->noData) {
+                $cmd->addOption('--no-data');
+            } else {
+                if (count($this->structureOnly)) {
+                    $cmd->addOption('--no-data');
+                    $cmd2 = clone($cmd);
+                    foreach ($this->structureOnly as $table) {
+                        $cmd2->addOption('--ignore-table', $table);
+                    }
+                    $cmd2->addOption('--skip-add-drop-table');
+                    $cmd2->addOption('--no-create-db');
+                    $cmd2->addOption('--no-create-info');
+                    $this->exec->addCommand($cmd2);
+                }
             }
         }
-        return $exec;
+        return $this->exec;
     }
 
     /**

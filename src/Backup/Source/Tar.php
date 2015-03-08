@@ -106,37 +106,39 @@ class Tar extends Cli implements Source
      */
     public function getExec(Target $target)
     {
-        $exec = new Exec();
-        $cmd  = new Cmd($this->binary);
+        if (null == $this->exec) {
+            $this->exec = new Exec();
+            $cmd = new Cmd($this->binary);
 
-        // no std error unless it is activated
-        if (!$this->showStdErr) {
-            $cmd->silence();
-            // i kill you
-        }
-
-        // check if 'tar' can handle the requested compression
-        if ($target->shouldBeCompressed()) {
-            $name           = $target->getCompressor()->getCommand(false);
-            $compressOption = $this->getCompressorOption($name);
-            // the requested compression is not available for the 'tar' command
-            if (!$compressOption) {
-                $target->disableCompression();
+            // no std error unless it is activated
+            if (!$this->showStdErr) {
+                $cmd->silence();
+                // i kill you
             }
-        } else {
-            $compressOption = '';
+
+            // check if 'tar' can handle the requested compression
+            if ($target->shouldBeCompressed()) {
+                $name = $target->getCompressor()->getCommand(false);
+                $compressOption = $this->getCompressorOption($name);
+                // the requested compression is not available for the 'tar' command
+                if (!$compressOption) {
+                    $target->disableCompression();
+                }
+            } else {
+                $compressOption = '';
+            }
+
+            $cmd->addOption(
+                '-' . $compressOption . 'cf',
+                array(
+                    $target->getPathname(true),
+                    $this->path,
+                )
+            );
+            $this->exec->addCommand($cmd);
         }
 
-        $cmd->addOption(
-            '-' . $compressOption . 'cf',
-            array(
-                $target->getPathname(true),
-                $this->path,
-            )
-        );
-        $exec->addCommand($cmd);
-
-        return $exec;
+        return $this->exec;
     }
 
     /**

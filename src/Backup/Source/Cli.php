@@ -20,11 +20,18 @@ use phpbu\App\Backup\Target;
 abstract class Cli
 {
     /**
-     * Path to mysqldump command
+     * Path to command
      *
      * @var string
      */
     protected $binary;
+
+    /**
+     * Command to execute
+     *
+     * @var \phpbu\App\Backup\Cli\Exec
+     */
+    protected $exec;
 
     /**
      * Executes the cli commands and handles compression
@@ -99,18 +106,29 @@ abstract class Cli
     }
 
     /**
+     * Exec setter, mostly for test purposes.
+     *
+     * @param \phpbu\App\Backup\Cli\Exec $exec
+     */
+    public function setExec(Exec $exec)
+    {
+        $this->exec = $exec;
+    }
+
+    /**
      * Adds an option to a command if it is not empty.
      *
      * @param \phpbu\App\Backup\Cli\Cmd $cmd
-     * @param string                    $option
-     * @param mixed                     $check
-     * @param bool                      $asValue
+     * @param string  $option
+     * @param mixed   $check
+     * @param boolean $asValue
+     * @param string  $glue
      */
-    protected function addOptionIfNotEmpty(Cmd $cmd, $option, $check, $asValue = true)
+    protected function addOptionIfNotEmpty(Cmd $cmd, $option, $check, $asValue = true, $glue = '=')
     {
         if (!empty($check)) {
             if ($asValue) {
-                $cmd->addOption($option, $check);
+                $cmd->addOption($option, $check, $glue);
             } else {
                 $cmd->addOption($option);
             }
