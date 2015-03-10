@@ -89,7 +89,9 @@ class SoftLayer implements Sync
         $this->secret    = $config['secret'];
         $this->container = $config['container'];
         $this->host      = $config['host'];
-        $this->path      = String::withTrailingSlash(String::replaceDatePlaceholders($config['path']));
+        $this->path      = String::withoutLeadingSlash(
+            String::withTrailingSlash(String::replaceDatePlaceholders($config['path']))
+        );
     }
 
     /**
@@ -110,7 +112,7 @@ class SoftLayer implements Sync
 
         try {
             /** @var \ObjectStorage_Container $object */
-            $container = $objectStorage->with($this->container . '/' . $targetPath)
+            $container = $objectStorage->with($this->container . $targetPath)
                                        ->setLocalFile($sourcePath)
                                        ->setMeta('description', 'PHPBU Backup: ' . date('r', time()))
                                        ->setHeader('Content-Type', $target->getMimeType());
