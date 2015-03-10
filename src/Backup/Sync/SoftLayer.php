@@ -89,7 +89,7 @@ class SoftLayer implements Sync
         $this->secret    = $config['secret'];
         $this->container = $config['container'];
         $this->host      = $config['host'];
-        $this->path      = String::withoutLeadingSlash(
+        $this->path      = String::withLeadingSlash(
             String::withTrailingSlash(String::replaceDatePlaceholders($config['path']))
         );
     }
@@ -109,6 +109,9 @@ class SoftLayer implements Sync
 
         $options       = array('adapter' => ObjectStorage_Http_Client::SOCKET, 'timeout' => 20);
         $objectStorage = new ObjectStorage($this->host, $this->user, $this->secret, $options);
+
+        $result->debug('softlayer source: ' . $sourcePath);
+        $result->debug('softlayer target: ' . $targetPath);
 
         try {
             /** @var \ObjectStorage_Container $object */
