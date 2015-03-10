@@ -209,6 +209,27 @@ class StringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test with trailing slash.
+     */
+    public function testWithLeadingSlash()
+    {
+        $this->assertEquals('/foo', String::withLeadingSlash('foo'), 'should be /foo');
+        $this->assertEquals('/foo/bar', String::withLeadingSlash('foo/bar'), 'should be /foo/bar');
+        $this->assertEquals('/baz', String::withLeadingSlash('/baz'), 'should be baz/');
+    }
+
+    /**
+     * Test without trailing slash.
+     */
+    public function testWithoutLeadingSlash()
+    {
+        $this->assertEquals('foo', String::withoutLeadingSlash('/foo'), 'should be foo');
+        $this->assertEquals('foo/bar', String::withoutLeadingSlash('/foo/bar'), 'should be foo/bar');
+        $this->assertEquals('baz', String::withoutLeadingSlash('baz'), 'should be baz');
+        $this->assertEquals('', String::withoutLeadingSlash('/'), 'slash should be removed');
+    }
+
+    /**
      * Tests String::appendPluralS
      */
     public function testAppendPluralS()

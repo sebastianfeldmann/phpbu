@@ -185,6 +185,28 @@ class String
     }
 
     /**
+     * Adds leading slash to a string/path if not already there.
+     *
+     * @param  string $string
+     * @return string
+     */
+    public static function withLeadingSlash($string)
+    {
+        return (substr($string, 0, 1) !== '/' ? '/' : '') . $string;
+    }
+
+    /**
+     * Removes the leading slash from a string/path.
+     *
+     * @param  string $string
+     * @return string
+     */
+    public static function withoutLeadingSlash($string)
+    {
+        return substr($string, 0, 1) === '/' ? substr($string, 1) : $string;
+    }
+
+    /**
      * Appends a plural "s" or "'s".
      *
      * @param  string  $subject
