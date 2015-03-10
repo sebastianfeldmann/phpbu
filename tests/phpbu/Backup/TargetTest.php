@@ -151,7 +151,20 @@ class TargetTest extends \PHPUnit_Framework_TestCase
         $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
         $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip', 'application/zip'));
 
-        $this->assertEquals('2014-test-01.txt.zip', $target->getFilename(true));
+        $this->assertEquals('2014-test-01.txt.zip', $target->getFilename());
+    }
+
+    /**
+     * Tests Target::getFilename
+     */
+    public function testGetFilenamePlain()
+    {
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip', 'application/zip'));
+
+        $this->assertEquals('2014-test-01.txt', $target->getFilenamePlain());
     }
 
     /**
@@ -165,11 +178,11 @@ class TargetTest extends \PHPUnit_Framework_TestCase
         $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip', 'application/zip'));
         $target->disableCompression();
 
-        $this->assertEquals('2014-test-01.txt', $target->getFilename(true));
+        $this->assertEquals('2014-test-01.txt', $target->getFilename());
 
         $target->enableCompression();
 
-        $this->assertEquals('2014-test-01.txt.zip', $target->getFilename(true));
+        $this->assertEquals('2014-test-01.txt.zip', $target->getFilename());
     }
 
     /**

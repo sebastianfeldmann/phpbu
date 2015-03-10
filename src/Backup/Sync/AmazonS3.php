@@ -109,8 +109,8 @@ class AmazonS3 implements Sync
      */
     public function sync(Target $target, Result $result)
     {
-        $sourcePath = $target->getPathnameCompressed();
-        $targetPath = $this->path . $target->getFilenameCompressed();
+        $sourcePath = $target->getPathname();
+        $targetPath = $this->path . $target->getFilename();
 
         $s3 = S3Client::factory(
             array(

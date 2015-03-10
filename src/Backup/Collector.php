@@ -81,12 +81,13 @@ class Collector
             if ($this->target->shouldBeCompressed()) {
                 $fileRegex .= '.' . $this->target->getCompressor()->getSuffix();
             }
+            /** @var \SplFileInfo $file */
             foreach ($dItter as $i => $file) {
                 if ($file->isDir()) {
                     continue;
                 }
                 // skip currently created backup
-                if ($file->getPathname() == $this->target->getPathnameCompressed()) {
+                if ($file->getPathname() == $this->target->getPathname()) {
                     continue;
                 }
                 if (preg_match('#' . $fileRegex . '#i', $file->getFilename())) {

@@ -104,8 +104,8 @@ class SoftLayer implements Sync
      */
     public function sync(Target $target, Result $result)
     {
-        $sourcePath = $target->getPathnameCompressed();
-        $targetPath = $this->path . $target->getFilenameCompressed();
+        $sourcePath = $target->getPathname();
+        $targetPath = $this->path . $target->getFilename();
 
         $options       = array('adapter' => ObjectStorage_Http_Client::SOCKET, 'timeout' => 20);
         $objectStorage = new ObjectStorage($this->host, $this->user, $this->secret, $options);

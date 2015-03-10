@@ -45,7 +45,7 @@ abstract class Cli
     protected function execute(Exec $exec, Target $target, $compressOutput = true)
     {
         /** @var \phpbu\App\Backup\Cli\Result $res */
-        $res    = $exec->execute($compressOutput ? $target->getPathname() : null);
+        $res    = $exec->execute($compressOutput ? $target->getPathnamePlain() : null);
         $code   = $res->getCode();
         $cmd    = $res->getCmd();
         $output = $res->getOutput();
@@ -69,8 +69,8 @@ abstract class Cli
             }
         } else {
             // remove file with errors
-            if ($target->fileExists(false)) {
-                $target->unlink(false);
+            if ($target->fileExists(true)) {
+                $target->unlink(true);
             }
         }
 
@@ -86,7 +86,7 @@ abstract class Cli
     protected function compressOutput(Target $target)
     {
         $exec = $target->getCompressor()
-                       ->getExec($target->getPathname(false), array('-f'));
+                       ->getExec($target->getPathnamePlain(), array('-f'));
 
         $old = error_reporting(0);
         $res = $exec->execute();

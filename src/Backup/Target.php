@@ -258,20 +258,30 @@ class Target
     /**
      * Return the name to the backup file.
      *
-     * @param  boolean $compressed
+     * @param  boolean $plain
      * @return string
      */
-    public function getFilename($compressed = false)
+    public function getFilename($plain = false)
     {
         return $this->filename . (
-            $compressed && $this->shouldBeCompressed()
+            !$plain && $this->shouldBeCompressed()
             ? '.' . $this->compressor->getSuffix()
             : ''
         );
     }
 
     /**
-     * Return the name to the backup file.
+     * Return the name of the backup file without compressor or encryption suffix.
+     *
+     * @return string
+     */
+    public function getFilenamePlain()
+    {
+        return $this->getFilename(true);
+    }
+
+    /**
+     * Return the raw name of the backup file incl. date placeholder.
      *
      * @return string
      */
@@ -281,7 +291,7 @@ class Target
     }
 
     /**
-     * Return file MIME type
+     * Return file MIME type.
      *
      * @return string
      */
@@ -295,7 +305,7 @@ class Target
     }
 
     /**
-     * Return the actual filesize in bytes
+     * Return the actual filesize in bytes.
      *
      * @throws Exception
      * @return integer
@@ -304,7 +314,7 @@ class Target
     {
         if (null === $this->size) {
             if (!file_exists($this)) {
-                throw new Exception(sprintf('target file \'%s\' doesn\'t exist', $this->getFilenameCompressed()));
+                throw new Exception(sprintf('target file \'%s\' doesn\'t exist', $this->getFilename()));
             }
             $this->size = filesize($this);
         }
@@ -312,70 +322,58 @@ class Target
     }
 
     /**
-     * Target file exists already
+     * Target file exists already.
      *
-     * @param  boolean $compressed
+     * @param  boolean $plain
      * @return boolean
      */
-    public function fileExists($compressed = true)
+    public function fileExists($plain = false)
     {
-        return file_exists($this->getPathname($compressed));
+        return file_exists($this->getPathname($plain));
     }
 
     /**
-     * Deletes the target file
+     * Deletes the target file.
      *
-     * @param  bool $compressed
+     * @param  boolean $plain
      * @throws \phpbu\App\Exception
      */
-    public function unlink($compressed = true)
+    public function unlink($plain = false)
     {
-        if (!$this->fileExists($compressed)) {
-            throw new Exception(sprintf('target file \'%s\' doesn\'t exist', $this->getFilename($compressed)));
+        if (!$this->fileExists($plain)) {
+            throw new Exception(sprintf('target file \'%s\' doesn\'t exist', $this->getFilename($plain)));
         }
-        if (!is_writable($this->getPathname($compressed))) {
-            throw new Exception(sprintf('can\t delete file \'%s\'', $this->getFilename($compressed)));
+        if (!is_writable($this->getPathname($plain))) {
+            throw new Exception(sprintf('can\t delete file \'%s\'', $this->getFilename($plain)));
         }
-        $this->size = filesize($this->getPathname($compressed));
+        $this->size = filesize($this->getPathname($plain));
     }
-
-    /**
-     * Return the filename of the backup file
-     *
-     * @return string
-     */
-    public function getFilenameCompressed()
-    {
-        return $this->getFilename(true);
-    }
-
 
     /**
      * Return path and filename of the backup file.
      *
-     * @param  boolean $compressed
+     * @param  boolean $plain
      * @return string
      */
-    public function getPathname($compressed = false)
+    public function getPathname($plain = false)
     {
         return $this->path
         . DIRECTORY_SEPARATOR
-        . $this->filename
-        . ($compressed && $this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '');
+        . $this->getFilename($plain);
     }
 
     /**
-     * Return the path and compressed filename of the backup file.
+     * Return path and plain filename of the backup file.
      *
      * @return string
      */
-    public function getPathnameCompressed()
+    public function getPathnamePlain()
     {
         return $this->getPathname(true);
     }
 
     /**
-     * Is dirname configured with any date placeholders
+     * Is dirname configured with any date placeholders.
      *
      * @return boolean
      */
@@ -385,7 +383,7 @@ class Target
     }
 
     /**
-     * Return the part of the path that is not changing
+     * Return the part of the path that is not changing.
      *
      * @return string
      */
@@ -395,7 +393,7 @@ class Target
     }
 
     /**
-     * Changing path elements getter
+     * Changing path elements getter.
      *
      * @return array
      */
@@ -405,7 +403,7 @@ class Target
     }
 
     /**
-     * Return amount of changing path elements
+     * Return amount of changing path elements.
      *
      * @return integer
      */
@@ -415,7 +413,7 @@ class Target
     }
 
     /**
-     * Filename configured with any date placeholders
+     * Filename configured with any date placeholders.
      *
      * @return boolean
      */
@@ -425,7 +423,7 @@ class Target
     }
 
     /**
-     * Disable file compression
+     * Disable file compression.
      */
     public function disableCompression()
     {
@@ -433,7 +431,7 @@ class Target
     }
 
     /**
-     * Enable file compression
+     * Enable file compression.
      *
      * @throws \phpbu\App\Exception
      */
@@ -483,6 +481,6 @@ class Target
      */
     public function __toString()
     {
-        return $this->getPathname(true);
+        return $this->getPathname();
     }
 }

@@ -75,8 +75,8 @@ class Dropbox implements Sync
      */
     public function sync(Target $target, Result $result)
     {
-        $sourcePath  = $target->getPathnameCompressed();
-        $dropboxPath = $this->path . $target->getFilenameCompressed();
+        $sourcePath  = $target->getPathname();
+        $dropboxPath = $this->path . $target->getFilename();
         $client      = new DropboxApi\Client($this->token, "phpbu/1.1.0");
         $pathError   = DropboxApi\Path::findErrorNonRoot($dropboxPath);
 

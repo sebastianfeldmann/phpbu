@@ -39,7 +39,7 @@ class Tar extends Cli implements Source
      */
     private $compressors = array(
         'bzip2' => 'j',
-        'gzip' => 'z',
+        'gzip'  => 'z',
     );
 
     /**
@@ -126,7 +126,7 @@ class Tar extends Cli implements Source
 
             // check if 'tar' can handle the requested compression
             if ($target->shouldBeCompressed()) {
-                $name = $target->getCompressor()->getCommand(false);
+                $name           = $target->getCompressor()->getCommand(false);
                 $compressOption = $this->getCompressorOption($name);
                 // the requested compression is not available for the 'tar' command
                 if (!$compressOption) {
@@ -137,7 +137,7 @@ class Tar extends Cli implements Source
             }
 
             $tar->addOption('-' . $compressOption . 'cf');
-            $tar->addArgument($target->getPathname(true));
+            $tar->addArgument($target->getPathname());
             $tar->addOption('-C', $this->path, ' ');
             $tar->addArgument('.');
             $this->exec->addCommand($tar);

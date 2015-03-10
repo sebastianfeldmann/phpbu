@@ -122,7 +122,7 @@ class Rsync extends Cli implements Sync
             // std err > dev null
             $rsync->silence();
 
-            $targetFile = $target->getPathnameCompressed();
+            $targetFile = $target->getPathname();
             $targetDir  = dirname($targetFile);
 
             // use archive mode, verbose and compress if not already done

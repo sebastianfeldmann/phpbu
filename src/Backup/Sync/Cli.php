@@ -47,7 +47,7 @@ abstract class Cli
      */
     protected function replaceTargetPlaceholder($string, Target $target)
     {
-        $targetFile = $target->getPathnameCompressed();
+        $targetFile = $target->getPathname();
         $targetDir  = dirname($targetFile);
         $search     = array('%TARGET_DIR%', '%TARGET_FILE%');
         $replace    = array($targetDir, $targetFile);

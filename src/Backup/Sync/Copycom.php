@@ -100,8 +100,8 @@ class Copycom implements Sync
      */
     public function sync(Target $target, Result $result)
     {
-        $sourcePath = $target->getPathnameCompressed();
-        $targetPath = $this->path . $target->getFilenameCompressed();
+        $sourcePath = $target->getPathname();
+        $targetPath = $this->path . $target->getFilename();
 
         $copy = new CopycomApi($this->appKey, $this->appSecret, $this->userKey, $this->userSecret);
 
