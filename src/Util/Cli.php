@@ -131,4 +131,24 @@ abstract class Cli
         }
         return $file;
     }
+
+    /**
+     * Removes a directory that is not empty.
+     *
+     * @param $dir
+     */
+    public static function removeDir($dir)
+    {
+        foreach(scandir($dir) as $file) {
+            if ('.' === $file || '..' === $file) {
+                continue;
+            }
+            if (is_dir($dir . '/' . $file)) {
+                self::removeDir($dir . '/' . $file);
+            } else {
+                unlink($dir . '/' . $file);
+            }
+        }
+        rmdir($dir);
+    }
 }
