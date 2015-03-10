@@ -164,6 +164,30 @@ class CliTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Cli::removeDir
+     */
+    public function testRemoveDir()
+    {
+        $dir         = sys_get_temp_dir();
+        $dirToDelete = $dir - '/foo';
+        $subDir      = $dirToDelete . '/bar';
+
+        $file        = $dirToDelete . '/fiz.txt';
+        $fileInSub   = $subDir . '/baz.txt';
+
+        mkdir($subDir, 0700, true);
+        file_put_contents($file, 'fiz');
+        file_put_contents($fileInSub, 'baz');
+
+        Cli::removeDir($dirToDelete);
+
+        $this->assertFalse(file_exists($file));
+        $this->assertFalse(file_exists($fileInSub));
+        $this->assertFalse(file_exists($subDir));
+        $this->assertFalse(file_exists($dirToDelete));
+    }
+
+    /**
      * Create some temp command
      *
      * @param  string $cmd
