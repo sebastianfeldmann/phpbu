@@ -1,12 +1,12 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Exception;
-use phpbu\App\Result;
 use phpbu\App\Backup\Cli\Cmd;
 use phpbu\App\Backup\Cli\Exec;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
+use phpbu\App\Exception;
+use phpbu\App\Result;
 use phpbu\App\Util;
 
 class Tar extends Cli implements Source
@@ -24,6 +24,13 @@ class Tar extends Cli implements Source
      * @var string
      */
     private $path;
+
+    /**
+     * Remove the packed data
+     *
+     * @var boolean
+     */
+    private $removeDir;
 
     /**
      * List of available compressors
@@ -47,7 +54,8 @@ class Tar extends Cli implements Source
         $this->setupTar($conf);
 
         $this->showStdErr = Util\String::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
-        $this->path = Util\Arr::getValue($conf, 'path');
+        $this->path       = Util\Arr::getValue($conf, 'path');
+        $this->removeDir  = Util\String::toBoolean(Util\Arr::getValue($conf, 'removeDir', ''), false);
 
         if (empty($this->path)) {
             throw new Exception('path option is mandatory');
@@ -93,6 +101,10 @@ class Tar extends Cli implements Source
 
         if (!$tar->wasSuccessful()) {
             throw new Exception('tar failed');
+        }
+        // delete the source data if requested
+        if ($this->removeDir) {
+            Util\Cli::removeDir($this->path);
         }
 
         return $result;
