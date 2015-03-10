@@ -196,7 +196,7 @@ class Mysqldump extends Cli implements Source
     }
 
     /**
-     * Create the Exec to run the mysqldump command
+     * Create the Exec to run the mysqldump command.
      *
      * @return \phpbu\App\Backup\Cli\Exec
      * @throws Exception
