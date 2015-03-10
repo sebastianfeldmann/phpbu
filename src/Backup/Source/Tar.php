@@ -102,16 +102,12 @@ class Tar extends Cli implements Source
         if (!$tar->wasSuccessful()) {
             throw new Exception('tar failed');
         }
-        // delete the source data if requested
-        if ($this->removeDir) {
-            Util\Cli::removeDir($this->path);
-        }
 
         return $result;
     }
 
     /**
-     * Create the Exec to run the 'tar' command
+     * Create the Exec to run the 'tar' command.
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Cli\Exec
@@ -120,11 +116,11 @@ class Tar extends Cli implements Source
     {
         if (null == $this->exec) {
             $this->exec = new Exec();
-            $cmd = new Cmd($this->binary);
+            $tar        = new Cmd($this->binary);
 
             // no std error unless it is activated
             if (!$this->showStdErr) {
-                $cmd->silence();
+                $tar->silence();
                 // i kill you
             }
 
@@ -140,11 +136,15 @@ class Tar extends Cli implements Source
                 $compressOption = '';
             }
 
-            $cmd->addOption('-' . $compressOption . 'cf');
-            $cmd->addArgument($target->getPathname(true));
-            $cmd->addOption('-C', $this->path, ' ');
-            $cmd->addArgument('.');
-            $this->exec->addCommand($cmd);
+            $tar->addOption('-' . $compressOption . 'cf');
+            $tar->addArgument($target->getPathname(true));
+            $tar->addOption('-C', $this->path, ' ');
+            $tar->addArgument('.');
+            $this->exec->addCommand($tar);
+            // delete the source data if requested
+            if ($this->removeDir) {
+                $this->exec->addCommand($this->getRmCommand());
+            }
         }
 
         return $this->exec;
@@ -159,6 +159,21 @@ class Tar extends Cli implements Source
     protected function getCompressorOption($compressor)
     {
         return $this->isCompressorValid($compressor) ? $this->compressors[$compressor] : null;
+    }
+
+    /**
+     * Return 'rm' command.
+     *
+     * @return \phpbu\App\Backup\Cli\Cmd
+     */
+    protected function getRmCommand()
+    {
+        $rm = new Cmd('rm');
+        $rm->addOption('-rf', $this->path, ' ');
+        if (!$this->showStdErr) {
+            $rm->silence();
+        }
+        return $rm;
     }
 
     /**

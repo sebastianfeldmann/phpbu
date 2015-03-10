@@ -88,6 +88,23 @@ class TarTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Tar::getExec
      */
+    public function testRemoveDir()
+    {
+        $target = $this->getTargetMock();
+        $target->method('shouldBeCompressed')->willReturn(false);
+        $target->method('getPathname')->willReturn('/tmp/backup.tar');
+
+        $this->tar->setup(array('path' => 'src', 'removeDir' => 'true'));
+        /** @var \phpbu\App\Backup\Cli\Exec $exec */
+        $exec = $this->tar->getExec($target);
+        $cmd  = (string) $exec->getExec();
+
+        $this->assertEquals('(tar -cf \'/tmp/backup.tar\' -C \'src\' \'.\' 2> /dev/null && rm -rf \'src\' 2> /dev/null)', $cmd);
+    }
+
+    /**
+     * Tests Tar::getExec
+     */
     public function testCompressorValid()
     {
         $target     = $this->getTargetMock();
