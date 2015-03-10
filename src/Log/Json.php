@@ -59,9 +59,11 @@ class Json extends Printer implements Listener, Logger
     public function phpbuEnd(Result $result)
     {
         $output = array(
-            'errors' => $this->extractErrors($result),
-            'debug' => $this->debug,
-            'backups' => $this->extractBackups($result)
+            'status'    => $result->allOk() ? 0 : 1,
+            'timestamp' => time(),
+            'errors'    => $this->extractErrors($result),
+            'debug'     => $this->debug,
+            'backups'   => $this->extractBackups($result)
         );
         $this->write($output);
     }
@@ -260,7 +262,8 @@ class Json extends Printer implements Listener, Logger
             /** @var \phpbu\App\Result\Backup $backup */
             foreach ($backups as $backup) {
                 $output[] = array(
-                    'name' => $backup->getName(),
+                    'name'   => $backup->getName(),
+                    'status' => $backup->wasSuccessful() ? 0 : 1,
                     'checks' => array(
                         'executed' => $backup->checkCount(),
                         'failed'   => $backup->checkCountFailed()
