@@ -194,7 +194,7 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
                           ->disableOriginalConstructor()
                           ->getMock();
 
-        $appResult->expects($this->once())->method('debug');
+        $appResult->expects($this->exactly(2))->method('debug');
         $exec->expects($this->once())->method('execute')->willReturn($cliResult);
         $tar->expects($this->once())->method('backup');
 

@@ -191,7 +191,7 @@ class Mongodump extends Cli implements Source
         try {
             $tar = $this->getTar($target);
             $tar->backup($target, $result);
-            // ToDo: remove dump directory
+            $result->debug('remove dump directory');
         } catch (\Exception $e) {
             throw new Exception('Failed to \'tar\' Mongodump directory', 1, $e);
         }
@@ -265,7 +265,12 @@ class Mongodump extends Cli implements Source
     {
         if (null == $this->tar) {
             $this->tar = new Tar();
-            $this->tar->setup(array('path' => $this->getDumpDir($target)));
+            $this->tar->setup(
+                array(
+                    'path'      => $this->getDumpDir($target),
+                    'removeDir' => 'true',
+                )
+            );
         }
         return $this->tar;
     }

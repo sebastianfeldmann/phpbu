@@ -3,7 +3,7 @@
     "description": "PHP Backup utility.",
     "type": "library",
     "keywords": [
-        "backup", "mysql", "tar", "cloud", "rsync", "sftp"
+        "backup", "mysql", "mongodb", "tar", "cloud", "rsync", "sftp"
     ],
     "homepage": "http://phpbu.de/",
     "license": "BSD-3-Clause",

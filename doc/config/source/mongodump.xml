@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<source type="mongodump">
+  <!-- optional, default=false -->
+  <option name="showStdErr" value="true"/>
+
+  <!-- optional, default=localhost -->
+  <option name="host" value="localhost"/>
+
+  <!-- optional, default=system user -->
+  <option name="user" value="root"/>
+
+  <!-- optional, default=none -->
+  <option name="password" value="secret"/>
+
+  <!-- optional, default=none -->
+  <option name="authenticationDatabase" value="myAuthDB"/>
+
+  <!-- optional, default=all -->
+  <option name="databases" value="myDB1,mydB2"/>
+
+  <!-- optional, default=all -->
+  <option name="collections" value="myCollection1,myCollection2,myCollection3"/>
+
+  <!-- optional, default=none -->
+  <option name="excludeCollections" value="myCollectionToExclude1,myCollectionToExclude2"/>
+
+  <!-- optional, default=none -->
+  <option name="excludeCollectionsWithPrefix" value="myExcludePrefix1,myExcludePrefix2"/>
+
+  <!-- optional, default=false -->
+  <option name="ipv6" value="true"/>
+</source>

@@ -32,6 +32,7 @@ abstract class Factory
             'mail' => '\\phpbu\\App\\Log\\Mail',
         ),
         'source'  => array(
+            'mongodump' => '\\phpbu\\App\\Backup\\Source\\Mongodump',
             'mysqldump' => '\\phpbu\\App\\Backup\\Source\\Mysqldump',
             'tar'       => '\\phpbu\\App\\Backup\\Source\\Tar',
         ),
