@@ -128,13 +128,10 @@ class Tar extends Cli implements Source
                 $compressOption = '';
             }
 
-            $cmd->addOption(
-                '-' . $compressOption . 'cf',
-                array(
-                    $target->getPathname(true),
-                    $this->path,
-                )
-            );
+            $cmd->addOption('-' . $compressOption . 'cf');
+            $cmd->addArgument($target->getPathname(true));
+            $cmd->addOption('-C', $this->path, ' ');
+            $cmd->addArgument('.');
             $this->exec->addCommand($cmd);
         }
 

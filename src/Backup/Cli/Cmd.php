@@ -36,13 +36,6 @@ class Cmd
     private $options = array();
 
     /**
-     * Command arguments
-     *
-     * @var array<string>
-     */
-    private $args = array();
-
-    /**
      * Constructor.
      *
      * @param string $name
@@ -104,7 +97,7 @@ class Cmd
         } else {
             $escapedArgument = escapeshellarg($argument);
         }
-        $this->args[] = $escapedArgument;
+        $this->options[] = $escapedArgument;
     }
 
     /**
@@ -116,7 +109,6 @@ class Cmd
     {
         return $this->name
             . ( count($this->options) ? ' ' . implode(' ', $this->options) : '' )
-            . ( count($this->args)    ? ' ' . implode(' ', $this->args)    : '' )
             . ( $this->isSilent       ? ' 2> /dev/null'                    : '' );
     }
 }

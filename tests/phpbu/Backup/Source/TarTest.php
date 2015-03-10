@@ -65,7 +65,7 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $exec = $this->tar->getExec($target);
         $cmd  = (string) $exec->getExec();
 
-        $this->assertEquals('tar -cf \'/tmp/backup.tar\' \'src\' 2> /dev/null', $cmd);
+        $this->assertEquals('tar -cf \'/tmp/backup.tar\' -C \'src\' \'.\' 2> /dev/null', $cmd);
     }
 
     /**
@@ -82,7 +82,7 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $exec = $this->tar->getExec($target);
         $cmd  = (string) $exec->getExec();
 
-        $this->assertEquals('tar -cf \'/tmp/backup.tar\' \'src\'', $cmd);
+        $this->assertEquals('tar -cf \'/tmp/backup.tar\' -C \'src\' \'.\'', $cmd);
     }
 
     /**
@@ -102,7 +102,7 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $exec = $this->tar->getExec($target);
         $cmd  = (string) $exec->getExec();
 
-        $this->assertEquals('tar -zcf \'/tmp/backup.tar\' \'src\' 2> /dev/null', $cmd);
+        $this->assertEquals('tar -zcf \'/tmp/backup.tar\' -C \'src\' \'.\' 2> /dev/null', $cmd);
     }
 
     /**
@@ -122,7 +122,7 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $exec = $this->tar->getExec($target);
         $cmd  = (string) $exec->getExec();
 
-        $this->assertEquals('tar -cf \'/tmp/backup.tar\' \'src\' 2> /dev/null', $cmd);
+        $this->assertEquals('tar -cf \'/tmp/backup.tar\' -C \'src\' \'.\' 2> /dev/null', $cmd);
     }
 
     /**
