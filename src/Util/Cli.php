@@ -139,7 +139,7 @@ abstract class Cli
      */
     public static function removeDir($dir)
     {
-        foreach(scandir($dir) as $file) {
+        foreach (scandir($dir) as $file) {
             if ('.' === $file || '..' === $file) {
                 continue;
             }

@@ -108,7 +108,7 @@ class Cmd
     public function __toString()
     {
         return $this->name
-            . ( count($this->options) ? ' ' . implode(' ', $this->options) : '' )
-            . ( $this->isSilent       ? ' 2> /dev/null'                    : '' );
+            . (count($this->options) ? ' ' . implode(' ', $this->options) : '')
+            . ($this->isSilent       ? ' 2> /dev/null'                    : '');
     }
 }
