@@ -3,21 +3,7 @@
 
 $patches = array();
 
-$replacements = array(
-    array(
-        'path'    => __DIR__ . '/phar/lib/aws-sdk/DynamoDb/Session/SessionHandlerInterface.php',
-        'content' => '<?php
-
-namespace Aws\DynamoDb\Session;
-
-/**
- * @see http://php.net/manual/en/class.sessionhandlerinterface.php
- */
-interface SessionHandlerInterface extends \SessionHandlerInterface {}
-
-',
-    )
-);
+$replacements = array();
 
 foreach ($patches as $file) {
     echo 'patching file: ' . $file['path'] . "...";

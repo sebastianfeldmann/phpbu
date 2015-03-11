@@ -105,13 +105,20 @@
 
   <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
 
+  <!-- AMAZON AWS -->
   <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE.md" tofile="${basedir}/build/phar/lib/aws-sdk/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/aws-sdk">
-    <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src/Aws">
+  <copy todir="${basedir}/build/phar/lib/aws-sdk/Aws/Common">
+    <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src/Aws/Common">
+      <include name="**/*.php" />
+    </fileset>
+  </copy>
+  <copy todir="${basedir}/build/phar/lib/aws-sdk/Aws/S3">
+    <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src/Aws/S3">
       <include name="**/*.php" />
     </fileset>
   </copy>
 
+  <!-- COPY.COM -->
   <copy file="${basedir}/vendor/barracuda/copy/LICENSE" tofile="${basedir}/build/phar/lib/copy/LICENSE"/>
   <copy todir="${basedir}/build/phar/lib/copy">
     <fileset dir="${basedir}/vendor/barracuda/copy/src">
@@ -120,6 +127,7 @@
     </fileset>
   </copy>
 
+  <!-- DROPBOX SDK -->
   <copy file="${basedir}/vendor/dropbox/dropbox-sdk/License.txt" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
   <copy todir="${basedir}/build/phar/lib/dropbox">
     <fileset dir="${basedir}/vendor/dropbox/dropbox-sdk/lib/Dropbox">
@@ -130,12 +138,14 @@
     </fileset>
   </copy>
 
+  <!-- COPY.COM OAUTH -->
   <copy todir="${basedir}/build/phar/lib/eher">
     <fileset dir="${basedir}/vendor/eher/oauth/src">
       <include name="**/*.php" />
     </fileset>
   </copy>
 
+  <!-- AMAZON AWS GUZZLE -->
   <copy file="${basedir}/vendor/guzzle/guzzle/LICENSE" tofile="${basedir}/build/phar/lib/guzzle/LICENSE"/>
   <copy todir="${basedir}/build/phar/lib/guzzle">
     <fileset dir="${basedir}/vendor/guzzle/guzzle/src">
@@ -144,6 +154,7 @@
     </fileset>
   </copy>
 
+  <!-- PHPSECLIB -->
   <copy file="${basedir}/vendor/phpseclib/phpseclib/LICENSE" tofile="${basedir}/build/phar/lib/phpseclib/LICENSE"/>
   <copy todir="${basedir}/build/phar/lib/phpseclib">
    <fileset dir="${basedir}/vendor/phpseclib/phpseclib/phpseclib">
@@ -174,6 +185,13 @@
     <include name="**/*.php" />
     <exclude name="**/autoload.php" />
    </fileset>
+  </copy>
+
+  <copy file="${basedir}/vendor/softlayer/objectstorage/COPYING" tofile="${basedir}/build/phar/lib/softlayer-os/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/softlayer-os">
+    <fileset dir="${basedir}/vendor/softlayer/objectstorage/lib">
+      <include name="**/*.php" />
+    </fileset>
   </copy>
 
   <copy file="${basedir}/vendor/swiftmailer/swiftmailer/LICENSE" tofile="${basedir}/build/phar/lib/swiftmailer/LICENSE"/>
