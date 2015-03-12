@@ -103,4 +103,173 @@ class RsyncTest extends \PHPUnit_Framework_TestCase
         ));
         $this->assertEquals('', $rsync->getRsyncHostString(), 'should still be empty');
     }
+
+    /**
+     * Tests Rsync::getExec
+     */
+    public function testGetExecWithCustomArgs()
+    {
+        $target = $this->getTargetMock();
+        $rsync  = new Rsync();
+        $rsync->setBinary('rsync');
+        $rsync->setup(array('args' => '--foo --bar'));
+        $exec = $rsync->getExec($target);
+
+        $call = (string) $exec->getExec();
+
+        $this->assertEquals('rsync --foo --bar', $call);
+    }
+
+    /**
+     * Tests Rsync::getExec
+     */
+    public function testGetExecMinimal()
+    {
+        $target = $this->getTargetMock();
+        $rsync  = new Rsync();
+        $rsync->setBinary('rsync');
+        $rsync->setup(array('path' => '/tmp'));
+        $exec = $rsync->getExec($target);
+
+        $call = (string) $exec->getExec();
+
+        $this->assertEquals('rsync -avz \'/foo/bar.txt\' \'/tmp\' 2> /dev/null', $call);
+    }
+
+    /**
+     * Tests Rsync::getExec
+     */
+    public function testGetExecWithoutCompressionIfTargetIsCompressed()
+    {
+        $target = $this->getTargetMock('/foo/bar.txt', true);
+        $rsync  = new Rsync();
+        $rsync->setBinary('rsync');
+        $rsync->setup(array('path' => '/tmp'));
+        $exec = $rsync->getExec($target);
+
+        $call = (string) $exec->getExec();
+
+        $this->assertEquals('rsync -av \'/foo/bar.txt\' \'/tmp\' 2> /dev/null', $call);
+    }
+
+    /**
+     * Tests Rsync::getExec
+     */
+    public function testGetExecDirSyncAndDelete()
+    {
+        $target = $this->getTargetMock();
+        $rsync  = new Rsync();
+        $rsync->setBinary('rsync');
+        $rsync->setup(array('path' => '/tmp', 'dirsync' => 'true', 'delete' => 'true'));
+        $exec = $rsync->getExec($target);
+
+        $call = (string) $exec->getExec();
+
+        $this->assertEquals('rsync -avz --delete \'/foo\' \'/tmp\' 2> /dev/null', $call);
+    }
+
+    /**
+     * Tests Rsync::getExec
+     */
+    public function testGetExecWithExcludes()
+    {
+        $target = $this->getTargetMock();
+        $rsync  = new Rsync();
+        $rsync->setBinary('rsync');
+        $rsync->setup(array('path' => '/tmp', 'exclude' => 'fiz:buz'));
+        $exec = $rsync->getExec($target);
+
+        $call = (string) $exec->getExec();
+
+        $this->assertEquals('rsync -avz --exclude=\'fiz\' --exclude=\'buz\' \'/foo/bar.txt\' \'/tmp\' 2> /dev/null', $call);
+    }
+
+    /**
+     * Tests Rsync::sync
+     */
+    public function testSyncOk()
+    {
+        $target    = $this->getTargetMock();
+        $cliResult = $this->getCliResultMock(0);
+        $appResult = $this->getMockBuilder('\\phpbu\\App\\Result')
+                          ->disableOriginalConstructor()
+                          ->getMock();
+        $exec      = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cli\\Exec')
+                          ->disableOriginalConstructor()
+                          ->getMock();
+
+        $exec->expects($this->once())->method('execute')->willReturn($cliResult);
+        $appResult->expects($this->once())->method('debug');
+
+        $rsync = new Rsync();
+        $rsync->setBinary('rsync');
+        $rsync->setExec($exec);
+        $rsync->sync($target, $appResult);
+    }
+
+    /**
+     * Tests Rsync::sync
+     *
+     * @expectedException \phpbu\App\Backup\Sync\Exception
+     */
+    public function testSyncFail()
+    {
+        $target    = $this->getTargetMock();
+        $cliResult = $this->getCliResultMock(1);
+        $appResult = $this->getMockBuilder('\\phpbu\\App\\Result')
+                          ->disableOriginalConstructor()
+                          ->getMock();
+        $exec      = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cli\\Exec')
+                          ->disableOriginalConstructor()
+                          ->getMock();
+
+        $exec->expects($this->once())->method('execute')->willReturn($cliResult);
+        $appResult->expects($this->exactly(2))->method('debug');
+
+        $rsync = new Rsync();
+        $rsync->setBinary('rsync');
+        $rsync->setExec($exec);
+        $rsync->setup(array('args' => '-foo -bar'));
+        $rsync->sync($target, $appResult);
+    }
+
+    /**
+     * Create Cli\Result mock.
+     *
+     * @param  integer $code
+     * @return \phpbu\App\Backup\Cli\Result
+     */
+    protected function getCliResultMock($code)
+    {
+        $cliResult = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cli\\Result')
+                          ->disableOriginalConstructor()
+                          ->getMock();
+
+        $cliResult->method('getCmd')->willReturn('rsync');
+        $cliResult->method('getCode')->willReturn($code);
+        $cliResult->method('getOutput')->willReturn(array());
+        $cliResult->method('wasSuccessful')->willReturn($code == 0);
+
+        return $cliResult;
+    }
+
+    /**
+     * Create Target mock.
+     *
+     * @param  string  $pathname
+     * @param  boolean $compressed
+     * @return \phpbu\App\Backup\Target
+     */
+    protected function getTargetMock($pathname = '/foo/bar.txt', $compressed = false)
+    {
+        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                       ->disableOriginalConstructor()
+                       ->getMock();
+        $target->method('getPath')->willReturn(dirname($pathname));
+        $target->method('getPathname')->willReturn($pathname);
+        $target->method('fileExists')->willReturn(false);
+        $target->method('shouldBeCompressed')->willReturn($compressed);
+
+        return $target;
+    }
 }

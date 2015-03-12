@@ -1,12 +1,13 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Exception;
-use phpbu\App\Result;
+use phpbu\App\Backup\Cli\Binary;
 use phpbu\App\Backup\Cli\Cmd;
 use phpbu\App\Backup\Cli\Exec;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
+use phpbu\App\Exception;
+use phpbu\App\Result;
 use phpbu\App\Util;
 
 /**
@@ -20,7 +21,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class Mongodump extends Cli implements Source
+class Mongodump extends Binary implements Source
 {
     /**
      * Show stdErr
@@ -180,7 +181,7 @@ class Mongodump extends Cli implements Source
         }
 
         $exec      = $this->getExec($target);
-        $mongodump = $this->execute($exec, $target, false);
+        $mongodump = $this->execute($exec);
 
         $result->debug($mongodump->getCmd());
 

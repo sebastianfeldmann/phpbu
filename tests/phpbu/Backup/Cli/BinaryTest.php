@@ -1,5 +1,7 @@
 <?php
-namespace phpbu\App\Backup\Source;
+namespace phpbu\App\Backup\Cli;
+
+use phpbu\App\Backup\Target;
 
 /**
  * CliTest
@@ -10,19 +12,18 @@ namespace phpbu\App\Backup\Source;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://www.phpbu.de/
- * @since      Class available since Release 1.1.5
+ * @since      Class available since Release 1.3.0
  */
-class CliTest extends \PHPUnit_Framework_TestCase
+class BinaryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Tests Cli::execute
+     * Tests Binary::execute
      */
     public function testExecuteCompressedOk()
     {
-        $compressor = $this->getCompressorMockForCmd(0, 'gzip');
+        $compressor = $this->getCompressorMockForCmd(0, 'gzip', 'gz');
         $target     = $this->getTargetMock();
-        $target->method('getPathname')->willReturn('/tmp/foo');
-        $target->method('shouldBeCompressed')->willReturn(true);
+        $target->method('getPathnamePlain')->willReturn('/tmp/foo');
         $target->method('getCompressor')->willReturn($compressor);
         $target->method('fileExists')->willReturn(false);
         $target->method('unlink')->willReturn(true);
@@ -30,35 +31,32 @@ class CliTest extends \PHPUnit_Framework_TestCase
         $exec   = $this->getExecMock();
         $exec->expects($this->once())->method('execute')->willReturn($result);
 
-        $cliTester = new CliStub();
+        $binaryTester = new BinaryStub();
 
         /** @var \phpbu\App\Backup\Cli\Result $res */
-        $res = $cliTester->testExecute($exec, $target, false);
+        $res = $binaryTester->testExecute($exec, $target, false);
 
         $this->assertEquals(0, $res->getCode());
         $this->assertEquals('tar', $res->getCmd());
     }
 
     /**
-     * Tests Cli::execute
+     * Tests Binary::execute
      */
     public function testExecuteCompressedFail()
     {
-        $compressor = $this->getCompressorMockForCmd(0, 'gzip');
+        $compressor = $this->getCompressorMockForCmd(0, 'gzip', 'gz');
         $target     = $this->getTargetMock();
-        $target->method('getPathname')->willReturn('/tmp/foo');
-        $target->method('shouldBeCompressed')->willReturn(true);
+        $target->method('getPathnamePlain')->willReturn(tempnam(sys_get_temp_dir(), 'phpbu'));
         $target->method('getCompressor')->willReturn($compressor);
-        $target->expects($this->once())->method('fileExists')->willReturn(true);
-        $target->expects($this->once())->method('unlink')->willReturn(true);
         $result = $this->getResultMock(1, 'tar', array('error'));
         $exec   = $this->getExecMock();
         $exec->method('execute')->willReturn($result);
 
-        $cliTester = new CliStub();
+        $binaryTester = new BinaryStub();
 
         /** @var \phpbu\App\Backup\Cli\Result $res */
-        $res = $cliTester->testExecute($exec, $target, false);
+        $res = $binaryTester->testExecute($exec, $target, false);
 
         $this->assertEquals(1, $res->getCode());
         $this->assertEquals('tar', $res->getCmd());
@@ -66,25 +64,22 @@ class CliTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests Cli::execute
+     * Tests Binary::execute
      */
     public function testExecuteCompressedOutputOk()
     {
-        $compressor = $this->getCompressorMockForCmd(0, 'gzip');
+        $compressor = $this->getCompressorMockForCmd(0, 'gzip', 'gz');
         $target     = $this->getTargetMock();
-        $target->method('getPathname')->willReturn('/tmp/foo');
-        $target->expects($this->once())->method('shouldBeCompressed')->willReturn(true);
+        $target->method('getPathnamePlain')->willReturn('/tmp/foo');
         $target->expects($this->once())->method('getCompressor')->willReturn($compressor);
-        $target->method('fileExists')->willReturn(true);
-        $target->method('unlink')->willReturn(true);
         $result = $this->getResultMock(0, 'mysqldump');
         $exec   = $this->getExecMock();
         $exec->expects($this->once())->method('execute')->willReturn($result);
 
-        $cliTester = new CliStub();
+        $binaryTester = new BinaryStub();
 
         /** @var \phpbu\App\Backup\Cli\Result $res */
-        $res = $cliTester->testExecute($exec, $target, true);
+        $res = $binaryTester->testExecute($exec, $target, true);
 
         $this->assertEquals(0, $res->getCode());
         $this->assertEquals('mysqldump' . PHP_EOL . 'gzip', $res->getCmd());
@@ -92,25 +87,22 @@ class CliTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests Cli::execute
+     * Tests Binary::execute
      */
     public function testExecuteCompressedOutputCompressorFail()
     {
-        $compressor = $this->getCompressorMockForCmd(1, 'gzip', array('error'));
+        $compressor = $this->getCompressorMockForCmd(1, 'gzip', 'gz', array('error'));
         $target     = $this->getTargetMock();
-        $target->method('getPathname')->willReturn('/tmp/foo');
-        $target->expects($this->once())->method('shouldBeCompressed')->willReturn(true);
+        $target->method('getPathnamePlain')->willReturn(tempnam(sys_get_temp_dir(), 'phpbu'));
         $target->expects($this->once())->method('getCompressor')->willReturn($compressor);
-        $target->expects($this->once())->method('fileExists')->willReturn(true);
-        $target->expects($this->once())->method('unlink')->willReturn(true);
         $result = $this->getResultMock(0, 'mysqldump');
         $exec   = $this->getExecMock();
         $exec->method('execute')->willReturn($result);
 
-        $cliTester = new CliStub();
+        $binaryTester = new BinaryStub();
 
         /** @var \phpbu\App\Backup\Cli\Result $res */
-        $res = $cliTester->testExecute($exec, $target, true);
+        $res = $binaryTester->testExecute($exec, $target, true);
 
         $this->assertEquals(1, $res->getCode());
         $this->assertEquals('mysqldump' . PHP_EOL . 'gzip', $res->getCmd());
@@ -137,10 +129,11 @@ class CliTest extends \PHPUnit_Framework_TestCase
      *
      * @param  integer $code
      * @param  string  $cmd
+     * @param  string  $suffix
      * @param  array   $output
      * @return \phpbu\App\Backup\Compressor
      */
-    protected function getCompressorMockForCmd($code, $cmd, array $output = array())
+    protected function getCompressorMockForCmd($code, $cmd, $suffix, array $output = array())
     {
         $exec   = $this->getExecMock();
         $exec->method('execute')->willReturn($this->getResultMock($code, $cmd, $output));
@@ -150,6 +143,7 @@ class CliTest extends \PHPUnit_Framework_TestCase
                                ->getMock();
         $compressorStub->method('getCommand')->willReturn($cmd);
         $compressorStub->method('getExec')->willReturn($exec);
+        $compressorStub->method('getSuffix')->willReturn($suffix);
 
 
         return $compressorStub;
@@ -191,10 +185,20 @@ class CliTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class CliStub extends Cli
+/**
+ * Class BinaryStub
+ */
+class BinaryStub extends Binary
 {
-    public function testExecute($exec, $target, $compressOutput)
+    /**
+     * @param  \phpbu\App\Backup\Cli\Exec $exec
+     * @param  \phpbu\App\Backup\Target   $target
+     * @param  boolean                    $compressOutput
+     * @return Result
+     */
+    public function testExecute(Exec $exec, Target $target, $compressOutput)
     {
-        return $this->execute($exec, $target, $compressOutput);
+        $compressor = $compressOutput ? $target->getCompressor() : null;
+        return $this->execute($exec, $target->getPathnamePlain(), $compressor);
     }
 }

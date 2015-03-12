@@ -1,13 +1,13 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use phpbu\App\Result;
+use phpbu\App\Backup\Cli\Binary;
 use phpbu\App\Backup\Cli\Cmd;
+use phpbu\App\Backup\Cli\Exec;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Arr;
-use phpbu\App\Util\Cli as CliUtil;
-use phpbu\App\Util\String;
+use phpbu\App\Result;
+use phpbu\App\Util;
 
 /**
  * Rsync
@@ -20,7 +20,7 @@ use phpbu\App\Util\String;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.0
  */
-class Rsync extends Cli implements Sync
+class Rsync extends Binary implements Sync
 {
     /**
      * Raw args
@@ -75,29 +75,46 @@ class Rsync extends Cli implements Sync
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::setup()
-     * @param  array $config
+     * @param  array $options
      * @throws \phpbu\App\Backup\Sync\Exception
      */
-    public function setup(array $config)
+    public function setup(array $options)
     {
-        if (Arr::isSetAndNotEmptyString($config, 'args')) {
-            $this->args = $config['args'];
+        $this->setupRsync($options);
+
+        if (Util\Arr::isSetAndNotEmptyString($options, 'args')) {
+            $this->args = $options['args'];
         } else {
-            if (!Arr::isSetAndNotEmptyString($config, 'path')) {
+            if (!Util\Arr::isSetAndNotEmptyString($options, 'path')) {
                 throw new Exception('option \'path\' is missing');
             }
-            $this->path = String::replaceDatePlaceholders($config['path']);
+            $this->path = Util\String::replaceDatePlaceholders($options['path']);
 
-            if (Arr::isSetAndNotEmptyString($config, 'user')) {
-                $this->user = $config['user'];
+            if (Util\Arr::isSetAndNotEmptyString($options, 'user')) {
+                $this->user = $options['user'];
             }
-            if (Arr::isSetAndNotEmptyString($config, 'host')) {
-                $this->host = $config['host'];
+            if (Util\Arr::isSetAndNotEmptyString($options, 'host')) {
+                $this->host = $options['host'];
             }
 
-            $this->excludes  = array_map('trim', explode(':', Arr::getValue($config, 'exclude', '')));
-            $this->delete    = String::toBoolean(Arr::getValue($config, 'delete', ''), false);
-            $this->isDirSync = String::toBoolean(Arr::getValue($config, 'dirsync', ''), false);
+            $this->excludes  = Util\String::toList(Util\Arr::getValue($options, 'exclude', ''), ':');
+            $this->delete    = Util\String::toBoolean(Util\Arr::getValue($options, 'delete', ''), false);
+            $this->isDirSync = Util\String::toBoolean(Util\Arr::getValue($options, 'dirsync', ''), false);
+        }
+    }
+
+    /**
+     * Search for rsync command.
+     *
+     * @param array $conf
+     */
+    protected function setupRsync(array $conf)
+    {
+        if (empty($this->binary)) {
+            $this->binary = Util\Cli::detectCmdLocation(
+                'rsync',
+                Util\Arr::getValue($conf, 'pathToRsync')
+            );
         }
     }
 
@@ -111,55 +128,76 @@ class Rsync extends Cli implements Sync
      */
     public function sync(Target $target, Result $result)
     {
-        $rsync = new Cmd(CliUtil::detectCmdLocation('rsync'));
-
         if ($this->args) {
             // pro mode define all arguments yourself
             // WARNING! no escaping is done by phpbu
             $result->debug('WARNING: phpbu uses your rsync args without escaping');
-            $rsync->addOption($this->replaceTargetPlaceholder($this->args, $target));
-        } else {
-            // std err > dev null
-            $rsync->silence();
-
-            $targetFile = $target->getPathname();
-            $targetDir  = dirname($targetFile);
-
-            // use archive mode, verbose and compress if not already done
-            $options = '-av' . ($target->shouldBeCompressed() ? '' : 'z');
-            $rsync->addOption($options);
-
-            if (count($this->excludes)) {
-                foreach ($this->excludes as $ex) {
-                    $rsync->addOption('--exclude', $ex);
-                }
-            }
-
-            // source handling
-            if ($this->isDirSync) {
-                // sync the whole folder
-                // delete remote files as well?
-                if ($this->delete) {
-                    $rsync->addOption('--delete');
-                }
-                $rsync->addArgument($targetDir);
-            } else {
-                // sync just the created backup
-                $rsync->addArgument($targetFile);
-            }
-
-            // target handling
-            // get rsync host string
-            $syncTarget = $this->getRsyncHostString();
-            // remote path
-            $syncTarget .= $this->path;
-
-            $rsync->addArgument($syncTarget);
         }
-        // add some debug output
-        $result->debug((string) $rsync);
+        $exec  = $this->getExec($target);
+        $rsync = $this->execute($exec);
 
-        $this->execute($rsync);
+        $result->debug($rsync->getCmd());
+
+        if (!$rsync->wasSuccessful()) {
+            throw new Exception('rsync failed: ' . PHP_EOL . $rsync->getOutputAsString());
+        }
+    }
+
+    /**
+     * Create the Exec to run the 'rsync' command.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Backup\Cli\Exec
+     */
+    public function getExec(Target $target)
+    {
+        if (null == $this->exec) {
+            $this->exec = new Exec();
+            $rsync      = new Cmd($this->binary);
+            $this->exec->addCommand($rsync);
+
+            if ($this->args) {
+                $rsync->addOption($this->replaceTargetPlaceholder($this->args, $target));
+            } else {
+                // std err > dev null
+                $rsync->silence();
+
+                $targetFile = $target->getPathname();
+                $targetDir = dirname($targetFile);
+
+                // use archive mode, verbose and compress if not already done
+                $options = '-av' . ($target->shouldBeCompressed() ? '' : 'z');
+                $rsync->addOption($options);
+
+                if (count($this->excludes)) {
+                    foreach ($this->excludes as $ex) {
+                        $rsync->addOption('--exclude', $ex);
+                    }
+                }
+
+                // source handling
+                if ($this->isDirSync) {
+                    // sync the whole folder
+                    // delete remote files as well?
+                    if ($this->delete) {
+                        $rsync->addOption('--delete');
+                    }
+                    $rsync->addArgument($targetDir);
+                } else {
+                    // sync just the created backup
+                    $rsync->addArgument($targetFile);
+                }
+
+                // target handling
+                // get rsync host string
+                $syncTarget = $this->getRsyncHostString();
+                // remote path
+                $syncTarget .= $this->path;
+
+                $rsync->addArgument($syncTarget);
+            }
+        }
+        return $this->exec;
     }
 
     /**

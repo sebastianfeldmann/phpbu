@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
+use phpbu\App\Backup\Cli\Binary;
 use phpbu\App\Backup\Cli\Cmd;
 use phpbu\App\Backup\Cli\Exec;
 use phpbu\App\Backup\Source;
@@ -9,7 +10,7 @@ use phpbu\App\Exception;
 use phpbu\App\Result;
 use phpbu\App\Util;
 
-class Tar extends Cli implements Source
+class Tar extends Binary implements Source
 {
     /**
      * Show stdErr
@@ -91,7 +92,7 @@ class Tar extends Cli implements Source
         $compressA = $target->shouldBeCompressed();
         $exec      = $this->getExec($target);
         $compressB = $target->shouldBeCompressed();
-        $tar       = $this->execute($exec, $target, false);
+        $tar       = $this->execute($exec);
 
         // maybe compression got deactivated because of an invalid compressor
         if ($compressA != $compressB) {

@@ -1,13 +1,11 @@
 <?php
-namespace phpbu\App\Backup\Source;
+namespace phpbu\App\Backup\Cli;
 
-use phpbu\App\Backup\Cli\Cmd;
-use phpbu\App\Backup\Cli\Exec;
-use phpbu\App\Backup\Cli\Result;
+use phpbu\App\Backup\Compressor;
 use phpbu\App\Backup\Target;
 
 /**
- * Cli Runner
+ * Execute Binary
  *
  * @package    phpbu
  * @subpackage Backup
@@ -15,9 +13,9 @@ use phpbu\App\Backup\Target;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://phpbu.de/
- * @since      Class available since Release 1.0.3
+ * @since      Class available since Release 1.3.0
  */
-abstract class Cli
+abstract class Binary
 {
     /**
      * Path to command
@@ -36,31 +34,29 @@ abstract class Cli
     /**
      * Executes the cli commands and handles compression
      *
-     * @param  \phpbu\App\Backup\Cli\Exec $exec
-     * @param  \phpbu\App\Backup\Target   $target
-     * @param  bool                       $compressOutput
+     * @param  \phpbu\App\Backup\Cli\Exec   $exec
+     * @param  string                       $redirect
+     * @param  \phpbu\App\Backup\Compressor $compressor
      * @return \phpbu\App\Backup\Cli\Result
      * @throws \phpbu\App\Exception
      */
-    protected function execute(Exec $exec, Target $target, $compressOutput = true)
+    protected function execute(Exec $exec, $redirect = null, Compressor $compressor = null)
     {
         /** @var \phpbu\App\Backup\Cli\Result $res */
-        $res    = $exec->execute($compressOutput ? $target->getPathnamePlain() : null);
+        $res    = $exec->execute($redirect);
         $code   = $res->getCode();
         $cmd    = $res->getCmd();
         $output = $res->getOutput();
 
         if ($code == 0) {
             // run the compressor command
-            if ($compressOutput && $target->shouldBeCompressed()) {
+            if (null !== $compressor) {
                 // compress the generated output with configured compressor
-                $res = $this->compressOutput($target);
+                $res = $this->compressOutput($redirect, $compressor);
 
                 if ($res->getCode() !== 0) {
                     // remove compressed file with errors
-                    if ($target->fileExists()) {
-                        $target->unlink();
-                    }
+                    $this->unlinkErrorFile($redirect . '.' . $compressor->getSuffix());
                 }
 
                 $cmd   .= PHP_EOL . $res->getCmd();
@@ -69,9 +65,7 @@ abstract class Cli
             }
         } else {
             // remove file with errors
-            if ($target->fileExists(true)) {
-                $target->unlink(true);
-            }
+            $this->unlinkErrorFile($redirect);
         }
 
         return new Result($cmd, $code, $output);
@@ -80,13 +74,13 @@ abstract class Cli
     /**
      * Compress the generated output.
      *
-     * @param  \phpbu\App\Backup\Target Target $target
+     * @param  string $file
+     * @param  \phpbu\App\Backup\Compressor
      * @return \phpbu\App\Backup\Cli\Result
      */
-    protected function compressOutput(Target $target)
+    protected function compressOutput($file, $compressor)
     {
-        $exec = $target->getCompressor()
-                       ->getExec($target->getPathnamePlain(), array('-f'));
+        $exec = $compressor->getExec($file, array('-f'));
 
         $old = error_reporting(0);
         $res = $exec->execute();
@@ -132,6 +126,34 @@ abstract class Cli
             } else {
                 $cmd->addOption($option);
             }
+        }
+    }
+
+    /**
+     * Replaces %TARGET_DIR% and %TARGET_FILE% in given string.
+     *
+     * @param  string $string
+     * @param  Target $target
+     * @return string
+     */
+    protected function replaceTargetPlaceholder($string, Target $target)
+    {
+        $targetFile = $target->getPathname();
+        $targetDir  = dirname($targetFile);
+        $search     = array('%TARGET_DIR%', '%TARGET_FILE%');
+        $replace    = array($targetDir, $targetFile);
+        return str_replace($search, $replace, $string);
+    }
+
+    /**
+     * Remove file if it exists.
+     *
+     * @param string $file
+     */
+    protected function unlinkErrorFile($file)
+    {
+        if (file_exists($file) && !is_dir($file)) {
+            unlink($file);
         }
     }
 }
