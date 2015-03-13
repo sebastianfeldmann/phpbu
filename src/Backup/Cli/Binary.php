@@ -32,6 +32,20 @@ abstract class Binary
     protected $exec;
 
     /**
+     * Optional command locations
+     *
+     * @var array
+     */
+    private static $optionalCommandLocations = array(
+        'mongodump' => array(),
+        'mysqldump' => array(
+            '/usr/local/mysql/bin/mysqldump', // Mac OS X
+            '/usr/mysql/bin/mysqldump',       // Linux
+        ),
+        'tar'       => array(),
+    );
+
+    /**
      * Executes the cli commands and handles compression
      *
      * @param  \phpbu\App\Backup\Cli\Exec   $exec
@@ -155,5 +169,27 @@ abstract class Binary
         if (file_exists($file) && !is_dir($file)) {
             unlink($file);
         }
+    }
+
+    /**
+     * Adds a new 'path' to the list of optional command locations.
+     *
+     * @param string $command
+     * @param string $path
+     */
+    public static function addCommandLocation($command, $path)
+    {
+        self::$optionalCommandLocations[$command][] = $path;
+    }
+
+    /**
+     * Returns the list of optional 'mysqldump' locations.
+     *
+     * @param  string $command
+     * @return array
+     */
+    public static function getCommandLocations($command)
+    {
+        return isset(self::$optionalCommandLocations[$command]) ? self::$optionalCommandLocations[$command] : array();
     }
 }

@@ -116,16 +116,6 @@ class Mysqldump extends Binary implements Source
     private $validateConnection;
 
     /**
-     * Optional 'mysqldump' command locations
-     *
-     * @var array
-     */
-    private static $optionalCommandLocations = array(
-        '/usr/local/mysql/bin/mysqldump', // Mac OS X
-        '/usr/mysql/bin/mysqldump',       // Linux
-    );
-
-    /**
      * Setup.
      *
      * @see    \phpbu\App\Backup\Source
@@ -158,7 +148,7 @@ class Mysqldump extends Binary implements Source
             $this->binary = Util\Cli::detectCmdLocation(
                 'mysqldump',
                 Util\Arr::getValue($conf, 'pathToMysqldump'),
-                self::$optionalCommandLocations
+                Binary::getCommandLocations('mysqldump')
             );
         }
     }
@@ -303,25 +293,5 @@ class Mysqldump extends Binary implements Source
             $mysqli->close();
             unset($mysqli);
         }
-    }
-
-    /**
-     * Adds a new 'path' to the list of optional command locations.
-     *
-     * @param string $path
-     */
-    public static function addCommandLocation($path)
-    {
-        self::$optionalCommandLocations[] = $path;
-    }
-
-    /**
-     * Returns the list of optional 'mysqldump' locations.
-     *
-     * @return array
-     */
-    public static function getCommandLocations()
-    {
-        return self::$optionalCommandLocations;
     }
 }

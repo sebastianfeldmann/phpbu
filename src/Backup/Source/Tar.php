@@ -71,7 +71,11 @@ class Tar extends Binary implements Source
     protected function setupTar(array $conf)
     {
         if (empty($this->binary)) {
-            $this->binary = Util\Cli::detectCmdLocation('tar', Util\Arr::getValue($conf, 'pathToTar'));
+            $this->binary = Util\Cli::detectCmdLocation(
+                'tar',
+                Util\Arr::getValue($conf, 'pathToTar'),
+                Binary::getCommandLocations('tar')
+            );
         }
     }
 

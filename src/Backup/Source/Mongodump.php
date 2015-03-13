@@ -148,7 +148,11 @@ class Mongodump extends Binary implements Source
     protected function setupMongodump(array $conf)
     {
         if (empty($this->binary)) {
-            $this->binary = Util\Cli::detectCmdLocation('mongodump', Util\Arr::getValue($conf, 'pathToMongodump'));
+            $this->binary = Util\Cli::detectCmdLocation(
+                'mongodump',
+                Util\Arr::getValue($conf, 'pathToMongodump'),
+                Binary::getCommandLocations('mongodump')
+            );
         }
     }
 

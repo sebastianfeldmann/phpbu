@@ -110,6 +110,30 @@ class BinaryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Binary::getCommandLocations
+     */
+    public function testCommandLocationsDefault()
+    {
+        $list = Binary::getCommandLocations('tar');
+        $this->assertEquals(0, count($list));
+
+        $list = Binary::getCommandLocations('mysqldump');
+        $this->assertEquals(2, count($list));
+    }
+
+    /**
+     * Tests Binary::getCommandLocations
+     */
+    public function testAddCommandLocations()
+    {
+        Binary::addCommandLocation('mongodump', '/foo/mongodump');
+        $list = Binary::getCommandLocations('mongodump');
+
+        $this->assertEquals(1, count($list));
+        $this->assertEquals('/foo/mongodump', $list[0]);
+    }
+
+    /**
      * Create Target Mock.
      *
      * @return \phpbu\App\Backup\Target
