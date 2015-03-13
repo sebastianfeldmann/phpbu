@@ -67,17 +67,18 @@ abstract class Cli
         // explicit path given, so check it out
         if (null !== $path) {
             $command = $path . DIRECTORY_SEPARATOR . $cmd;
-            if (!is_executable($command)) {
+            $bin     = self::isExecutable($command);
+            if (null === $bin) {
                 throw new RuntimeException(sprintf('wrong path specified for \'%s\': %s', $cmd, $path));
             }
-            return $command;
+            return $bin;
         }
 
         // on nx systems use 'which' command.
         if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
             $command = `which $cmd`;
             $bin     = self::isExecutable($command);
-            if ($bin) {
+            if (null !== $bin) {
                 return $bin;
             }
         }
@@ -87,7 +88,7 @@ abstract class Cli
         foreach ($pathList as $path) {
             $command = $path . DIRECTORY_SEPARATOR . $cmd;
             $bin     = self::isExecutable($command);
-            if ($bin) {
+            if (null !== $bin) {
                 return $bin;
             }
         }
@@ -96,7 +97,7 @@ abstract class Cli
         foreach ($optionalLocations as $path) {
             $command = $path . DIRECTORY_SEPARATOR . $cmd;
             $bin     = self::isExecutable($command);
-            if ($bin) {
+            if (null !== $bin) {
                 return $bin;
             }
         }
