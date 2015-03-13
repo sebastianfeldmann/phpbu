@@ -38,14 +38,9 @@ class CliTest extends \PHPUnit_Framework_TestCase
      */
     public function testDetectCmdFailWithPath()
     {
-        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-            // can't be tested on windows system
-            $this->assertTrue(true);
-        } else {
-            // assume ls should be there
-            $cmd = Cli::detectCmdLocation('someStupidCommand', '/tmp');
-            $this->assertFalse(true, $cmd . ' should not be found');
-        }
+        // assume ls should be there
+        $cmd = Cli::detectCmdLocation('someStupidCommand', '/tmp');
+        $this->assertFalse(true, $cmd . ' should not be found');
     }
 
     /**
@@ -161,6 +156,39 @@ class CliTest extends \PHPUnit_Framework_TestCase
             array('\\foo\\bar', true),
             array('..\\foo', false),
         );
+    }
+
+    /**
+     * Tests Cli::toAbsolutePath
+     */
+    public function testToAbsolutePathWIthIncludePath()
+    {
+        $filesDir = realpath(__DIR__ . '/../../_files/conf');
+        set_include_path(get_include_path() . PATH_SEPARATOR . $filesDir);
+        $res = Cli::toAbsolutePath('config-valid.xml', '', true);
+
+
+        $this->assertEquals($filesDir . '/config-valid.xml', $res);
+    }
+
+    /**
+     * Tests Cli::registerBase
+     *
+     * @expectedException \RuntimeException
+     */
+    public function testRegisterBaseNotAbsolute()
+    {
+        Cli::registerBase('name', './foo');
+    }
+
+    /**
+     * Tests Cli::registerBase
+     *
+     * @expectedException \RuntimeException
+     */
+    public function testGetBaseNotRegistered()
+    {
+        Cli::getBase('fooish');
     }
 
     /**
