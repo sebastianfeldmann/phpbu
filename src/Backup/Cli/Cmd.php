@@ -56,13 +56,14 @@ class Cmd
     }
 
     /**
-     * Silent setter
+     * Silence the 'Cmd' by redirecting its stdErr output to /dev/null.
+     * The silence feature is disabled for Windows system.
      *
      * @param boolean $bool
      */
     public function silence($bool = true)
     {
-        $this->isSilent = $bool;
+        $this->isSilent = $bool && !defined('PHP_WINDOWS_VERSION_BUILD');
     }
 
     /**
