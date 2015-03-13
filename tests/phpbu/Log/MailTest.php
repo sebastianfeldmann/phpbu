@@ -2,7 +2,7 @@
 namespace phpbu\App\Log;
 
 /**
- * Array utility test
+ * Mail Test
  *
  * @package    phpbu
  * @subpackage tests
@@ -103,10 +103,8 @@ class MailTest extends \PHPUnit_Framework_TestCase
      */
     public function testSequenceOk()
     {
-        $appResult = $this->getAppResultMock(true);
-        $appResult->expects($this->once())->method('wasSuccessful')->willReturn(true);
-        $appResult->expects($this->once())->method('noneSkipped')->willReturn(true);
-        $appResult->expects($this->once())->method('wasSuccessful')->willReturn(true);
+        $appResult = $this->getAppResultMock();
+        $appResult->expects($this->once())->method('allOk')->willReturn(true);
         $appResult->method('getBackups')->willReturn(array());
         $appResult->expects($this->once())->method('getErrors')->willReturn(array());
 
@@ -132,11 +130,146 @@ class MailTest extends \PHPUnit_Framework_TestCase
         $mail->phpbuEnd($appResult);
     }
 
+    /**
+     * Tests Mail with a successful backup.
+     */
+    public function testBackupOk()
+    {
+        $backup = $this->getBackupResultMock();
+        $backup->method('getName')->willReturn('backup');
+        $backup->method('allOk')->willReturn(true);
+        $backup->method('checkCount')->willReturn(0);
+        $backup->method('checkCountFailed')->willReturn(0);
+        $backup->method('syncCount')->willReturn(0);
+        $backup->method('syncCountSkipped')->willReturn(0);
+        $backup->method('syncCountFailed')->willReturn(0);
+        $backup->method('cleanupCount')->willReturn(0);
+        $backup->method('cleanupCountSkipped')->willReturn(0);
+        $backup->method('cleanupCountFailed')->willReturn(0);
+
+        $app = $this->getAppResultMock();
+        $app->expects($this->exactly(2))->method('allOk')->willReturn(true);
+        $app->method('getBackups')->willReturn(array($backup));
+        $app->expects($this->once())->method('getErrors')->willReturn(array());
+
+        $mail = new Mail();
+        $mail->setup(array('recipients' => 'test@example.com', 'transport' => 'null'));
+
+        $mail->phpbuStart(array());
+        $mail->backupStart(array());
+        $mail->backupEnd(array());
+        $mail->phpbuEnd($app);
+    }
+
+    /**
+     * Tests Mail with skipped or failed Syncs or Cleanups.
+     */
+    public function testBackupOkButSkipsOrFails()
+    {
+        $backup = $this->getBackupResultMock();
+        $backup->method('getName')->willReturn('backup');
+        $backup->method('allOk')->willReturn(false);
+        $backup->method('okButSkipsOrFails')->willReturn(true);
+        $backup->method('checkCount')->willReturn(0);
+        $backup->method('checkCountFailed')->willReturn(0);
+        $backup->method('syncCount')->willReturn(1);
+        $backup->method('syncCountSkipped')->willReturn(0);
+        $backup->method('syncCountFailed')->willReturn(1);
+        $backup->method('cleanupCount')->willReturn(0);
+        $backup->method('cleanupCountSkipped')->willReturn(0);
+        $backup->method('cleanupCountFailed')->willReturn(0);
+
+        $app = $this->getAppResultMock();
+        $app->expects($this->exactly(2))->method('allOk')->willReturn(false);
+        $app->expects($this->once())->method('backupOkButSkipsOrFails')->willReturn(true);
+        $app->method('getBackups')->willReturn(array($backup));
+        $app->expects($this->once())->method('getErrors')->willReturn(array());
+
+        $mail = new Mail();
+        $mail->setup(array('recipients' => 'test@example.com', 'transport' => 'null'));
+
+        $mail->phpbuStart(array());
+        $mail->backupStart(array());
+        $mail->backupEnd(array());
+        $mail->phpbuEnd($app);
+    }
+
+    /**
+     * Tests Mail failed Backup.
+     */
+    public function testBackupFailed()
+    {
+        $backup = $this->getBackupResultMock();
+        $backup->method('getName')->willReturn('backup');
+        $backup->method('allOk')->willReturn(false);
+        $backup->method('okButSkipsOrFails')->willReturn(false);
+        $backup->method('checkCount')->willReturn(0);
+        $backup->method('checkCountFailed')->willReturn(0);
+        $backup->method('syncCount')->willReturn(1);
+        $backup->method('syncCountSkipped')->willReturn(0);
+        $backup->method('syncCountFailed')->willReturn(1);
+        $backup->method('cleanupCount')->willReturn(0);
+        $backup->method('cleanupCountSkipped')->willReturn(0);
+        $backup->method('cleanupCountFailed')->willReturn(0);
+
+        $e = $this->getExceptionMock('test', 0);
+
+        $app = $this->getAppResultMock();
+        $app->expects($this->exactly(2))->method('allOk')->willReturn(false);
+        $app->expects($this->once())->method('backupOkButSkipsOrFails')->willReturn(false);
+        $app->method('getBackups')->willReturn(array($backup));
+        $app->expects($this->once())->method('getErrors')->willReturn(array($e));
+
+        $mail = new Mail();
+        $mail->setup(array('recipients' => 'test@example.com', 'transport' => 'null'));
+
+        $mail->phpbuStart(array());
+        $mail->backupStart(array());
+        $mail->backupEnd(array());
+        $mail->phpbuEnd($app);
+    }
+
+    /**
+     * Return App Result mock.
+     *
+     * @return \phpbu\App\Result
+     */
     public function getAppResultMock()
     {
         $appResult = $this->getMockBuilder('\\phpbu\\App\\Result')
                           ->disableOriginalConstructor()
                           ->getMock();
         return $appResult;
+    }
+
+    /**
+     * Return Backup Result mock.
+     *
+     * @return \phpbu\App\Result\Backup
+     */
+    public function getBackupResultMock()
+    {
+        $backup = $this->getMockBuilder('\\phpbu\\App\\Result\\Backup')
+                       ->disableOriginalConstructor()
+                       ->getMock();
+        return $backup;
+    }
+
+    /**
+     * Return Backup Result mock.
+     *
+     * @param  string $msg
+     * @param  string $code
+     * @return \phpbu\App\Result\Backup
+     */
+    public function getExceptionMock($msg, $code)
+    {
+        $e = $this->getMockBuilder('\\Exception')
+                  ->disableOriginalConstructor()
+                  ->getMock();
+
+        $e->method('getMessage')->willReturn($msg);
+        $e->method('getCode')->willReturn($code);
+        return $e;
     }
 }

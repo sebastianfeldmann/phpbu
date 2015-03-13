@@ -142,7 +142,7 @@ class Mail implements Listener, Logger
      */
     public function phpbuEnd(Result $result)
     {
-        $allGood = $result->wasSuccessful() && $result->noneSkipped() && $result->noneFailed();
+        $allGood = $result->allOk();
 
         if (!$this->sendOnlyOnError || !$allGood) {
             $header  = $this->getHeaderHtml($result);
