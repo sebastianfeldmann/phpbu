@@ -265,6 +265,28 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Mysqldump::getCommandLocations
+     */
+    public function testCommandLocationsDefault()
+    {
+        $list = Mysqldump::getCommandLocations();
+
+        $this->assertEquals(2, count($list));
+    }
+
+    /**
+     * Tests Mysqldump::getCommandLocations
+     */
+    public function testAddCommandLocations()
+    {
+        Mysqldump::addCommandLocation('/foo/mysql.exe');
+        $list = Mysqldump::getCommandLocations();
+
+        $this->assertEquals(3, count($list));
+        $this->assertEquals('/foo/mysql.exe', $list[2]);
+    }
+
+    /**
      * Create Cli\Result mock.
      *
      * @param  integer $code
