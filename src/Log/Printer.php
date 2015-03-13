@@ -81,7 +81,7 @@ class Printer
     }
 
     /**
-     * Flush buffer, optionally tidy up HTML, and close output if it's not to a php stream
+     * Flush buffer, optionally tidy up HTML, and close output if it's not to a php stream.
      */
     public function flush()
     {
