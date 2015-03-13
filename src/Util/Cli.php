@@ -84,7 +84,7 @@ abstract class Cli
         }
 
         // checking environment variable.
-        $pathList = explode(PATH_SEPARATOR, $_SERVER['PATH']);
+        $pathList = explode(PATH_SEPARATOR, self::getEnvPath());
         foreach ($pathList as $path) {
             $command = $path . DIRECTORY_SEPARATOR . $cmd;
             $bin     = self::isExecutable($command);
@@ -102,6 +102,23 @@ abstract class Cli
             }
         }
         throw new RuntimeException(sprintf('\'%s\' was nowhere to be found please specify the correct path', $cmd));
+    }
+
+    /**
+     * Return local $PATH variable.
+     *
+     * @return string
+     * @throws \RuntimeException
+     */
+    public static function getEnvPath()
+    {
+        // check for unix and windows case $_SERVER index
+        foreach (array('PATH', 'Path', 'path') as $index) {
+            if (isset($_SERVER[$index])) {
+                return $_SERVER[$index];
+            }
+        }
+        throw new RuntimeException('cant find local PATH variable');
     }
 
     /**
