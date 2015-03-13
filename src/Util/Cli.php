@@ -17,6 +17,43 @@ use RuntimeException;
 abstract class Cli
 {
     /**
+     * List of paths
+     *
+     * @var array
+     */
+    private static $basePaths = array();
+
+    /**
+     * Register a base path.
+     *
+     * @param  string $name
+     * @param  string $path
+     * @throws \RuntimeException
+     */
+    public static function registerBase($name, $path)
+    {
+        if (!self::isAbsolutePath($path)) {
+            throw new RuntimeException(sprintf('path has to be absolute: %s', $path));
+        }
+        self::$basePaths[$name] = $path;
+    }
+
+    /**
+     * Retrieve a registered path.
+     *
+     * @param  string $name
+     * @return string array
+     * @throws \RuntimeException
+     */
+    public static function getBase($name)
+    {
+        if (!isset(self::$basePaths[$name])) {
+            throw new RuntimeException(sprintf('base not registered: %s', $name));
+        }
+        return self::$basePaths[$name];
+    }
+
+    /**
      * Detect a given commands location.
      *
      * @param  string $cmd               The command to be located
@@ -39,8 +76,9 @@ abstract class Cli
         // on nx systems use 'which' command.
         if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
             $command = `which $cmd`;
-            if (is_executable($command)) {
-                return $command;
+            $bin     = self::isExecutable($command);
+            if ($bin) {
+                return $bin;
             }
         }
 
@@ -48,19 +86,43 @@ abstract class Cli
         $pathList = explode(PATH_SEPARATOR, $_SERVER['PATH']);
         foreach ($pathList as $path) {
             $command = $path . DIRECTORY_SEPARATOR . $cmd;
-            if (is_executable($command)) {
-                return $command;
+            $bin     = self::isExecutable($command);
+            if ($bin) {
+                return $bin;
             }
         }
 
         // some more paths we came across that where added manually
         foreach ($optionalLocations as $path) {
             $command = $path . DIRECTORY_SEPARATOR . $cmd;
+            $bin     = self::isExecutable($command);
+            if ($bin) {
+                return $bin;
+            }
+        }
+        throw new RuntimeException(sprintf('\'%s\' was nowhere to be found please specify the correct path', $cmd));
+    }
+
+    /**
+     * Returns the executable command if the command is executable, null otherwise.
+     * Search for $command.exe on Windows systems.
+     *
+     * @param  string $command
+     * @return string
+     */
+    public static function isExecutable($command)
+    {
+        if (is_executable($command)) {
+            return $command;
+        }
+        // on windows check the .exe suffix
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $command .= '.exe';
             if (is_executable($command)) {
                 return $command;
             }
         }
-        throw new RuntimeException(sprintf('\'%s\' was nowhere to be found please specify the correct path', $cmd));
+        return null;
     }
 
     /**
