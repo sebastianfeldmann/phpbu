@@ -145,11 +145,7 @@ class Mysqldump extends Binary implements Source
     protected function setupMysqldump(array $conf)
     {
         if (empty($this->binary)) {
-            $this->binary = Util\Cli::detectCmdLocation(
-                'mysqldump',
-                Util\Arr::getValue($conf, 'pathToMysqldump'),
-                Binary::getCommandLocations('mysqldump')
-            );
+            $this->binary = $this->detectCommand('mysqldump', Util\Arr::getValue($conf, 'pathToMysqldump'));
         }
     }
 

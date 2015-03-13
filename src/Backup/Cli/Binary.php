@@ -3,6 +3,7 @@ namespace phpbu\App\Backup\Cli;
 
 use phpbu\App\Backup\Compressor;
 use phpbu\App\Backup\Target;
+use phpbu\App\Util\Cli;
 
 /**
  * Execute Binary
@@ -44,6 +45,16 @@ abstract class Binary
         ),
         'tar'       => array(),
     );
+
+    /**
+     * @param  string $cmd
+     * @param  string $path
+     * @return string
+     */
+    protected function detectCommand($cmd, $path = null)
+    {
+        return Cli::detectCmdLocation($cmd, $path, self::getCommandLocations($cmd));
+    }
 
     /**
      * Executes the cli commands and handles compression
