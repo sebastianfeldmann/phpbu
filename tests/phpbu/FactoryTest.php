@@ -3,6 +3,7 @@ namespace phpbu\App;
 
 use phpbu\App\Backup\Check;
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Log\Logger;
@@ -29,7 +30,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         Factory::register('source', 'dummy', '\\phpbu\\App\\phpbuAppFactoryTestSource');
         $source = Factory::createSource('dummy', array());
 
-        $this->assertEquals(get_class($source), 'phpbu\\App\\phpbuAppFactoryTestSource', 'classes should match');
+        $this->assertEquals('phpbu\\App\\phpbuAppFactoryTestSource', get_class($source), 'classes should match');
     }
 
     /**
@@ -39,7 +40,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         $logger = Factory::createLogger('mail', array('recipients' => 'no-reply@phpbu.de'));
 
-        $this->assertEquals(get_class($logger), 'phpbu\\App\\Log\\Mail', 'classes should match');
+        $this->assertEquals('phpbu\\App\\Log\\Mail', get_class($logger), 'classes should match');
     }
 
     /**
@@ -49,7 +50,19 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         $check = Factory::createCheck('sizemin');
 
-        $this->assertEquals(get_class($check), 'phpbu\\App\\Backup\\Check\\SizeMin', 'classes should match');
+        $this->assertEquals('phpbu\\App\\Backup\\Check\\SizeMin', get_class($check), 'classes should match');
+    }
+
+    /**
+     * Tests Factory::createCrypter
+     */
+    public function testCreateCrypter()
+    {
+        Factory::register('crypter', 'dummy', '\\phpbu\\App\\phpbuAppFactoryTestCrypter');
+
+        $crypter = Factory::createCrypter('dummy', array('algorithm' => 'blowfish', 'key' => 'fooBarBaz'));
+
+        $this->assertEquals('phpbu\\App\\phpbuAppFactoryTestCrypter', get_class($crypter), 'classes should match');
     }
 
     /**
@@ -59,7 +72,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         $sync = Factory::createSync('Rsync', array('args' => 'foo'));
 
-        $this->assertEquals(get_class($sync), 'phpbu\\App\\Backup\\Sync\\Rsync', 'classes should match');
+        $this->assertEquals('phpbu\\App\\Backup\\Sync\\Rsync', get_class($sync), 'classes should match');
     }
 
     /**
@@ -69,7 +82,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         $sync = Factory::createCleaner('Capacity', array('size' => '10M'));
 
-        $this->assertEquals(get_class($sync), 'phpbu\\App\\Backup\\Cleaner\\Capacity', 'classes should match');
+        $this->assertEquals('phpbu\\App\\Backup\\Cleaner\\Capacity', get_class($sync), 'classes should match');
     }
 
     /**
@@ -93,7 +106,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
         $dummy = Factory::create('check', 'dummy');
 
-        $this->assertEquals(get_class($dummy), 'phpbu\\App\\phpbuAppFactoryTestCheck', 'Factory should create dummy object');
+        $this->assertEquals('phpbu\\App\\phpbuAppFactoryTestCheck', get_class($dummy), 'Factory should create dummy object');
     }
 
     /**
@@ -123,6 +136,20 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Factory::createSource
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testCreateCrypterThatIsNone()
+    {
+        Factory::register('crypter', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+
+        $crypter = Factory::createCrypter('nothing');
+
+        $this->assertFalse(true, 'Exception should be thrown');
+    }
+
+    /**
      * Tests Factory::createLogger
      *
      * @expectedException \phpbu\App\Exception
@@ -143,7 +170,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateLoggerThatIsLoggerButNoListener()
     {
-        Factory::register('logger', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTesLoggerButNoListener', true);
+        Factory::register('logger', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestLoggerButNoListener', true);
 
         $logger = Factory::createLogger('nothing');
 
@@ -258,7 +285,53 @@ class phpbuAppFactoryTestNothing
 /**
  * Class phpbuAppFactoryTestNothing
  */
-class phpbuAppFactoryTesLoggerButNoListener implements Logger
+class phpbuAppFactoryTestCrypter implements Crypter
+{
+    /**
+     * Do nothing.
+     */
+    public function doNothing()
+    {
+        // do something fooish
+    }
+
+    /**
+     * Setup the Crypter.
+     *
+     * @param array $options
+     */
+    public function setup(array $options = array())
+    {
+        // do something fooish
+    }
+
+    /**
+     * Checks the created backup.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Result
+     * @throws \phpbu\App\Exception
+     */
+    public function crypt(Target $target, Result $result)
+    {
+        // do something fooish
+    }
+
+    /**
+     * Return the encrypted file suffix.
+     *
+     * @return string
+     */
+    public function getSuffix()
+    {
+        return 'mc';
+    }
+}
+
+/**
+ * Class phpbuAppFactoryTestNothing
+ */
+class phpbuAppFactoryTestLoggerButNoListener implements Logger
 {
     /**
      * Setup the logger.
@@ -268,6 +341,16 @@ class phpbuAppFactoryTesLoggerButNoListener implements Logger
     public function setup(array $options)
     {
         // do something fooish
+    }
+
+    /**
+     * Returns an array of event names this subscriber wants to listen to.
+     *
+     * @return array
+     */
+    public static function getSubscribedEvents()
+    {
+        return array();
     }
 }
 

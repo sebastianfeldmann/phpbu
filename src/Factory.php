@@ -3,6 +3,7 @@ namespace phpbu\App;
 
 use phpbu\App\Backup\Check;
 use phpbu\App\Backup\Cleaner;
+use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Log\Logger;
@@ -41,6 +42,9 @@ abstract class Factory
             'sizediffpreviouspercent' => '\\phpbu\\App\\Backup\\Check\\SizeDiffPreviousPercent',
             'sizediffavgpercent'      => '\\phpbu\\App\\Backup\\Check\\SizeDiffAvgPercent',
         ),
+        'crypter'   => array(
+            'mcrypt' => '\\phpbu\\App\\Backup\\Crypter\\Mcrypt',
+        ),
         'sync'    => array(
             'amazons3'  => '\\phpbu\\App\\Backup\\Sync\\AmazonS3',
             'copycom'   => '\\phpbu\\App\\Backup\\Sync\\Copycom',
@@ -59,7 +63,7 @@ abstract class Factory
 
     /**
      * Backup Factory.
-     * Creates 'Source', 'Check', 'Sync' and 'Cleaner' Objects.
+     * Creates 'Source', 'Check', 'Crypter', 'Sync' and 'Cleaner' Objects.
      *
      * @param  string $type
      * @param  string $alias
@@ -134,6 +138,25 @@ abstract class Factory
             throw new Exception(sprintf('Check \'%s\' has to implement the \'Check\' interface', $alias));
         }
         return $check;
+    }
+
+    /**
+     * Crypter Factory.
+     *
+     * @param  string $alias
+     * @param  array  $conf
+     * @throws \phpbu\App\Exception
+     * @return \phpbu\App\Backup\Crypter
+     */
+    public static function createCrypter($alias, $conf = array())
+    {
+        /** @var \phpbu\App\Backup\Crypter $crypter */
+        $crypter = self::create('crypter', $alias);
+        if (!($crypter instanceof Crypter)) {
+            throw new Exception(sprintf('Crypter \'%s\' has to implement the \'Crypter\' interface', $alias));
+        }
+        $crypter->setup($conf);
+        return $crypter;
     }
 
     /**
