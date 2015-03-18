@@ -109,6 +109,20 @@ class Target
     private $compressor;
 
     /**
+     * Should the file be encrypted.
+     *
+     * @var boolean
+     */
+    private $crypt = false;
+
+    /**
+     * File crypter.
+     *
+     * @var \phpbu\App\Backup\Crypter
+     */
+    private $crypter;
+
+    /**
      * Constructor
      *
      * @param  string  $path
@@ -263,11 +277,12 @@ class Target
      */
     public function getFilename($plain = false)
     {
-        return $this->filename . (
-            !$plain && $this->shouldBeCompressed()
-            ? '.' . $this->compressor->getSuffix()
-            : ''
-        );
+        $suffix = '';
+        if (!$plain) {
+            $suffix .= $this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '';
+            $suffix .= $this->shouldBeEncrypted() ? '.' . $this->crypter->getSuffix() : '';
+        }
+        return $this->filename . $suffix;
     }
 
     /**
@@ -346,7 +361,7 @@ class Target
         if (!is_writable($this->getPathname($plain))) {
             throw new Exception(sprintf('can\t delete file \'%s\'', $this->getFilename($plain)));
         }
-        $this->size = filesize($this->getPathname($plain));
+        unlink($this->getPathname($plain));
     }
 
     /**
@@ -472,6 +487,58 @@ class Target
     public function shouldBeCompressed()
     {
         return $this->compress !== false;
+    }
+
+    /**
+     * Disable file encryption.
+     */
+    public function disableEncryption()
+    {
+        $this->crypt = false;
+    }
+
+    /**
+     * Enable file compression.
+     *
+     * @throws \phpbu\App\Exception
+     */
+    public function enableEncryption()
+    {
+        if (null == $this->crypter) {
+            throw new Exception('can\'t enable encryption without a crypter');
+        }
+        $this->crypt = true;
+    }
+
+    /**
+     * Crypter setter.
+     *
+     * @param \phpbu\App\Backup\Crypter $crypter
+     */
+    public function setCrypter(Crypter $crypter)
+    {
+        $this->crypter = $crypter;
+        $this->crypt   = true;
+    }
+
+    /**
+     * Crypter getter.
+     *
+     * @return \phpbu\App\Backup\Crypter
+     */
+    public function getCrypter()
+    {
+        return $this->crypter;
+    }
+
+    /**
+     * Is a crypter set?
+     *
+     * @return boolean
+     */
+    public function shouldBeEncrypted()
+    {
+        return $this->crypt !== false;
     }
 
     /**

@@ -201,6 +201,70 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Target::disableEncryption
+     */
+    public function testDisableEnableEncryption()
+    {
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setCrypter($this->getCrypterMock('nc'));
+        $target->disableEncryption();
+
+        $this->assertEquals('2014-test-01.txt', $target->getFilename());
+
+        $target->enableEncryption();
+
+        $this->assertEquals('2014-test-01.txt.nc', $target->getFilename());
+    }
+
+    /**
+     * Tests Target::enableEncryption
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testEnableEncryptionFail()
+    {
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->enableEncryption();
+
+        $this->assertFalse(true, 'exception should be thrown');
+    }
+
+    /**
+     * Tests Target::getCrypter
+     */
+    public function testGetCrypter()
+    {
+        $mock     = $this->getCrypterMock('nc');
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+
+        $target->setCrypter($mock);
+
+        $crypter = $target->getCrypter($mock);
+
+        $this->assertEquals($mock, $crypter);
+    }
+
+    /**
+     * Tests Target::disableEncryption
+     */
+    public function testEnableCompressionAndEncryption()
+    {
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip', 'application/zip'));
+        $target->setCrypter($this->getCrypterMock('nc'));
+
+        $this->assertEquals('2014-test-01.txt.zip.nc', $target->getFilename());
+    }
+
+    /**
      * Test date placeholder replacement in path.
      */
     public function testGetPath()
@@ -210,6 +274,22 @@ class TargetTest extends \PHPUnit_Framework_TestCase
         $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
 
         $this->assertEquals('/tmp/12/01', $target->getPath());
+    }
+
+    /**
+     * Tests Target::getPathnamePlain
+     */
+    public function testGetPathnamePlain()
+    {
+        $path     = '/tmp/%m/%d';
+        $filename = 'foo.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+
+        $this->assertEquals('/tmp/12/01/foo.txt', $target->getPathnamePlain());
+
+        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip', 'application/zip'));
+
+        $this->assertEquals('/tmp/12/01/foo.txt', $target->getPathnamePlain());
     }
 
     /**
@@ -322,5 +402,21 @@ class TargetTest extends \PHPUnit_Framework_TestCase
         $compressorStub->method('getMimeType')->willReturn($mimeType);
 
         return $compressorStub;
+    }
+
+    /**
+     * Create Compressor Mock.
+     *
+     * @param  string $suffix
+     * @return \phpbu\App\Backup\Crypter
+     */
+    protected function getCrypterMock($suffix)
+    {
+        $crypterStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Crypter')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        $crypterStub->method('getSuffix')->willReturn($suffix);
+
+        return $crypterStub;
     }
 }
