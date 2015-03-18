@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App;
+
 use phpbu\App\Backup\Check\Exception;
 
 /**
@@ -54,12 +55,7 @@ class ResultTest extends \PHPUnit_Framework_TestCase
         $check   = array('type' => 'sizemin');
         $sync    = array('type' => 'rsync');
         $cleanup = array('type' => 'capacity');
-
-        $result   = new Result();
-        $listener = $this->getMockBuilder('\\phpbu\\App\\Result\\PrinterCli')
-                         ->disableOriginalConstructor()
-                         ->getMock();
-        $result->addListener($listener);
+        $result  = new Result();
         $result->phpbuStart(array());
         $result->backupStart($backup);
         $result->checkStart($check);
@@ -95,11 +91,7 @@ class ResultTest extends \PHPUnit_Framework_TestCase
         $sync    = array('type' => 'rsync');
         $cleanup = array('type' => 'capacity');
 
-        $result   = new Result();
-        $listener = $this->getMockBuilder('\\phpbu\\App\\Result\\PrinterCli')
-                         ->disableOriginalConstructor()
-                         ->getMock();
-        $result->addListener($listener);
+        $result  = new Result();
         $result->phpbuStart(array());
         $result->backupStart($backup);
         $result->checkStart($check);
@@ -131,11 +123,7 @@ class ResultTest extends \PHPUnit_Framework_TestCase
         $sync    = array('type' => 'rsync');
         $cleanup = array('type' => 'capacity');
 
-        $result   = new Result();
-        $listener = $this->getMockBuilder('\\phpbu\\App\\Result\\PrinterCli')
-                         ->disableOriginalConstructor()
-                         ->getMock();
-        $result->addListener($listener);
+        $result  = new Result();
         $result->phpbuStart(array());
         $result->backupStart($backup);
         $result->checkStart($check);
@@ -166,12 +154,8 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupFailed()
     {
-        $backup   = array('name' => 'test-backup');
-        $result   = new Result();
-        $listener = $this->getMockBuilder('\\phpbu\\App\\Result\\PrinterCli')
-                         ->disableOriginalConstructor()
-                         ->getMock();
-        $result->addListener($listener);
+        $backup = array('name' => 'test-backup');
+        $result = new Result();
         $result->phpbuStart(array());
         $result->backupStart($backup);
         $result->addError(new Exception('failed'));
@@ -192,13 +176,9 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupFailedOnFailedCheck()
     {
-        $backup   = array('name' => 'test-backup');
-        $check    = array('type' => 'sizemin');
-        $result   = new Result();
-        $listener = $this->getMockBuilder('\\phpbu\\App\\Result\\PrinterCli')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $result->addListener($listener);
+        $backup = array('name' => 'test-backup');
+        $check  = array('type' => 'sizemin');
+        $result = new Result();
         $result->phpbuStart(array());
         $result->backupStart($backup);
         $result->backupEnd($backup);
@@ -223,36 +203,12 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testDebug()
     {
-        $backup   = array('name' => 'test-backup');
-        $result   = new Result();
-        $listener = $this->getMockBuilder('\\phpbu\\App\\Result\\PrinterCli')
-                         ->disableOriginalConstructor()
-                         ->getMock();
-        $listener->expects($this->once())->method('debug');
-
-        $result->addListener($listener);
+        $backup = array('name' => 'test-backup');
+        $result = new Result();
         $result->phpbuStart(array());
         $result->debug('debug');
         $result->backupStart($backup);
         $result->backupEnd($backup);
         $result->phpbuEnd();
-    }
-
-    /**
-     * Tests removeListener.
-     */
-    public function testRemoveListener()
-    {
-        $result   = new Result();
-        $listener = $this->getMockBuilder('\\phpbu\\App\\Result\\PrinterCli')
-                         ->disableOriginalConstructor()
-                         ->getMock();
-
-        $listener->expects($this->exactly(0))->method('debug');
-
-        $result->addListener($listener);
-        $result->removeListener($listener);
-
-        $result->debug('debug');
     }
 }

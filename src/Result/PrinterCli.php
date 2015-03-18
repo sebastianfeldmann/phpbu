@@ -2,6 +2,7 @@
 namespace phpbu\App\Result;
 
 use InvalidArgumentException;
+use phpbu\App\Event;
 use phpbu\App\Listener;
 use phpbu\App\Log\Printer;
 use phpbu\App\Result;
@@ -79,6 +80,13 @@ class PrinterCli extends Printer implements Listener
     private $numChecks = 0;
 
     /**
+     * Amount of executed crypts
+     *
+     * @var integer
+     */
+    private $numCrypts = 0;
+
+    /**
      * Amount of executed Syncs
      *
      * @var integer
@@ -91,6 +99,44 @@ class PrinterCli extends Printer implements Listener
      * @var integer
      */
     private $numCleanups = 0;
+
+    /**
+     * Returns an array of event names this subscriber wants to listen to.
+     *
+     * The array keys are event names and the value can be:
+     *
+     *  * The method name to call (priority defaults to 0)
+     *  * An array composed of the method name to call and the priority
+     *  * An array of arrays composed of the method names to call and respective
+     *    priorities, or 0 if unset
+     *
+     * @return array The event names to listen to
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(
+            'phpbu.debug'           => 'onDebug',
+            'phpbu.app_start'       => 'onPhpbuStart',
+            'phpbu.backup_start'    => 'onBackupStart',
+            'phpbu.backup_failed'   => 'onBackupFailed',
+            'phpbu.backup_end'      => 'onBackupEnd',
+            'phpbu.check_start'     => 'onCheckStart',
+            'phpbu.check_failed'    => 'onCheckFailed',
+            'phpbu.check_end'       => 'onCheckEnd',
+            'phpbu.crypt_start'     => 'onCryptStart',
+            'phpbu.crypt_failed'    => 'onCryptFailed',
+            'phpbu.crypt_end'       => 'onCryptEnd',
+            'phpbu.sync_start'      => 'onSyncStart',
+            'phpbu.sync_skipped'    => 'onSyncSkipped',
+            'phpbu.sync_failed'     => 'onSyncFailed',
+            'phpbu.sync_end'        => 'onSyncEnd',
+            'phpbu.cleanup_start'   => 'onCleanupStart',
+            'phpbu.cleanup_skipped' => 'onCleanupSkipped',
+            'phpbu.cleanup_failed'  => 'onCleanupFailed',
+            'phpbu.cleanup_end'     => 'onCleanupEnd',
+            'phpbu.app_end'         => 'onPhpbuEnd',
+        );
+    }
 
     /**
      * Constructor
@@ -128,11 +174,11 @@ class PrinterCli extends Printer implements Listener
     /**
      * phpbu start event.
      *
-     * @see   \phpbu\App\Listener::phpbuStart()
-     * @param array $settings
+     * @param \phpbu\App\Event\App\Start $event
      */
-    public function phpbuStart($settings)
+    public function onPhpbuStart(Event\App\Start $event)
     {
+        $settings = $event->getConfig();
         $this->write(
             Version::getVersionString() . PHP_EOL .
             PHP_EOL .
@@ -142,24 +188,13 @@ class PrinterCli extends Printer implements Listener
     }
 
     /**
-     * phpbu end event.
-     *
-     * @see   \phpbu\App\Listener::phpbuEnd()
-     * @param \phpbu\App\Result $result
-     */
-    public function phpbuEnd(Result $result)
-    {
-        // do something fooish
-    }
-
-    /**
      * Backup start event.
      *
-     * @see   \phpbu\App\Listener::backupStart()
-     * @param array $backup
+     * @param \phpbu\App\Event\Backup\Start $event
      */
-    public function backupStart($backup)
+    public function onBackupStart(Event\Backup\Start $event)
     {
+        $backup = $event->getConfig();
         $this->numBackups++;
         if ($this->debug) {
             $this->write('create backup (' . $backup['source']['type'] . '): ');
@@ -169,10 +204,9 @@ class PrinterCli extends Printer implements Listener
     /**
      * Backup failed event.
      *
-     * @see   \phpbu\App\Listener::backupFailed()
-     * @param array $backup
+     * @param \phpbu\App\Event\Backup\Failed $event
      */
-    public function backupFailed($backup)
+    public function onBackupFailed(Event\Backup\Failed $event)
     {
         if ($this->debug) {
             $this->writeWithColor(
@@ -185,10 +219,9 @@ class PrinterCli extends Printer implements Listener
     /**
      * Backup end event.
      *
-     * @see   \phpbu\App\Listener::backupEnd()
-     * @param array $backup
+     * @param \phpbu\App\Event\Backup\End $event
      */
-    public function backupEnd($backup)
+    public function onBackupEnd(Event\Backup\End $event)
     {
         if ($this->debug) {
             $this->write('done' . PHP_EOL);
@@ -198,11 +231,11 @@ class PrinterCli extends Printer implements Listener
     /**
      * Check start event.
      *
-     * @see   \phpbu\App\Listener::checkStart()
-     * @param array $check
+     * @param \phpbu\App\Event\Check\Start $event
      */
-    public function checkStart($check)
+    public function onCheckStart(Event\Check\Start $event)
     {
+        $check = $event->getConfig();
         $this->numChecks++;
         if ($this->debug) {
             $this->write('check (' . $check['type'] . '): ');
@@ -212,10 +245,9 @@ class PrinterCli extends Printer implements Listener
     /**
      * Check failed event.
      *
-     * @see   \phpbu\App\Listener::checkFailed()
-     * @param array $check
+     * @param \phpbu\App\Event\Check\Failed $event
      */
-    public function checkFailed($check)
+    public function onCheckFailed(Event\Check\Failed $event)
     {
         if ($this->debug) {
             $this->writeWithColor(
@@ -228,10 +260,9 @@ class PrinterCli extends Printer implements Listener
     /**
      * Check end event.
      *
-     * @see   \phpbu\App\Listener::checkEnd()
-     * @param array $check
+     * @param \phpbu\App\Event\Check\End $event
      */
-    public function checkEnd($check)
+    public function onCheckEnd(Event\Check\End $event)
     {
         if ($this->debug) {
             $this->write('passed' . PHP_EOL);
@@ -239,13 +270,54 @@ class PrinterCli extends Printer implements Listener
     }
 
     /**
+     * Crypt start event.
+     *
+     * @param \phpbu\App\Event\Crypt\Start $event
+     */
+    public function onCryptStart(Event\Crypt\Start $event)
+    {
+        $crypt = $event->getConfig();
+        $this->numCrypts++;
+        if ($this->debug) {
+            $this->write('crypt (' . $crypt['type'] . '): ');
+        }
+    }
+
+    /**
+     * Crypt failed event.
+     *
+     * @param \phpbu\App\Event\Crypt\Failed $event
+     */
+    public function onCryptFailed(Event\Crypt\Failed $event)
+    {
+        if ($this->debug) {
+            $this->writeWithColor(
+                'fg-white, bg-red, bold',
+                'failed'
+            );
+        }
+    }
+
+    /**
+     * Crypt end event.
+     *
+     * @param \phpbu\App\Event\Crypt\End $event
+     */
+    public function onCryptEnd(Event\Crypt\End $event)
+    {
+        if ($this->debug) {
+            $this->write('done' . PHP_EOL);
+        }
+    }
+
+    /**
      * Sync start event.
      *
-     * @see   \phpbu\App\Listener::syncStart()
-     * @param array $sync
+     * @param \phpbu\App\Event\Sync\Start $event
      */
-    public function syncStart($sync)
+    public function onSyncStart(Event\Sync\Start $event)
     {
+        $sync = $event->getConfig();
         $this->numSyncs++;
         if ($this->debug) {
             $this->write('sync start (' . $sync['type'] . '): ');
@@ -255,10 +327,9 @@ class PrinterCli extends Printer implements Listener
     /**
      * Sync skipped event.
      *
-     * @see   \phpbu\App\Listener::syncSkipped()
-     * @param array $sync
+     * @param \phpbu\App\Event\Sync\Skipped $event
      */
-    public function syncSkipped($sync)
+    public function onSyncSkipped(Event\Sync\Skipped $event)
     {
         if ($this->debug) {
             $this->writeWithColor(
@@ -271,10 +342,9 @@ class PrinterCli extends Printer implements Listener
     /**
      * Sync failed event.
      *
-     * @see   \phpbu\App\Listener::syncFailed()
-     * @param array $sync
+     * @param \phpbu\App\Event\Sync\Failed $event
      */
-    public function syncFailed($sync)
+    public function onSyncFailed(Event\Sync\Failed $event)
     {
         if ($this->debug) {
             $this->writeWithColor(
@@ -287,10 +357,9 @@ class PrinterCli extends Printer implements Listener
     /**
      * Sync end event.
      *
-     * @see   \phpbu\App\Listener::syncEnd()
-     * @param array $sync
+     * @param \phpbu\App\Event\Sync\End $event
      */
-    public function syncEnd($sync)
+    public function onSyncEnd(Event\Sync\End $event)
     {
         if ($this->debug) {
             $this->write('done' . PHP_EOL);
@@ -300,11 +369,11 @@ class PrinterCli extends Printer implements Listener
     /**
      * Cleanup start event.
      *
-     * @see   \phpbu\App\Listener::cleanupStart()
-     * @param array $cleanup
+     * @param \phpbu\App\Event\Cleanup\Start $event
      */
-    public function cleanupStart($cleanup)
+    public function onCleanupStart(Event\Cleanup\Start $event)
     {
+        $cleanup = $event->getConfig();
         $this->numCleanups++;
         if ($this->debug) {
             $this->write('cleanup start (' . $cleanup['type'] . '): ');
@@ -314,10 +383,9 @@ class PrinterCli extends Printer implements Listener
     /**
      * Cleanup skipped event.
      *
-     * @see   \phpbu\App\Listener::cleanupSkipped()
-     * @param array $cleanup
+     * @param \phpbu\App\Event\Cleanup\Skipped $event
      */
-    public function cleanupSkipped($cleanup)
+    public function onCleanupSkipped(Event\Cleanup\Skipped $event)
     {
         if ($this->debug) {
             $this->writeWithColor(
@@ -330,10 +398,9 @@ class PrinterCli extends Printer implements Listener
     /**
      * Cleanup failed event.
      *
-     * @see   \phpbu\App\Listener::cleanupFailed()
-     * @param array $cleanup
+     * @param \phpbu\App\Event\Cleanup\Failed $event
      */
-    public function cleanupFailed($cleanup)
+    public function onCleanupFailed(Event\Cleanup\Failed $event)
     {
         if ($this->debug) {
             $this->writeWithColor(
@@ -346,10 +413,9 @@ class PrinterCli extends Printer implements Listener
     /**
      * Cleanup end event.
      *
-     * @see   \phpbu\App\Listener::cleanupEnd()
-     * @param array $cleanup
+     * @param \phpbu\App\Event\Cleanup\End $event
      */
-    public function cleanupEnd($cleanup)
+    public function onCleanupEnd(Event\Cleanup\End $event)
     {
         if ($this->debug) {
             $this->write('done' . PHP_EOL);
@@ -359,14 +425,24 @@ class PrinterCli extends Printer implements Listener
     /**
      * Debugging.
      *
-     * @see   \phpbu\App\Listener::debug()
-     * @param string $msg
+     * @param \phpbu\App\Event\Debug $event
      */
-    public function debug($msg)
+    public function onDebug(Event\Debug $event)
     {
         if ($this->debug) {
-            $this->write($msg . PHP_EOL);
+            $this->write($event->getMessage() . PHP_EOL);
         }
+    }
+
+    /**
+     * phpbu end event.
+     *
+     * @param \phpbu\App\Event\App\End $event
+     */
+    public function onPhpbuEnd(Event\App\End $event)
+    {
+        $result = $event->getResult();
+        $this->printResult($result);
     }
 
     /**

@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Log;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
 /**
  * Cleanup
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Log;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-interface Logger
+interface Logger extends EventSubscriberInterface
 {
     /**
      * Setup the logger.

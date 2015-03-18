@@ -15,6 +15,20 @@ namespace phpbu\App\Log;
 class MailTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * Tests Mail::getSubscribedEvents
+     */
+    public function testGetSubscribedEvents()
+    {
+        $events = Mail::getSubscribedEvents();
+
+        $this->assertTrue(array_key_exists('phpbu.debug', $events));
+        $this->assertTrue(array_key_exists('phpbu.backup_start', $events));
+        $this->assertTrue(array_key_exists('phpbu.check_start', $events));
+
+        $this->assertEquals('onPhpbuEnd', $events['phpbu.app_end']);
+    }
+
+    /**
      * Test Mail::setup
      *
      * @expectedException \phpbu\App\Exception
@@ -111,23 +125,11 @@ class MailTest extends \PHPUnit_Framework_TestCase
         $mail = new Mail();
         $mail->setup(array('recipients' => 'test@example.com', 'transport' => 'null'));
 
-        $mail->phpbuStart(array());
-        $mail->debug('some test');
-        $mail->backupStart(array());
-        $mail->backupFailed(array());
-        $mail->backupEnd(array());
-        $mail->checkStart(array());
-        $mail->checkFailed(array());
-        $mail->checkEnd(array());
-        $mail->syncStart(array());
-        $mail->syncFailed(array());
-        $mail->syncSkipped(array());
-        $mail->syncEnd(array());
-        $mail->cleanupStart(array());
-        $mail->cleanupFailed(array());
-        $mail->cleanupSkipped(array());
-        $mail->cleanupEnd(array());
-        $mail->phpbuEnd($appResult);
+        $mail->onBackupStart($this->getEventMock('Backup\\Start', array()));
+        $mail->onCheckStart($this->getEventMock('Check\\Start', array()));
+        $mail->onSyncStart($this->getEventMock('Sync\\Start', array()));
+        $mail->onCleanupStart($this->getEventMock('Cleanup\\Start', array()));
+        $mail->onPhpbuEnd($this->getEventMock('App\\End', $appResult));
     }
 
     /**
@@ -155,10 +157,8 @@ class MailTest extends \PHPUnit_Framework_TestCase
         $mail = new Mail();
         $mail->setup(array('recipients' => 'test@example.com', 'transport' => 'null'));
 
-        $mail->phpbuStart(array());
-        $mail->backupStart(array());
-        $mail->backupEnd(array());
-        $mail->phpbuEnd($app);
+        $mail->onBackupStart($this->getEventMock('Backup\\Start', array()));
+        $mail->onPhpbuEnd($this->getEventMock('App\\End', $app));
     }
 
     /**
@@ -188,10 +188,8 @@ class MailTest extends \PHPUnit_Framework_TestCase
         $mail = new Mail();
         $mail->setup(array('recipients' => 'test@example.com', 'transport' => 'null'));
 
-        $mail->phpbuStart(array());
-        $mail->backupStart(array());
-        $mail->backupEnd(array());
-        $mail->phpbuEnd($app);
+        $mail->onBackupStart($this->getEventMock('Backup\\Start', array()));
+        $mail->onPhpbuEnd($this->getEventMock('App\\End', $app));
     }
 
     /**
@@ -223,10 +221,8 @@ class MailTest extends \PHPUnit_Framework_TestCase
         $mail = new Mail();
         $mail->setup(array('recipients' => 'test@example.com', 'transport' => 'null'));
 
-        $mail->phpbuStart(array());
-        $mail->backupStart(array());
-        $mail->backupEnd(array());
-        $mail->phpbuEnd($app);
+        $mail->onBackupStart($this->getEventMock('Backup\\Start', array()));
+        $mail->onPhpbuEnd($this->getEventMock('App\\End', $app));
     }
 
     /**
@@ -270,6 +266,32 @@ class MailTest extends \PHPUnit_Framework_TestCase
 
         $e->method('getMessage')->willReturn($msg);
         $e->method('getCode')->willReturn($code);
+        return $e;
+    }
+
+    /**
+     * Create Event Mock.
+     *
+     * @param  string $type
+     * @param  mixed  $arg
+     * @return mixed
+     */
+    public function getEventMock($type, $arg)
+    {
+        $e = $this->getMockBuilder('\\phpbu\\App\\Event\\' . $type)
+                  ->disableOriginalConstructor()
+                  ->getMock();
+        switch ($type) {
+            case 'App\\End':
+                $e->method('getResult')->willReturn($arg);
+                break;
+            case 'Debug':
+                $e->method('getMessage')->willReturn($arg);
+                break;
+            default:
+                $e->method('getConfig')->willReturn($arg);
+                break;
+        }
         return $e;
     }
 }

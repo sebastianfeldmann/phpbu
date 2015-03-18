@@ -2,6 +2,7 @@
 namespace phpbu\App\Log;
 
 use phpbu\App\Exception;
+use phpbu\App\Event;
 use phpbu\App\Listener;
 use phpbu\App\Result;
 
@@ -18,13 +19,32 @@ use phpbu\App\Result;
  */
 class Json extends Printer implements Listener, Logger
 {
-
     /**
      * List of all debug messages
      *
      * @var array
      */
     protected $debug = array();
+
+    /**
+     * Returns an array of event names this subscriber wants to listen to.
+     *
+     * The array keys are event names and the value can be:
+     *
+     *  * The method name to call (priority defaults to 0)
+     *  * An array composed of the method name to call and the priority
+     *  * An array of arrays composed of the method names to call and respective
+     *    priorities, or 0 if unset
+     *
+     * @return array The event names to listen to
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(
+            'phpbu.debug'     => 'onDebug',
+            'phpbu.app_end' => 'onPhpbuEnd',
+        );
+    }
 
     /**
      * Setup the logger.
@@ -42,22 +62,13 @@ class Json extends Printer implements Listener, Logger
     }
 
     /**
+     * phpbu end event.
      *
-     * @see   \phpbu\App\Listener::phpbuStart()
-     * @param array $settings
+     * @param \phpbu\App\Event\App\End $event
      */
-    public function phpbuStart($settings)
+    public function onPhpbuEnd(Event\App\End $event)
     {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::phpbuEnd()
-     * @param \phpbu\App\Result $result
-     */
-    public function phpbuEnd(Result $result)
-    {
+        $result = $event->getResult();
         $output = array(
             'status'    => $result->allOk() ? 0 : 1,
             'timestamp' => time(),
@@ -66,156 +77,17 @@ class Json extends Printer implements Listener, Logger
             'backups'   => $this->extractBackups($result)
         );
         $this->write($output);
+        $this->flush();
     }
 
     /**
+     * Debugging.
      *
-     * @see   \phpbu\App\Listener::backupStart()
-     * @param array $backup
+     * @param \phpbu\App\Event\Debug $event
      */
-    public function backupStart($backup)
+    public function onDebug(Event\Debug $event)
     {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::backupEnd()
-     * @param array $backup
-     */
-    public function backupEnd($backup)
-    {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::backupFailed()
-     * @param array $backup
-     */
-    public function backupFailed($backup)
-    {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::checkStart()
-     * @param array $check
-     */
-    public function checkStart($check)
-    {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::checkEnd()
-     * @param array $check
-     */
-    public function checkEnd($check)
-    {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::checkFailed()
-     * @param array $check
-     */
-    public function checkFailed($check)
-    {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::syncStart()
-     * @param array $sync
-     */
-    public function syncStart($sync)
-    {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::syncEnd()
-     * @param array $sync
-     */
-    public function syncEnd($sync)
-    {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::syncSkipped()
-     * @param array $sync
-     */
-    public function syncSkipped($sync)
-    {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::syncFailed()
-     * @param array $sync
-     */
-    public function syncFailed($sync)
-    {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::cleanupStart()
-     * @param array $cleanup
-     */
-    public function cleanupStart($cleanup)
-    {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::cleanupEnd()
-     * @param array $cleanup
-     */
-    public function cleanupEnd($cleanup)
-    {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::cleanupSkipped()
-     * @param array $cleanup
-     */
-    public function cleanupSkipped($cleanup)
-    {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::cleanupFailed()
-     * @param array $cleanup
-     */
-    public function cleanupFailed($cleanup)
-    {
-        // do something fooish
-    }
-
-    /**
-     *
-     * @see   \phpbu\App\Listener::debug()
-     * @param string $msg
-     */
-    public function debug($msg)
-    {
-        $this->debug[] = $msg;
+        $this->debug[] = $event->getMessage();
     }
 
     /**

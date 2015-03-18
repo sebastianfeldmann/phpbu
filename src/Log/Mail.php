@@ -2,6 +2,7 @@
 namespace phpbu\App\Log;
 
 use phpbu\App\Exception;
+use phpbu\App\Event;
 use phpbu\App\Listener;
 use phpbu\App\Result;
 use phpbu\App\Util\Arr;
@@ -101,6 +102,30 @@ class Mail implements Listener, Logger
     private $sendOnlyOnError;
 
     /**
+     * Returns an array of event names this subscriber wants to listen to.
+     *
+     * The array keys are event names and the value can be:
+     *
+     *  * The method name to call (priority defaults to 0)
+     *  * An array composed of the method name to call and the priority
+     *  * An array of arrays composed of the method names to call and respective
+     *    priorities, or 0 if unset
+     *
+     * @return array The event names to listen to
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(
+            'phpbu.debug'         => 'onDebug',
+            'phpbu.backup_start'  => 'onBackupStart',
+            'phpbu.check_start'   => 'onCheckStart',
+            'phpbu.sync_start'    => 'onSyncStart',
+            'phpbu.cleanup_start' => 'onCleanupStart',
+            'phpbu.app_end'       => 'onPhpbuEnd',
+        );
+    }
+
+    /**
      * Setup the Logger.
      *
      * @see    \phpbu\Log\Logger::setup
@@ -127,21 +152,12 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see   \phpbu\App\Listener::phpbuStart()
-     * @param array $settings
-     */
-    public function phpbuStart($settings)
-    {
-        // do something fooish
-    }
-
-    /**
-     * @see    \phpbu\App\Listener::phpbuEnd()
-     * @param  \phpbu\App\Result $result
+     * @param  \phpbu\App\Event\App\End $event
      * @throws \phpbu\App\Exception
      */
-    public function phpbuEnd(Result $result)
+    public function onPhpbuEnd(Event\App\End $event)
     {
+        $result  = $event->getResult();
         $allGood = $result->allOk();
 
         if (!$this->sendOnlyOnError || !$allGood) {
@@ -172,138 +188,43 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * @see   \phpbu\App\Listener::backupStart()
-     * @param array $backup
+     * Backup start event.
+     *
+     * @param \phpbu\App\Event\Backup\Start $event
      */
-    public function backupStart($backup)
+    public function onBackupStart(Event\Backup\Start $event)
     {
         $this->numBackups++;
     }
 
     /**
-     * @see   \phpbu\App\Listener::backupEnd()
-     * @param array $backup
+     * Check start event.
+     *
+     * @param \phpbu\App\Event\Check\Start $event
      */
-    public function backupEnd($backup)
-    {
-        // do something fooish
-    }
-
-    /**
-     * @see   \phpbu\App\Listener::backupFailed()
-     * @param array $backup
-     */
-    public function backupFailed($backup)
-    {
-        // do something fooish
-    }
-
-    /**
-     * @see   \phpbu\App\Listener::checkStart()
-     * @param array $check
-     */
-    public function checkStart($check)
+    public function onCheckStart(Event\Check\Start $event)
     {
         $this->numChecks++;
     }
 
     /**
-     * @see   \phpbu\App\Listener::checkEnd()
-     * @param array $check
+     * Sync start event.
+     *
+     * @param \phpbu\App\Event\Sync\Start $event
      */
-    public function checkEnd($check)
-    {
-        // do something fooish
-    }
-
-    /**
-     * @see   \phpbu\App\Listener::checkFailed()
-     * @param array $check
-     */
-    public function checkFailed($check)
-    {
-        // do something fooish
-    }
-
-    /**
-     * @see   \phpbu\App\Listener::syncStart()
-     * @param array $sync
-     */
-    public function syncStart($sync)
+    public function onSyncStart(Event\Sync\Start $event)
     {
         $this->numSyncs++;
     }
 
     /**
-     * @see   \phpbu\App\Listener::syncEnd()
-     * @param array $sync
+     * Cleanup start event.
+     *
+     * @param \phpbu\App\Event\Cleanup\Start $event
      */
-    public function syncEnd($sync)
+    public function onCleanupStart(Event\Cleanup\Start $event)
     {
-        // do something fooish
-    }
-
-    /**
-     * @see   \phpbu\App\Listener::syncSkipped()
-     * @param array $sync
-     */
-    public function syncSkipped($sync)
-    {
-        // do something fooish
-    }
-
-    /**
-     * @see   \phpbu\App\Listener::syncFailed()
-     * @param array $sync
-     */
-    public function syncFailed($sync)
-    {
-        // do something fooish
-    }
-
-    /**
-     * @see   \phpbu\App\Listener::cleanupStart()
-     * @param array $cleanup
-     */
-    public function cleanupStart($cleanup)
-    {
-        // do something fooish
-    }
-
-    /**
-     * @see   \phpbu\App\Listener::cleanupEnd()
-     * @param array $cleanup
-     */
-    public function cleanupEnd($cleanup)
-    {
-        // do something fooish
-    }
-
-    /**
-     * @see   \phpbu\App\Listener::cleanupSkipped()
-     * @param array $cleanup
-     */
-    public function cleanupSkipped($cleanup)
-    {
-        // do something fooish
-    }
-
-    /**
-     * @see   \phpbu\App\Listener::cleanupFailed()
-     * @param array $cleanup
-     */
-    public function cleanupFailed($cleanup)
-    {
-        // do something fooish
-    }
-
-    /**
-     * @see   \phpbu\App\Listener::debug()
-     * @param string $msg
-     */
-    public function debug($msg)
-    {
-        // do something fooish
+        $this->numCleanups++;
     }
 
     /**
