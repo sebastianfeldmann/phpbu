@@ -3,7 +3,7 @@
 .idea
 .project
 .settings
-/backup
+/backup/*
 /build/coverage
 /build/logs
 /build/phar
