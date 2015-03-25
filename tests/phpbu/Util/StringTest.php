@@ -30,6 +30,8 @@ class StringTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerDatePlaceholder
+     * @param        $placeholder
+     * @param        $expected
      */
     public function testReplaceDatePlaceholder($placeholder, $expected)
     {
