@@ -1,14 +1,47 @@
 <?php
 namespace phpbu\App\Configuration\Backup;
 
+/**
+ * Target Configuration
+ *
+ * @package    phpbu
+ * @subpackage App
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @link       http://phpbu.de/
+ * @since      Class available since Release 2.0.0
+ */
 class Target
 {
+    /**
+     * Directory.
+     *
+     * @var string
+     */
     public $dirname;
 
+    /**
+     * Filename.
+     *
+     * @var string
+     */
     public $filename;
 
+    /**
+     * Compression to use.
+     *
+     * @var string
+     */
     public $compression;
 
+    /**
+     * Constructor.
+     *
+     * @param string $dir
+     * @param string $file
+     * @param string $compression
+     */
     public function __construct($dir, $file, $compression = null)
     {
         $this->dirname  = $dir;

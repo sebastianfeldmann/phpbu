@@ -296,8 +296,8 @@ class Xml implements Loader
     /**
      * Set backup sync configurations.
      *
-     * @param Configuration\Backup $backup
-     * @param  \DOMElement         $node
+     * @param \phpbu\App\Configuration\Backup $backup
+     * @param \DOMElement                     $node
      */
     protected function setSyncs(Configuration\Backup $backup, DOMElement $node)
     {
