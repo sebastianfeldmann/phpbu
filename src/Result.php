@@ -20,6 +20,11 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 class Result
 {
     /**
+     * Symfony EventDispatcher.
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    protected $eventDispatcher;
+    /**
      * List of executed Backups
      *
      * @var array<\phpbu\App\Result\Backup>
