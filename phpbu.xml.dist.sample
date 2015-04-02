@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/1.1/phpbu.xsd"
+       xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/2.0/phpbu.xsd"
        verbose="true">
 
   <logging>
@@ -8,7 +8,7 @@
   </logging>
 
   <backups>
-    <backup stopOnError="true">
+    <backup>
       <!-- data to backup -->
       <source type="mysql">
         <option name="databases" value="dbname"/>
@@ -24,7 +24,7 @@
       <check type="sizemin" value="2M"/>
 
       <!-- sync backup to some location or service -->
-      <sync type="sftp" skipOnCheckFailure="true">
+      <sync type="sftp">
         <option name="host" value="example.com"/>
         <option name="user" value="user.name"/>
         <option name="password" value="topsecret"/>
@@ -32,7 +32,7 @@
       </sync>
 
       <!-- deletes old backups -->
-      <cleanup type="Capacity" skipOnCheckFailure="true" skipOnSyncFailure="true">
+      <cleanup type="capacity">
         <option name="size" value="100M"/>
       </cleanup>
     </backup>
