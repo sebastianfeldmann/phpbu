@@ -15,169 +15,92 @@ namespace phpbu\App;
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Tests Configuration::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
+     * Tests Configuration::setVerbose
      */
-    public function testFileNotFound()
+    public function testVerbose()
     {
-        $conf = new Configuration('some.xml');
-        $this->assertFalse(true, 'exception should be thrown');
+        $conf = new Configuration('/tmp/foo.xml');
+        $this->assertEquals(false, $conf->getVerbose());
+        $conf->setVerbose(true);
+        $this->assertEquals(true, $conf->getVerbose());
     }
 
     /**
-     * Tests Configuration::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
+     * Tests Configuration::setColors
      */
-    public function testFileNoXml()
+    public function testColors()
     {
-        $json = realpath(__DIR__ . '/../_files/conf/config-no-xml.json');
-        $conf = new Configuration($json);
-        $this->assertFalse(true, 'exception should be thrown');
+        $conf = new Configuration('/tmp/foo.xml');
+        $this->assertEquals(false, $conf->getColors());
+        $conf->setColors(true);
+        $this->assertEquals(true, $conf->getColors());
     }
 
     /**
-     * Tests Configuration::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
+     * Tests Configuration::setDebug
      */
-    public function testBackupNoTarget()
+    public function testDebug()
     {
-        $xml  = realpath(__DIR__ . '/../_files/conf/config-no-target.xml');
-        $conf = new Configuration($xml);
-        $conf->getBackupSettings();
-        $this->assertFalse(true, 'exception should be thrown');
+        $conf = new Configuration('/tmp/foo.xml');
+        $this->assertEquals(false, $conf->getDebug());
+        $conf->setDebug(true);
+        $this->assertEquals(true, $conf->getDebug());
     }
 
     /**
-     * Tests Configuration::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
+     * Tests Configuration::setBootstrap
      */
-    public function testBackupNoSource()
+    public function testBootstrap()
     {
-        $xml  = realpath(__DIR__ . '/../_files/conf/config-no-source.xml');
-        $conf = new Configuration($xml);
-        $conf->getBackupSettings();
-        $this->assertFalse(true, 'exception should be thrown');
+        $conf = new Configuration('/tmp/foo.xml');
+        $this->assertEquals(null, $conf->getBootstrap());
+        $conf->setBootstrap('file.php');
+        $this->assertEquals('file.php', $conf->getBootstrap());
     }
 
     /**
-     * Tests Configuration::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
+     * Tests Configuration::addIncludePath
      */
-    public function testFileNoSourceType()
+    public function testIncludePath()
     {
-        $xml  = realpath(__DIR__ . '/../_files/conf/config-no-source-type.xml');
-        $conf = new Configuration($xml);
-        $conf->getBackupSettings();
-        $this->assertFalse(true, 'exception should be thrown');
+        $conf = new Configuration('/tmp/foo.xml');
+        $this->assertEquals(array(), $conf->getIncludePaths());
+        $conf->addIncludePath('/tmp');
+        $this->assertEquals(1, count($conf->getIncludePaths()));
     }
 
     /**
-     * Tests Configuration::getAppSettings
+     * Tests Configuration::addIniSettings
      */
-    public function testAppSettings()
+    public function testIniSettings()
     {
-        $dir  = realpath(__DIR__ . '/../_files/conf');
-        $file = 'config-valid.xml';
-        $conf = new Configuration($dir . '/' . $file);
-
-        $settings = $conf->getAppSettings();
-
-        $this->assertEquals($dir . '/backup/bootstrap.php', $settings['bootstrap']);
-        $this->assertEquals(true, $settings['colors']);
-        $this->assertEquals(false, $settings['verbose']);
+        $conf = new Configuration('/tmp/foo.xml');
+        $this->assertEquals(array(), $conf->getIniSettings());
+        $conf->addIniSetting('max_execution_time', 0);
+        $this->assertEquals(1, count($conf->getIniSettings()));
     }
 
     /**
-     * Tests Configuration::getPhpSettings
+     * Tests Configuration::addBackup
      */
-    public function testPhpSettings()
+    public function testBackup()
     {
-        $dir  = realpath(__DIR__ . '/../_files/conf');
-        $file = 'config-valid.xml';
-        $conf = new Configuration($dir . '/' . $file);
-
-        $settings = $conf->getPhpSettings();
-
-        $this->assertEquals(0, $settings['ini']['max_execution_time']);
-        $this->assertTrue(is_array($settings['include_path']));
-        $this->assertEquals($dir . '/.', $settings['include_path'][0]);
+        $conf   = new Configuration('/tmp/foo.xml');
+        $backup = new Configuration\Backup('backup', true);
+        $this->assertEquals(array(), $conf->getBackups());
+        $conf->addBackup($backup);
+        $this->assertEquals(1, count($conf->getBackups()));
     }
 
     /**
-     * Tests Configuration::getAppSettings
+     * Tests Configuration::addLogger
      */
-    public function testBackupSettings()
+    public function testLogger()
     {
-        $dir  = realpath(__DIR__ . '/../_files/conf');
-        $file = 'config-valid.xml';
-        $conf = new Configuration($dir . '/' . $file);
-
-        $settings = $conf->getBackupSettings();
-
-        $this->assertTrue(is_array($settings));
-        $this->assertEquals(1, count($settings), 'should be exactly one backup');
-        $this->assertEquals('tarball', $settings[0]['name']);
-        $this->assertEquals(false, $settings[0]['stopOnError']);
-        $this->assertEquals('tar', $settings[0]['source']['type']);
-        $this->assertEquals($dir . '/backup/src', $settings[0]['target']['dirname']);
-        $this->assertEquals('tarball-%Y%m%d-%H%i.tar', $settings[0]['target']['filename']);
-        $this->assertEquals('bzip2', $settings[0]['target']['compress']);
-        $this->assertEquals('MinSize', $settings[0]['checks'][0]['type']);
-        $this->assertEquals('10M', $settings[0]['checks'][0]['value']);
-        $this->assertEquals('sftp', $settings[0]['syncs'][0]['type']);
-        $this->assertEquals('Capacity', $settings[0]['cleanup']['type']);
-    }
-
-    /**
-     * Tests Configuration::getAppSettings
-     */
-    public function testBackupSettingsInvalidChecks()
-    {
-        $xml  = realpath(__DIR__ . '/../_files/conf/config-invalid-checks.xml');
-        $conf = new Configuration($xml);
-
-        $settings = $conf->getBackupSettings();
-
-        $this->assertTrue(is_array($settings));
-        $this->assertEquals(1, count($settings), 'should be exactly one backup');
-        $this->assertTrue(is_array($settings[0]['checks']));
-        $this->assertEquals(0, count($settings[0]['checks']));
-
-    }
-
-    /**
-     * Tests Configuration::getAppSettings
-     */
-    public function testLoggingSettings()
-    {
-        $dir  = realpath(__DIR__ . '/../_files/conf');
-        $file = 'config-valid.xml';
-        $conf = new Configuration($dir . '/' . $file);
-
-        $settings = $conf->getLoggingSettings();
-
-        $this->assertTrue(is_array($settings));
-        $this->assertEquals(2, count($settings), 'should be exactly two logger');
-        $this->assertEquals('json', $settings[0]['type']);
-        $this->assertEquals($dir . '/backup/json.log', $settings[0]['options']['target']);
-    }
-
-    /**
-     * Tests Configuration::getAppSettings
-     */
-    public function testAppLoggingSettingsWithOption()
-    {
-        $xml = realpath(__DIR__ . '/../_files/conf/config-logging.xml');
-        $conf = new Configuration($xml);
-
-        $settings = $conf->getLoggingSettings();
-
-        $this->assertTrue(is_array($settings));
-        $this->assertEquals(1, count($settings), 'should be exactly one logger');
+        $conf   = new Configuration('/tmp/foo.xml');
+        $logger = new Configuration\Logger('json', array());
+        $this->assertEquals(array(), $conf->getLoggers());
+        $conf->addLogger($logger);
+        $this->assertEquals(1, count($conf->getLoggers()));
     }
 }

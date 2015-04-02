@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\App\Event\Sync;
 
-use phpbu\App\Event\Abstraction;
-
 /**
  * Start Event
  *
@@ -16,5 +14,5 @@ use phpbu\App\Event\Abstraction;
  */
 class Start extends Abstraction
 {
-    const NAME = 'phpbu.sync_end';
+    const NAME = 'phpbu.sync_start';
 }

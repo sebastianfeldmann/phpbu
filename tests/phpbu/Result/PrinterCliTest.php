@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Result;
 
+use phpbu\App\Configuration;
+
 /**
  * Version test
  *
@@ -79,8 +81,13 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
                         ->getMock();
         $result->expects($this->once())->method('getErrors')->willReturn(array());
 
+        $configuration = $this->getMockBuilder('\\phpbu\\App\\Configuration')
+                              ->disableOriginalConstructor()
+                              ->getMock();
+        $configuration->expects($this->once())->method('getPathname')->willReturn('/tmp/TestConfig.xml');
+
         ob_start();
-        $printer->onPhpbuStart($this->getEventMock('App\\Start', array('configuration' => 'TestConfig.xml')));
+        $printer->onPhpbuStart($this->getEventMock('App\\Start', $configuration));
         $printer->onPhpbuEnd($this->getEventMock('App\\End', $result));
         $output = ob_get_clean();
         $this->assertTrue(strpos($output, 'phpbu') !== false);
@@ -92,7 +99,10 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupStart()
     {
-        $backup  = array('source' => array('type' => 'mysqldump'));
+        $source = new Configuration\Backup\Source('mysqldump');
+        $backup = new Configuration\Backup('dummy', false);
+        $backup->setSource($source);
+
         $printer = new PrinterCli(null, false, false, false);
 
         ob_start();
@@ -107,7 +117,10 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupStartDebug()
     {
-        $backup  = array('source' => array('type' => 'mysqldump'));
+        $source = new Configuration\Backup\Source('mysqldump');
+        $backup = new Configuration\Backup('dummy', false);
+        $backup->setSource($source);
+
         $printer = new PrinterCli(null, false, false, true);
 
         ob_start();
@@ -122,7 +135,10 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupFailed()
     {
-        $backup  = array('source' => array('type' => 'mysqldump'));
+        $source = new Configuration\Backup\Source('mysqldump');
+        $backup = new Configuration\Backup('dummy', false);
+        $backup->setSource($source);
+
         $printer = new PrinterCli(null, false, false, true);
 
         ob_start();
@@ -137,7 +153,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckStart()
     {
-        $check   = array('type' => 'TestType');
+        $check   = new Configuration\Backup\Check('foo', 'bar');
         $printer = new PrinterCli(null, false, false, false);
 
         ob_start();
@@ -152,7 +168,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckStartDebug()
     {
-        $check   = array('type' => 'TestType');
+        $check   = new Configuration\Backup\Check('TestType', 'TestValue');
         $printer = new PrinterCli(null, false, false, true);
 
         ob_start();
@@ -167,7 +183,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckFailed()
     {
-        $check   = array('type' => 'minsize');
+        $check   = new Configuration\Backup\Check('TestType', 'TestValue');
         $printer = new PrinterCli(null, false, false, true);
 
         ob_start();
@@ -177,12 +193,74 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(strpos($output, 'failed') !== false);
     }
 
+
+    /**
+     * Tests PrinterCli::cryptStart
+     */
+    public function testCryptStartEnd()
+    {
+        $crypt   = new Configuration\Backup\Crypt('TestType', false);
+        $printer = new PrinterCli(null, false, false, false);
+
+        ob_start();
+        $printer->onCryptStart($this->getEventMock('Crypt\\Start', $crypt));
+        $printer->onCryptEnd($this->getEventMock('Crypt\\End', $crypt));
+        $output = ob_get_clean();
+        $this->assertEquals('', $output);
+    }
+
+    /**
+     * Tests PrinterCli::cryptStart
+     */
+    public function tesCryptStartEndDebug()
+    {
+        $crypt   = new Configuration\Backup\Crypt('TestType', false);
+        $printer = new PrinterCli(null, false, false, true);
+
+        ob_start();
+        $printer->onCryptStart($this->getEventMock('Crypt\\Start', $crypt));
+        $printer->onCryptEnd($this->getEventMock('Crypt\\End', $crypt));
+        $output = ob_get_clean();
+        $this->assertTrue(strpos($output, 'crypt start') !== false);
+        $this->assertTrue(strpos($output, 'done') !== false);
+    }
+
+    /**
+     * Tests PrinterCli::cryptFailed
+     */
+    public function testCryptFailed()
+    {
+        $crypt   = new Configuration\Backup\Crypt('TestType', false);
+        $printer = new PrinterCli(null, false, false, true);
+
+        ob_start();
+        $printer->onCryptStart($this->getEventMock('Crypt\\Start', $crypt));
+        $printer->onCryptFailed($this->getEventMock('Crypt\\Failed', $crypt));
+        $output = ob_get_clean();
+        $this->assertTrue(strpos($output, 'failed') !== false);
+    }
+
+    /**
+     * Tests PrinterCli::cryptSkipped
+     */
+    public function testCryptSkipped()
+    {
+        $crypt   = new Configuration\Backup\Crypt('TestType', false);
+        $printer = new PrinterCli(null, false, false, true);
+
+        ob_start();
+        $printer->onCryptStart($this->getEventMock('Crypt\\Start', $crypt));
+        $printer->onCryptSkipped($this->getEventMock('Crypt\\Skipped', $crypt));
+        $output = ob_get_clean();
+        $this->assertTrue(strpos($output, 'skipped') !== false);
+    }
+
     /**
      * Tests PrinterCli::syncStart
      */
     public function testSyncStart()
     {
-        $sync    = array('type' => 'TestType');
+        $sync    = new Configuration\Backup\Sync('TestType', false);
         $printer = new PrinterCli(null, false, false, false);
 
         ob_start();
@@ -197,7 +275,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testSyncStartDebug()
     {
-        $sync    = array('type' => 'TestType');
+        $sync    = new Configuration\Backup\Sync('TestType', false);
         $printer = new PrinterCli(null, false, false, true);
 
         ob_start();
@@ -212,7 +290,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testSyncFailed()
     {
-        $sync    = array('type' => 'TestType');
+        $sync    = new Configuration\Backup\Sync('TestType', false);
         $printer = new PrinterCli(null, false, false, true);
 
         ob_start();
@@ -227,7 +305,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testSyncSkipped()
     {
-        $sync    = array('type' => 'TestType');
+        $sync    = new Configuration\Backup\Sync('TestType', false);
         $printer = new PrinterCli(null, false, false, true);
 
         ob_start();
@@ -242,7 +320,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testCleanupStart()
     {
-        $cleanup = array('type' => 'TestType');
+        $cleanup = new Configuration\Backup\Cleanup('TestType', false);
         $printer = new PrinterCli(null, false, false, false);
 
         ob_start();
@@ -257,7 +335,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testCleanupStartDebug()
     {
-        $cleanup = array('type' => 'TestType');
+        $cleanup = new Configuration\Backup\Cleanup('TestType', false);
         $printer = new PrinterCli(null, false, false, true);
 
         ob_start();
@@ -272,7 +350,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testCleanupFailed()
     {
-        $cleanup = array('type' => 'TestType');
+        $cleanup = new Configuration\Backup\Cleanup('TestType', false);
         $printer = new PrinterCli(null, false, false, true);
 
         ob_start();
@@ -287,7 +365,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testCleanupSkipped()
     {
-        $cleanup = array('type' => 'TestType');
+        $cleanup = new Configuration\Backup\Cleanup('TestType', false);
         $printer = new PrinterCli(null, false, false, true);
 
         ob_start();
@@ -461,7 +539,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
                 $e->method('getMessage')->willReturn($arg);
                 break;
             default:
-                $e->method('getConfig')->willReturn($arg);
+                $e->method('getConfiguration')->willReturn($arg);
                 break;
         }
         return $e;

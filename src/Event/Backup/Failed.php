@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\App\Event\Backup;
 
-use phpbu\App\Event\Abstraction;
-
 /**
  * End Event
  *

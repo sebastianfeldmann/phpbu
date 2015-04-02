@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/1.1/phpbu.xsd"
+       xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/2.0/phpbu.xsd"
        bootstrap="backup/bootstrap.php"
        verbose="false"
        colors="true">
@@ -27,17 +27,21 @@
       </source>
 
       <target dirname="backup/src" filename="tarball-%Y%m%d-%H%i.tar" compress="bzip2"/>
-      
+
       <check type="MinSize" value="10M" />
-      
-      <sync type="sftp" skipOnCheckFail="true">
+
+      <crypt type="mcrypt">
+        <option name="key" value="mySecretKey"/>
+      </crypt>
+
+      <sync type="sftp" skipOnFailure="true">
         <option name="host" value="example.com"/>
         <option name="user" value="nobody"/>
         <option name="password" value="secret"/>
         <option name="path" value="phpbu-backup/%Y"/>
       </sync>
 
-      <cleanup type="Capacity">
+      <cleanup type="Capacity" skipOnFailure="true">
         <option name="size" value="50k"/>
       </cleanup>
     </backup>

@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Result;
 
+use phpbu\App\Configuration;
+
 /**
  * Version test
  *
@@ -41,7 +43,7 @@ class BackupTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheck()
     {
-        $check  = array('type' => 'minsize');
+        $check  = new Configuration\Backup\Check('SizeMin', '10M');
         $backup = new Backup('name');
 
         $backup->checkAdd($check);
@@ -52,11 +54,28 @@ class BackupTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test Check handling.
+     * Test Crypt handling.
+     */
+    public function testCrypt()
+    {
+        $crypt  = new Configuration\Backup\Crypt('mcrypt', false);
+        $backup = new Backup('name');
+
+        $backup->cryptAdd($crypt);
+        $backup->cryptFailed($crypt);
+        $backup->cryptSkipped($crypt);
+
+        $this->assertEquals(1, $backup->cryptCountFailed(), 'failed');
+        $this->assertEquals(1, $backup->cryptCountSkipped(), 'skipped');
+        $this->assertEquals(1, $backup->cryptCount(), 'executed');
+    }
+
+    /**
+     * Test Sync handling.
      */
     public function testSync()
     {
-        $sync   = array('type' => 'rsync');
+        $sync   = new Configuration\Backup\Sync('rsync', false);
         $backup = new Backup('name');
 
         $backup->syncAdd($sync);
@@ -73,7 +92,7 @@ class BackupTest extends \PHPUnit_Framework_TestCase
      */
     public function testCleanup()
     {
-        $cleanup = array('type' => 'capacity');
+        $cleanup = new Configuration\Backup\Cleanup('capacity', false);
         $backup  = new Backup('name');
 
         $backup->cleanupAdd($cleanup);

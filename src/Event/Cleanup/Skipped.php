@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\App\Event\Cleanup;
 
-use phpbu\App\Event\Abstraction;
-
 /**
  * Skipped Event
  *

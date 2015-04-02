@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/1.1/phpbu.xsd"
+       xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/2.0/phpbu.xsd"
        bootstrap="backup/bootstrap.php"
        verbose="false"
        colors="true">
@@ -31,7 +31,7 @@
       <check type="MinSize"/>
       <check value="Value"/>
 
-      <sync type="sftp" skipOnCheckFail="true">
+      <sync type="sftp" skipOnFailure="true">
         <option name="host" value="example.com"/>
         <option name="user" value="nobody"/>
         <option name="password" value="secret"/>

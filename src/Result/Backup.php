@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Result;
 
+use phpbu\App\Configuration;
+
 /**
  * Backup Result
  *
@@ -41,6 +43,27 @@ class Backup
      * @var array
      */
     protected $checksFailed = array();
+
+    /**
+     * List of executed crypts
+     *
+     * @var array
+     */
+    protected $crypts = array();
+
+    /**
+     * List of skipped crypts
+     *
+     * @var array
+     */
+    protected $cryptsSkipped = array();
+
+    /**
+     * List of failed crypts
+     *
+     * @var array
+     */
+    protected $cryptsFailed = array();
 
     /**
      * List of executed syncs
@@ -125,7 +148,7 @@ class Backup
     }
 
     /**
-     * Backup executed successfully and no checks failed
+     * Backup executed successfully and no checks failed.
      *
      * @return boolean
      */
@@ -136,28 +159,28 @@ class Backup
 
 
     /**
-     * No skipped syncs or cleanups
+     * No skipped crypts, syncs or cleanups.
      *
      * @return boolean
      */
     public function noneSkipped()
     {
-        return count($this->syncsSkipped) + count($this->cleanupsSkipped) === 0;
+        return count($this->cryptsFailed) + count($this->syncsSkipped) + count($this->cleanupsSkipped) === 0;
     }
 
     /**
-     * No failed syncs or cleanups
+     * No failed crypts, syncs or cleanups.
      *
      * @return boolean
      */
     public function noneFailed()
     {
-        return count($this->syncsFailed) + count($this->cleanupsFailed) === 0;
+        return count($this->cryptsFailed) + count($this->syncsFailed) + count($this->cleanupsFailed) === 0;
     }
 
 
     /**
-     * Mark backup as failed
+     * Mark backup as failed.
      */
     public function fail()
     {
@@ -165,17 +188,17 @@ class Backup
     }
 
     /**
-     * Add check to executed list
+     * Add check to executed list.
      *
-     * @param array $check
+     * @param \phpbu\App\Configuration\Backup\Check $check
      */
-    public function checkAdd($check)
+    public function checkAdd(Configuration\Backup\Check $check)
     {
         $this->checks[] = $check;
     }
 
     /**
-     * Return amount of executed checks
+     * Return amount of executed checks.
      *
      * @return number
      */
@@ -185,17 +208,17 @@ class Backup
     }
 
     /**
-     * Add check to failed checks list
+     * Add check to failed checks list.
      *
-     * @param array $check
+     * @param \phpbu\App\Configuration\Backup\Check $check
      */
-    public function checkFailed($check)
+    public function checkFailed(Configuration\Backup\Check$check)
     {
         $this->checksFailed[] = $check;
     }
 
     /**
-     * Return amount of failed checks
+     * Return amount of failed checks.
      *
      * @return number
      */
@@ -205,11 +228,71 @@ class Backup
     }
 
     /**
-     * Add sync to executed syncs list
+     * Add crypt to executed list.
      *
-     * @param array $sync
+     * @param \phpbu\App\Configuration\Backup\Crypt $crypt
      */
-    public function syncAdd($sync)
+    public function cryptAdd(Configuration\Backup\Crypt $crypt)
+    {
+        $this->crypts[] = $crypt;
+    }
+
+    /**
+     * Return amount of executed crypts.
+     *
+     * @return number
+     */
+    public function cryptCount()
+    {
+        return count($this->crypts);
+    }
+
+    /**
+     * Add crypt to skipped syncs list.
+     *
+     * @param \phpbu\App\Configuration\Backup\Crypt $crypt
+     */
+    public function cryptSkipped(Configuration\Backup\Crypt $crypt)
+    {
+        $this->cryptsSkipped[] = $crypt;
+    }
+
+    /**
+     * Return amount of failed crypts.
+     *
+     * @return number
+     */
+    public function cryptCountSkipped()
+    {
+        return count($this->cryptsSkipped);
+    }
+
+    /**
+     * Add crypt to failed crypts list.
+     *
+     * @param \phpbu\App\Configuration\Backup\Crypt $crypt
+     */
+    public function cryptFailed(Configuration\Backup\Crypt $crypt)
+    {
+        $this->cryptsFailed[] = $crypt;
+    }
+
+    /**
+     * Return amount of failed crypts.
+     *
+     * @return number
+     */
+    public function cryptCountFailed()
+    {
+        return count($this->cryptsFailed);
+    }
+
+    /**
+     * Add sync to executed syncs list.
+     *
+     * @param \phpbu\App\Configuration\Backup\Sync $sync
+     */
+    public function syncAdd(Configuration\Backup\Sync $sync)
     {
         $this->syncs[] = $sync;
     }
@@ -227,9 +310,9 @@ class Backup
     /**
      * Add sync to skipped syncs list.
      *
-     * @param array $sync
+     * @param \phpbu\App\Configuration\Backup\Sync $sync
      */
-    public function syncSkipped($sync)
+    public function syncSkipped(Configuration\Backup\Sync $sync)
     {
         $this->syncsSkipped[] = $sync;
     }
@@ -247,9 +330,9 @@ class Backup
     /**
      * Add sync to failed syncs list.
      *
-     * @param array $sync
+     * @param \phpbu\App\Configuration\Backup\Sync $sync
      */
-    public function syncFailed($sync)
+    public function syncFailed(Configuration\Backup\Sync $sync)
     {
         $this->syncsFailed[] = $sync;
     }
@@ -267,9 +350,9 @@ class Backup
     /**
      * Add cleanup to executed cleanups list.
      *
-     * @param array $cleanup
+     * @param \phpbu\App\Configuration\Backup\Cleanup $cleanup
      */
-    public function cleanupAdd($cleanup)
+    public function cleanupAdd(Configuration\Backup\Cleanup $cleanup)
     {
         $this->cleanups[] = $cleanup;
     }
@@ -287,9 +370,9 @@ class Backup
     /**
      * Add cleanup to skipped cleanups list.
      *
-     * @param array $cleanup
+     * @param \phpbu\App\Configuration\Backup\Cleanup $cleanup
      */
-    public function cleanupSkipped($cleanup)
+    public function cleanupSkipped(Configuration\Backup\Cleanup $cleanup)
     {
         $this->cleanupsSkipped[] = $cleanup;
     }
@@ -307,9 +390,9 @@ class Backup
     /**
      * Add cleanup to failed cleanups list.
      *
-     * @param array $cleanup
+     * @param \phpbu\App\Configuration\Backup\Cleanup $cleanup
      */
-    public function cleanupFailed($cleanup)
+    public function cleanupFailed(Configuration\Backup\Cleanup $cleanup)
     {
         $this->cleanupsFailed[] = $cleanup;
     }

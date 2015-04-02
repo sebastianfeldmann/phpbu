@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\App\Event\App;
 
-use phpbu\App\Event\Abstraction;
-
 /**
  * Start Event
  *

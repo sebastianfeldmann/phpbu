@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Event\App;
 
+use phpbu\App\Configuration;
+
 /**
  * Start test
  *
@@ -19,10 +21,12 @@ class StartTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetConfig()
     {
-        $conf   = array('foo' => 'bar');
-        $start  = new Start($conf);
-        $config = $start->getConfig();
+        $conf = new Configuration('/tmp/foo.xml');
+        $conf->setDebug(true);
 
-        $this->assertEquals('bar', $config['foo']);
+        $start  = new Start($conf);
+        $config = $start->getConfiguration();
+
+        $this->assertEquals(true, $config->getDebug());
     }
 }

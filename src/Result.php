@@ -53,6 +53,11 @@ class Result
     /**
      * @var integer
      */
+    protected $cryptsSkipped = 0;
+
+    /**
+     * @var integer
+     */
     protected $cryptsFailed = 0;
 
     /**
@@ -75,13 +80,16 @@ class Result
      */
     protected $cleanupsFailed = 0;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->eventDispatcher = new EventDispatcher();
     }
 
     /**
-     * Registers a Listener.
+     * Registers a Listener/Subscriber.
      *
      * @param \phpbu\App\Listener
      */
@@ -91,6 +99,8 @@ class Result
     }
 
     /**
+     * No errors at all?
+     *
      * @return boolean
      */
     public function allOk()
@@ -99,6 +109,8 @@ class Result
     }
 
     /**
+     * Backup without errors, but some tasks where skipped or failed.
+     *
      * @return boolean
      */
     public function backupOkButSkipsOrFails()
@@ -107,6 +119,8 @@ class Result
     }
 
     /**
+     * Backup without errors?
+     *
      * @return boolean
      */
     public function wasSuccessful()
@@ -115,6 +129,8 @@ class Result
     }
 
     /**
+     * Nothing skipped?
+     *
      * @return boolean
      */
     public function noneSkipped()
@@ -123,6 +139,8 @@ class Result
     }
 
     /**
+     * Nothing failed?
+     *
      * @return boolean
      */
     public function noneFailed()
@@ -173,11 +191,11 @@ class Result
     /**
      * phpbu start event.
      *
-     * @param array $settings
+     * @param \phpbu\App\Configuration $configuration
      */
-    public function phpbuStart(array $settings)
+    public function phpbuStart(Configuration $configuration)
     {
-        $event = new Event\App\Start($settings);
+        $event = new Event\App\Start($configuration);
         $this->eventDispatcher->dispatch(Event\App\Start::NAME, $event);
     }
 
@@ -193,11 +211,11 @@ class Result
     /**
      * Backup start event.
      *
-     * @param array $backup
+     * @param \phpbu\App\Configuration\Backup $backup
      */
-    public function backupStart($backup)
+    public function backupStart(Configuration\Backup $backup)
     {
-        $this->backupActive = new Result\Backup(!empty($backup['name']) ? $backup['name'] : $backup['source']['type']);
+        $this->backupActive = new Result\Backup($backup->getName());
         $this->backups[]    = $this->backupActive;
 
         $event = new Event\Backup\Start($backup);
@@ -207,9 +225,9 @@ class Result
     /**
      * Backup failed event.
      *
-     * @param array $backup
+     * @param \phpbu\App\Configuration\Backup $backup
      */
-    public function backupFailed($backup)
+    public function backupFailed(Configuration\Backup $backup)
     {
         $this->backupsFailed++;
         $this->backupActive->fail();
@@ -231,9 +249,9 @@ class Result
     /**
      * Backup end event.
      *
-     * @param array $backup
+     * @param \phpbu\App\Configuration\Backup $backup
      */
-    public function backupEnd($backup)
+    public function backupEnd(Configuration\Backup $backup)
     {
         $event = new Event\Backup\End($backup);
         $this->eventDispatcher->dispatch(Event\Backup\End::NAME, $event);
@@ -242,9 +260,9 @@ class Result
     /**
      * Check start event.
      *
-     * @param array $check
+     * @param \phpbu\App\Configuration\Backup\Check $check
      */
-    public function checkStart($check)
+    public function checkStart(Configuration\Backup\Check $check)
     {
         $this->backupActive->checkAdd($check);
 
@@ -255,9 +273,9 @@ class Result
     /**
      * Check failed event.
      *
-     * @param array $check
+     * @param \phpbu\App\Configuration\Backup\Check $check
      */
-    public function checkFailed($check)
+    public function checkFailed(Configuration\Backup\Check $check)
     {
         $this->checksFailed++;
         $this->backupActive->fail();
@@ -280,9 +298,9 @@ class Result
     /**
      * Check end event.
      *
-     * @param array $check
+     * @param \phpbu\App\Configuration\Backup\Check $check
      */
-    public function checkEnd($check)
+    public function checkEnd(Configuration\Backup\Check $check)
     {
         $event = new Event\Check\End($check);
         $this->eventDispatcher->dispatch(Event\Check\End::NAME, $event);
@@ -291,9 +309,9 @@ class Result
     /**
      * Crypt start event.
      *
-     * @param array $crypt
+     * @param \phpbu\App\Configuration\Backup\Crypt $crypt
      */
-    public function cryptStart($crypt)
+    public function cryptStart(Configuration\Backup\Crypt $crypt)
     {
         $this->backupActive->cryptAdd($crypt);
 
@@ -302,11 +320,36 @@ class Result
     }
 
     /**
+     * Crypt skipped event.
+     *
+     * @param \phpbu\App\Configuration\Backup\Crypt $crypt
+     */
+    public function cryptSkipped(Configuration\Backup\Crypt $crypt)
+    {
+        $this->cryptsSkipped++;
+        $this->backupActive->cryptSkipped($crypt);
+
+        $event = new Event\Crypt\Skipped($crypt);
+        $this->eventDispatcher->dispatch(Event\Crypt\Skipped::NAME, $event);
+    }
+
+    /**
+     * Return amount of skipped crypts.
+     *
+     * @return integer
+     */
+    public function cryptsSkippedCount()
+    {
+        return $this->cryptsSkipped;
+    }
+
+
+    /**
      * Crypt failed event.
      *
-     * @param array $crypt
+     * @param \phpbu\App\Configuration\Backup\Crypt $crypt
      */
-    public function cryptFailed($crypt)
+    public function cryptFailed(Configuration\Backup\Crypt $crypt)
     {
         $this->cryptsFailed++;
         $this->backupActive->fail();
@@ -317,31 +360,32 @@ class Result
     }
 
     /**
-     * Return amount of failed checks.
+     * Return amount of failed crypts.
      *
      * @return integer
      */
-    public function cryptFailedCount()
+    public function cryptsFailedCount()
     {
-        return $this->cryptFailed;
+        return $this->cryptsFailed;
     }
 
     /**
      * Crypt end event.
      *
-     * @param array $crypt
+     * @param \phpbu\App\Configuration\Backup\Crypt $crypt
      */
-    public function cryptEnd($crypt)
+    public function cryptEnd(Configuration\Backup\Crypt $crypt)
     {
         $event = new Event\Crypt\End($crypt);
         $this->eventDispatcher->dispatch(Event\Crypt\End::NAME, $event);
     }
+
     /**
      * Sync start event.
      *
-     * @param array $sync
+     * @param \phpbu\App\Configuration\Backup\Sync $sync
      */
-    public function syncStart($sync)
+    public function syncStart(Configuration\Backup\Sync $sync)
     {
         $this->backupActive->syncAdd($sync);
 
@@ -352,9 +396,9 @@ class Result
     /**
      * Sync skipped event.
      *
-     * @param array $sync
+     * @param \phpbu\App\Configuration\Backup\Sync $sync
      */
-    public function syncSkipped($sync)
+    public function syncSkipped(Configuration\Backup\Sync $sync)
     {
         $this->syncsSkipped++;
         $this->backupActive->syncSkipped($sync);
@@ -364,7 +408,7 @@ class Result
     }
 
     /**
-     * Return amount of skipped syncs
+     * Return amount of skipped syncs.
      *
      * @return integer
      */
@@ -376,9 +420,9 @@ class Result
     /**
      * Sync failed event.
      *
-     * @param array $sync
+     * @param \phpbu\App\Configuration\Backup\Sync $sync
      */
-    public function syncFailed($sync)
+    public function syncFailed(Configuration\Backup\Sync $sync)
     {
         $this->syncsFailed++;
         $this->backupActive->syncFailed($sync);
@@ -388,7 +432,7 @@ class Result
     }
 
     /**
-     * Return amount of failed syncs
+     * Return amount of failed syncs.
      *
      * @return integer
      */
@@ -400,9 +444,9 @@ class Result
     /**
      * Sync end event.
      *
-     * @param array $sync
+     * @param \phpbu\App\Configuration\Backup\Sync $sync
      */
-    public function syncEnd($sync)
+    public function syncEnd(Configuration\Backup\Sync $sync)
     {
         $event = new Event\Sync\End($sync);
         $this->eventDispatcher->dispatch(Event\Sync\End::NAME, $event);
@@ -411,9 +455,9 @@ class Result
     /**
      * Cleanup start event.
      *
-     * @param array $cleanup
+     * @param \phpbu\App\Configuration\Backup\Cleanup $cleanup
      */
-    public function cleanupStart($cleanup)
+    public function cleanupStart(Configuration\Backup\Cleanup $cleanup)
     {
         $this->backupActive->cleanupAdd($cleanup);
 
@@ -424,9 +468,9 @@ class Result
     /**
      * Cleanup skipped event.
      *
-     * @param array $cleanup
+     * @param \phpbu\App\Configuration\Backup\Cleanup $cleanup
      */
-    public function cleanupSkipped($cleanup)
+    public function cleanupSkipped(Configuration\Backup\Cleanup $cleanup)
     {
         $this->cleanupsSkipped++;
         $this->backupActive->cleanupSkipped($cleanup);
@@ -448,9 +492,9 @@ class Result
     /**
      * Cleanup failed event.
      *
-     * @param array $cleanup
+     * @param \phpbu\App\Configuration\Backup\Cleanup $cleanup
      */
-    public function cleanupFailed($cleanup)
+    public function cleanupFailed(Configuration\Backup\Cleanup $cleanup)
     {
         $this->cleanupsFailed++;
         $this->backupActive->cleanupFailed($cleanup);
@@ -472,9 +516,9 @@ class Result
     /**
      * Cleanup end event.
      *
-     * @param array $cleanup
+     * @param \phpbu\App\Configuration\Backup\Cleanup $cleanup
      */
-    public function cleanupEnd($cleanup)
+    public function cleanupEnd(Configuration\Backup\Cleanup $cleanup)
     {
         $event = new Event\Cleanup\End($cleanup);
         $this->eventDispatcher->dispatch(Event\Cleanup\End::NAME, $event);

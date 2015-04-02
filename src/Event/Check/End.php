@@ -2,8 +2,6 @@
 
 namespace phpbu\App\Event\Check;
 
-use phpbu\App\Event\Abstraction;
-
 /**
  * End Event
  *

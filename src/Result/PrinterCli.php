@@ -124,6 +124,7 @@ class PrinterCli extends Printer implements Listener
             'phpbu.check_failed'    => 'onCheckFailed',
             'phpbu.check_end'       => 'onCheckEnd',
             'phpbu.crypt_start'     => 'onCryptStart',
+            'phpbu.crypt_skipped'   => 'onCryptSkipped',
             'phpbu.crypt_failed'    => 'onCryptFailed',
             'phpbu.crypt_end'       => 'onCryptEnd',
             'phpbu.sync_start'      => 'onSyncStart',
@@ -178,11 +179,11 @@ class PrinterCli extends Printer implements Listener
      */
     public function onPhpbuStart(Event\App\Start $event)
     {
-        $settings = $event->getConfig();
+        $configuration = $event->getConfiguration();
         $this->write(
             Version::getVersionString() . PHP_EOL .
             PHP_EOL .
-            'Configuration read from ' . $settings['configuration'] . PHP_EOL .
+            'Configuration read from ' . $configuration->getPathname() . PHP_EOL .
             PHP_EOL
         );
     }
@@ -194,10 +195,10 @@ class PrinterCli extends Printer implements Listener
      */
     public function onBackupStart(Event\Backup\Start $event)
     {
-        $backup = $event->getConfig();
+        $backup = $event->getConfiguration();
         $this->numBackups++;
         if ($this->debug) {
-            $this->write('create backup (' . $backup['source']['type'] . '): ');
+            $this->write('create backup (' . $backup->getSource()->type . '): ');
         }
     }
 
@@ -235,10 +236,10 @@ class PrinterCli extends Printer implements Listener
      */
     public function onCheckStart(Event\Check\Start $event)
     {
-        $check = $event->getConfig();
+        $check = $event->getConfiguration();
         $this->numChecks++;
         if ($this->debug) {
-            $this->write('check (' . $check['type'] . '): ');
+            $this->write('check (' . $check->type . '): ');
         }
     }
 
@@ -276,10 +277,25 @@ class PrinterCli extends Printer implements Listener
      */
     public function onCryptStart(Event\Crypt\Start $event)
     {
-        $crypt = $event->getConfig();
+        $crypt = $event->getConfiguration();
         $this->numCrypts++;
         if ($this->debug) {
-            $this->write('crypt (' . $crypt['type'] . '): ');
+            $this->write('crypt (' . $crypt->type . '): ');
+        }
+    }
+
+    /**
+     * Crypt skipped event.
+     *
+     * @param \phpbu\App\Event\Crypt\Skipped $event
+     */
+    public function onCryptSkipped(Event\Crypt\Skipped $event)
+    {
+        if ($this->debug) {
+            $this->writeWithColor(
+                'fg-black, bg-yellow',
+                'skipped'
+            );
         }
     }
 
@@ -317,10 +333,10 @@ class PrinterCli extends Printer implements Listener
      */
     public function onSyncStart(Event\Sync\Start $event)
     {
-        $sync = $event->getConfig();
+        $sync = $event->getConfiguration();
         $this->numSyncs++;
         if ($this->debug) {
-            $this->write('sync start (' . $sync['type'] . '): ');
+            $this->write('sync start (' . $sync->type . '): ');
         }
     }
 
@@ -373,10 +389,10 @@ class PrinterCli extends Printer implements Listener
      */
     public function onCleanupStart(Event\Cleanup\Start $event)
     {
-        $cleanup = $event->getConfig();
+        $cleanup = $event->getConfiguration();
         $this->numCleanups++;
         if ($this->debug) {
-            $this->write('cleanup start (' . $cleanup['type'] . '): ');
+            $this->write('cleanup start (' . $cleanup->type . '): ');
         }
     }
 
@@ -508,7 +524,7 @@ class PrinterCli extends Printer implements Listener
         } elseif ($backup->okButSkipsOrFails()) {
                 $this->writeWithColor(
                     'fg-black, bg-yellow',
-                    'OK, but skipped or failed Syncs or Cleanups!'
+                    'OK, but skipped or failed Crypts, Syncs or Cleanups!'
                 );
         } else {
             $this->writeWithColor(
@@ -517,20 +533,24 @@ class PrinterCli extends Printer implements Listener
             );
         }
         $chExecuted = str_pad($backup->checkCount(), 8, ' ', STR_PAD_LEFT);
-        $chFailed   = str_pad($backup->checkCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $chFailed = str_pad($backup->checkCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $crExecuted = str_pad($backup->cryptCount(), 8, ' ', STR_PAD_LEFT);
+        $crSkipped = str_pad($backup->cryptCountSkipped(), 7, ' ', STR_PAD_LEFT);
+        $crFailed = str_pad($backup->cryptCountFailed(), 6, ' ', STR_PAD_LEFT);
         $syExecuted = str_pad($backup->syncCount(), 8, ' ', STR_PAD_LEFT);
-        $sySkipped  = str_pad($backup->syncCountSkipped(), 7, ' ', STR_PAD_LEFT);
-        $syFailed   = str_pad($backup->syncCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $sySkipped = str_pad($backup->syncCountSkipped(), 7, ' ', STR_PAD_LEFT);
+        $syFailed = str_pad($backup->syncCountFailed(), 6, ' ', STR_PAD_LEFT);
         $clExecuted = str_pad($backup->cleanupCount(), 8, ' ', STR_PAD_LEFT);
-        $clSkipped  = str_pad($backup->cleanupCountSkipped(), 7, ' ', STR_PAD_LEFT);
-        $clFailed   = str_pad($backup->cleanupCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $clSkipped = str_pad($backup->cleanupCountSkipped(), 7, ' ', STR_PAD_LEFT);
+        $clFailed = str_pad($backup->cleanupCountFailed(), 6, ' ', STR_PAD_LEFT);
 
-        $out = '          | executed | skipped | failed |' . PHP_EOL
-             . '----------+----------+---------+--------+' . PHP_EOL
-             . ' checks   | ' . $chExecuted . ' |         | ' . $chFailed . ' |' . PHP_EOL
-             . ' syncs    | ' . $syExecuted . ' | ' . $sySkipped . ' | ' . $syFailed . ' |' . PHP_EOL
-             . ' cleanups | ' . $clExecuted . ' | ' . $clSkipped . ' | ' . $clFailed . ' |' . PHP_EOL
-             . '----------+----------+---------+--------+' . PHP_EOL . PHP_EOL;
+        $out = PHP_EOL . '          | executed | skipped | failed |' . PHP_EOL
+            . '----------+----------+---------+--------+' . PHP_EOL
+            . ' checks   | ' . $chExecuted . ' |         | ' . $chFailed . ' |' . PHP_EOL
+            . ' crypts   | ' . $crExecuted . ' | ' . $crSkipped . ' | ' . $crFailed . ' |' . PHP_EOL
+            . ' syncs    | ' . $syExecuted . ' | ' . $sySkipped . ' | ' . $syFailed . ' |' . PHP_EOL
+            . ' cleanups | ' . $clExecuted . ' | ' . $clSkipped . ' | ' . $clFailed . ' |' . PHP_EOL
+            . '----------+----------+---------+--------+' . PHP_EOL . PHP_EOL;
 
         $this->write($out);
     }
@@ -551,11 +571,13 @@ class PrinterCli extends Printer implements Listener
             $this->writeWithColor(
                 'fg-black, bg-green',
                 sprintf(
-                    'OK (%d %s, %d %s, %d %s, %d %s)',
+                    'OK (%d %s, %d %s, %d %s, %d %s, %d %s)' . PHP_EOL,
                     count($result->getBackups()),
                     String::appendPluralS('backup', count($result->getBackups())),
                     $this->numChecks,
                     String::appendPluralS('check', $this->numChecks),
+                    $this->numCrypts,
+                    String::appendPluralS('crypt', $this->numChecks),
                     $this->numSyncs,
                     String::appendPluralS('sync', $this->numSyncs),
                     $this->numCleanups,
@@ -566,9 +588,11 @@ class PrinterCli extends Printer implements Listener
             $this->writeWithColor(
                 'fg-black, bg-yellow',
                 sprintf(
-                    "OK, but skipped or failed Syncs or Cleanups!\n" .
-                    'Backups: %d, Syncs: skipped|failed %d|%d, Cleanups: skipped|failed %d|%d.',
+                    "OK, but skipped|failed Crypts, Syncs or Cleanups!\n" .
+                    'Backups: %d, Crypts: %d|%d, Syncs: %d|%d, Cleanups: %d|%d.' . PHP_EOL,
                     count($result->getBackups()),
+                    $result->cryptsSkippedCount(),
+                    $result->cryptsFailedCount(),
                     $result->syncsSkippedCount(),
                     $result->syncsFailedCount(),
                     $result->cleanupsSkippedCount(),
@@ -580,9 +604,10 @@ class PrinterCli extends Printer implements Listener
                 'fg-white, bg-red',
                 sprintf(
                     "FAILURE!\n" .
-                    'Backups: %d, failed Checks: %d, failed Syncs: %d, failed Cleanups: %d.',
+                    'Backups: %d, failed Checks: %d, failed Crypts: %d, failed Syncs: %d, failed Cleanups: %d.' . PHP_EOL,
                     count($result->getBackups()),
                     $result->checksFailedCount(),
+                    $result->cryptsFailedCount(),
                     $result->syncsFailedCount(),
                     $result->cleanupsFailedCount()
                 )

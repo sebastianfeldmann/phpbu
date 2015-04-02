@@ -97,12 +97,13 @@ class Cmd
     public function run(array $args)
     {
         $this->handleOpt($args);
+        $this->findConfiguration();
 
         $ret    = self::EXIT_FAILURE;
         $runner = new Runner();
 
         try {
-            $result = $runner->run($this->arguments);
+            $result = $runner->run($this->createConfiguration());
 
             if ($result->wasSuccessful()) {
                 $ret = self::EXIT_SUCCESS;
@@ -130,23 +131,6 @@ class Cmd
             $this->handleArgs($options);
         } catch (Exception $e) {
             $this->printError($e->getMessage(), true);
-        }
-
-        if (isset($this->arguments['include-path'])) {
-            $this->handleIncludePath($this->arguments['include-path']);
-        }
-
-        try {
-            $this->handleConfiguration();
-        } catch (Exception $e) {
-            $this->printError($e->getMessage());
-        }
-
-        // no backups to handle
-        if (!isset($this->arguments['backups'])) {
-            $this->printLogo();
-            $this->printHelp();
-            exit(self::EXIT_EXCEPTION);
         }
     }
 
@@ -196,60 +180,25 @@ class Cmd
     }
 
     /**
-     * Check all configuration possibilities.
-     *
-     * @return void
+     * Try to find the configuration file.
      */
-    protected function handleConfiguration()
+    protected function findConfiguration()
     {
         // check configuration argument
         // if configuration argument is a directory
         // check for default configuration files 'phpbu.xml' and 'phpbu.xml.dist'
         if (isset($this->arguments['configuration']) && is_dir($this->arguments['configuration'])) {
-            $this->handleConfigurationDir();
+            $this->findConfigurationInDir();
         } elseif (!isset($this->arguments['configuration'])) {
             // no configuration argument search for default configuration files
             // 'phpbu.xml' and 'phpbu.xml.dist' in current working directory
-            $this->handleConfigurationDefault();
+            $this->findConfigurationDefault();
         }
-        if (isset($this->arguments['configuration'])) {
-            $configuration = new Configuration($this->arguments['configuration']);
-
-            $phpbu                      = $configuration->getAppSettings();
-            $phpSettings                = $configuration->getPhpSettings();
-            $this->arguments['logging'] = $configuration->getLoggingSettings();
-            $this->arguments['backups'] = $configuration->getBackupSettings();
-
-            // argument bootstrap overrules config bootstrap
-            if (isset($this->arguments['bootstrap'])) {
-                $this->handleBootstrap($this->arguments['bootstrap']);
-            } elseif (isset($phpbu['bootstrap'])) {
-                $this->handleBootstrap($phpbu['bootstrap']);
-            }
-
-            if (Arr::getValue($phpbu, 'verbose') === true) {
-                $this->arguments['verbose'] = true;
-            }
-
-            if (Arr::getValue($phpbu, 'colors') === true) {
-                $this->arguments['colors'] = true;
-            }
-
-            if (Arr::getValue($phpbu, 'debug') === true) {
-                $this->arguments['debug'] = true;
-            }
-
-            if (!empty($phpSettings['include_path'])) {
-                $this->handleIncludePath($phpSettings['include_path']);
-            }
-
-            // handle php.ini settings
-            foreach ($phpSettings['ini'] as $name => $value) {
-                if (defined($value)) {
-                    $value = constant($value);
-                }
-                ini_set($name, $value);
-            }
+        // no config found, exit with some help output
+        if (!isset($this->arguments['configuration'])) {
+            $this->printLogo();
+            $this->printHelp();
+            exit(self::EXIT_EXCEPTION);
         }
     }
 
@@ -258,7 +207,7 @@ class Cmd
      *
      * @return void
      */
-    protected function handleConfigurationDir()
+    protected function findConfigurationInDir()
     {
         $configurationFile = $this->arguments['configuration'] . '/phpbu.xml';
 
@@ -274,7 +223,7 @@ class Cmd
      *
      * @return void
      */
-    protected function handleConfigurationDefault()
+    protected function findConfigurationDefault()
     {
         if (file_exists('phpbu.xml')) {
             $this->arguments['configuration'] = realpath('phpbu.xml');
@@ -284,35 +233,32 @@ class Cmd
     }
 
     /**
-     * Handles the php include_path settings.
+     * Create a application configuration.
      *
-     * @param  mixed $path
-     * @return void
+     * @return \phpbu\App\Configuration
      */
-    protected function handleIncludePath($path)
+    protected function createConfiguration()
     {
-        if (is_array($path)) {
-            $path = implode(PATH_SEPARATOR, $path);
+        $configLoader  = new Configuration\Loader\Xml($this->arguments['configuration']);
+        $configuration = $configLoader->getConfiguration();
+
+        // argument bootstrap overrules config bootstrap
+        if (isset($this->arguments['bootstrap'])) {
+            $configuration->setBootstrap($this->arguments['bootstrap']);
         }
 
-        ini_set('include_path', $path . PATH_SEPARATOR . ini_get('include_path'));
-    }
-
-    /**
-     * Handles the bootstrap file inclusion.
-     *
-     * @param  string $filename
-     * @throws \phpbu\App\Exception
-     */
-    protected function handleBootstrap($filename)
-    {
-        $pathToFile = stream_resolve_include_path($filename);
-
-        if (!$pathToFile || !is_readable($pathToFile)) {
-            throw new Exception(sprintf('Cannot open bootstrap file "%s".' . PHP_EOL, $filename));
+        if (Arr::getValue($this->arguments, 'verbose') === true) {
+            $configuration->setVerbose(true);
         }
 
-        require $pathToFile;
+        if (Arr::getValue($this->arguments, 'colors') === true) {
+            $configuration->setColors(true);
+        }
+
+        if (Arr::getValue($this->arguments, 'debug') === true) {
+            $configuration->setDebug(true);
+        }
+        return $configuration;
     }
 
     /**

@@ -2,6 +2,7 @@
 namespace phpbu\App;
 
 use phpbu\App\Backup\Check\Exception;
+use phpbu\App\Configuration;
 
 /**
  * Version test
@@ -21,7 +22,9 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testSuccessFullByDefault()
     {
-        $result = new Result();
+        $result     = new Result();
+        $cliPrinter = new Result\PrinterCli(null);
+        $result->addListener($cliPrinter);
 
         $this->assertTrue($result->wasSuccessful(), 'should be successful by default');
         $this->assertTrue($result->allOk(), 'should be ok by default');
@@ -33,10 +36,10 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupMinimal()
     {
-        $backup = array('name' => 'test-backup');
-
+        $conf   = new Configuration('/tmp/foo.xml');
+        $backup = new Configuration\Backup('test-backup', false);
         $result = new Result();
-        $result->phpbuStart(array());
+        $result->phpbuStart($conf);
         $result->backupStart($backup);
         $result->backupEnd($backup);
         $result->phpbuEnd();
@@ -51,15 +54,19 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupMaximalAllOk()
     {
-        $backup  = array('name' => 'test-backup');
-        $check   = array('type' => 'sizemin');
-        $sync    = array('type' => 'rsync');
-        $cleanup = array('type' => 'capacity');
+        $conf    = new Configuration('/tmp/foo.xml');
+        $backup  = new Configuration\Backup('test-backup', false);
+        $check   = new Configuration\Backup\Check('sizemin', '10M');
+        $crypt   = new Configuration\Backup\Crypt('mcrypt', false);
+        $sync    = new Configuration\Backup\Sync('rsync', false);
+        $cleanup = new Configuration\Backup\Cleanup('capacity', false);
         $result  = new Result();
-        $result->phpbuStart(array());
+        $result->phpbuStart($conf);
         $result->backupStart($backup);
         $result->checkStart($check);
         $result->checkEnd($check);
+        $result->cryptStart($crypt);
+        $result->cryptEnd($crypt);
         $result->syncStart($sync);
         $result->syncEnd($sync);
         $result->cleanupStart($cleanup);
@@ -86,16 +93,18 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupMaximalWithSkips()
     {
-        $backup  = array('name' => 'test-backup');
-        $check   = array('type' => 'sizemin');
-        $sync    = array('type' => 'rsync');
-        $cleanup = array('type' => 'capacity');
-
+        $conf    = new Configuration('/tmp/foo.xml');
+        $backup  = new Configuration\Backup('test-backup', false);
+        $check   = new Configuration\Backup\Check('sizemin', '10M');
+        $crypt   = new Configuration\Backup\Crypt('mcrypt', false);
+        $sync    = new Configuration\Backup\Sync('rsync', false);
+        $cleanup = new Configuration\Backup\Cleanup('capacity', false);
         $result  = new Result();
-        $result->phpbuStart(array());
+        $result->phpbuStart($conf);
         $result->backupStart($backup);
         $result->checkStart($check);
         $result->checkEnd($check);
+        $result->cryptSkipped($crypt);
         $result->syncSkipped($sync);
         $result->cleanupSkipped($cleanup);
         $result->backupEnd($backup);
@@ -103,7 +112,7 @@ class ResultTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($result->wasSuccessful(), 'should be successful');
         $this->assertFalse($result->allOk(), 'should be ok');
-        $this->assertTrue($result->backupOkButSkipsOrFails(), 'sync and cleanup should be skipped');
+        $this->assertTrue($result->backupOkButSkipsOrFails(), 'crypt, sync and cleanup should be skipped');
         $this->assertEquals(0, $result->syncsFailedCount());
         $this->assertEquals(1, $result->syncsSkippedCount());
         $this->assertEquals(0, $result->cleanupsFailedCount());
@@ -118,34 +127,40 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupMaximalWithErrors()
     {
-        $backup  = array('name' => 'test-backup');
-        $check   = array('type' => 'sizemin');
-        $sync    = array('type' => 'rsync');
-        $cleanup = array('type' => 'capacity');
-
+        $conf    = new Configuration('/tmp/foo.xml');
+        $backup  = new Configuration\Backup('test-backup', false);
+        $check   = new Configuration\Backup\Check('sizemin', '10M');
+        $crypt   = new Configuration\Backup\Crypt('mcrypt', false);
+        $sync    = new Configuration\Backup\Sync('rsync', false);
+        $cleanup = new Configuration\Backup\Cleanup('capacity', false);
         $result  = new Result();
-        $result->phpbuStart(array());
+        $result->phpbuStart($conf);
         $result->backupStart($backup);
         $result->checkStart($check);
         $result->checkEnd($check);
+        $result->cryptStart($crypt);
+        $result->addError(new Exception('failed'));
+        $result->cryptFailed($crypt);
         $result->syncStart($sync);
         $result->addError(new Exception('failed'));
         $result->syncFailed($sync);
         $result->cleanupStart($cleanup);
         $result->addError(new Exception('failed'));
-        $result->cleanupFailed($sync);
+        $result->cleanupFailed($cleanup);
         $result->backupEnd($backup);
         $result->phpbuEnd();
 
         $this->assertTrue($result->wasSuccessful(), 'should be successful');
         $this->assertFalse($result->allOk(), 'should be ok');
-        $this->assertTrue($result->backupOkButSkipsOrFails(), 'sync and cleanup should be skipped');
+        $this->assertTrue($result->backupOkButSkipsOrFails(), 'crypt, sync and cleanup should be failed');
         $this->assertEquals(1, $result->syncsFailedCount());
         $this->assertEquals(0, $result->syncsSkippedCount());
+        $this->assertEquals(1, $result->cryptsFailedCount());
+        $this->assertEquals(0, $result->cryptsSkippedCount());
         $this->assertEquals(1, $result->cleanupsFailedCount());
         $this->assertEquals(0, $result->cleanupsSkippedCount());
-        $this->assertEquals(2, $result->errorCount());
-        $this->assertEquals(2, count($result->getErrors()));
+        $this->assertEquals(3, $result->errorCount());
+        $this->assertEquals(3, count($result->getErrors()));
         $this->assertEquals(1, count($result->getBackups()));
     }
 
@@ -154,9 +169,10 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupFailed()
     {
-        $backup = array('name' => 'test-backup');
-        $result = new Result();
-        $result->phpbuStart(array());
+        $conf    = new Configuration('/tmp/foo.xml');
+        $backup  = new Configuration\Backup('test-backup', false);
+        $result  = new Result();
+        $result->phpbuStart($conf);
         $result->backupStart($backup);
         $result->addError(new Exception('failed'));
         $result->backupFailed($backup);
@@ -176,10 +192,11 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupFailedOnFailedCheck()
     {
-        $backup = array('name' => 'test-backup');
-        $check  = array('type' => 'sizemin');
+        $conf   = new Configuration('/tmp/foo.xml');
+        $backup = new Configuration\Backup('test-backup', false);
+        $check  = new Configuration\Backup\Check('sizemin', '10M');
         $result = new Result();
-        $result->phpbuStart(array());
+        $result->phpbuStart($conf);
         $result->backupStart($backup);
         $result->backupEnd($backup);
         $result->checkStart($check);
@@ -203,9 +220,10 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testDebug()
     {
-        $backup = array('name' => 'test-backup');
+        $conf   = new Configuration('/tmp/foo.xml');
+        $backup = new Configuration\Backup('test-backup', false);
         $result = new Result();
-        $result->phpbuStart(array());
+        $result->phpbuStart($conf);
         $result->debug('debug');
         $result->backupStart($backup);
         $result->backupEnd($backup);

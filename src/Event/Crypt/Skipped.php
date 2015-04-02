@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\App\Event\Crypt;
 
-use phpbu\App\Event\Abstraction;
-
 /**
  * Skipped Event
  *
