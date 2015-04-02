@@ -286,18 +286,4 @@ class Mongodump extends Binary implements Source
     {
         return $target->getPath() . '/dump';
     }
-
-    /**
-     * Test MongoDB connection.
-     *
-     * @param  string $host
-     * @param  string $user
-     * @param  string $password
-     * @param  array  $databases
-     * @throws \phpbu\App\Exception
-     */
-    public function checkConnection($host, $user, $password, array $databases = array())
-    {
-        // ToDo: implement mongo db connection validation
-    }
 }
