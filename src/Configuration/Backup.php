@@ -61,7 +61,7 @@ class Backup
     /**
      * List of configured Syncs
      *
-     * @var array<\phpbu\App\Configuration\Backup\Source>
+     * @var array<\phpbu\App\Configuration\Backup\Sync>
      */
     private $syncs = array();
 
