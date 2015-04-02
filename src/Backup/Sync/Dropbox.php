@@ -6,7 +6,7 @@ use phpbu\App\Result;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 
 /**
  * Dropbox
@@ -62,7 +62,7 @@ class Dropbox implements Sync
             throw new Exception('dropbox path is mandatory');
         }
         $this->token = $config['token'];
-        $this->path  = String::withTrailingSlash(String::replaceDatePlaceholders($config['path']));
+        $this->path  = Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path']));
     }
 
     /**

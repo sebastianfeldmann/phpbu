@@ -5,7 +5,7 @@ use phpbu\App\Result;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 use ObjectStorage_Http_Client;
 use ObjectStorage;
 
@@ -89,8 +89,8 @@ class SoftLayer implements Sync
         $this->secret    = $config['secret'];
         $this->container = $config['container'];
         $this->host      = $config['host'];
-        $this->path      = String::withLeadingSlash(
-            String::withTrailingSlash(String::replaceDatePlaceholders($config['path']))
+        $this->path      = Str::withLeadingSlash(
+            Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path']))
         );
     }
 

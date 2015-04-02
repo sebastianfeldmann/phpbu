@@ -5,7 +5,7 @@ use phpbu\App\Result;
 use phpbu\App\Backup\Check;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 
 /**
  * SizeMin
@@ -35,7 +35,7 @@ class SizeMin implements Check
     {
         // throws App\Exception if file doesn't exist
         $actualSize = $target->getSize();
-        $testSize   = String::toBytes($value);
+        $testSize   = Str::toBytes($value);
 
         return $testSize <= $actualSize;
     }

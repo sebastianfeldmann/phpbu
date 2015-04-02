@@ -135,9 +135,9 @@ class Mongodump extends Binary implements Source
         $this->authenticationDatabase = Util\Arr::getValue($conf, 'authenticationDatabase');
 
         // config & validation
-        $this->useIPv6            = Util\String::toBoolean(Util\Arr::getValue($conf, 'ipv6', ''), false);
-        $this->showStdErr         = Util\String::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
-        $this->validateConnection = Util\String::toBoolean(Util\Arr::getValue($conf, 'validateConnection', ''), false);
+        $this->useIPv6            = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ipv6', ''), false);
+        $this->showStdErr         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
+        $this->validateConnection = Util\Str::toBoolean(Util\Arr::getValue($conf, 'validateConnection', ''), false);
     }
 
     /**
@@ -159,10 +159,10 @@ class Mongodump extends Binary implements Source
      */
     protected function setupSourceData(array $conf)
     {
-        $this->databases                    = Util\String::toList(Util\Arr::getValue($conf, 'databases'));
-        $this->collections                  = Util\String::toList(Util\Arr::getValue($conf, 'collections'));
-        $this->excludeCollections           = Util\String::toList(Util\Arr::getValue($conf, 'excludeCollections'));
-        $this->excludeCollectionsWithPrefix = Util\String::toList(Util\Arr::getValue($conf, 'excludeCollectionsWithPrefix'));
+        $this->databases                    = Util\Str::toList(Util\Arr::getValue($conf, 'databases'));
+        $this->collections                  = Util\Str::toList(Util\Arr::getValue($conf, 'collections'));
+        $this->excludeCollections           = Util\Str::toList(Util\Arr::getValue($conf, 'excludeCollections'));
+        $this->excludeCollectionsWithPrefix = Util\Str::toList(Util\Arr::getValue($conf, 'excludeCollectionsWithPrefix'));
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Cleaner;
 
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 
 /**
  * TestCase
@@ -80,7 +80,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getMTime($offset)
     {
-        return $this->getTime() - String::toTime($offset);
+        return $this->getTime() - Str::toTime($offset);
     }
 
     /**

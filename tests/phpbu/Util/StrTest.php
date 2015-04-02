@@ -12,7 +12,7 @@ namespace phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class StringTest extends \PHPUnit_Framework_TestCase
+class StrTest extends \PHPUnit_Framework_TestCase
 {
     static protected $time;
 
@@ -22,7 +22,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
     public function testReplaceMultipleDatePlaceholder()
     {
         $string   = 'my.name-%Y%m%d.suf';
-        $replaced = String::replaceDatePlaceholders($string);
+        $replaced = Str::replaceDatePlaceholders($string);
         $expected = 'my.name-' . date('Y') . date('m') . date('d') . '.suf';
 
         $this->assertEquals($expected, $replaced, 'all date placeholder should be replaced');
@@ -38,7 +38,7 @@ class StringTest extends \PHPUnit_Framework_TestCase
         $string   = 'my-%' . $placeholder . '.zip';
         $expected = 'my-' . $expected . '.zip';
         $time     = self::getTime();
-        $replaced = String::replaceDatePlaceholders($string, $time);
+        $replaced = Str::replaceDatePlaceholders($string, $time);
         $this->assertEquals($expected, $replaced, sprintf('date placeholder %s should be replaced', $placeholder));
     }
 
@@ -68,12 +68,12 @@ class StringTest extends \PHPUnit_Framework_TestCase
      */
     public function testToBooleanMatch()
     {
-        $this->assertTrue(String::toBoolean('true', false));
-        $this->assertTrue(String::toBoolean('tRuE', false));
-        $this->assertTrue(String::toBoolean('TRUE', false));
-        $this->assertFalse(String::toBoolean('false', true));
-        $this->assertFalse(String::toBoolean('fAlSe', true));
-        $this->assertFalse(String::toBoolean('FALSE', true));
+        $this->assertTrue(Str::toBoolean('true', false));
+        $this->assertTrue(Str::toBoolean('tRuE', false));
+        $this->assertTrue(Str::toBoolean('TRUE', false));
+        $this->assertFalse(Str::toBoolean('false', true));
+        $this->assertFalse(Str::toBoolean('fAlSe', true));
+        $this->assertFalse(Str::toBoolean('FALSE', true));
     }
 
     /**
@@ -81,10 +81,10 @@ class StringTest extends \PHPUnit_Framework_TestCase
      */
     public function testToBooleanDefault()
     {
-        $this->assertTrue(String::toBoolean('FOO', true));
-        $this->assertFalse(String::toBoolean('BAR', false));
-        $this->assertTrue(String::toBoolean('', true));
-        $this->assertTrue(String::toBoolean(null, true));
+        $this->assertTrue(Str::toBoolean('FOO', true));
+        $this->assertFalse(Str::toBoolean('BAR', false));
+        $this->assertTrue(Str::toBoolean('', true));
+        $this->assertTrue(Str::toBoolean(null, true));
     }
 
     /**
@@ -92,11 +92,11 @@ class StringTest extends \PHPUnit_Framework_TestCase
      */
     public function testToByteUpperCase()
     {
-        $this->assertEquals(500, String::toBytes('500B'), '500B should match 500 bytes');
-        $this->assertEquals(1024, String::toBytes('1K'), '1K should match 1.024 bytes');
-        $this->assertEquals(1048576, String::toBytes('1M'), '1M should match 1.048.576 bytes');
-        $this->assertEquals(2097152, String::toBytes('2M'), '2M should match 2.097.152 bytes');
-        $this->assertEquals(1099511627776, String::toBytes('1T'), '1T should match 1.099.511.627.776 bytes');
+        $this->assertEquals(500, Str::toBytes('500B'), '500B should match 500 bytes');
+        $this->assertEquals(1024, Str::toBytes('1K'), '1K should match 1.024 bytes');
+        $this->assertEquals(1048576, Str::toBytes('1M'), '1M should match 1.048.576 bytes');
+        $this->assertEquals(2097152, Str::toBytes('2M'), '2M should match 2.097.152 bytes');
+        $this->assertEquals(1099511627776, Str::toBytes('1T'), '1T should match 1.099.511.627.776 bytes');
     }
 
     /**
@@ -104,10 +104,10 @@ class StringTest extends \PHPUnit_Framework_TestCase
      */
     public function testToByteLowerCase()
     {
-        $this->assertEquals(1024, String::toBytes('1k'), '1k should match 1.024 bytes');
-        $this->assertEquals(1048576, String::toBytes('1m'), '1m should match 1.048.576 bytes');
-        $this->assertEquals(2097152, String::toBytes('2m'), '2m should match 2.097.152 bytes');
-        $this->assertEquals(1099511627776, String::toBytes('1t'), '1t should match 1.099.511.627.776 bytes');
+        $this->assertEquals(1024, Str::toBytes('1k'), '1k should match 1.024 bytes');
+        $this->assertEquals(1048576, Str::toBytes('1m'), '1m should match 1.048.576 bytes');
+        $this->assertEquals(2097152, Str::toBytes('2m'), '2m should match 2.097.152 bytes');
+        $this->assertEquals(1099511627776, Str::toBytes('1t'), '1t should match 1.099.511.627.776 bytes');
     }
 
     /**
@@ -115,11 +115,11 @@ class StringTest extends \PHPUnit_Framework_TestCase
      */
     public function testToTimeUpperCase()
     {
-        $this->assertEquals(3600, String::toTime('60I'), '60I should match 3600 seconds');
-        $this->assertEquals(604800, String::toTime('1W'), '1W should match 604.800 seconds');
-        $this->assertEquals(2678400, String::toTime('1M'), '1M should match 2.678.400 seconds');
-        $this->assertEquals(31536000, String::toTime('1Y'), '1Y should match 31.536.000 seconds');
-        $this->assertEquals(172800, String::toTime('2D'), '2D should match 172.800 seconds');
+        $this->assertEquals(3600, Str::toTime('60I'), '60I should match 3600 seconds');
+        $this->assertEquals(604800, Str::toTime('1W'), '1W should match 604.800 seconds');
+        $this->assertEquals(2678400, Str::toTime('1M'), '1M should match 2.678.400 seconds');
+        $this->assertEquals(31536000, Str::toTime('1Y'), '1Y should match 31.536.000 seconds');
+        $this->assertEquals(172800, Str::toTime('2D'), '2D should match 172.800 seconds');
     }
 
     /**
@@ -127,19 +127,19 @@ class StringTest extends \PHPUnit_Framework_TestCase
      */
     public function testToTimeLowerCase()
     {
-        $this->assertEquals(3600, String::toTime('60i'), '60I should match 3600 seconds');
-        $this->assertEquals(604800, String::toTime('1w'), '1W should match 604.800 seconds');
-        $this->assertEquals(2678400, String::toTime('1m'), '1M should match 2.678.400 seconds');
-        $this->assertEquals(31536000, String::toTime('1y'), '1Y should match 31.536.000 seconds');
-        $this->assertEquals(172800, String::toTime('2d'), '2D should match 172.800 seconds');
+        $this->assertEquals(3600, Str::toTime('60i'), '60I should match 3600 seconds');
+        $this->assertEquals(604800, Str::toTime('1w'), '1W should match 604.800 seconds');
+        $this->assertEquals(2678400, Str::toTime('1m'), '1M should match 2.678.400 seconds');
+        $this->assertEquals(31536000, Str::toTime('1y'), '1Y should match 31.536.000 seconds');
+        $this->assertEquals(172800, Str::toTime('2d'), '2D should match 172.800 seconds');
     }
 
     /**
-     * Tests String::padAll
+     * Tests Str::padAll
      */
     public function testPadAll()
     {
-        $padded = String::padAll(array('foo' => 'bar', 'fiz' => 'baz'), 8);
+        $padded = Str::padAll(array('foo' => 'bar', 'fiz' => 'baz'), 8);
         $this->assertEquals(8, strlen($padded['foo']), 'bar should be padded to a length of 8');
         $this->assertEquals(8, strlen($padded['fiz']), 'baz should be padded to a length of 8');
 
@@ -148,29 +148,29 @@ class StringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests String::toList
+     * Tests Str::toList
      */
     public function testToListFull()
     {
-        $list = String::toList('foo,bar');
+        $list = Str::toList('foo,bar');
         $this->assertEquals(2, count($list), 'list should contain 2 elements');
     }
 
     /**
-     * Tests String::toList
+     * Tests Str::toList
      */
     public function testToListEmpty()
     {
-        $list = String::toList('');
+        $list = Str::toList('');
         $this->assertEquals(0, count($list), 'list should be empty');
     }
 
     /**
-     * Tests String::toList
+     * Tests Str::toList
      */
     public function testToListEmptyTrim()
     {
-        $list = String::toList('foo , bar , baz  ');
+        $list = Str::toList('foo , bar , baz  ');
         $this->assertEquals(3, count($list), 'list should be empty');
         $this->assertEquals('foo', $list[0], 'should not contain spaces');
         $this->assertEquals('bar', $list[1], 'should not contain spaces');
@@ -178,11 +178,11 @@ class StringTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests String::toList
+     * Tests Str::toList
      */
     public function testToListEmptyNoTrim()
     {
-        $list = String::toList('foo  , bar ,  baz', ',', false);
+        $list = Str::toList('foo  , bar ,  baz', ',', false);
         $this->assertEquals(3, count($list), 'list should be empty');
         $this->assertEquals('foo  ', $list[0], 'should still contain spaces');
         $this->assertEquals(' bar ', $list[1], 'should still contain spaces');
@@ -194,9 +194,9 @@ class StringTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithTrailingSlash()
     {
-        $this->assertEquals('foo/', String::withTrailingSlash('foo'), 'should be foo/');
-        $this->assertEquals('foo/bar/', String::withTrailingSlash('foo/bar'), 'should be foo/bar/');
-        $this->assertEquals('baz/', String::withTrailingSlash('baz/'), 'should be baz/');
+        $this->assertEquals('foo/', Str::withTrailingSlash('foo'), 'should be foo/');
+        $this->assertEquals('foo/bar/', Str::withTrailingSlash('foo/bar'), 'should be foo/bar/');
+        $this->assertEquals('baz/', Str::withTrailingSlash('baz/'), 'should be baz/');
     }
 
     /**
@@ -204,10 +204,10 @@ class StringTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithoutTrailingSlash()
     {
-        $this->assertEquals('foo', String::withoutTrailingSlash('foo/'), 'should be foo');
-        $this->assertEquals('foo/bar', String::withoutTrailingSlash('foo/bar/'), 'should be foo/bar');
-        $this->assertEquals('baz', String::withoutTrailingSlash('baz'), 'should be baz');
-        $this->assertEquals('/', String::withoutTrailingSlash('/'), '/ should be stay /');
+        $this->assertEquals('foo', Str::withoutTrailingSlash('foo/'), 'should be foo');
+        $this->assertEquals('foo/bar', Str::withoutTrailingSlash('foo/bar/'), 'should be foo/bar');
+        $this->assertEquals('baz', Str::withoutTrailingSlash('baz'), 'should be baz');
+        $this->assertEquals('/', Str::withoutTrailingSlash('/'), '/ should be stay /');
     }
 
     /**
@@ -215,9 +215,9 @@ class StringTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithLeadingSlash()
     {
-        $this->assertEquals('/foo', String::withLeadingSlash('foo'), 'should be /foo');
-        $this->assertEquals('/foo/bar', String::withLeadingSlash('foo/bar'), 'should be /foo/bar');
-        $this->assertEquals('/baz', String::withLeadingSlash('/baz'), 'should be baz/');
+        $this->assertEquals('/foo', Str::withLeadingSlash('foo'), 'should be /foo');
+        $this->assertEquals('/foo/bar', Str::withLeadingSlash('foo/bar'), 'should be /foo/bar');
+        $this->assertEquals('/baz', Str::withLeadingSlash('/baz'), 'should be baz/');
     }
 
     /**
@@ -225,21 +225,21 @@ class StringTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithoutLeadingSlash()
     {
-        $this->assertEquals('foo', String::withoutLeadingSlash('/foo'), 'should be foo');
-        $this->assertEquals('foo/bar', String::withoutLeadingSlash('/foo/bar'), 'should be foo/bar');
-        $this->assertEquals('baz', String::withoutLeadingSlash('baz'), 'should be baz');
-        $this->assertEquals('', String::withoutLeadingSlash('/'), 'slash should be removed');
+        $this->assertEquals('foo', Str::withoutLeadingSlash('/foo'), 'should be foo');
+        $this->assertEquals('foo/bar', Str::withoutLeadingSlash('/foo/bar'), 'should be foo/bar');
+        $this->assertEquals('baz', Str::withoutLeadingSlash('baz'), 'should be baz');
+        $this->assertEquals('', Str::withoutLeadingSlash('/'), 'slash should be removed');
     }
 
     /**
-     * Tests String::appendPluralS
+     * Tests Str::appendPluralS
      */
     public function testAppendPluralS()
     {
-        $a = String::appendPluralS('backup', 2);
-        $b = String::appendPluralS('backup', 0);
-        $c = String::appendPluralS('backup', 1);
-        $d = String::appendPluralS('class', 2);
+        $a = Str::appendPluralS('backup', 2);
+        $b = Str::appendPluralS('backup', 0);
+        $c = Str::appendPluralS('backup', 1);
+        $d = Str::appendPluralS('class', 2);
 
         $this->assertEquals('backups', $a);
         $this->assertEquals('backups', $b);

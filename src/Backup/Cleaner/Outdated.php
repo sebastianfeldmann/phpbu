@@ -5,7 +5,7 @@ use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 use RuntimeException;
 
 /**
@@ -50,7 +50,7 @@ class Outdated implements Cleaner
             throw new Exception('option \'older\' is missing');
         }
         try {
-            $seconds = String::toTime($options['older']);
+            $seconds = Str::toTime($options['older']);
         } catch (RuntimeException $e) {
             throw new Exception($e->getMessage());
         }

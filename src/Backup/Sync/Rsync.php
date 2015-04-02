@@ -88,7 +88,7 @@ class Rsync extends Binary implements Sync
             if (!Util\Arr::isSetAndNotEmptyString($options, 'path')) {
                 throw new Exception('option \'path\' is missing');
             }
-            $this->path = Util\String::replaceDatePlaceholders($options['path']);
+            $this->path = Util\Str::replaceDatePlaceholders($options['path']);
 
             if (Util\Arr::isSetAndNotEmptyString($options, 'user')) {
                 $this->user = $options['user'];
@@ -97,9 +97,9 @@ class Rsync extends Binary implements Sync
                 $this->host = $options['host'];
             }
 
-            $this->excludes  = Util\String::toList(Util\Arr::getValue($options, 'exclude', ''), ':');
-            $this->delete    = Util\String::toBoolean(Util\Arr::getValue($options, 'delete', ''), false);
-            $this->isDirSync = Util\String::toBoolean(Util\Arr::getValue($options, 'dirsync', ''), false);
+            $this->excludes  = Util\Str::toList(Util\Arr::getValue($options, 'exclude', ''), ':');
+            $this->delete    = Util\Str::toBoolean(Util\Arr::getValue($options, 'delete', ''), false);
+            $this->isDirSync = Util\Str::toBoolean(Util\Arr::getValue($options, 'dirsync', ''), false);
         }
     }
 

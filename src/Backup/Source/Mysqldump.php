@@ -130,11 +130,11 @@ class Mysqldump extends Binary implements Source
         $this->host               = Util\Arr::getValue($conf, 'host');
         $this->user               = Util\Arr::getValue($conf, 'user');
         $this->password           = Util\Arr::getValue($conf, 'password');
-        $this->showStdErr         = Util\String::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
-        $this->quick              = Util\String::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
-        $this->compress           = Util\String::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
-        $this->validateConnection = Util\String::toBoolean(Util\Arr::getValue($conf, 'validateConnection', ''), false);
-        $this->noData             = Util\String::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
+        $this->showStdErr         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
+        $this->quick              = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
+        $this->compress           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
+        $this->validateConnection = Util\Str::toBoolean(Util\Arr::getValue($conf, 'validateConnection', ''), false);
+        $this->noData             = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
     }
 
     /**
@@ -156,10 +156,10 @@ class Mysqldump extends Binary implements Source
      */
     protected function setupSourceData(array $conf)
     {
-        $this->tables        = Util\String::toList(Util\Arr::getValue($conf, 'tables'));
-        $this->databases     = Util\String::toList(Util\Arr::getValue($conf, 'databases'));
-        $this->ignoreTables  = Util\String::toList(Util\Arr::getValue($conf, 'ignoreTables'));
-        $this->structureOnly = Util\String::toList(Util\Arr::getValue($conf, 'structureOnly'));
+        $this->tables        = Util\Str::toList(Util\Arr::getValue($conf, 'tables'));
+        $this->databases     = Util\Str::toList(Util\Arr::getValue($conf, 'databases'));
+        $this->ignoreTables  = Util\Str::toList(Util\Arr::getValue($conf, 'ignoreTables'));
+        $this->structureOnly = Util\Str::toList(Util\Arr::getValue($conf, 'structureOnly'));
     }
 
     /**

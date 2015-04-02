@@ -7,7 +7,7 @@ use phpbu\App\Configuration;
 use phpbu\App\Configuration\Loader;
 use phpbu\App\Exception;
 use phpbu\App\Util\Cli;
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 
 /**
  *
@@ -137,10 +137,10 @@ class Xml implements Loader
             $configuration->setBootstrap($this->toAbsolutePath((string) $root->getAttribute('bootstrap')));
         }
         if ($root->hasAttribute('verbose')) {
-            $configuration->setVerbose(String::toBoolean((string) $root->getAttribute('verbose'), false));
+            $configuration->setVerbose(Str::toBoolean((string) $root->getAttribute('verbose'), false));
         }
         if ($root->hasAttribute('colors')) {
-            $configuration->setColors(String::toBoolean((string) $root->getAttribute('colors'), false));
+            $configuration->setColors(Str::toBoolean((string) $root->getAttribute('colors'), false));
         }
     }
 
@@ -189,7 +189,7 @@ class Xml implements Loader
      */
     private function getBackupConfig(DOMElement $backupNode)
     {
-        $stopOnFailure = String::toBoolean((string) $backupNode->getAttribute('stopOnFailure'), false);
+        $stopOnFailure = Str::toBoolean((string) $backupNode->getAttribute('stopOnFailure'), false);
         $backupName    = $backupNode->getAttribute('name');
         $backup        = new Configuration\Backup($backupName, $stopOnFailure);
 
@@ -286,7 +286,7 @@ class Xml implements Loader
         foreach ($node->getElementsByTagName('crypt') as $cryptNode) {
             $crypt = new Configuration\Backup\Crypt(
                 (string) $cryptNode->getAttribute('type'),
-                String::toBoolean((string) $cryptNode->getAttribute('skipOnFailure'), true),
+                Str::toBoolean((string) $cryptNode->getAttribute('skipOnFailure'), true),
                 $this->getOptions($cryptNode)
             );
             $backup->setCrypt($crypt);
@@ -306,7 +306,7 @@ class Xml implements Loader
             $backup->addSync(
                 new Configuration\Backup\Sync(
                     (string) $syncNode->getAttribute('type'),
-                    String::toBoolean((string) $syncNode->getAttribute('skipOnFailure'), true),
+                    Str::toBoolean((string) $syncNode->getAttribute('skipOnFailure'), true),
                     $this->getOptions($syncNode)
                 )
             );
@@ -326,7 +326,7 @@ class Xml implements Loader
             $backup->setCleanup(
                 new Configuration\Backup\Cleanup(
                     (string) $cleanupNode->getAttribute('type'),
-                    String::toBoolean((string) $cleanupNode->getAttribute('skipOnFailure'), true),
+                    Str::toBoolean((string) $cleanupNode->getAttribute('skipOnFailure'), true),
                     $this->getOptions($cleanupNode)
                 )
             );

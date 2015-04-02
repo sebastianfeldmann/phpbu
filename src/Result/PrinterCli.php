@@ -6,7 +6,7 @@ use phpbu\App\Event;
 use phpbu\App\Listener;
 use phpbu\App\Log\Printer;
 use phpbu\App\Result;
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 use phpbu\App\Version;
 use PHP_Timer;
 use SebastianBergmann\Environment\Console;
@@ -573,15 +573,15 @@ class PrinterCli extends Printer implements Listener
                 sprintf(
                     'OK (%d %s, %d %s, %d %s, %d %s, %d %s)' . PHP_EOL,
                     count($result->getBackups()),
-                    String::appendPluralS('backup', count($result->getBackups())),
+                    Str::appendPluralS('backup', count($result->getBackups())),
                     $this->numChecks,
-                    String::appendPluralS('check', $this->numChecks),
+                    Str::appendPluralS('check', $this->numChecks),
                     $this->numCrypts,
-                    String::appendPluralS('crypt', $this->numChecks),
+                    Str::appendPluralS('crypt', $this->numChecks),
                     $this->numSyncs,
-                    String::appendPluralS('sync', $this->numSyncs),
+                    Str::appendPluralS('sync', $this->numSyncs),
                     $this->numCleanups,
-                    String::appendPluralS('cleanup', $this->numCleanups)
+                    Str::appendPluralS('cleanup', $this->numCleanups)
                 )
             );
         } elseif ($result->backupOkButSkipsOrFails()) {

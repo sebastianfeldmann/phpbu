@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup;
 
 use phpbu\App\Exception;
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 
 /**
  * Backup Target class.
@@ -162,7 +162,7 @@ class Target
                 }
             }
             // replace potential date placeholder
-            $path = String::replaceDatePlaceholders($path, $time);
+            $path = Str::replaceDatePlaceholders($path, $time);
         } else {
             $this->pathNotChanging = $path;
         }
@@ -180,7 +180,7 @@ class Target
         $this->filenameRaw = $file;
         if (false !== strpos($file, '%')) {
             $this->filenameIsChanging = true;
-            $file                     = String::replaceDatePlaceholders($file, $time);
+            $file                     = Str::replaceDatePlaceholders($file, $time);
         }
         $this->filename = $file;
     }

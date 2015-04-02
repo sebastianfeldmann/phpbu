@@ -6,7 +6,7 @@ use phpbu\App\Result;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 
 /**
  * Sftp sync
@@ -77,7 +77,7 @@ class Sftp implements Sync
         $this->host       = $config['host'];
         $this->user       = $config['user'];
         $this->password   = $config['password'];
-        $this->remotePath = String::withoutTrailingSlash(String::replaceDatePlaceholders($path));
+        $this->remotePath = Str::withoutTrailingSlash(Str::replaceDatePlaceholders($path));
     }
 
     /**

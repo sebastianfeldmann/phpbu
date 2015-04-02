@@ -84,8 +84,8 @@ class Mcrypt extends Binary implements Crypter
             throw new Exception('mcrypt \'algorithm\' is mandatory');
         }
 
-        $this->showStdErr    = Util\String::toBoolean(Util\Arr::getValue($options, 'showStdErr', ''), false);
-        $this->keepUncrypted = Util\String::toBoolean(Util\Arr::getValue($options, 'keepUncrypted', ''), false);
+        $this->showStdErr    = Util\Str::toBoolean(Util\Arr::getValue($options, 'showStdErr', ''), false);
+        $this->keepUncrypted = Util\Str::toBoolean(Util\Arr::getValue($options, 'keepUncrypted', ''), false);
         $this->key           = Util\Arr::getValue($options, 'key');
         $this->keyFile       = $this->toAbsolutePath(Util\Arr::getValue($options, 'keyFile'));
         $this->algorithm     = $options['algorithm'];

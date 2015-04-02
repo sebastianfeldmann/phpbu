@@ -6,7 +6,7 @@ use phpbu\App\Result;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 
 /**
  * Copycom
@@ -87,7 +87,7 @@ class Copycom implements Sync
         $this->appSecret  = $config['app.secret'];
         $this->userKey    = $config['user.key'];
         $this->userSecret = $config['user.secret'];
-        $this->path       = String::withTrailingSlash(String::replaceDatePlaceholders($config['path']));
+        $this->path       = Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path']));
     }
 
     /**

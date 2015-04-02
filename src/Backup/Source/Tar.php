@@ -54,9 +54,9 @@ class Tar extends Binary implements Source
     {
         $this->setupTar($conf);
 
-        $this->showStdErr = Util\String::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
+        $this->showStdErr = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
         $this->path       = Util\Arr::getValue($conf, 'path');
-        $this->removeDir  = Util\String::toBoolean(Util\Arr::getValue($conf, 'removeDir', ''), false);
+        $this->removeDir  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeDir', ''), false);
 
         if (empty($this->path)) {
             throw new Exception('path option is mandatory');

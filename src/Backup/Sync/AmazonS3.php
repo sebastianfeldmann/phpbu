@@ -6,7 +6,7 @@ use phpbu\App\Result;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 
 /**
  * Amazon S3 Sync
@@ -95,7 +95,7 @@ class AmazonS3 implements Sync
         $this->secret = $config['secret'];
         $this->bucket = $config['bucket'];
         $this->region = $config['region'];
-        $this->path   = String::withTrailingSlash(String::replaceDatePlaceholders($config['path']));
+        $this->path   = Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path']));
         $this->acl    = Arr::getValue($config, 'acl', 'private');
     }
 

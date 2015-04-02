@@ -6,7 +6,7 @@ use phpbu\App\Event;
 use phpbu\App\Listener;
 use phpbu\App\Result;
 use phpbu\App\Util\Arr;
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 use PHP_Timer;
 use Swift_Mailer;
 use Swift_Message;
@@ -139,7 +139,7 @@ class Mail implements Listener, Logger
         }
         $mails                 = $options['recipients'];
         $server                = gethostname();
-        $this->sendOnlyOnError = String::toBoolean(Arr::getValue($options, 'sendOnlyOnError'), false);
+        $this->sendOnlyOnError = Str::toBoolean(Arr::getValue($options, 'sendOnlyOnError'), false);
         $this->subject         = Arr::getValue($options, 'subject', 'PHPBU backup report from ' . $server);
         $this->senderMail      = Arr::getValue($options, 'sender.mail', 'phpbu@' . $server);
         $this->senderName      = Arr::getValue($options, 'sender.name');
@@ -332,13 +332,13 @@ class Mail implements Listener, Logger
                 sprintf(
                     'OK (%d %s, %d %s, %d %s, %d %s)',
                     count($result->getBackups()),
-                    String::appendPluralS('backup', count($result->getBackups())),
+                    Str::appendPluralS('backup', count($result->getBackups())),
                     $this->numChecks,
-                    String::appendPluralS('check', $this->numChecks),
+                    Str::appendPluralS('check', $this->numChecks),
                     $this->numSyncs,
-                    String::appendPluralS('sync', $this->numSyncs),
+                    Str::appendPluralS('sync', $this->numSyncs),
                     $this->numCleanups,
-                    String::appendPluralS('cleanup', $this->numCleanups)
+                    Str::appendPluralS('cleanup', $this->numCleanups)
                 ) .
                 '</p>';
         } elseif ($result->backupOkButSkipsOrFails()) {

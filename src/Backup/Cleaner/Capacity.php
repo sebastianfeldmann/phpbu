@@ -5,7 +5,7 @@ use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 use RuntimeException;
 
 /**
@@ -57,12 +57,12 @@ class Capacity implements Cleaner
             throw new Exception('option \'size\' is missing');
         }
         try {
-            $bytes = String::toBytes($options['size']);
+            $bytes = Str::toBytes($options['size']);
         } catch (RuntimeException $e) {
             throw new Exception($e->getMessage());
         }
         $this->deleteTarget  = isset($options['deleteTarget'])
-                             ? String::toBoolean($options['deleteTarget'], false)
+                             ? Str::toBoolean($options['deleteTarget'], false)
                              : false;
         $this->capacityRaw   = $options['size'];
         $this->capacityBytes = $bytes;

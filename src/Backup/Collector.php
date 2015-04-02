@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup;
 
 use DirectoryIterator;
-use phpbu\App\Util\String;
+use phpbu\App\Util\Str;
 
 /**
  * Collector
@@ -77,7 +77,7 @@ class Collector
             }
         } else {
             // create regex to match only created backup files
-            $fileRegex = String::datePlaceholdersToRegex($this->target->getFilenameRaw());
+            $fileRegex = Str::datePlaceholdersToRegex($this->target->getFilenameRaw());
             if ($this->target->shouldBeCompressed()) {
                 $fileRegex .= '.' . $this->target->getCompressor()->getSuffix();
             }
