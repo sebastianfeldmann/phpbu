@@ -2,7 +2,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:annotation>
     <xs:documentation source="http://www.phpbu.de/">
-    This schema file defines the rules by which the XML configuration file of phpbu 1.2 may be structured.
+    This schema file defines the rules by which the XML configuration file of phpbu 2.0 may be structured.
     </xs:documentation>
   </xs:annotation>
 
@@ -41,10 +41,11 @@
       <xs:element name="source" type="sourceType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="target" type="targetType" minOccurs="1" maxOccurs="1"/>
       <xs:element name="check" type="checkType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="crypt" type="cryptType" minOccurs="0" maxOccurs="1"/>
       <xs:element name="sync" type="syncType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="cleanup" type="cleanupType" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
-    <xs:attribute name="stopOnError" type="xs:boolean"/>
+    <xs:attribute name="stopOnFailure" type="xs:boolean"/>
     <xs:attribute name="name" type="xs:string"/>
   </xs:complexType>
 
@@ -75,12 +76,20 @@
     <xs:attribute name="value" use="required" type="xs:string"/>
   </xs:complexType>
 
+  <xs:complexType name="cryptType">
+    <xs:sequence>
+      <xs:element name="option" type="nameValueType" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="type" use="required" type="xs:string"/>
+    <xs:attribute name="skipOnFailure" type="xs:boolean"/>
+  </xs:complexType>
+
   <xs:complexType name="syncType">
     <xs:sequence>
       <xs:element name="option" type="nameValueType" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="type" use="required" type="xs:string"/>
-    <xs:attribute name="skipOnCheckFail" type="xs:boolean"/>
+    <xs:attribute name="skipOnFailure" type="xs:boolean"/>
   </xs:complexType>
 
   <xs:complexType name="cleanupType">
@@ -88,8 +97,7 @@
       <xs:element name="option" type="nameValueType" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="type" use="required" type="xs:string"/>
-    <xs:attribute name="skipOnCheckFail" type="xs:boolean"/>
-    <xs:attribute name="skipOnSyncFail" type="xs:boolean"/>
+    <xs:attribute name="skipOnFailure" type="xs:boolean"/>
   </xs:complexType>
 
   <xs:complexType name="nameValueType">
