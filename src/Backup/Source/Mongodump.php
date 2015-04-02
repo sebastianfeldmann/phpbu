@@ -176,10 +176,6 @@ class Mongodump extends Binary implements Source
      */
     public function backup(Target $target, Result $result)
     {
-        if ($this->validateConnection) {
-            $this->checkConnection($this->host, $this->user, $this->password, $this->databases);
-        }
-
         $exec      = $this->getExec($target);
         $mongodump = $this->execute($exec);
 
