@@ -101,7 +101,7 @@ Simple configuration example:
 ```xml
   <?xml version="1.0" encoding="UTF-8"?>
   <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/1.2/phpbu.xsd"
+         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/2.0/phpbu.xsd"
          verbose="true">
     <backups>
       <backup>
