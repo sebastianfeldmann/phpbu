@@ -169,15 +169,6 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests Mongodump::checkConnection
-     */
-    public function testCheckConnection()
-    {
-        $this->mongodump->checkConnection('localhost', 'user', 'password');
-        $this->assertTrue(true);
-    }
-
-    /**
      * Tests Mongodump::backup
      */
     public function testBackupOk()
