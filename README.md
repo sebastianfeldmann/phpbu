@@ -2,7 +2,7 @@
 
 **PHP Backup Utility**
 
-*PHPBU* is a php framework that creates backups and syncs your backups to other servers or cloud services
+*PHPBU* is a php framework that creates and encrypts backups, syncs your backups to other servers or cloud services
 and assists you monitor your backup creation.
 
 Get detailed information about all the features and a 'getting started' tutorial at the [PHPBU Website](http://phpbu.de).
@@ -23,6 +23,8 @@ Get detailed information about all the features and a 'getting started' tutorial
 * Validate backups
     + Check min size
     + Comparing with previous backups
+* Encrypting backups
+    + mcrypt
 * Sync backups to other locations
     + Amazon s3
     + copy.com
@@ -46,6 +48,7 @@ Get detailed information about all the features and a 'getting started' tutorial
     + mysqldump
     + tar
     + bzip2 or gzip
+    + mcrypt
     + rsync
 
 ## Installation
