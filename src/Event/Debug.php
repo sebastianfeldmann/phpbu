@@ -35,7 +35,7 @@ class Debug extends Event
      */
     public function __construct($message)
     {
-        $this->message= $message;
+        $this->message = $message;
     }
 
     /**
