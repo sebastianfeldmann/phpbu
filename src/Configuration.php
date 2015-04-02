@@ -29,9 +29,9 @@ class Configuration
     private $bootstrap;
 
     /**
-     * Config file DOMDocument
+     * Verbose output
      *
-     * @var \DOMDocument
+     * @var boolean
      */
     private $verbose = false;
 
@@ -140,7 +140,7 @@ class Configuration
     /**
      * Verbose setter.
      *
-     * @param $bool
+     * @param boolean $bool
      */
     public function setVerbose($bool)
     {
