@@ -104,7 +104,7 @@ class Backup
     /**
      * StopOnFailure getter.
      *
-     * @return bool
+     * @return boolean
      */
     public function stopOnFailure()
     {
@@ -204,7 +204,7 @@ class Backup
     /**
      * Returns list of syncs.
      *
-     * @return array<\phpbu\App\Configuration\Backup\Source>
+     * @return array<\phpbu\App\Configuration\Backup\Sync>
      */
     public function getSyncs()
     {
