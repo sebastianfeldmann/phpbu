@@ -2,19 +2,28 @@
 namespace phpbu\App\Event\Backup;
 
 use phpbu\App\Configuration\Backup;
-use Symfony\Component\EventDispatcher\Event;
+use phpbu\App\Event\Action;
 
-abstract class Abstraction extends Event
+/**
+ * Backup event base class.
+ *
+ * @package    phpbu
+ * @subpackage App
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @link       http://phpbu.de/
+ * @since      Class available since Release 2.0.0
+ */
+abstract class Abstraction extends Action
 {
-    protected $backup;
-
+    /**
+     * Constructor.
+     *
+     * @param \phpbu\App\Configuration\Backup $backup
+     */
     public function __construct(Backup $backup)
     {
-        $this->backup = $backup;
-    }
-
-    public function getConfiguration()
-    {
-        return $this->backup;
+        $this->configuration = $backup;
     }
 }

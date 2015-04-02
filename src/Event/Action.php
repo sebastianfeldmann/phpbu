@@ -1,11 +1,10 @@
 <?php
-namespace phpbu\App\Event\Crypt;
+namespace phpbu\App\Event;
 
-use phpbu\App\Configuration\Backup\Crypt;
-use phpbu\App\Event\Action;
+use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Check Event base class.
+ * phpbu event base class
  *
  * @package    phpbu
  * @subpackage App
@@ -15,15 +14,22 @@ use phpbu\App\Event\Action;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-abstract class Abstraction extends Action
+abstract class Action extends Event
 {
     /**
-     * Constructor.
+     * Application configuration.
      *
-     * @param \phpbu\App\Configuration\Backup\Crypt $crypt
+     * @var mixed
      */
-    public function __construct(Crypt $crypt)
+    protected $configuration;
+
+    /**
+     * Configuration getter.
+     *
+     * @return mixed
+     */
+    public function getConfiguration()
     {
-        $this->configuration = $crypt;
+        return $this->configuration;
     }
 }

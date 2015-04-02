@@ -2,19 +2,28 @@
 namespace phpbu\App\Event\App;
 
 use phpbu\App\Configuration;
-use Symfony\Component\EventDispatcher\Event;
+use phpbu\App\Event\Action;
 
-abstract class Abstraction extends Event
+/**
+ * App event base class
+ *
+ * @package    phpbu
+ * @subpackage App
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @link       http://phpbu.de/
+ * @since      Class available since Release 2.0.0
+ */
+abstract class Abstraction extends Action
 {
-    protected $configuration;
-
+    /**
+     * Constructor.
+     *
+     * @param \phpbu\App\Configuration $configuration
+     */
     public function __construct(Configuration $configuration)
     {
         $this->configuration = $configuration;
-    }
-
-    public function getConfiguration()
-    {
-        return $this->configuration;
     }
 }

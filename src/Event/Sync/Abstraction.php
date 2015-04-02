@@ -2,19 +2,28 @@
 namespace phpbu\App\Event\Sync;
 
 use phpbu\App\Configuration\Backup\Sync;
-use Symfony\Component\EventDispatcher\Event;
+use phpbu\App\Event\Action;
 
-abstract class Abstraction extends Event
+/**
+ * Sync event base class.
+ *
+ * @package    phpbu
+ * @subpackage App
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @link       http://phpbu.de/
+ * @since      Class available since Release 2.0.0
+ */
+abstract class Abstraction extends Action
 {
-    protected $sync;
-
+    /**
+     * Constructor.
+     *
+     * @param \phpbu\App\Configuration\Backup\Sync $sync
+     */
     public function __construct(Sync $sync)
     {
-        $this->sync = $sync;
-    }
-
-    public function getConfiguration()
-    {
-        return $this->sync;
+        $this->configuration = $sync;
     }
 }
