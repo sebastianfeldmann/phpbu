@@ -81,6 +81,17 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Configuration::getPath
+     */
+    public function testGetPath()
+    {
+        $conf = new Configuration('/tmp/foo.xml');
+        $this->assertEquals('foo.xml', $conf->getFilename());
+        $this->assertEquals('/tmp', $conf->getPath());
+        $this->assertEquals('/tmp/foo.xml', $conf->getPathname());
+    }
+
+    /**
      * Tests Configuration::addBackup
      */
     public function testBackup()

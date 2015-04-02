@@ -69,7 +69,7 @@ use phpbu\App\Util\Str;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://phpbu.de/
- * @since      Class available since Release 1.0.0
+ * @since      Class available since Release 2.0.0
  */
 class Xml implements Loader
 {
@@ -134,13 +134,13 @@ class Xml implements Loader
         $root = $this->document->documentElement;
 
         if ($root->hasAttribute('bootstrap')) {
-            $configuration->setBootstrap($this->toAbsolutePath((string) $root->getAttribute('bootstrap')));
+            $configuration->setBootstrap($this->toAbsolutePath($root->getAttribute('bootstrap')));
         }
         if ($root->hasAttribute('verbose')) {
-            $configuration->setVerbose(Str::toBoolean((string) $root->getAttribute('verbose'), false));
+            $configuration->setVerbose(Str::toBoolean($root->getAttribute('verbose'), false));
         }
         if ($root->hasAttribute('colors')) {
-            $configuration->setColors(Str::toBoolean((string) $root->getAttribute('colors'), false));
+            $configuration->setColors(Str::toBoolean($root->getAttribute('colors'), false));
         }
     }
 
@@ -153,15 +153,15 @@ class Xml implements Loader
     public function setPhpSettings(Configuration $configuration)
     {
         foreach ($this->xpath->query('php/includePath') as $includePath) {
-            $path = (string) $includePath->nodeValue;
+            $path = $includePath->nodeValue;
             if ($path) {
                 $configuration->addIncludePath($this->toAbsolutePath($path));
             }
         }
         foreach ($this->xpath->query('php/ini') as $ini) {
             /** @var DOMElement $ini */
-            $name  = (string) $ini->getAttribute('name');
-            $value = (string) $ini->getAttribute('value');
+            $name  = $ini->getAttribute('name');
+            $value = $ini->getAttribute('value');
 
             $configuration->addIniSetting($name, $value);
         }
@@ -189,7 +189,7 @@ class Xml implements Loader
      */
     private function getBackupConfig(DOMElement $backupNode)
     {
-        $stopOnFailure = Str::toBoolean((string) $backupNode->getAttribute('stopOnFailure'), false);
+        $stopOnFailure = Str::toBoolean($backupNode->getAttribute('stopOnFailure'), false);
         $backupName    = $backupNode->getAttribute('name');
         $backup        = new Configuration\Backup($backupName, $stopOnFailure);
 
@@ -219,7 +219,7 @@ class Xml implements Loader
         }
         /** @var DOMElement $sourceNode */
         $sourceNode = $sources->item(0);
-        $type       = (string) $sourceNode->getAttribute('type');
+        $type       = $sourceNode->getAttribute('type');
         if (!$type) {
             throw new Exception('source requires type attribute');
         }
@@ -242,9 +242,9 @@ class Xml implements Loader
         }
         /** @var DOMElement $targetNode */
         $targetNode = $targets->item(0);
-        $compress   = (string) $targetNode->getAttribute('compress');
-        $filename   = (string) $targetNode->getAttribute('filename');
-        $dirname    = (string) $targetNode->getAttribute('dirname');
+        $compress   = $targetNode->getAttribute('compress');
+        $filename   = $targetNode->getAttribute('filename');
+        $dirname    = $targetNode->getAttribute('dirname');
 
         if ($dirname) {
             $dirname = $this->toAbsolutePath($dirname);
@@ -263,9 +263,8 @@ class Xml implements Loader
     {
         /** @var DOMElement $checkNode */
         foreach ($node->getElementsByTagName('check') as $checkNode) {
-
-            $type  = (string) $checkNode->getAttribute('type');
-            $value = (string) $checkNode->getAttribute('value');
+            $type  = $checkNode->getAttribute('type');
+            $value = $checkNode->getAttribute('value');
             // skip invalid sanity checks
             if (!$type || !$value) {
                 continue;
@@ -277,59 +276,69 @@ class Xml implements Loader
     /**
      * Set the crypt configuration.
      *
-     * @param \phpbu\App\Configuration\Backup $backup
-     * @param \DOMElement                     $node
+     * @param  \phpbu\App\Configuration\Backup $backup
+     * @param  \DOMElement                     $node
+     * @throws \phpbu\App\Exception
      */
     protected function setCrypt(Configuration\Backup $backup, DOMElement $node)
     {
-        /** @var DOMElement $cryptNode */
-        foreach ($node->getElementsByTagName('crypt') as $cryptNode) {
-            $crypt = new Configuration\Backup\Crypt(
-                (string) $cryptNode->getAttribute('type'),
-                Str::toBoolean((string) $cryptNode->getAttribute('skipOnFailure'), true),
-                $this->getOptions($cryptNode)
-            );
-            $backup->setCrypt($crypt);
+        /** @var DOMNodeList $cryptNodes */
+        $cryptNodes = $node->getElementsByTagName('crypt');
+        if ($cryptNodes->length > 0) {
+            /** @var DOMElement $cryptNode */
+            $cryptNode = $cryptNodes->item(0);
+            $type = $cryptNode->getAttribute('type');
+            if (!$type) {
+                throw new Exception('invalid crypt configuration: attribute type missing');
+            }
+            $skip    = Str::toBoolean($cryptNode->getAttribute('skipOnFailure'), true);
+            $options = $this->getOptions($cryptNode);
+            $backup->setCrypt(new Configuration\Backup\Crypt($type, $skip, $options));
         }
     }
 
     /**
      * Set backup sync configurations.
      *
-     * @param \phpbu\App\Configuration\Backup $backup
-     * @param \DOMElement                     $node
+     * @param  \phpbu\App\Configuration\Backup $backup
+     * @param  \DOMElement                     $node
+     * @throws \phpbu\App\Exception
      */
     protected function setSyncs(Configuration\Backup $backup, DOMElement $node)
     {
         /** @var DOMElement $syncNode */
         foreach ($node->getElementsByTagName('sync') as $syncNode) {
-            $backup->addSync(
-                new Configuration\Backup\Sync(
-                    (string) $syncNode->getAttribute('type'),
-                    Str::toBoolean((string) $syncNode->getAttribute('skipOnFailure'), true),
-                    $this->getOptions($syncNode)
-                )
-            );
+            $type = $syncNode->getAttribute('type');
+            if (!$type) {
+                throw new Exception('invalid sync configuration: attribute type missing');
+            }
+            $skip    = Str::toBoolean($syncNode->getAttribute('skipOnFailure'), true);
+            $options = $this->getOptions($syncNode);
+            $backup->addSync(new Configuration\Backup\Sync($type, $skip, $options));
         }
     }
 
     /**
      * Set the cleanup configuration.
      *
-     * @param \phpbu\App\Configuration\Backup $backup
-     * @param \DOMElement                     $node
+     * @param  \phpbu\App\Configuration\Backup $backup
+     * @param  \DOMElement                     $node
+     * @throws \phpbu\App\Exception
      */
     protected function setCleanup(Configuration\Backup $backup, DOMElement $node)
     {
-        /** @var DOMElement $cleanupNode */
-        foreach ($node->getElementsByTagName('cleanup') as $cleanupNode) {
-            $backup->setCleanup(
-                new Configuration\Backup\Cleanup(
-                    (string) $cleanupNode->getAttribute('type'),
-                    Str::toBoolean((string) $cleanupNode->getAttribute('skipOnFailure'), true),
-                    $this->getOptions($cleanupNode)
-                )
-            );
+        /** @var DOMNodeList $cleanupNodes */
+        $cleanupNodes = $node->getElementsByTagName('cleanup');
+        if ($cleanupNodes->length > 0) {
+            /** @var DOMElement $cleanupNode */
+            $cleanupNode = $cleanupNodes->item(0);
+            $type        = $cleanupNode->getAttribute('type');
+            if (!$type) {
+                throw new Exception('invalid cleanup configuration: attribute type missing');
+            }
+            $skip    = Str::toBoolean($cleanupNode->getAttribute('skipOnFailure'), true);
+            $options = $this->getOptions($cleanupNode);
+            $backup->setCleanup(new Configuration\Backup\Cleanup($type, $skip, $options));
         }
     }
 
@@ -344,8 +353,8 @@ class Xml implements Loader
         $options = array();
         /** @var DOMElement $optionNode */
         foreach ($node->getElementsByTagName('option') as $optionNode) {
-            $name           = (string) $optionNode->getAttribute('name');
-            $value          = (string) $optionNode->getAttribute('value');
+            $name           = $optionNode->getAttribute('name');
+            $value          = $optionNode->getAttribute('value');
             $options[$name] = $value;
         }
         return $options;
@@ -354,34 +363,27 @@ class Xml implements Loader
     /**
      * Set the log configuration.
      *
-     * @param \phpbu\App\Configuration $configuration
+     * @param  \phpbu\App\Configuration $configuration
+     * @throws \phpbu\App\Exception
      */
     public function setLoggers(Configuration $configuration)
     {
         /** @var DOMElement $logNode */
         foreach ($this->xpath->query('logging/log') as $logNode) {
-            $options = array();
-            $tarAtr  = (string) $logNode->getAttribute('target');
-            if (!empty($tarAtr)) {
-                $options['target'] = $this->toAbsolutePath($tarAtr);
+            $type = $logNode->getAttribute('type');
+            if (!$type) {
+                throw new Exception('invalid logger configuration: attribute type missing');
             }
-
-            /** @var DOMElement $optionNode */
-            foreach ($logNode->getElementsByTagName('option') as $optionNode) {
-                $name  = (string) $optionNode->getAttribute('name');
-                $value = (string) $optionNode->getAttribute('value');
-                // check for path option
-                if ('target' == $name) {
-                    $value = $this->toAbsolutePath($value);
-                }
-                $options[$name] = $value;
+            $options = $this->getOptions($logNode);
+            if (isset($options['target'])) {
+                $options['target'] = $this->toAbsolutePath($options['target']);
             }
-            $configuration->addLogger(
-                new Configuration\Logger(
-                    (string) $logNode->getAttribute('type'),
-                    $options
-                )
-            );
+            // search for target attribute to convert to option
+            $target = $logNode->getAttribute('target');
+            if (!empty($target)) {
+                $options['target'] = $this->toAbsolutePath($target);
+            }
+            $configuration->addLogger(new Configuration\Logger($type, $options));
         }
     }
 

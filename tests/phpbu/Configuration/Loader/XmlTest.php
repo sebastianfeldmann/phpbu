@@ -77,6 +77,58 @@ class XmlTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Xml::loadXmlFile
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testFileNoLoggerType()
+    {
+        $file   = realpath(__DIR__ . '/../../../_files/conf/config-no-logger-type.xml');
+        $loader = new Xml($file);
+        $config = $loader->getConfiguration();
+        $this->assertFalse($config, 'exception should be thrown');
+    }
+
+    /**
+     * Tests Xml::loadXmlFile
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testFileNoCleanupType()
+    {
+        $file   = realpath(__DIR__ . '/../../../_files/conf/config-no-cleanup-type.xml');
+        $loader = new Xml($file);
+        $config = $loader->getConfiguration();
+        $this->assertFalse($config, 'exception should be thrown');
+    }
+
+    /**
+     * Tests Xml::loadXmlFile
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testFileNoCryptType()
+    {
+        $file   = realpath(__DIR__ . '/../../../_files/conf/config-no-crypt-type.xml');
+        $loader = new Xml($file);
+        $config = $loader->getConfiguration();
+        $this->assertFalse($config, 'exception should be thrown');
+    }
+
+    /**
+     * Tests Xml::loadXmlFile
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testFileNoSyncType()
+    {
+        $file   = realpath(__DIR__ . '/../../../_files/conf/config-no-sync-type.xml');
+        $loader = new Xml($file);
+        $config = $loader->getConfiguration();
+        $this->assertFalse($config, 'exception should be thrown');
+    }
+
+    /**
      * Tests Xml::getConfiguration
      */
     public function testAppSettings()
