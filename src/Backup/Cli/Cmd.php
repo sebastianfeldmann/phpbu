@@ -57,7 +57,7 @@ class Cmd
 
     /**
      * Silence the 'Cmd' by redirecting its stdErr output to /dev/null.
-     * The silence feature is disabled for Windows system.
+     * The silence feature is disabled for Windows systems.
      *
      * @param boolean $bool
      */
@@ -75,14 +75,16 @@ class Cmd
      */
     public function addOption($option, $argument = null, $glue = '=')
     {
-        if (is_array($argument)) {
-            $argument        = array_map('escapeshellarg', $argument);
-            $glue            = ' ';
-            $escapedArgument = implode(' ', $argument);
+        if ($argument !== null) {
+            // for space for multiple argument list e.g. --option 'foo' 'bar'
+            if (is_array($argument)) {
+                $glue = ' ';
+            }
+            $argument = $glue . $this->escapeArgument($argument);
         } else {
-            $escapedArgument = escapeshellarg($argument);
+            $argument = '';
         }
-        $this->options[] = $option . (null !== $argument ? $glue . $escapedArgument : '');
+        $this->options[] = $option . $argument;
     }
 
     /**
@@ -92,13 +94,24 @@ class Cmd
      */
     public function addArgument($argument)
     {
+        $this->options[] = $this->escapeArgument($argument);
+    }
+
+    /**
+     * Escape a shell argument.
+     *
+     * @param  mixed <string|array> $argument
+     * @return string
+     */
+    protected function escapeArgument($argument)
+    {
         if (is_array($argument)) {
-            $argument        = array_map('escapeshellarg', $argument);
-            $escapedArgument = implode(' ', $argument);
+            $argument = array_map('escapeshellarg', $argument);
+            $escaped  = implode(' ', $argument);
         } else {
-            $escapedArgument = escapeshellarg($argument);
+            $escaped = escapeshellarg($argument);
         }
-        $this->options[] = $escapedArgument;
+        return $escaped;
     }
 
     /**
