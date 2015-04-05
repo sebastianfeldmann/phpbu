@@ -1,0 +1,5 @@
+#! /bin/bash
+
+# unit test fake mcrypt command that is executable
+
+exit 0
