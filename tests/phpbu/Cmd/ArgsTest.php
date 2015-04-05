@@ -25,6 +25,16 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test self-update
+     */
+    public function testGetSelfUpdate()
+    {
+        $args    = new Args(true);
+        $options = $args->getOptions(array('--self-update'));
+        $this->assertTrue($options['--self-update'], 'long option --self-update must be set');
+    }
+
+    /**
      * Test short option -x
      *
      * @expectedException \phpbu\App\Exception

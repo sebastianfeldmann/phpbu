@@ -76,6 +76,13 @@ class Cmd
 ';
 
     /**
+     * Is cmd executed from phar.
+     *
+     * @var boolean
+     */
+    private $isPhar;
+
+    /**
      * Is version string printed already.
      *
      * @var boolean
@@ -96,6 +103,7 @@ class Cmd
      */
     public function run(array $args)
     {
+        $this->isPhar = defined('__PHPBU_PHAR__');
         $this->handleOpt($args);
         $this->findConfiguration();
 
@@ -126,7 +134,7 @@ class Cmd
     protected function handleOpt(array $args)
     {
         try {
-            $parser  = new Args();
+            $parser  = new Args($this->isPhar);
             $options = $parser->getOptions($args);
             $this->handleArgs($options);
         } catch (Exception $e) {
@@ -342,7 +350,7 @@ Usage: phpbu [option]
   -V, --version          Output version information and exit.
 
 EOT;
-        if (defined('__PHPBU_PHAR__')) {
+        if ($this->isPhar) {
             echo '  --self-update          Update phpbu to the latest version.' . PHP_EOL;
         }
     }

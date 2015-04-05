@@ -46,10 +46,12 @@ class Args
 
     /**
      * Constructor.
+     *
+     * @param boolean $isPhar
      */
-    public function __construct()
+    public function __construct($isPhar = false)
     {
-        if (defined('__PHPBU_PHAR__')) {
+        if ($isPhar) {
             $this->longOptions['selfupdate']  = true;
             $this->longOptions['self-update'] = true;
         }
