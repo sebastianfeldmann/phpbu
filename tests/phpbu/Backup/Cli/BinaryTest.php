@@ -134,6 +134,18 @@ class BinaryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Binary::detectCommand
+     */
+    public function testDetectCommand()
+    {
+        $bin  = new BinaryStub();
+        $cd   = $bin->testDetectCommand('cd');
+
+        $this->assertTrue(strpos($cd, 'cd') !== false);
+        $this->assertTrue(is_executable($cd));
+    }
+
+    /**
      * Create Target Mock.
      *
      * @return \phpbu\App\Backup\Target
@@ -224,5 +236,14 @@ class BinaryStub extends Binary
     {
         $compressor = $compressOutput ? $target->getCompressor() : null;
         return $this->execute($exec, $target->getPathnamePlain(), $compressor);
+    }
+
+    /**
+     * @param  string $cmd
+     * @return string
+     */
+    public function testDetectCommand($cmd)
+    {
+        return $this->detectCommand($cmd);
     }
 }
