@@ -109,13 +109,6 @@ class Mysqldump extends Binary implements Source
     private $noData;
 
     /**
-     * Use php to validate the mysql connection
-     *
-     * @var boolean
-     */
-    private $validateConnection;
-
-    /**
      * Setup.
      *
      * @see    \phpbu\App\Backup\Source
@@ -127,14 +120,13 @@ class Mysqldump extends Binary implements Source
         $this->setupMysqldump($conf);
         $this->setupSourceData($conf);
 
-        $this->host               = Util\Arr::getValue($conf, 'host');
-        $this->user               = Util\Arr::getValue($conf, 'user');
-        $this->password           = Util\Arr::getValue($conf, 'password');
-        $this->showStdErr         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
-        $this->quick              = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
-        $this->compress           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
-        $this->validateConnection = Util\Str::toBoolean(Util\Arr::getValue($conf, 'validateConnection', ''), false);
-        $this->noData             = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
+        $this->host       = Util\Arr::getValue($conf, 'host');
+        $this->user       = Util\Arr::getValue($conf, 'user');
+        $this->password   = Util\Arr::getValue($conf, 'password');
+        $this->showStdErr = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
+        $this->quick      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
+        $this->compress   = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
+        $this->noData     = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
     }
 
     /**
@@ -173,10 +165,6 @@ class Mysqldump extends Binary implements Source
      */
     public function backup(Target $target, Result $result)
     {
-        if ($this->validateConnection) {
-            $this->checkConnection($this->host, $this->user, $this->password, $this->databases);
-        }
-
         $exec      = $this->getExec();
         $mysqldump = $this->execute($exec, $target->getPathnamePlain(), $target->getCompressor());
 
@@ -245,49 +233,5 @@ class Mysqldump extends Binary implements Source
             }
         }
         return $this->exec;
-    }
-
-    /**
-     * Test mysql connection.
-     *
-     * @param  string $host
-     * @param  string $user
-     * @param  string $password
-     * @param  array  $databases
-     * @throws \phpbu\App\Exception
-     */
-    public function checkConnection($host, $user, $password, array $databases = array())
-    {
-        // no host configured
-        if (empty($host)) {
-            // localhost by default
-            $host = 'localhost';
-        }
-        // no user configured
-        if (empty($user)) {
-            if (php_sapi_name() != 'cli') {
-                throw new Exception('user is required for connection validation');
-            }
-            // in cli mode we use the system user as default
-            $user = $_SERVER['USER'];
-        }
-        // no databases configured
-        if (empty($databases)) {
-            // add the null database to trigger foreach anyway
-            $databases[] = null;
-        }
-
-        // check all configured databases
-        foreach ($databases as $db) {
-            $mysqli = @new \mysqli($host, $user, $password, $db);
-            if (0 != $mysqli->connect_errno) {
-                $msg = $mysqli->error;
-                unset($mysqli);
-                throw new Exception(sprintf('Can\'t connect to mysql server: %s', $msg));
-            }
-
-            $mysqli->close();
-            unset($mysqli);
-        }
     }
 }

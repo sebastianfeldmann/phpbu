@@ -29,8 +29,4 @@
 
   <!-- optional, default=false -->
   <option name="compress" value="true" />
-
-  <!-- optional, default=false -->
-  <!-- checks the mysql connection before actually starting mysqldump, requires ext-mysqli -->
-  <option name="validateConnection" value="true" />
 </source>

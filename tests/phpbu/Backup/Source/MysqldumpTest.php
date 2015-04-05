@@ -52,6 +52,29 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Mysqldump::setUp
+     *
+     * @expectedException \RuntimeException
+     */
+    public function testSetUpCantFindBinary()
+    {
+        $mcrypt = new Mysqldump();
+        $mcrypt->setup(array('pathToMysqldump' => '/foo/bar'));
+    }
+
+    /**
+     * Tests Mysqldump::setUp
+     */
+    public function testSetUpFindBinary()
+    {
+        $path   = realpath(__DIR__ . '/../../../_files/bin');
+        $mcrypt = new Mysqldump();
+        $mcrypt->setup(array('pathToMysqldump' => $path));
+
+        $this->assertTrue(true, 'no exception should be thrown');
+    }
+
+    /**
      * Tests Mysqldump::getExec
      */
     public function testShowStdErr()
