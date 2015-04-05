@@ -136,7 +136,7 @@ class BinaryTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Binary::detectCommand
      */
-    public function testDetectCommand()
+    public function __testDetectCommand()
     {
         $bin  = new BinaryStub();
         $cd   = $bin->testDetectCommand('cd');
