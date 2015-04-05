@@ -52,6 +52,29 @@ class TarTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Tar::setUp
+     *
+     * @expectedException \RuntimeException
+     */
+    public function testSetUpCantFindBinary()
+    {
+        $mcrypt = new Tar();
+        $mcrypt->setup(array('path' => '/tmp', 'pathToTar' => '/foo/bar'));
+    }
+
+    /**
+     * Tests Tar::setUp
+     */
+    public function testSetUpFindBinary()
+    {
+        $path   = realpath(__DIR__ . '/../../../_files/bin');
+        $mcrypt = new Tar();
+        $mcrypt->setup(array('path' => '/tmp', 'pathToTar' => $path));
+
+        $this->assertTrue(true, 'no exception should be thrown');
+    }
+
+    /**
      * Tests Tar::getExec
      */
     public function testDefault()
