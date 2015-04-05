@@ -40,6 +40,29 @@ class McryptTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Mcrypt::setUp
+     *
+     * @expectedException \RuntimeException
+     */
+    public function testSetUpCantFindBinary()
+    {
+        $mcrypt = new Mcrypt();
+        $mcrypt->setup(array('key' => 'fooBarBaz', 'algorithm' => 'blowfish', 'pathToMcrypt' => '/foo/bar/mcrypt'));
+    }
+
+    /**
+     * Tests Mcrypt::setUp
+     */
+    public function testSetUpFindBinary()
+    {
+        $path   = realpath(__DIR__ . '/../../../_files/bin');
+        $mcrypt = new Mcrypt();
+        $mcrypt->setup(array('key' => 'fooBarBaz', 'algorithm' => 'blowfish', 'pathToMcrypt' => $path));
+
+        $this->assertTrue(true, 'no exception should be thrown');
+    }
+
+    /**
+     * Tests Mcrypt::setUp
      */
     public function testSetUpOk()
     {
