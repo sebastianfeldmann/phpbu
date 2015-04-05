@@ -72,7 +72,7 @@ class Compressor
      * @param string $cmd
      * @param string $pathToCmd without trailing slash
      */
-    protected function __construct($cmd, $pathToCmd = null)
+    public function __construct($cmd, $pathToCmd = null)
     {
         $this->path     = $pathToCmd . (!empty($pathToCmd) ? DIRECTORY_SEPARATOR : '');
         $this->cmd      = $cmd;
