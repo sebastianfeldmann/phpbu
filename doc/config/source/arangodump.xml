@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<source type="arangodump">
+  <!-- optional, default=false -->
+  <option name="showStdErr" value="true" />
+
+  <!-- optional, default=tcp://localhost:8529 -->
+  <option name="endpoint" value="tcp://myhost:8529" />
+
+  <!-- optional, default=none -->
+  <option name="username" value="myUserName" />
+
+  <!-- optional, default=none -->
+  <option name="password" value="mySecretPassword" />
+
+  <!-- optional, default=false -->
+  <option name="disableAuthentication" value="true" />
+
+  <!-- optional, default=_system -->
+  <option name="database" value="mydatabase" />
+
+  <!-- optional, default=true -->
+  <option name="dumpData" value="true" />
+
+  <!-- optional, default=false -->
+  <option name="includeSystemCollections" value="true" />
+
+  <!-- optional, default=all -->
+  <option name="collections" value="mycollection1,mycollection2" />
+</source>
