@@ -15,6 +15,18 @@ namespace phpbu\App\Backup;
 class TargetTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * Tests Target::isCompressed
+     */
+    public function testNotCompressedWithoutCompressor()
+    {
+        $path     = '/tmp/%Y/%m';
+        $filename = 'foo-%d.txt';
+        $target   = new Target($path, $filename);
+
+        $this->assertFalse($target->isCompressed());
+    }
+
+    /**
      * Test detecting date placeholder in path.
      */
     public function testHasChangingPath()

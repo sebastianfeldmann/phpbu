@@ -123,7 +123,7 @@ class Target
     private $crypter;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param  string  $path
      * @param  string  $filename
@@ -487,6 +487,16 @@ class Target
     public function shouldBeCompressed()
     {
         return $this->compress !== false;
+    }
+
+    /**
+     * Is the target already compressed.
+     *
+     * @return boolean
+     */
+    public function isCompressed()
+    {
+        return $this->shouldBeCompressed() ? file_exists($this->getPathname()) : false;
     }
 
     /**
