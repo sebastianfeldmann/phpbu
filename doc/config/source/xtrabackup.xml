@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<source type="xtrabackup">
+  <!-- optional, default=false -->
+  <option name="showStdErr" value="true" />
+
+  <!-- optional, default=localhost -->
+  <option name="host" value="myhost" />
+
+  <!-- optional, default=system user -->
+  <option name="user" value="myUserName" />
+
+  <!-- optional, default=none -->
+  <option name="password" value="mySecretPassword" />
+
+  <!-- optional, default=all -->
+  <option name="databases" value="myDB1,myDB2,myDB3.table1" />
+
+  <!-- optional, default=all -->
+  <option name="include" value="^mydatabase[.]mytable" />
+</source>
