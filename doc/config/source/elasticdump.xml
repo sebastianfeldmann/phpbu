@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<source type="elasticdump">
+  <!-- optional, default=false -->
+  <option name="showStdErr" value="true" />
+
+  <!-- optional, default=localhost:9200 -->
+  <option name="host" value="localhost:9200" />
+
+  <!-- optional, default=none -->
+  <option name="user" value="myUserName" />
+
+  <!-- optional, default=none -->
+  <option name="password" value="mySecretPassword" />
+
+  <!-- optional, default=all -->
+  <option name="index" value="myindex" />
+
+  <!-- optional, default=data -->
+  <option name="type" value="data" />
+</source>
