@@ -17,6 +17,7 @@ Get detailed information about all the features and a 'getting started' tutorial
 
 * Creating backups
     + Directories
+    + Elasticsearch
     + MongoDB
     + MySQL
     + PostgreSQL (planned)
