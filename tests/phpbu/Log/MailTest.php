@@ -21,7 +21,6 @@ class MailTest extends \PHPUnit_Framework_TestCase
     {
         $events = Mail::getSubscribedEvents();
 
-        $this->assertTrue(array_key_exists('phpbu.debug', $events));
         $this->assertTrue(array_key_exists('phpbu.backup_start', $events));
         $this->assertTrue(array_key_exists('phpbu.check_start', $events));
 
