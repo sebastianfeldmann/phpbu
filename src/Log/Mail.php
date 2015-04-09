@@ -116,7 +116,6 @@ class Mail implements Listener, Logger
     public static function getSubscribedEvents()
     {
         return array(
-            'phpbu.debug'         => 'onDebug',
             'phpbu.backup_start'  => 'onBackupStart',
             'phpbu.check_start'   => 'onCheckStart',
             'phpbu.sync_start'    => 'onSyncStart',
@@ -152,6 +151,8 @@ class Mail implements Listener, Logger
     }
 
     /**
+     * Handle the phpbu end event.
+     *
      * @param  \phpbu\App\Event\App\End $event
      * @throws \phpbu\App\Exception
      */
