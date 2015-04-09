@@ -160,7 +160,7 @@ class Mysqldump extends Binary implements Source
      * @see    \phpbu\App\Backup\Source
      * @param  \phpbu\App\Backup\Target $target
      * @param  \phpbu\App\Result        $result
-     * @return \phpbu\App\Result
+     * @return \phpbu\App\Backup\Source\Status
      * @throws \phpbu\App\Exception
      */
     public function backup(Target $target, Result $result)
@@ -174,7 +174,7 @@ class Mysqldump extends Binary implements Source
             throw new Exception('mysqldump failed');
         }
 
-        return $result;
+        return Status::create();
     }
 
     /**

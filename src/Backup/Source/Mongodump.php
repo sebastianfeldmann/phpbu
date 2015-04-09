@@ -171,7 +171,7 @@ class Mongodump extends Binary implements Source
      * @see    \phpbu\App\Backup\Source
      * @param  \phpbu\App\Backup\Target $target
      * @param  \phpbu\App\Result        $result
-     * @return \phpbu\App\Result
+     * @return \phpbu\App\Backup\Source\Status
      * @throws \phpbu\App\Exception
      */
     public function backup(Target $target, Result $result)
@@ -192,7 +192,8 @@ class Mongodump extends Binary implements Source
         } catch (\Exception $e) {
             throw new Exception('Failed to \'tar\' Mongodump directory', 1, $e);
         }
-        return $result;
+        // return Status::create()->uncompressed()->dataPath($this->getDumpDir($target));
+        return Status::create();
     }
 
     /**

@@ -114,7 +114,7 @@ class Elasticdump extends Binary implements Source
      * @see    \phpbu\App\Backup\Source
      * @param  \phpbu\App\Backup\Target $target
      * @param  \phpbu\App\Result        $result
-     * @return \phpbu\App\Result
+     * @return \phpbu\App\Backup\Source\Status
      * @throws \phpbu\App\Exception
      */
     public function backup(Target $target, Result $result)
@@ -128,7 +128,7 @@ class Elasticdump extends Binary implements Source
             throw new Exception('elasticdump failed');
         }
 
-        return $result;
+        return Status::create();
     }
 
     /**
@@ -161,8 +161,17 @@ class Elasticdump extends Binary implements Source
         return $this->exec;
     }
 
-    private function generateNodeUrl($host, $user = null, $password = null, $index = null){
-
+    /**
+     * Create a elastic node url.
+     *
+     * @param  string $host
+     * @param  string $user
+     * @param  string $password
+     * @param  string $index
+     * @return string
+     */
+    private function generateNodeUrl($host, $user = null, $password = null, $index = null)
+    {
         $parsed = parse_url($host);
 
         if (!isset($parsed['scheme'])) {

@@ -4,6 +4,7 @@ namespace phpbu\App;
 use phpbu\App\Backup;
 use phpbu\App\Backup\Compressor;
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Source\Status;
 use phpbu\App\Backup\Target;
 
 /**
@@ -237,8 +238,41 @@ class Runner
     {
         $this->result->backupStart($conf);
         $source = Factory::createSource($conf->getSource()->type, $conf->getSource()->options);
-        $source->backup($target, $this->result);
+        $status = $source->backup($target, $this->result);
+        if (is_a($status, '\\phpbu\\App\\Backup\\Source\\Status') && !$status->handledCompression()) {
+            $this->handleCompression($target, $status);
+        }
         $this->result->backupEnd($conf);
+    }
+
+    /**
+     * Handle directory compression for sources which can't handle compression by them self.
+     *
+     * @param  \phpbu\App\Backup\Target        $target
+     * @param  \phpbu\App\Backup\Source\Status $status
+     * @throws \phpbu\App\Exception
+     */
+    protected function handleCompression(Target $target, Status $status)
+    {
+        $pathToCompress = $status->getDataPath();
+        if (empty($pathToCompress)) {
+            throw new Exception('no path to compress set');
+        }
+        if (!is_dir($pathToCompress)) {
+            throw new Exception('path to compress should be a directory');
+        }
+        try {
+            $tar = new Backup\Source\Tar();
+            $tar->setup(
+                array(
+                    'path'      => $pathToCompress,
+                    'removeDir' => 'true',
+                )
+            );
+            $tar->backup($target, $this->result);
+        } catch (\Exception $e) {
+            throw new Exception('Failed to \'tar\' directory: ' . $pathToCompress . PHP_EOL . $e->getMessage(), 1, $e);
+        }
     }
 
     /**

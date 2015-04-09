@@ -24,10 +24,11 @@ interface Source
     public function setup(array $conf = array());
 
     /**
-     * Runner the backup
+     * Execute the backup.
      *
      * @param  \phpbu\App\Backup\Target $target
      * @param  \phpbu\App\Result        $result
+     * @return \phpbu\App\Backup\Source\Status
      */
     public function backup(Target $target, Result $result);
 }
