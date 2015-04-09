@@ -210,7 +210,7 @@ class Elasticdump extends Binary implements Source
             $url .= '/';
         }
 
-        if ($index) {
+        if ($index !== null) {
             $url .= $index;
         }
 
