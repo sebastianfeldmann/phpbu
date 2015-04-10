@@ -16,10 +16,12 @@ Get detailed information about all the features and a 'getting started' tutorial
 ## Features
 
 * Creating backups
+    + ArangoDB
     + Directories
     + Elasticsearch
     + MongoDB
     + MySQL
+    + Percona XtraBackup
     + PostgreSQL (planned)
 * Validate backups
     + Check min size
@@ -46,11 +48,8 @@ Get detailed information about all the features and a 'getting started' tutorial
     + ext/json
     + ext/spl
 * POSIX Shell
-    + mysqldump
     + tar
     + bzip2 or gzip
-    + mcrypt
-    + rsync
 
 ## Installation
 
