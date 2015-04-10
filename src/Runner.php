@@ -254,25 +254,8 @@ class Runner
      */
     protected function handleCompression(Target $target, Status $status)
     {
-        $pathToCompress = $status->getDataPath();
-        if (empty($pathToCompress)) {
-            throw new Exception('no path to compress set');
-        }
-        if (!is_dir($pathToCompress)) {
-            throw new Exception('path to compress should be a directory');
-        }
-        try {
-            $tar = new Backup\Source\Tar();
-            $tar->setup(
-                array(
-                    'path'      => $pathToCompress,
-                    'removeDir' => 'true',
-                )
-            );
-            $tar->backup($target, $this->result);
-        } catch (\Exception $e) {
-            throw new Exception('Failed to \'tar\' directory: ' . $pathToCompress . PHP_EOL . $e->getMessage(), 1, $e);
-        }
+        $dirCompressor = new Compressor\Directory($status->getDataPath());
+        $dirCompressor->compress($target, $this->result);
     }
 
     /**

@@ -15,6 +15,63 @@ namespace phpbu\App\Backup;
 class TargetTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * Tests Target::setupPath
+     */
+    public function testSetupPath()
+    {
+        $path     = sys_get_temp_dir() . '/foo';
+        $filename = 'foo.txt';
+        $target   = new Target($path, $filename);
+        $target->setupPath();
+
+        $this->assertTrue(is_dir($target->getPath()));
+
+        rmdir($target->getPath());
+    }
+
+    /**
+     * Tests Target::setupPath
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testSetupPathNotWritable()
+    {
+        $filename = 'foo.txt';
+        $path     = sys_get_temp_dir() . '/bar';
+        mkdir($path, 0100);
+
+
+        try {
+            $target = new Target($path, $filename);
+            $target->setupPath();
+        } catch (\Exception $e) {
+            chmod($target->getPath(), 0755);
+            rmdir($target->getPath());
+            throw $e;
+        }
+    }
+
+    /**
+     * Tests Target::setupPath
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testSetupPathCantCreateDir()
+    {
+        $filename = 'foo.txt';
+        $path     = sys_get_temp_dir() . '/bar';
+        mkdir($path, 0100);
+        try {
+            $target = new Target($path . '/baz', $filename);
+            $target->setupPath();
+        } catch (\Exception $e) {
+            chmod($path, 0755);
+            rmdir($path);
+            throw $e;
+        }
+    }
+
+    /**
      * Tests Target::isCompressed
      */
     public function testNotCompressedWithoutCompressor()
@@ -394,6 +451,65 @@ class TargetTest extends \PHPUnit_Framework_TestCase
         $target->getSize();
 
         $this->assertFalse(true, 'exception should be thrown');
+    }
+
+    /**
+     * Tests Target::unlink
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testUnlinkNotExists()
+    {
+        $path     = sys_get_temp_dir() . '/foo';
+        $filename = 'foo.txt';
+        $target   = new Target($path, $filename);
+        $target->unlink();
+    }
+
+    /**
+     * Tests Target::unlink
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testUnlinkNotWritable()
+    {
+        $path     = sys_get_temp_dir() . '/foo';
+        $filename = 'foo.txt';
+        $target   = new Target($path, $filename);
+
+        // create the file
+        mkdir($target->getPath(), 0755);
+        file_put_contents($target->getPathname(), 'content');
+        chmod($target->getPathname(), 0444);
+
+        try {
+            $target->unlink();
+        } catch (\Exception $e) {
+            chmod($target->getPathname(), 0644);
+            unlink($target->getPathname());
+            rmdir($target->getPath());
+            throw $e;
+        }
+    }
+
+    /**
+     * Tests Target::unlink
+     */
+    public function testUnlinkSuccess()
+    {
+        $path     = sys_get_temp_dir() . '/foo';
+        $filename = 'foo.txt';
+        $target   = new Target($path, $filename);
+        $target->setupPath();
+
+        // create the file
+        file_put_contents($target->getPathname(), 'content');
+
+        $target->unlink();
+        rmdir($target->getPath());
+
+        $this->assertFalse(file_exists($target->getPathname()));
+        $this->assertFalse(is_dir($target->getPath()));
     }
 
     /**

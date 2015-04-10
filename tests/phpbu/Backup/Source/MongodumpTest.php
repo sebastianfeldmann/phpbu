@@ -181,17 +181,12 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
         $exec      = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cli\\Exec')
                           ->disableOriginalConstructor()
                           ->getMock();
-        $tar       = $this->getMockBuilder('\\phpbu\\App\\Backup\\Source\\Tar')
-                          ->disableOriginalConstructor()
-                          ->getMock();
 
-        $appResult->expects($this->exactly(2))->method('debug');
+        $appResult->expects($this->once())->method('debug');
         $exec->expects($this->once())->method('execute')->willReturn($cliResult);
-        $tar->expects($this->once())->method('backup');
 
         $this->mongodump->setup(array());
         $this->mongodump->setExec($exec);
-        $this->mongodump->setTar($tar);
         $this->mongodump->backup($target, $appResult);
     }
 

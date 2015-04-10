@@ -110,13 +110,6 @@ class Mongodump extends Binary implements Source
     private $validateConnection;
 
     /**
-     * Tar source to compress MongoDB dump directory
-     *
-     * @var \phpbu\App\Backup\Source\Tar
-     */
-    private $tar;
-
-    /**
      * (No PHPDoc)
      *
      * @see    \phpbu\App\Backup\Source
@@ -185,15 +178,7 @@ class Mongodump extends Binary implements Source
             throw new Exception('Mongodump failed');
         }
 
-        try {
-            $tar = $this->getTar($target);
-            $tar->backup($target, $result);
-            $result->debug('remove dump directory');
-        } catch (\Exception $e) {
-            throw new Exception('Failed to \'tar\' Mongodump directory', 1, $e);
-        }
-        // return Status::create()->uncompressed()->dataPath($this->getDumpDir($target));
-        return Status::create();
+        return Status::create()->uncompressed()->dataPath($this->getDumpDir($target));
     }
 
     /**
@@ -240,37 +225,6 @@ class Mongodump extends Binary implements Source
         }
 
         return $this->exec;
-    }
-
-    /**
-     * Tar setter, mostly for test purposes.
-     *
-     * @param \phpbu\App\Backup\Source\Tar $tar
-     */
-    public function setTar(Tar $tar)
-    {
-        $this->tar = $tar;
-    }
-
-    /**
-     * Create a Tar backup source to compress the MongoDB dump directory.
-     *
-     * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Backup\Source\Tar
-     * @throws \phpbu\App\Exception
-     */
-    public function getTar(Target $target)
-    {
-        if (null == $this->tar) {
-            $this->tar = new Tar();
-            $this->tar->setup(
-                array(
-                    'path'      => $this->getDumpDir($target),
-                    'removeDir' => 'true',
-                )
-            );
-        }
-        return $this->tar;
     }
 
     /**
