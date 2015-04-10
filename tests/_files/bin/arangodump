@@ -1,0 +1,5 @@
+#! /bin/bash
+
+# unit test fake arangodump command that is executable
+
+exit 0

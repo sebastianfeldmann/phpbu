@@ -37,6 +37,7 @@ abstract class Factory
             'mysqldump'   => '\\phpbu\\App\\Backup\\Source\\Mysqldump',
             'tar'         => '\\phpbu\\App\\Backup\\Source\\Tar',
             'elasticdump' => '\\phpbu\\App\\Backup\\Source\\Elasticdump',
+            'arangodump' => '\\phpbu\\App\\Backup\\Source\\Arangodump',
         ),
         'check'   => array(
             'sizemin'                 => '\\phpbu\\App\\Backup\\Check\\SizeMin',
