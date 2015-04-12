@@ -118,19 +118,12 @@ class Mongodump extends Cli implements Source
     public function setup(array $conf = array())
     {
         $this->setupSourceData($conf);
+        $this->setupCredentials($conf);
 
-        // environment settings
+        // environment settings, config & validation
         $this->pathToMongodump = Util\Arr::getValue($conf, 'pathToMongodump');
-
-        // credentials
-        $this->host                   = Util\Arr::getValue($conf, 'host');
-        $this->user                   = Util\Arr::getValue($conf, 'user');
-        $this->password               = Util\Arr::getValue($conf, 'password');
-        $this->authenticationDatabase = Util\Arr::getValue($conf, 'authenticationDatabase');
-
-        // config & validation
-        $this->useIPv6            = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ipv6', ''), false);
-        $this->showStdErr         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
+        $this->useIPv6         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ipv6', ''), false);
+        $this->showStdErr      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
     }
 
     /**
@@ -144,6 +137,19 @@ class Mongodump extends Cli implements Source
         $this->collections                  = Util\Str::toList(Util\Arr::getValue($conf, 'collections'));
         $this->excludeCollections           = Util\Str::toList(Util\Arr::getValue($conf, 'excludeCollections'));
         $this->excludeCollectionsWithPrefix = Util\Str::toList(Util\Arr::getValue($conf, 'excludeCollectionsWithPrefix'));
+    }
+
+    /**
+     * Fetch credential settings.
+     *
+     * @param array $conf
+     */
+    protected function setupCredentials(array $conf)
+    {
+        $this->host                   = Util\Arr::getValue($conf, 'host');
+        $this->user                   = Util\Arr::getValue($conf, 'user');
+        $this->password               = Util\Arr::getValue($conf, 'password');
+        $this->authenticationDatabase = Util\Arr::getValue($conf, 'authenticationDatabase');
     }
 
     /**
