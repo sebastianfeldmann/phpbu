@@ -1,11 +1,10 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Cli\Binary;
-use phpbu\App\Backup\Cli\Cmd;
-use phpbu\App\Backup\Cli\Exec;
+use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
+use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
 use phpbu\App\Result;
 use phpbu\App\Util;
@@ -22,8 +21,15 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class Arangodump extends Binary implements Source
+class Arangodump extends Cli implements Source
 {
+    /**
+     * Path to arangodump command.
+     *
+     * @var string
+     */
+    private $pathToArangodump;
+
     /**
      * Show stdErr
      *
@@ -97,13 +103,6 @@ class Arangodump extends Binary implements Source
     private $disableAuthentication;
 
     /**
-     * Tar source to compress ArangoDB dump directory
-     *
-     * @var \phpbu\App\Backup\Source\Tar
-     */
-    private $tar;
-
-    /**
      * Setup.
      *
      * @see    \phpbu\App\Backup\Source
@@ -112,27 +111,15 @@ class Arangodump extends Binary implements Source
      */
     public function setup(array $conf = array())
     {
-        $this->setupArangodump($conf);
         $this->setupSourceData($conf);
 
+        $this->pathToArangodump      = Util\Arr::getValue($conf, 'pathToArangodump');
         $this->endpoint              = Util\Arr::getValue($conf, 'endpoint');
         $this->username              = Util\Arr::getValue($conf, 'username');
         $this->password              = Util\Arr::getValue($conf, 'password');
         $this->database              = Util\Arr::getValue($conf, 'database');
         $this->showStdErr            = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr'), false);
         $this->disableAuthentication = Util\Str::toBoolean(Util\Arr::getValue($conf, 'disableAuthentication'), false);
-    }
-
-    /**
-     * Search for arangodump command.
-     *
-     * @param array $conf
-     */
-    protected function setupArangodump(array $conf)
-    {
-        if (empty($this->binary)) {
-            $this->binary = $this->detectCommand('arangodump', Util\Arr::getValue($conf, 'pathToArangodump'));
-        }
     }
 
     /**
@@ -158,8 +145,7 @@ class Arangodump extends Binary implements Source
      */
     public function backup(Target $target, Result $result)
     {
-        $exec       = $this->getExec($target);
-        $arangodump = $this->execute($exec);
+        $arangodump = $this->execute($target);
 
         $result->debug($arangodump->getCmd());
 
@@ -171,52 +157,28 @@ class Arangodump extends Binary implements Source
     }
 
     /**
-     * Create the Exec to run the mysqldump command.
+     * Create the Executable to run the arangodump command.
      *
      * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Backup\Cli\Exec
+     * @return \phpbu\App\Cli\Executable
+     * @throws \phpbu\App\Exception
      */
-    public function getExec(Target $target)
+    public function getExecutable(Target $target)
     {
-        if (null == $this->exec) {
-            $dump       = $this->getDumpDir($target);
-            $this->exec = new Exec();
-            $cmd        = new Cmd($this->binary);
-            $this->exec->addCommand($cmd);
-
-            // no std error unless it is activated
-            if (!$this->showStdErr) {
-                $cmd->silence();
-                // i kill you
-            }
-
-            $this->addOptionIfNotEmpty($cmd, '--server.username', $this->username, true, ' ');
-            $this->addOptionIfNotEmpty($cmd, '--server.password', $this->password, true, ' ');
-            $this->addOptionIfNotEmpty($cmd, '--server.endpoint', $this->endpoint, true, ' ');
-            $this->addOptionIfNotEmpty($cmd, '--server.database', $this->database, true, ' ');
-
-            if (count($this->collections)) {
-                foreach($this->collections as $collection){
-                    $cmd->addOption('--collection', $collection, ' ');
-                }
-            }
-
-            if($this->disableAuthentication){
-                $cmd->addOption('--server.disable-authentication', var_export($this->disableAuthentication, true), ' ');
-            }
-
-            if ($this->includeSystemCollections) {
-                $cmd->addOption('--include-system-collections', var_export($this->includeSystemCollections, true), ' ');
-            }
-
-            if ($this->dumpData) {
-                $cmd->addOption('--dump-data', var_export($this->dumpData, true), ' ');
-            }
-
-            $cmd->addOption('--output-directory', $dump, ' ');
+        if (null == $this->executable) {
+            $this->executable = new Executable\Arangodump($this->pathToArangodump);
+            $this->executable->useEndpoint($this->endpoint)
+                             ->credentials($this->username, $this->password)
+                             ->dumpDatabase($this->database)
+                             ->dumpCollections($this->collections)
+                             ->disableAuthentication($this->disableAuthentication)
+                             ->includeSystemCollections($this->includeSystemCollections)
+                             ->dumpData($this->dumpData)
+                             ->dumpTo($this->getDumpDir($target))
+                             ->showStdErr($this->showStdErr);
         }
 
-        return $this->exec;
+        return $this->executable;
     }
 
     /**

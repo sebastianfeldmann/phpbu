@@ -239,8 +239,10 @@ class Runner
         $this->result->backupStart($conf);
         $source = Factory::createSource($conf->getSource()->type, $conf->getSource()->options);
         $status = $source->backup($target, $this->result);
-        if (is_a($status, '\\phpbu\\App\\Backup\\Source\\Status') && !$status->handledCompression()) {
-            $this->handleCompression($target, $status);
+        if ($target->shouldBeCompressed()) {
+            if (is_a($status, '\\phpbu\\App\\Backup\\Source\\Status') && !$status->handledCompression()) {
+                $this->handleCompression($target, $status);
+            }
         }
         $this->result->backupEnd($conf);
     }
@@ -254,8 +256,22 @@ class Runner
      */
     protected function handleCompression(Target $target, Status $status)
     {
-        $dirCompressor = new Compressor\Directory($status->getDataPath());
-        $dirCompressor->compress($target, $this->result);
+        // data directory or file
+        if (is_dir($status->getDataPath())) {
+            // archive data
+            $dirCompressor = new Compressor\Directory($status->getDataPath());
+            $dirCompressor->compress($target, $this->result);
+            // directory is archived but not compressed because tar couldn't handle the compression
+            if (!file_exists($target->getPathname()) && file_exists($target->getPathnamePlain())) {
+                // finally compress the file with the requested compressor
+                $fileCompressor = new Compressor\File($target->getPathnamePlain());
+                $fileCompressor->compress($target, $this->result);
+            }
+        } else {
+            // compress data
+            $fileCompressor = new Compressor\File($status->getDataPath());
+            $fileCompressor->compress($target, $this->result);
+        }
     }
 
     /**

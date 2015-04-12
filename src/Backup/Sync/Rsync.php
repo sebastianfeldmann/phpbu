@@ -1,11 +1,10 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use phpbu\App\Backup\Cli\Binary;
-use phpbu\App\Backup\Cli\Cmd;
-use phpbu\App\Backup\Cli\Exec;
+use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
+use phpbu\App\Cli\Executable;
 use phpbu\App\Result;
 use phpbu\App\Util;
 
@@ -20,8 +19,15 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.0
  */
-class Rsync extends Binary implements Sync
+class Rsync extends Cli implements Sync
 {
+    /**
+     * Path to rsync binary.
+     *
+     * @var string
+     */
+    protected $pathToRsync;
+
     /**
      * Raw args
      *
@@ -80,7 +86,7 @@ class Rsync extends Binary implements Sync
      */
     public function setup(array $options)
     {
-        $this->setupRsync($options);
+        $this->pathToRsync = Util\Arr::getValue($options, 'pathToRsync');
 
         if (Util\Arr::isSetAndNotEmptyString($options, 'args')) {
             $this->args = $options['args'];
@@ -104,21 +110,6 @@ class Rsync extends Binary implements Sync
     }
 
     /**
-     * Search for rsync command.
-     *
-     * @param array $conf
-     */
-    protected function setupRsync(array $conf)
-    {
-        if (empty($this->binary)) {
-            $this->binary = Util\Cli::detectCmdLocation(
-                'rsync',
-                Util\Arr::getValue($conf, 'pathToRsync')
-            );
-        }
-    }
-
-    /**
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::sync()
@@ -133,8 +124,7 @@ class Rsync extends Binary implements Sync
             // WARNING! no escaping is done by phpbu
             $result->debug('WARNING: phpbu uses your rsync args without escaping');
         }
-        $exec  = $this->getExec($target);
-        $rsync = $this->execute($exec);
+        $rsync = $this->execute($target);
 
         $result->debug($rsync->getCmd());
 
@@ -147,75 +137,35 @@ class Rsync extends Binary implements Sync
      * Create the Exec to run the 'rsync' command.
      *
      * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Backup\Cli\Exec
+     * @return \phpbu\App\Cli\Executable
      */
-    public function getExec(Target $target)
+    public function getExecutable(Target $target)
     {
-        if (null == $this->exec) {
-            $this->exec = new Exec();
-            $rsync      = new Cmd($this->binary);
-            $this->exec->addCommand($rsync);
-
-            if ($this->args) {
-                $rsync->addOption($this->replaceTargetPlaceholder($this->args, $target));
+        if (null == $this->executable) {
+            $this->executable = new Executable\Rsync($this->pathToRsync);
+            if (!empty($this->args)) {
+                $this->executable->useArgs(Util\Str::replaceTargetPlaceholders($this->args, $target->getPathname()));
             } else {
-                // std err > dev null
-                $rsync->silence();
-
-                $targetFile = $target->getPathname();
-                $targetDir = dirname($targetFile);
-
-                // use archive mode, verbose and compress if not already done
-                $options = '-av' . ($target->shouldBeCompressed() ? '' : 'z');
-                $rsync->addOption($options);
-
-                if (count($this->excludes)) {
-                    foreach ($this->excludes as $ex) {
-                        $rsync->addOption('--exclude', $ex);
-                    }
-                }
-
-                // source handling
-                if ($this->isDirSync) {
-                    // sync the whole folder
-                    // delete remote files as well?
-                    if ($this->delete) {
-                        $rsync->addOption('--delete');
-                    }
-                    $rsync->addArgument($targetDir);
-                } else {
-                    // sync just the created backup
-                    $rsync->addArgument($targetFile);
-                }
-
-                // target handling
-                // get rsync host string
-                $syncTarget = $this->getRsyncHostString();
-                // remote path
-                $syncTarget .= $this->path;
-
-                $rsync->addArgument($syncTarget);
+                $this->executable->syncFrom($this->getSyncSource($target))
+                     ->toHost($this->host)
+                     ->toPath($this->path)
+                     ->asUser($this->user)
+                     ->compressed(!$target->shouldBeCompressed())
+                     ->removeDeleted($this->delete)
+                     ->exclude($this->excludes);
             }
         }
-        return $this->exec;
+        return $this->executable;
     }
 
     /**
-     * Return rsync host string.
+     * Return sync source.
      *
+     * @param  \phpbu\App\Backup\Target
      * @return string
      */
-    public function getRsyncHostString()
+    public function getSyncSource(Target $target)
     {
-        $host = '';
-        // remote host
-        if (null !== $this->host) {
-            // remote user
-            if (null !== $this->user) {
-                $host .= $this->user . '@';
-            }
-            $host .= $this->host . ':';
-        }
-        return $host;
+        return $this->isDirSync ? $target->getPath() : $target->getPathname();
     }
 }

@@ -216,6 +216,30 @@ class CliTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Cli::getCommandLocations
+     */
+    public function testCommandLocationsDefault()
+    {
+        $list = Cli::getCommandLocations('tar');
+        $this->assertEquals(0, count($list));
+
+        $list = Cli::getCommandLocations('mysqldump');
+        $this->assertEquals(2, count($list));
+    }
+
+    /**
+     * Tests Cli::getCommandLocations
+     */
+    public function testAddCommandLocations()
+    {
+        Cli::addCommandLocation('mongodump', '/foo/mongodump');
+        $list = Cli::getCommandLocations('mongodump');
+
+        $this->assertEquals(1, count($list));
+        $this->assertEquals('/foo/mongodump', $list[0]);
+    }
+
+    /**
      * Create some temp command
      *
      * @param  string $cmd

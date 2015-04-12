@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\App\Backup\Cli;
+namespace phpbu\App\Cli;
 
 /**
  * Cli command
@@ -10,7 +10,7 @@ namespace phpbu\App\Backup\Cli;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://phpbu.de/
- * @since      Class available since Release 1.0.0
+ * @since      Class available since Release 2.0.2
  */
 class Cmd
 {
@@ -19,7 +19,7 @@ class Cmd
      *
      * @var string
      */
-    private $name;
+    private $cmd;
 
     /**
      * Display stderr
@@ -38,45 +38,51 @@ class Cmd
     /**
      * Constructor.
      *
-     * @param string $name
+     * @param string $cmd
      */
-    public function __construct($name)
+    public function __construct($cmd)
     {
-        $this->name = $name;
+        $this->cmd = $cmd;
     }
 
     /**
-     * Name getter.
+     * Returns the string to execute on the command line.
      *
      * @return string
      */
-    public function getName()
+    public function getCommandLine()
     {
-        return $this->name;
+        return $this->cmd
+        . (count($this->options) ? ' ' . implode(' ', $this->options) : '')
+        . ($this->isSilent       ? ' 2> /dev/null'                    : '');
     }
 
     /**
      * Silence the 'Cmd' by redirecting its stdErr output to /dev/null.
      * The silence feature is disabled for Windows systems.
      *
-     * @param boolean $bool
+     * @param  boolean $bool
+     * @return \phpbu\App\Cli\Cmd
      */
     public function silence($bool = true)
     {
         $this->isSilent = $bool && !defined('PHP_WINDOWS_VERSION_BUILD');
+
+        return $this;
     }
 
     /**
      * Add option to list.
      *
-     * @param string               $option
-     * @param mixed <string|array> $argument
-     * @param string               $glue
+     * @param  string               $option
+     * @param  mixed <string|array> $argument
+     * @param  string               $glue
+     * @return \phpbu\App\Cli\Cmd
      */
     public function addOption($option, $argument = null, $glue = '=')
     {
         if ($argument !== null) {
-            // for space for multiple argument list e.g. --option 'foo' 'bar'
+            // force space for multiple arguments e.g. --option 'foo' 'bar'
             if (is_array($argument)) {
                 $glue = ' ';
             }
@@ -85,16 +91,40 @@ class Cmd
             $argument = '';
         }
         $this->options[] = $option . $argument;
+
+        return $this;
+    }
+
+    /**
+     * Adds an option to a command if it is not empty.
+     *
+     * @param string  $option
+     * @param mixed   $check
+     * @param boolean $asValue
+     * @param string  $glue
+     */
+    public function addOptionIfNotEmpty($option, $check, $asValue = true, $glue = '=')
+    {
+        if (!empty($check)) {
+            if ($asValue) {
+                $this->addOption($option, $check, $glue);
+            } else {
+                $this->addOption($option);
+            }
+        }
     }
 
     /**
      * Add argument to list.
      *
-     * @param mixed <string|array> $argument
+     * @param  mixed <string|array> $argument
+     * @return \phpbu\App\Cli\Cmd
      */
     public function addArgument($argument)
     {
         $this->options[] = $this->escapeArgument($argument);
+
+        return $this;
     }
 
     /**
@@ -121,8 +151,6 @@ class Cmd
      */
     public function __toString()
     {
-        return $this->name
-            . (count($this->options) ? ' ' . implode(' ', $this->options) : '')
-            . ($this->isSilent       ? ' 2> /dev/null'                    : '');
+        return $this->getCommandLine();
     }
 }

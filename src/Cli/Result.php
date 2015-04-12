@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\App\Backup\Cli;
+namespace phpbu\App\Cli;
 
 /**
  * Runner result

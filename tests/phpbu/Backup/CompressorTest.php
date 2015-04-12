@@ -59,22 +59,12 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tets compressor with path to binary
+     * Test compressor with path to binary
      */
-    public function testGzipWithPath()
+    public function testGetCommand()
     {
         $gzip = Compressor::create('/usr/local/bin/gzip');
         $this->assertEquals('gz', $gzip->getSuffix());
-        $this->assertEquals('/usr/local/bin/gzip', $gzip->getCommand());
-    }
-
-    /**
-     * Tests Compressor::getExec
-     */
-    public function testGetExec()
-    {
-        $zip = Compressor::create('zip');
-        $exec = $zip->getExec(__FILE__, array('-f'));
-        $this->assertEquals('zip -f \'' . __FILE__ . '\'', $exec->getExec());
+        $this->assertEquals('gzip', $gzip->getCommand());
     }
 }

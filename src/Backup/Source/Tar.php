@@ -1,17 +1,30 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Cli\Binary;
-use phpbu\App\Backup\Cli\Cmd;
-use phpbu\App\Backup\Cli\Exec;
+use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
+use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
 use phpbu\App\Result;
 use phpbu\App\Util;
 
-class Tar extends Binary implements Source
+class Tar extends Cli implements Source
 {
+    /**
+     * Tar Executable
+     *
+     * @var \phpbu\App\Cli\Executable\Tar
+     */
+    protected $executable;
+
+    /**
+     * Path to executable.
+     *
+     * @var string
+     */
+    private $pathToTar;
+
     /**
      * Show stdErr
      *
@@ -34,14 +47,18 @@ class Tar extends Binary implements Source
     private $removeDir;
 
     /**
-     * List of available compressors
+     * Compression to use.
      *
-     * @var array
+     * @var string
      */
-    private $compressors = array(
-        'bzip2' => 'j',
-        'gzip'  => 'z',
-    );
+    private $compression;
+
+    /**
+     * Path where to store the archive.
+     *
+     * @var string
+     */
+    private $pathToArchive;
 
     /**
      * Setup.
@@ -52,26 +69,13 @@ class Tar extends Binary implements Source
      */
     public function setup(array $conf = array())
     {
-        $this->setupTar($conf);
-
+        $this->pathToTar  = Util\Arr::getValue($conf, 'pathToTar');
         $this->showStdErr = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
         $this->path       = Util\Arr::getValue($conf, 'path');
         $this->removeDir  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeDir', ''), false);
 
         if (empty($this->path)) {
             throw new Exception('path option is mandatory');
-        }
-    }
-
-    /**
-     * Search for tar command.
-     *
-     * @param array $conf
-     */
-    protected function setupTar(array $conf)
-    {
-        if (empty($this->binary)) {
-            $this->binary = $this->detectCommand('tar', Util\Arr::getValue($conf, 'pathToTar'));
         }
     }
 
@@ -88,103 +92,51 @@ class Tar extends Binary implements Source
     {
         // set uncompressed default MIME type
         $target->setMimeType('application/x-tar');
+        $status = Status::create();
+        $tar    = $this->execute($target);
 
-        $compressA = $target->shouldBeCompressed();
-        $exec      = $this->getExec($target);
-        $compressB = $target->shouldBeCompressed();
-        $tar       = $this->execute($exec);
-
-        // maybe compression got deactivated because of an invalid compressor
-        if ($compressA != $compressB) {
-            $result->debug('deactivated compression');
+        // if tar doesn't handle the compression mark status uncompressed so the app can take care of compression
+        if (!$this->executable->handlesCompression()) {
+            $status->uncompressed()->dataPath($target->getPathnamePlain());
         }
+
         $result->debug($tar->getCmd());
 
         if (!$tar->wasSuccessful()) {
             throw new Exception('tar failed');
         }
 
-        return Status::create();
+        return $status;
     }
 
     /**
-     * Create the Exec to run the 'tar' command.
+     * Setup the Executable to run the 'tar' command.
      *
-     * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Backup\Cli\Exec
+     * @param  \phpbu\App\Backup\Target
+     * @return \phpbu\App\Cli\Executable
      */
-    public function getExec(Target $target)
+    public function getExecutable(Target $target)
     {
-        if (null == $this->exec) {
-            $this->exec = new Exec();
-            $tar        = new Cmd($this->binary);
-
-            // no std error unless it is activated
-            if (!$this->showStdErr) {
-                $tar->silence();
-                // i kill you
-            }
-
-            // check if 'tar' can handle the requested compression
+        if (null == $this->executable) {
+            // check if tar supports requested compression
             if ($target->shouldBeCompressed()) {
-                $name           = $target->getCompressor()->getCommand(false);
-                $compressOption = $this->getCompressorOption($name);
-                // the requested compression is not available for the 'tar' command
-                if (!$compressOption) {
-                    $target->disableCompression();
+                if(!Executable\Tar::isCompressorValid($target->getCompressor()->getCommand())) {
+                    $this->pathToArchive = $target->getPathnamePlain();
+                } else {
+                    // compression could be handled by the tar command
+                    $this->pathToArchive = $target->getPathname();
+                    $this->compression   = $target->getCompressor()->getCommand();
                 }
             } else {
-                $compressOption = '';
+                // no compression at all
+                $this->pathToArchive = $target->getPathname();
             }
-
-            $tar->addOption('-' . $compressOption . 'cf');
-            $tar->addArgument($target->getPathname());
-            $tar->addOption('-C', $this->path, ' ');
-            $tar->addArgument('.');
-            $this->exec->addCommand($tar);
-            // delete the source data if requested
-            if ($this->removeDir) {
-                $this->exec->addCommand($this->getRmCommand());
-            }
+            $this->executable = new Executable\Tar($this->pathToTar);
+            $this->executable->archiveDirectory($this->path)
+                             ->useCompression($this->compression)
+                             ->archiveTo($this->pathToArchive)
+                             ->showStdErr($this->showStdErr);
         }
-
-        return $this->exec;
-    }
-
-    /**
-     * Return 'tar' compressor option e.g. 'j' for bzip2.
-     *
-     * @param  $compressor
-     * @return string
-     */
-    protected function getCompressorOption($compressor)
-    {
-        return $this->isCompressorValid($compressor) ? $this->compressors[$compressor] : null;
-    }
-
-    /**
-     * Return 'rm' command.
-     *
-     * @return \phpbu\App\Backup\Cli\Cmd
-     */
-    protected function getRmCommand()
-    {
-        $rm = new Cmd('rm');
-        $rm->addOption('-rf', $this->path, ' ');
-        if (!$this->showStdErr) {
-            $rm->silence();
-        }
-        return $rm;
-    }
-
-    /**
-     * Return true if a given compressor is valid false otherwise.
-     *
-     * @param  string $compressor
-     * @return boolean
-     */
-    protected function isCompressorValid($compressor)
-    {
-        return isset($this->compressors[$compressor]);
+        return $this->executable;
     }
 }

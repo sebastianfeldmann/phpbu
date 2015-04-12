@@ -1,11 +1,10 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Cli\Binary;
-use phpbu\App\Backup\Cli\Cmd;
-use phpbu\App\Backup\Cli\Exec;
+use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
+use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
 use phpbu\App\Result;
 use phpbu\App\Util;
@@ -21,8 +20,15 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Mysqldump extends Binary implements Source
+class Mysqldump extends Cli implements Source
 {
+    /**
+     * Path to executable.
+     *
+     * @var string
+     */
+    private $pathToMysqldump;
+
     /**
      * Show stdErr
      *
@@ -109,6 +115,12 @@ class Mysqldump extends Binary implements Source
     private $noData;
 
     /**
+     * Dump target location
+     * @var string
+     */
+    private $dumpPathname;
+
+    /**
      * Setup.
      *
      * @see    \phpbu\App\Backup\Source
@@ -117,28 +129,16 @@ class Mysqldump extends Binary implements Source
      */
     public function setup(array $conf = array())
     {
-        $this->setupMysqldump($conf);
         $this->setupSourceData($conf);
 
-        $this->host       = Util\Arr::getValue($conf, 'host');
-        $this->user       = Util\Arr::getValue($conf, 'user');
-        $this->password   = Util\Arr::getValue($conf, 'password');
-        $this->showStdErr = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
-        $this->quick      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
-        $this->compress   = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
-        $this->noData     = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
-    }
-
-    /**
-     * Search for mysqldump command.
-     *
-     * @param array $conf
-     */
-    protected function setupMysqldump(array $conf)
-    {
-        if (empty($this->binary)) {
-            $this->binary = $this->detectCommand('mysqldump', Util\Arr::getValue($conf, 'pathToMysqldump'));
-        }
+        $this->pathToMysqldump = Util\Arr::getValue($conf, 'pathToMysqldump');
+        $this->host            = Util\Arr::getValue($conf, 'host');
+        $this->user            = Util\Arr::getValue($conf, 'user');
+        $this->password        = Util\Arr::getValue($conf, 'password');
+        $this->showStdErr      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
+        $this->quick           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
+        $this->compress        = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
+        $this->noData          = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
     }
 
     /**
@@ -165,8 +165,9 @@ class Mysqldump extends Binary implements Source
      */
     public function backup(Target $target, Result $result)
     {
-        $exec      = $this->getExec();
-        $mysqldump = $this->execute($exec, $target->getPathnamePlain(), $target->getCompressor());
+        // setup dump location and execute the dump
+        $this->dumpPathname = $target->getPathnamePlain();
+        $mysqldump          = $this->execute($target);
 
         $result->debug($mysqldump->getCmd());
 
@@ -174,64 +175,31 @@ class Mysqldump extends Binary implements Source
             throw new Exception('mysqldump failed');
         }
 
-        return Status::create();
+        return Status::create()->uncompressed()->dataPath($this->dumpPathname);
     }
 
     /**
-     * Create the Exec to run the mysqldump command.
+     * Create the Executable to run the mysqldump command.
      *
-     * @return \phpbu\App\Backup\Cli\Exec
-     * @throws Exception
+     * @param  \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Cli\Executable
      */
-    public function getExec()
+    public function getExecutable(Target $target)
     {
-        if (null == $this->exec) {
-            $this->exec = new Exec();
-            $cmd        = new Cmd($this->binary);
-            $this->exec->addCommand($cmd);
-
-            // no std error unless it is activated
-            if (!$this->showStdErr) {
-                $cmd->silence();
-                // i kill you
-            }
-            $this->addOptionIfNotEmpty($cmd, '--user', $this->user);
-            $this->addOptionIfNotEmpty($cmd, '--password', $this->password);
-            $this->addOptionIfNotEmpty($cmd, '--host', $this->host);
-            $this->addOptionIfNotEmpty($cmd, '-q', $this->quick, false);
-            $this->addOptionIfNotEmpty($cmd, '-C', $this->compress, false);
-
-            if (count($this->tables)) {
-                $cmd->addOption('--tables', $this->tables);
-            } else {
-                if (count($this->databases)) {
-                    $cmd->addOption('--databases', $this->databases);
-                } else {
-                    $cmd->addOption('--all-databases');
-                }
-            }
-
-            if (count($this->ignoreTables)) {
-                foreach ($this->ignoreTables as $table) {
-                    $cmd->addOption('--ignore-table', $table);
-                }
-            }
-            if ($this->noData) {
-                $cmd->addOption('--no-data');
-            } else {
-                if (count($this->structureOnly)) {
-                    $cmd->addOption('--no-data');
-                    $cmd2 = clone($cmd);
-                    foreach ($this->structureOnly as $table) {
-                        $cmd2->addOption('--ignore-table', $table);
-                    }
-                    $cmd2->addOption('--skip-add-drop-table');
-                    $cmd2->addOption('--no-create-db');
-                    $cmd2->addOption('--no-create-info');
-                    $this->exec->addCommand($cmd2);
-                }
-            }
+        if (null == $this->executable) {
+            $this->executable = new Executable\Mysqldump($this->pathToMysqldump);
+            $this->executable->credentials($this->user, $this->password)
+                             ->useHost($this->host)
+                             ->useQuickMode($this->quick)
+                             ->useCompression($this->compress)
+                             ->dumpTables($this->tables)
+                             ->dumpDatabases($this->databases)
+                             ->ignoreTables($this->ignoreTables)
+                             ->dumpNoData($this->noData)
+                             ->dumpStructureOnly($this->structureOnly)
+                             ->dumpTo($this->dumpPathname)
+                             ->showStdErr($this->showStdErr);
         }
-        return $this->exec;
+        return $this->executable;
     }
 }

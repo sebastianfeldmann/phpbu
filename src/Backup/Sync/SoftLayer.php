@@ -114,7 +114,7 @@ class SoftLayer implements Sync
         $result->debug('softlayer target: ' . $targetPath);
 
         try {
-            /** @var \ObjectStorage_Container $object */
+            /** @var \ObjectStorage_Container $container */
             $container = $objectStorage->with($this->container . $targetPath)
                                        ->setLocalFile($sourcePath)
                                        ->setMeta('description', 'PHPBU Backup: ' . date('r', time()))

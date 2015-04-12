@@ -2,8 +2,6 @@
 namespace phpbu\App\Backup;
 
 use phpbu\App\Exception;
-use phpbu\App\Backup\Cli\Cmd;
-use phpbu\App\Backup\Cli\Exec;
 
 /**
  * Compressor
@@ -83,33 +81,11 @@ class Compressor
     /**
      * Return the cli command.
      *
-     * @param  boolean $includingPath
      * @return string
      */
-    public function getCommand($includingPath = true)
+    public function getCommand()
     {
-        return ($includingPath ? $this->path : '') . $this->cmd;
-    }
-
-    /**
-     * Return Exec to actually execute the compressor command.
-     *
-     * @param  string $fileToCompress
-     * @param  array  $options
-     * @return \phpbu\App\Backup\CLi\Exec
-     */
-    public function getExec($fileToCompress, array $options = array())
-    {
-        $cmd = new Cmd($this->getCommand());
-        foreach ($options as $opt) {
-            $cmd->addOption($opt);
-        }
-        $cmd->addArgument($fileToCompress);
-
-        $exec = new Exec();
-        $exec->addCommand($cmd);
-
-        return $exec;
+        return $this->cmd;
     }
 
     /**

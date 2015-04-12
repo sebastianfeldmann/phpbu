@@ -1,11 +1,10 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Cli\Binary;
-use phpbu\App\Backup\Cli\Cmd;
-use phpbu\App\Backup\Cli\Exec;
+use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
+use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
 use phpbu\App\Result;
 use phpbu\App\Util;
@@ -22,8 +21,15 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class XtraBackup extends Binary implements Source
+class XtraBackup extends Cli implements Source
 {
+    /**
+     * Path to innobackupex command.
+     *
+     * @var string
+     */
+    private $pathToXtraBackup;
+
     /**
      * Show stdErr
      *
@@ -57,7 +63,7 @@ class XtraBackup extends Binary implements Source
 
     /**
      * Regular expression matching the tables to be backed up.
-     * The regex should match the full qualified name: mydatabase.mytable
+     * The regex should match the full qualified name: myDatabase.myTable
      * --tables string
      *
      * @var string
@@ -66,7 +72,7 @@ class XtraBackup extends Binary implements Source
 
     /**
      * List of databases and/or tables to backup
-     * Tables must e fully qualified: mydatabase.mytable
+     * Tables must e fully qualified: myDatabase.myTable
      * --databases array of strings
      *
      * @var array
@@ -82,25 +88,13 @@ class XtraBackup extends Binary implements Source
      */
     public function setup(array $conf = array())
     {
-        $this->setupXtraBackup($conf);
         $this->setupSourceData($conf);
 
-        $this->host       = Util\Arr::getValue($conf, 'host');
-        $this->user       = Util\Arr::getValue($conf, 'user');
-        $this->password   = Util\Arr::getValue($conf, 'password');
-        $this->showStdErr = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
-    }
-
-    /**
-     * Search for innobackupex command.
-     *
-     * @param array $conf
-     */
-    protected function setupXtraBackup(array $conf)
-    {
-        if (empty($this->binary)) {
-            $this->binary = $this->detectCommand('innobackupex', Util\Arr::getValue($conf, 'pathToXtraBackup'));
-        }
+        $this->pathToXtraBackup = Util\Arr::getValue($conf, 'pathToXtraBackup');
+        $this->host             = Util\Arr::getValue($conf, 'host');
+        $this->user             = Util\Arr::getValue($conf, 'user');
+        $this->password         = Util\Arr::getValue($conf, 'password');
+        $this->showStdErr       = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
     }
 
     /**
@@ -125,8 +119,7 @@ class XtraBackup extends Binary implements Source
      */
     public function backup(Target $target, Result $result)
     {
-        $exec         = $this->getExec($target);
-        $innobackupex = $this->execute($exec);
+        $innobackupex = $this->execute($target);
 
         $result->debug($innobackupex->getCmd());
 
@@ -141,44 +134,22 @@ class XtraBackup extends Binary implements Source
      * Create the Exec to run the innobackupex backup and apply-log commands.
      *
      * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Backup\Cli\Exec
-     * @throws Exception
+     * @return \phpbu\App\Cli\Executable
+     * @throws \phpbu\App\Exception
      */
-    public function getExec(Target $target)
+    public function getExecutable(Target $target)
     {
-        if (null == $this->exec) {
-            $dump       = $this->getDumpDir($target);
-            $this->exec = new Exec();
-            $cmd        = new Cmd($this->binary);
-            $cmd2       = new Cmd($this->binary);
-            $this->exec->addCommand($cmd);
-            $this->exec->addCommand($cmd2);
-
-            // no std error unless it is activated
-            if (!$this->showStdErr) {
-                $cmd->silence();
-                $cmd2->silence();
-                // i kill you
-            }
-
-            $cmd->addOption('--no-timestamp');
-            $this->addOptionIfNotEmpty($cmd, '--user', $this->user);
-            $this->addOptionIfNotEmpty($cmd, '--password', $this->password);
-            $this->addOptionIfNotEmpty($cmd, '--host', $this->host);
-
-            if (!empty($this->include)) {
-                $cmd->addOption('--include', $this->include);
-            } else if (count($this->databases)) {
-                $cmd->addOption('--databases', implode(' ', $this->databases));
-            }
-
-            $cmd->addArgument($dump);
-
-            $cmd2->addOption('--apply-log');
-            $cmd2->addArgument($dump);
+        if (null == $this->executable) {
+            $this->executable = new Executable\Innobackupex($this->pathToXtraBackup);
+            $this->executable->useHost($this->host)
+                             ->credentials($this->user, $this->password)
+                             ->dumpDatabases($this->databases)
+                             ->including($this->include)
+                             ->dumpTo($this->getDumpDir($target))
+                             ->showStdErr($this->showStdErr);
         }
 
-        return $this->exec;
+        return $this->executable;
     }
 
     /**

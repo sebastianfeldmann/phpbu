@@ -282,10 +282,10 @@ class Xml implements Loader
      */
     protected function setCrypt(Configuration\Backup $backup, DOMElement $node)
     {
-        /** @var DOMNodeList $cryptNodes */
+        /** @var \DOMNodeList $cryptNodes */
         $cryptNodes = $node->getElementsByTagName('crypt');
         if ($cryptNodes->length > 0) {
-            /** @var DOMElement $cryptNode */
+            /** @var \DOMElement $cryptNode */
             $cryptNode = $cryptNodes->item(0);
             $type = $cryptNode->getAttribute('type');
             if (!$type) {
@@ -327,10 +327,10 @@ class Xml implements Loader
      */
     protected function setCleanup(Configuration\Backup $backup, DOMElement $node)
     {
-        /** @var DOMNodeList $cleanupNodes */
+        /** @var \DOMNodeList $cleanupNodes */
         $cleanupNodes = $node->getElementsByTagName('cleanup');
         if ($cleanupNodes->length > 0) {
-            /** @var DOMElement $cleanupNode */
+            /** @var \DOMElement $cleanupNode */
             $cleanupNode = $cleanupNodes->item(0);
             $type        = $cleanupNode->getAttribute('type');
             if (!$type) {
@@ -351,7 +351,7 @@ class Xml implements Loader
     protected function getOptions(DOMElement $node)
     {
         $options = array();
-        /** @var DOMElement $optionNode */
+        /** @var \DOMElement $optionNode */
         foreach ($node->getElementsByTagName('option') as $optionNode) {
             $name           = $optionNode->getAttribute('name');
             $value          = $optionNode->getAttribute('value');
@@ -368,7 +368,7 @@ class Xml implements Loader
      */
     public function setLoggers(Configuration $configuration)
     {
-        /** @var DOMElement $logNode */
+        /** @var \DOMElement $logNode */
         foreach ($this->xpath->query('logging/log') as $logNode) {
             $type = $logNode->getAttribute('type');
             if (!$type) {

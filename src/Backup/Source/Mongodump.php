@@ -1,11 +1,10 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Cli\Binary;
-use phpbu\App\Backup\Cli\Cmd;
-use phpbu\App\Backup\Cli\Exec;
+use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
+use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
 use phpbu\App\Result;
 use phpbu\App\Util;
@@ -21,8 +20,15 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class Mongodump extends Binary implements Source
+class Mongodump extends Cli implements Source
 {
+    /**
+     * Path to mongodump command.
+     *
+     * @var string
+     */
+    private $pathToMongodump;
+
     /**
      * Show stdErr
      *
@@ -103,13 +109,6 @@ class Mongodump extends Binary implements Source
     private $excludeCollectionsWithPrefix;
 
     /**
-     * Use php to validate the MongoDB connection
-     *
-     * @var boolean
-     */
-    private $validateConnection;
-
-    /**
      * (No PHPDoc)
      *
      * @see    \phpbu\App\Backup\Source
@@ -118,8 +117,10 @@ class Mongodump extends Binary implements Source
      */
     public function setup(array $conf = array())
     {
-        $this->setupMongodump($conf);
         $this->setupSourceData($conf);
+
+        // environment settings
+        $this->pathToMongodump = Util\Arr::getValue($conf, 'pathToMongodump');
 
         // credentials
         $this->host                   = Util\Arr::getValue($conf, 'host');
@@ -130,19 +131,6 @@ class Mongodump extends Binary implements Source
         // config & validation
         $this->useIPv6            = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ipv6', ''), false);
         $this->showStdErr         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
-        $this->validateConnection = Util\Str::toBoolean(Util\Arr::getValue($conf, 'validateConnection', ''), false);
-    }
-
-    /**
-     * Search for Mongodump command.
-     *
-     * @param array $conf
-     */
-    protected function setupMongodump(array $conf)
-    {
-        if (empty($this->binary)) {
-            $this->binary = $this->detectCommand('mongodump', Util\Arr::getValue($conf, 'pathToMongodump'));
-        }
     }
 
     /**
@@ -169,8 +157,8 @@ class Mongodump extends Binary implements Source
      */
     public function backup(Target $target, Result $result)
     {
-        $exec      = $this->getExec($target);
-        $mongodump = $this->execute($exec);
+        // setup dump location and execute the dump
+        $mongodump = $this->execute($target);
 
         $result->debug($mongodump->getCmd());
 
@@ -182,49 +170,27 @@ class Mongodump extends Binary implements Source
     }
 
     /**
-     * Create the Exec to run the Mongodump command
+     * Create the Executable to run the Mongodump command.
      *
      * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Backup\Cli\Exec
+     * @return \phpbu\App\Cli\Executable
      */
-    public function getExec(Target $target)
+    public function getExecutable(Target $target)
     {
-        if (null == $this->exec) {
-            $dump       = $this->getDumpDir($target);
-            $this->exec = new Exec();
-            $cmd        = new Cmd($this->binary);
-            $this->exec->addCommand($cmd);
-
-            // no std error unless it is activated
-            if (!$this->showStdErr) {
-                $cmd->silence();
-                // i kill you
-            }
-
-            $cmd->addOption('--out', $dump, ' ');
-            $this->addOptionIfNotEmpty($cmd, '--ipv6', $this->useIPv6, false);
-            $this->addOptionIfNotEmpty($cmd, '--host', $this->host, true, ' ');
-            $this->addOptionIfNotEmpty($cmd, '--user', $this->user, true, ' ');
-            $this->addOptionIfNotEmpty($cmd, '--password', $this->password, true, ' ');
-            $this->addOptionIfNotEmpty($cmd, '--authenticationDatabase', $this->authenticationDatabase, true, ' ');
-
-            if (count($this->databases)) {
-                foreach ($this->databases as $db) {
-                    $cmd->addOption('--database', $db, ' ');
-                }
-            }
-
-            if (count($this->collections)) {
-                foreach ($this->collections as $col) {
-                    $cmd->addOption('--collection', $col, ' ');
-                }
-            }
-
-            $this->addOptionIfNotEmpty($cmd, '--excludeCollection', $this->excludeCollections);
-            $this->addOptionIfNotEmpty($cmd, '--excludeCollectionWithPrefix', $this->excludeCollectionsWithPrefix);
+        if (null == $this->executable) {
+            $this->executable = new Executable\Mongodump($this->pathToMongodump);
+            $this->executable->dumpToDirectory($this->getDumpDir($target))
+                             ->useIpv6($this->useIPv6)
+                             ->useHost($this->host)
+                             ->credentials($this->user, $this->password, $this->authenticationDatabase)
+                             ->dumpDatabases($this->databases)
+                             ->dumpCollections($this->collections)
+                             ->excludeCollections($this->excludeCollections)
+                             ->excludeCollectionsWithPrefix($this->excludeCollectionsWithPrefix)
+                             ->showStdErr($this->showStdErr);
         }
 
-        return $this->exec;
+        return $this->executable;
     }
 
     /**

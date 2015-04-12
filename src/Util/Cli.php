@@ -24,6 +24,20 @@ abstract class Cli
     private static $basePaths = array();
 
     /**
+     * Optional command locations
+     *
+     * @var array
+     */
+    private static $optionalCommandLocations = array(
+        'mongodump' => array(),
+        'mysqldump' => array(
+            '/usr/local/mysql/bin/mysqldump', // Mac OS X
+            '/usr/mysql/bin/mysqldump',       // Linux
+        ),
+        'tar'       => array(),
+    );
+
+    /**
      * Register a base path.
      *
      * @param  string $name
@@ -36,6 +50,29 @@ abstract class Cli
             throw new RuntimeException(sprintf('path has to be absolute: %s', $path));
         }
         self::$basePaths[$name] = $path;
+    }
+
+
+    /**
+     * Adds a new 'path' to the list of optional command locations.
+     *
+     * @param string $command
+     * @param string $path
+     */
+    public static function addCommandLocation($command, $path)
+    {
+        self::$optionalCommandLocations[$command][] = $path;
+    }
+
+    /**
+     * Returns the list of optional 'mysqldump' locations.
+     *
+     * @param  string $command
+     * @return array
+     */
+    public static function getCommandLocations($command)
+    {
+        return isset(self::$optionalCommandLocations[$command]) ? self::$optionalCommandLocations[$command] : array();
     }
 
     /**

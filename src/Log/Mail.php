@@ -170,13 +170,12 @@ class Mail implements Listener, Logger
             $sent    = null;
 
             try {
-                /** @var Swift_Message $message */
+                /** @var \Swift_Message $message */
                 $message = Swift_Message::newInstance();
                 $message->setSubject($this->subject)
                         ->setFrom($this->senderMail, $this->senderName)
                         ->setTo($this->recipients)
-                        ->setBody($body)
-                        ->addPart($body, 'text/html');
+                        ->setBody($body, 'text/html');
 
                 $sent = $this->mailer->send($message);
             } catch (\Exception $e) {

@@ -64,6 +64,18 @@ class StrTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Str::replaceTargetPlaceholders
+     */
+    public function testReplaceTargetPlaceholder()
+    {
+        $target   = '/foo/bar.txt';
+        $replaced = Str::replaceTargetPlaceholders('1-%TARGET_DIR% 2-%TARGET_FILE%', $target);
+        $expected = '1-/foo 2-/foo/bar.txt';
+
+        $this->assertEquals($expected, $replaced, 'all target placeholder should be replaced');
+    }
+
+    /**
      * Test toBoolean with matching values.
      */
     public function testToBooleanMatch()

@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Crypter;
 
+use phpbu\App\Backup\CliTest;
 use phpbu\App\Util\Cli;
 
 /**
@@ -14,7 +15,7 @@ use phpbu\App\Util\Cli;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class McryptTest extends \PHPUnit_Framework_TestCase
+class McryptTest extends CliTest
 {
     /**
      * @var Mcrypt
@@ -27,7 +28,6 @@ class McryptTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->mcrypt = new Mcrypt();
-        $this->mcrypt->setBinary('mcrypt');
     }
 
     /**
@@ -36,29 +36,6 @@ class McryptTest extends \PHPUnit_Framework_TestCase
     public function tearDown()
     {
         $this->mcrypt = null;
-    }
-
-    /**
-     * Tests Mcrypt::setUp
-     *
-     * @expectedException \RuntimeException
-     */
-    public function testSetUpCantFindBinary()
-    {
-        $mcrypt = new Mcrypt();
-        $mcrypt->setup(array('key' => 'fooBarBaz', 'algorithm' => 'blowfish', 'pathToMcrypt' => '/foo/bar/mcrypt'));
-    }
-
-    /**
-     * Tests Mcrypt::setUp
-     */
-    public function testSetUpFindBinary()
-    {
-        $path   = realpath(__DIR__ . '/../../../_files/bin');
-        $mcrypt = new Mcrypt();
-        $mcrypt->setup(array('key' => 'fooBarBaz', 'algorithm' => 'blowfish', 'pathToMcrypt' => $path));
-
-        $this->assertTrue(true, 'no exception should be thrown');
     }
 
     /**
@@ -92,32 +69,35 @@ class McryptTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests Mcrypt::getExec
+     * Tests Mcrypt::getExecutable
      */
-    public function testGetExecKeyAndAlgorithm()
+    public function testKeyAndAlgorithm()
     {
-        $target = $this->getTargetMock();
-        $this->mcrypt->setup(array('key' => 'fooBarBaz', 'algorithm' => 'blowfish'));
-        $exec = $this->mcrypt->getExec($target);
+        $expected = 'mcrypt -u -k \'fooBarBaz\' -a \'blowfish\' \'/foo/bar.txt\' 2> /dev/null';
+        $target   = $this->getTargetMock('/foo/bar.txt');
+        $path     = $this->getBinDir();
+        $this->mcrypt->setup(array('pathToMcrypt' => $path, 'key' => 'fooBarBaz', 'algorithm' => 'blowfish'));
 
-        $call = (string) $exec->getExec();
+        $executable = $this->mcrypt->getExecutable($target);
 
-        $this->assertEquals('mcrypt -u -k \'fooBarBaz\' -a \'blowfish\' \'/foo/bar.txt\' 2> /dev/null', $call);
+        $this->assertEquals($path . '/' . $expected, $executable->getCommandLine());
     }
 
     /**
-     * Tests Mcrypt::getExec
+     * Tests Mcrypt::getExecutable
      */
-    public function testGetExecFile()
+    public function testKeyFile()
     {
         Cli::registerBase('configuration', '/foo');
-        $target = $this->getTargetMock();
-        $this->mcrypt->setup(array('keyFile' => '/foo/my.key', 'algorithm' => 'blowfish'));
-        $exec = $this->mcrypt->getExec($target);
 
-        $call = (string) $exec->getExec();
+        $expected = 'mcrypt -u -f \'/foo/my.key\' -a \'blowfish\' \'/foo/bar.txt\' 2> /dev/null';
+        $target   = $this->getTargetMock('/foo/bar.txt');
+        $path     = $this->getBinDir();
+        $this->mcrypt->setup(array('pathToMcrypt' => $path, 'keyFile' => '/foo/my.key', 'algorithm' => 'blowfish'));
 
-        $this->assertEquals('mcrypt -u -f \'/foo/my.key\' -a \'blowfish\' \'/foo/bar.txt\' 2> /dev/null', $call);
+        $executable = $this->mcrypt->getExecutable($target);
+
+        $this->assertEquals($path . '/' . $expected, $executable->getCommandLine());
     }
 
     /**
@@ -126,18 +106,16 @@ class McryptTest extends \PHPUnit_Framework_TestCase
     public function testCryptOk()
     {
         $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(0);
-        $appResult = $this->getMockBuilder('\\phpbu\\App\\Result')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cli\\Exec')
+        $cliResult = $this->getCliResultMock(0, 'mcrypt');
+        $appResult = $this->getAppResultMock();
+        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Mcrypt')
                           ->disableOriginalConstructor()
                           ->getMock();
 
-        $exec->expects($this->once())->method('execute')->willReturn($cliResult);
+        $exec->expects($this->once())->method('run')->willReturn($cliResult);
         $appResult->expects($this->once())->method('debug');
 
-        $this->mcrypt->setExec($exec);
+        $this->mcrypt->setExecutable($exec);
         $this->mcrypt->crypt($target, $appResult);
     }
 
@@ -149,18 +127,18 @@ class McryptTest extends \PHPUnit_Framework_TestCase
     public function testCryptFail()
     {
         $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(1);
+        $cliResult = $this->getCliResultMock(1, 'mcrypt');
         $appResult = $this->getMockBuilder('\\phpbu\\App\\Result')
                           ->disableOriginalConstructor()
                           ->getMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cli\\Exec')
+        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Mcrypt')
                           ->disableOriginalConstructor()
                           ->getMock();
 
-        $exec->expects($this->once())->method('execute')->willReturn($cliResult);
+        $exec->expects($this->once())->method('run')->willReturn($cliResult);
         $appResult->expects($this->once())->method('debug');
 
-        $this->mcrypt->setExec($exec);
+        $this->mcrypt->setExecutable($exec);
         $this->mcrypt->crypt($target, $appResult);
     }
 
@@ -171,45 +149,5 @@ class McryptTest extends \PHPUnit_Framework_TestCase
     {
         $suffix = $this->mcrypt->getSuffix();
         $this->assertEquals('nc', $suffix);
-    }
-
-    /**
-     * Create Cli\Result mock.
-     *
-     * @param  integer $code
-     * @return \phpbu\App\Backup\Cli\Result
-     */
-    protected function getCliResultMock($code)
-    {
-        $cliResult = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cli\\Result')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
-        $cliResult->method('getCmd')->willReturn('mcrypt');
-        $cliResult->method('getCode')->willReturn($code);
-        $cliResult->method('getOutput')->willReturn(array());
-        $cliResult->method('wasSuccessful')->willReturn($code == 0);
-
-        return $cliResult;
-    }
-
-    /**
-     * Create Target mock.
-     *
-     * @param  string  $pathname
-     * @param  boolean $compressed
-     * @return \phpbu\App\Backup\Target
-     */
-    protected function getTargetMock($pathname = '/foo/bar.txt', $compressed = false)
-    {
-        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                       ->disableOriginalConstructor()
-                       ->getMock();
-        $target->method('getPath')->willReturn(dirname($pathname));
-        $target->method('getPathname')->willReturn($pathname);
-        $target->method('fileExists')->willReturn(false);
-        $target->method('shouldBeCompressed')->willReturn($compressed);
-
-        return $target;
     }
 }

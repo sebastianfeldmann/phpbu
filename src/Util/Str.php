@@ -37,6 +37,21 @@ class Str
     }
 
     /**
+     * Replaces %TARGET_DIR% and %TARGET_FILE% in given string.
+     *
+     * @param  string $string
+     * @param  string $target
+     * @return string
+     */
+    public static function replaceTargetPlaceholders($string, $target)
+    {
+        $targetDir  = dirname($target);
+        $search     = array('%TARGET_DIR%', '%TARGET_FILE%');
+        $replace    = array($targetDir, $target);
+        return str_replace($search, $replace, $string);
+    }
+
+    /**
      * Create a regex that matches the raw path considering possible date placeholders.
      *
      * @param  string $stringWithDatePlaceholders

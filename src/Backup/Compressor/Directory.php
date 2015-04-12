@@ -1,8 +1,9 @@
 <?php
 namespace phpbu\App\Backup\Compressor;
 
-use phpbu\App\Backup\Source\Tar;
+use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Target;
+use phpbu\App\Cli\Executable\Tar;
 use phpbu\App\Exception;
 use phpbu\App\Result;
 
@@ -17,7 +18,7 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.1
  */
-class Directory
+class Directory extends Cli
 {
     /**
      * Path to dir to compress.
@@ -30,9 +31,10 @@ class Directory
      * Constructor.
      *
      * @param  string $path
+     * @param  string $pathToCommand
      * @throws \phpbu\App\Exception
      */
-    public function __construct($path)
+    public function __construct($path, $pathToCommand = null)
     {
         if (empty($path)) {
             throw new Exception('no path to compress set');
@@ -40,7 +42,8 @@ class Directory
         if (!is_dir($path)) {
             throw new Exception('path to compress should be a directory');
         }
-        $this->path = $path;
+        $this->path          = $path;
+        $this->pathToCommand = $pathToCommand;
     }
 
     /**
@@ -52,17 +55,37 @@ class Directory
      */
     public function compress(Target $target, Result $result)
     {
-        try {
-            $tar = new Tar();
-            $tar->setup(
-                array(
-                    'path'      => $this->path,
-                    'removeDir' => 'true',
-                )
-            );
-            $tar->backup($target, $result);
-        } catch (\Exception $e) {
-            throw new Exception('Failed to \'tar\' directory: ' . $this->path . PHP_EOL . $e->getMessage(), 1, $e);
+        if (!$target->shouldBeCompressed()) {
+            throw new Exception('target should not be compressed');
         }
+        $target->setMimeType('application/x-tar');
+
+        $res = $this->execute($target);
+        $result->debug($res->getCmd());
+
+        if (0 !== $res->getCode()) {
+            throw new Exception('Failed to \'tar\' directory: ' . $this->path);
+        }
+    }
+
+    /**
+     * Returns the executable for this action.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Cli\Executable
+     */
+    public function getExecutable(Target $target) {
+        if (null === $this->executable) {
+            $this->executable = new Tar($this->pathToCommand);
+            $this->executable->archiveDirectory($this->path);
+
+            $archiveName = Tar::isCompressorValid($target->getCompressor()->getCommand())
+                         ? $target->getPathname()
+                         : $target->getPathnamePlain();
+            $this->executable->archiveTo($archiveName)
+                             ->useCompression($target->getCompressor()->getCommand())
+                             ->removeSourceDirectory(true);
+        }
+        return $this->executable;
     }
 }

@@ -1,11 +1,10 @@
 <?php
 namespace phpbu\App\Backup\Crypter;
 
-use phpbu\App\Backup\Cli\Binary;
-use phpbu\App\Backup\Cli\Cmd;
-use phpbu\App\Backup\Cli\Exec;
+use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Target;
+use phpbu\App\Cli\Executable;
 use phpbu\App\Result;
 use phpbu\App\Util;
 
@@ -20,8 +19,15 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.3.0
  */
-class Mcrypt extends Binary implements Crypter
+class Mcrypt extends Cli implements Crypter
 {
+    /**
+     * Path to mcrypt command.
+     *
+     * @var string
+     */
+    private $pathToMcrypt;
+
     /**
      * @var boolean
      */
@@ -78,12 +84,11 @@ class Mcrypt extends Binary implements Crypter
      */
     public function setup(array $options = array())
     {
-        $this->setupMcrypt($options);
-
         if (!Util\Arr::isSetAndNotEmptyString($options, 'algorithm')) {
             throw new Exception('mcrypt \'algorithm\' is mandatory');
         }
 
+        $this->pathToMcrypt  = Util\Arr::getValue($options, 'pathToMcrypt');
         $this->showStdErr    = Util\Str::toBoolean(Util\Arr::getValue($options, 'showStdErr', ''), false);
         $this->keepUncrypted = Util\Str::toBoolean(Util\Arr::getValue($options, 'keepUncrypted', ''), false);
         $this->key           = Util\Arr::getValue($options, 'key');
@@ -107,9 +112,7 @@ class Mcrypt extends Binary implements Crypter
      */
     public function crypt(Target $target, Result $result)
     {
-        $exec   = $this->getExec($target);
-
-        $mcrypt = $this->execute($exec);
+        $mcrypt = $this->execute($target);
 
         $result->debug('mcrypt:' . $mcrypt->getCmd());
 
@@ -130,47 +133,26 @@ class Mcrypt extends Binary implements Crypter
     }
 
     /**
-     * Search for the mcrypt command.
-     *
-     * @param array $conf
-     */
-    protected function setupMcrypt(array $conf)
-    {
-        if (empty($this->binary)) {
-            $this->binary = Util\Cli::detectCmdLocation('mcrypt', Util\Arr::getValue($conf, 'pathToMcrypt'));
-        }
-    }
-
-    /**
      * Create the Exec to run the 'mcrypt' command.
      *
      * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Backup\Cli\Exec
+     * @return \phpbu\App\Cli\Executable
      */
-    public function getExec(Target $target)
+    public function getExecutable(Target $target)
     {
-        if (null == $this->exec) {
-            $this->exec = new Exec();
-            $mcrypt     = new Cmd($this->binary);
-
-            // no std error unless it is activated
-            if (!$this->showStdErr) {
-                $mcrypt->silence();
-                // i kill you
-            }
-
-            $this->addOptionIfNotEmpty($mcrypt, '-u', !$this->keepUncrypted, false);
-            $this->addOptionIfNotEmpty($mcrypt, '-k', $this->key, true, ' ');
-            $this->addOptionIfNotEmpty($mcrypt, '-f', $this->keyFile, true, ' ');
-            $this->addOptionIfNotEmpty($mcrypt, '-h', $this->hash, true, ' ');
-            $this->addOptionIfNotEmpty($mcrypt, '-a', $this->algorithm, true, ' ');
-            $this->addOptionIfNotEmpty($mcrypt, '-c', $this->config, true, ' ');
-
-            $mcrypt->addArgument($target->getPathname());
-            $this->exec->addCommand($mcrypt);
+        if (null == $this->executable) {
+            $this->executable = new Executable\Mcrypt($this->pathToMcrypt);
+            $this->executable->useAlgorithm($this->algorithm)
+                             ->useKey($this->key)
+                             ->useKeyFile($this->keyFile)
+                             ->useConfig($this->config)
+                             ->useHash($this->hash)
+                             ->saveAt($target->getPathname())
+                             ->deleteUncrypted(!$this->keepUncrypted)
+                             ->showStdErr($this->showStdErr);
         }
 
-        return $this->exec;
+        return $this->executable;
     }
 
     /**
