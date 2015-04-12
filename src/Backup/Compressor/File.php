@@ -18,39 +18,17 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.2
  */
-class File extends Cli
+class File extends Abstraction
 {
     /**
-     * Path to cli binary.
-     *
-     * @var string
-     */
-    private $pathToCommand;
-
-    /**
-     * File to dir to compress.
-     *
-     * @var string
-     */
-    private $path;
-
-    /**
-     * Constructor.
+     * Validate path.
      *
      * @param  string $path
-     * @param  string $pathToCommand
-     * @throws \phpbu\App\Exception
+     * @return boolean
      */
-    public function __construct($path, $pathToCommand = null)
+    public function isPathValid($path)
     {
-        if (empty($path)) {
-            throw new Exception('no path to compress set');
-        }
-        if (!is_file($path)) {
-            throw new Exception('path to compress should be a file');
-        }
-        $this->path          = $path;
-        $this->pathToCommand = $pathToCommand;
+        return is_file($path);
     }
 
     /**

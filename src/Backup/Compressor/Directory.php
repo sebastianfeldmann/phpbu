@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Compressor;
 
-use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable\Tar;
 use phpbu\App\Exception;
@@ -18,39 +17,17 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.1
  */
-class Directory extends Cli
+class Directory extends Abstraction
 {
     /**
-     * Path to cli binary.
-     *
-     * @var string
-     */
-    private $pathToCommand;
-
-    /**
-     * Path to dir to compress.
-     *
-     * @var string
-     */
-    private $path;
-
-    /**
-     * Constructor.
+     * Validate path.
      *
      * @param  string $path
-     * @param  string $pathToCommand
-     * @throws \phpbu\App\Exception
+     * @return boolean
      */
-    public function __construct($path, $pathToCommand = null)
+    public function isPathValid($path)
     {
-        if (empty($path)) {
-            throw new Exception('no path to compress set');
-        }
-        if (!is_dir($path)) {
-            throw new Exception('path to compress should be a directory');
-        }
-        $this->path          = $path;
-        $this->pathToCommand = $pathToCommand;
+        return is_dir($path);
     }
 
     /**
