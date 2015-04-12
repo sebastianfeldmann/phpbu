@@ -51,5 +51,5 @@ abstract class Cli
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
      */
-    public abstract function getExecutable(Target $target);
+    abstract public function getExecutable(Target $target);
 }

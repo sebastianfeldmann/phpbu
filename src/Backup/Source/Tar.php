@@ -120,7 +120,7 @@ class Tar extends Cli implements Source
         if (null == $this->executable) {
             // check if tar supports requested compression
             if ($target->shouldBeCompressed()) {
-                if(!Executable\Tar::isCompressorValid($target->getCompressor()->getCommand())) {
+                if (!Executable\Tar::isCompressorValid($target->getCompressor()->getCommand())) {
                     $this->pathToArchive = $target->getPathnamePlain();
                 } else {
                     // compression could be handled by the tar command

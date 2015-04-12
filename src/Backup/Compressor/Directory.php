@@ -21,6 +21,13 @@ use phpbu\App\Result;
 class Directory extends Cli
 {
     /**
+     * Path to cli binary.
+     *
+     * @var string
+     */
+    private $pathToCommand;
+
+    /**
      * Path to dir to compress.
      *
      * @var string

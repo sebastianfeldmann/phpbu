@@ -82,7 +82,7 @@ abstract class Abstraction
      *
      * @return \phpbu\App\Cli\Process
      */
-    protected abstract function createProcess();
+    abstract protected function createProcess();
 
     /**
      * Show the stdError output.
