@@ -15,7 +15,7 @@ use phpbu\App\Exception;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://phpbu.de/
- * @since      Class available since Release 2.0.2
+ * @since      Class available since Release 2.1.0
  */
 class Mongodump extends Abstraction implements Executable
 {
