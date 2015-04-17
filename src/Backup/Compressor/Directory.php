@@ -39,17 +39,8 @@ class Directory extends Abstraction
      */
     public function compress(Target $target, Result $result)
     {
-        if (!$target->shouldBeCompressed()) {
-            throw new Exception('target should not be compressed');
-        }
         $target->setMimeType('application/x-tar');
-
-        $res = $this->execute($target);
-        $result->debug($res->getCmd());
-
-        if (0 !== $res->getCode()) {
-            throw new Exception('Failed to \'tar\' directory: ' . $this->path);
-        }
+        parent::compress($target, $result);
     }
 
     /**

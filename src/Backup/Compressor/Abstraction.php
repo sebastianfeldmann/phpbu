@@ -3,7 +3,6 @@ namespace phpbu\App\Backup\Compressor;
 
 use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Target;
-use phpbu\App\Cli\Executable\Compressor;
 use phpbu\App\Exception;
 use phpbu\App\Result;
 
@@ -51,6 +50,27 @@ abstract class Abstraction extends Cli
         }
         $this->path          = $path;
         $this->pathToCommand = $pathToCommand;
+    }
+
+    /**
+     * Compress the configured directory.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Result        $result
+     * @throws \phpbu\App\Exception
+     */
+    public function compress(Target $target, Result $result)
+    {
+        if (!$target->shouldBeCompressed()) {
+            throw new Exception('target should not be compressed');
+        }
+
+        $res = $this->execute($target);
+        $result->debug($res->getCmd());
+
+        if (0 !== $res->getCode()) {
+            throw new Exception('Failed to \'compress\' file: ' . $this->path);
+        }
     }
 
     /**

@@ -32,27 +32,6 @@ class File extends Abstraction
     }
 
     /**
-     * Compress the configured directory.
-     *
-     * @param  \phpbu\App\Backup\Target $target
-     * @param  \phpbu\App\Result        $result
-     * @throws \phpbu\App\Exception
-     */
-    public function compress(Target $target, Result $result)
-    {
-        if (!$target->shouldBeCompressed()) {
-            throw new Exception('target should not be compressed');
-        }
-
-        $res = $this->execute($target);
-        $result->debug($res->getCmd());
-
-        if (0 !== $res->getCode()) {
-            throw new Exception('Failed to ' . $target->getCompressor()->getCommand() . ' \'compress\' file: ' . $this->path);
-        }
-    }
-
-    /**
      * Returns the executable for this action.
      *
      * @param  \phpbu\App\Backup\Target $target
