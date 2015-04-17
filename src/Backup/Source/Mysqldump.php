@@ -107,6 +107,14 @@ class Mysqldump extends Cli implements Source
     private $compress;
 
     /**
+     * Dump blob fields as hex.
+     * --hex-blob
+     *
+     * @var boolean
+     */
+    private $hexBlob;
+
+    /**
      * Dump only table structures
      * --no-data
      *
@@ -136,6 +144,7 @@ class Mysqldump extends Cli implements Source
         $this->user            = Util\Arr::getValue($conf, 'user');
         $this->password        = Util\Arr::getValue($conf, 'password');
         $this->showStdErr      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
+        $this->hexBlob         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'hexBlob', ''), false);
         $this->quick           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
         $this->compress        = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
         $this->noData          = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
@@ -191,6 +200,7 @@ class Mysqldump extends Cli implements Source
             $this->executable->credentials($this->user, $this->password)
                              ->useHost($this->host)
                              ->useQuickMode($this->quick)
+                             ->dumpBlobsHexadecimal($this->hexBlob)
                              ->useCompression($this->compress)
                              ->dumpTables($this->tables)
                              ->dumpDatabases($this->databases)

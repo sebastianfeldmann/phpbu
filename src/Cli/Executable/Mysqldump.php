@@ -98,6 +98,7 @@ class Mysqldump extends Abstraction implements Executable
 
     /**
      * Dump blob fields as hex.
+     * --hex-blob
      *
      * @var boolean
      */
@@ -168,6 +169,18 @@ class Mysqldump extends Abstraction implements Executable
     public function useCompression($bool)
     {
         $this->compress = $bool;
+        return $this;
+    }
+
+    /**
+     * Use '--hex-blob' to encode binary fields.
+     *
+     * @param  boolean $bool
+     * @return \phpbu\App\Cli\Executable\Mysqldump
+     */
+    public function dumpBlobsHexadecimal($bool)
+    {
+        $this->hexBlob = $bool;
         return $this;
     }
 

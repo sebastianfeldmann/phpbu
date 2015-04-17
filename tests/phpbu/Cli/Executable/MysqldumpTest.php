@@ -27,6 +27,19 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Mysqldump::dumpBlobsHexadecimal
+     */
+    public function testHexBlob()
+    {
+        $path      = realpath(__DIR__ . '/../../../_files/bin');
+        $mysqldump = new Mysqldump($path);
+        $mysqldump->dumpBlobsHexadecimal(true);
+        $cmd       = $mysqldump->getCommandLine();
+
+        $this->assertEquals($path . '/mysqldump --hex-blob --all-databases 2> /dev/null', $cmd);
+    }
+
+    /**
      * Tests Mysqldump::getCommandLine
      */
     public function testTables()

@@ -4,7 +4,7 @@
   <option name="showStdErr" value="true" />
 
   <!-- optional, default=localhost -->
-  <option name="host" value="myhost" />
+  <option name="host" value="myHost" />
 
   <!-- optional, default=system user -->
   <option name="user" value="myUserName" />
@@ -29,4 +29,7 @@
 
   <!-- optional, default=false -->
   <option name="compress" value="true" />
+
+  <!-- optional, default=false -->
+  <option name="hexBlob" value="true" />
 </source>
