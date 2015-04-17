@@ -212,7 +212,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests PrinterCli::cryptStart
      */
-    public function tesCryptStartEndDebug()
+    public function testCryptStartEndDebug()
     {
         $crypt   = new Configuration\Backup\Crypt('TestType', false);
         $printer = new PrinterCli(null, false, false, true);
@@ -221,7 +221,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
         $printer->onCryptStart($this->getEventMock('Crypt\\Start', $crypt));
         $printer->onCryptEnd($this->getEventMock('Crypt\\End', $crypt));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'crypt start') !== false);
+        $this->assertTrue(strpos($output, 'crypt') !== false);
         $this->assertTrue(strpos($output, 'done') !== false);
     }
 
