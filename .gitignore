@@ -9,4 +9,5 @@
 /build/phar
 /composer.lock
 /phpbu.xml
+/phpbu.json
 /vendor/
