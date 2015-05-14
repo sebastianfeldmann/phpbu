@@ -195,7 +195,9 @@ class Cmd
         // check configuration argument
         // if configuration argument is a directory
         // check for default configuration files 'phpbu.xml' and 'phpbu.xml.dist'
-        if (isset($this->arguments['configuration']) && is_dir($this->arguments['configuration'])) {
+        if (isset($this->arguments['configuration']) && is_file($this->arguments['configuration'])) {
+            $this->arguments['configuration'] = realpath($this->arguments['configuration']);
+        } elseif (isset($this->arguments['configuration']) && is_dir($this->arguments['configuration'])) {
             $this->findConfigurationInDir();
         } elseif (!isset($this->arguments['configuration'])) {
             // no configuration argument search for default configuration files
@@ -247,10 +249,10 @@ class Cmd
      */
     protected function createConfiguration()
     {
-        $configLoader  = new Configuration\Loader\Xml($this->arguments['configuration']);
+        $configLoader  = Configuration\Loader\Factory::createLoader($this->arguments['configuration']);
         $configuration = $configLoader->getConfiguration();
 
-        // argument bootstrap overrules config bootstrap
+        // arguments overrule config settings
         if (isset($this->arguments['bootstrap'])) {
             $configuration->setBootstrap($this->arguments['bootstrap']);
         }
