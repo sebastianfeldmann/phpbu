@@ -6,12 +6,11 @@ use DOMXPath;
 use phpbu\App\Configuration;
 use phpbu\App\Configuration\Loader;
 use phpbu\App\Exception;
-use phpbu\App\Util\Cli;
 use phpbu\App\Util\Str;
 
 /**
  *
- * Wrapper for the phpbu XML configuration file.
+ * Loader for a phpbu XML configuration file.
  *
  * Example XML configuration file:
  * <code>
@@ -71,15 +70,8 @@ use phpbu\App\Util\Str;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class Xml implements Loader
+class Xml extends File implements Loader
 {
-    /**
-     * Path to config file.
-     *
-     * @var string
-     */
-    private $filename;
-
     /**
      * Config file DOMDocument
      *
@@ -105,23 +97,6 @@ class Xml implements Loader
         $this->filename = $file;
         $this->document = $this->loadXmlFile($file);
         $this->xpath    = new DOMXPath($this->document);
-    }
-
-    /**
-     * Returns the phpbu Configuration.
-     *
-     * @return \phpbu\App\Configuration
-     */
-    public function getConfiguration()
-    {
-        $configuration = new Configuration($this->filename);
-
-        $this->setAppSettings($configuration);
-        $this->setPhpSettings($configuration);
-        $this->setLoggers($configuration);
-        $this->setBackups($configuration);
-
-        return $configuration;
     }
 
     /**
@@ -164,6 +139,33 @@ class Xml implements Loader
             $value = $ini->getAttribute('value');
 
             $configuration->addIniSetting($name, $value);
+        }
+    }
+
+    /**
+     * Set the log configuration.
+     *
+     * @param  \phpbu\App\Configuration $configuration
+     * @throws \phpbu\App\Exception
+     */
+    public function setLoggers(Configuration $configuration)
+    {
+        /** @var \DOMElement $logNode */
+        foreach ($this->xpath->query('logging/log') as $logNode) {
+            $type = $logNode->getAttribute('type');
+            if (!$type) {
+                throw new Exception('invalid logger configuration: attribute type missing');
+            }
+            $options = $this->getOptions($logNode);
+            if (isset($options['target'])) {
+                $options['target'] = $this->toAbsolutePath($options['target']);
+            }
+            // search for target attribute to convert to option
+            $target = $logNode->getAttribute('target');
+            if (!empty($target)) {
+                $options['target'] = $this->toAbsolutePath($target);
+            }
+            $configuration->addLogger(new Configuration\Logger($type, $options));
         }
     }
 
@@ -361,45 +363,6 @@ class Xml implements Loader
     }
 
     /**
-     * Set the log configuration.
-     *
-     * @param  \phpbu\App\Configuration $configuration
-     * @throws \phpbu\App\Exception
-     */
-    public function setLoggers(Configuration $configuration)
-    {
-        /** @var \DOMElement $logNode */
-        foreach ($this->xpath->query('logging/log') as $logNode) {
-            $type = $logNode->getAttribute('type');
-            if (!$type) {
-                throw new Exception('invalid logger configuration: attribute type missing');
-            }
-            $options = $this->getOptions($logNode);
-            if (isset($options['target'])) {
-                $options['target'] = $this->toAbsolutePath($options['target']);
-            }
-            // search for target attribute to convert to option
-            $target = $logNode->getAttribute('target');
-            if (!empty($target)) {
-                $options['target'] = $this->toAbsolutePath($target);
-            }
-            $configuration->addLogger(new Configuration\Logger($type, $options));
-        }
-    }
-
-    /**
-     * Converts a path to an absolute one if necessary.
-     *
-     * @param  string  $path
-     * @param  boolean $useIncludePath
-     * @return string
-     */
-    protected function toAbsolutePath($path, $useIncludePath = false)
-    {
-        return Cli::toAbsolutePath($path, dirname($this->filename), $useIncludePath);
-    }
-
-    /**
      * Load the XML-File.
      *
      * @param  string $filename
@@ -408,14 +371,7 @@ class Xml implements Loader
      */
     private function loadXmlFile($filename)
     {
-        $reporting = error_reporting(0);
-        $contents  = file_get_contents($filename);
-        error_reporting($reporting);
-
-        if ($contents === false) {
-            throw new Exception(sprintf('Could not read "%s".', $filename));
-        }
-
+        $contents  = $this->loadFile($filename);
         $document  = new \DOMDocument;
         $message   = '';
         $internal  = libxml_use_internal_errors(true);

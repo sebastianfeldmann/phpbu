@@ -183,7 +183,7 @@ class PrinterCli extends Printer implements Listener
         $this->write(
             Version::getVersionString() . PHP_EOL .
             PHP_EOL .
-            'Configuration read from ' . $configuration->getPathname() . PHP_EOL .
+            'Configuration read from ' . $configuration->getFilename() . PHP_EOL .
             PHP_EOL
         );
     }

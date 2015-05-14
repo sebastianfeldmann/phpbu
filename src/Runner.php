@@ -49,7 +49,7 @@ class Runner
      */
     public function run(Configuration $configuration)
     {
-        Util\Cli::registerBase('configuration', $configuration->getPath());
+        Util\Cli::registerBase('configuration', $configuration->getWorkingDirectory());
         $this->handleIniSettings($configuration);
         $this->handleIncludePath($configuration);
         $this->handleBootstrap($configuration);

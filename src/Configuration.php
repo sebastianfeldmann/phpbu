@@ -15,11 +15,18 @@ namespace phpbu\App;
 class Configuration
 {
     /**
-     * Path and filename
+     * Filename
      *
      * @var string
      */
-    private $pathname;
+    private $filename;
+
+    /**
+     * Working directory
+     *
+     * @var string
+     */
+    private $workingDirectory;
 
     /**
      * Path to bootstrap file.
@@ -80,31 +87,21 @@ class Configuration
     /**
      * Constructor
      *
+     * @param string $wd
+     */
+    public function __construct($wd)
+    {
+        $this->workingDirectory = $wd;
+    }
+
+    /**
+     * Filename setter
+     *
      * @param string $file
      */
-    public function __construct($file)
+    public function setFilename($file)
     {
-        $this->pathname = $file;
-    }
-
-    /**
-     * Pathname getter.
-     *
-     * @return string
-     */
-    public function getPathname()
-    {
-        return $this->pathname;
-    }
-
-    /**
-     * Path getter.
-     *
-     * @return string
-     */
-    public function getPath()
-    {
-        return dirname($this->pathname);
+        $this->filename = $file;
     }
 
     /**
@@ -114,7 +111,27 @@ class Configuration
      */
     public function getFilename()
     {
-        return basename($this->pathname);
+        return $this->filename;
+    }
+
+    /**
+     * Working directory setter.
+     *
+     * @param string $wd
+     */
+    public function setWorkingDirectory($wd)
+    {
+        $this->workingDirectory = $wd;
+    }
+
+    /**
+     * Working directory getter.
+     *
+     * @return string
+     */
+    public function getWorkingDirectory()
+    {
+        return $this->workingDirectory;
     }
 
     /**
