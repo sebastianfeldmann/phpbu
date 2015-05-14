@@ -1,0 +1,8 @@
+{
+  "includePath": [
+    "."
+  ],
+  "ini": {
+    "max_execution_time": 0
+  }
+}

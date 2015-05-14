@@ -22,7 +22,7 @@
   <option name="smtp.username" value="user.name@example.com" />
 
   <!-- optional, default=none -->
-  <option name="smtp.password" value="mysecret" />
+  <option name="smtp.password" value="mySecret" />
 
   <!-- optional, default=none -->
   <option name="smtp.encryption" value="ssl" />

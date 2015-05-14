@@ -1,0 +1,14 @@
+{
+  "type": "mail",
+  "options": {
+    "recipients": "forename.lastname@example.com",
+    "sendOnlyOnError": true,
+    "sender.mail": "no-replay@example.com",
+    "transport": "smtp",
+    "smtp.port": "587",
+    "smtp.host": "smtp.example.com",
+    "smtp.username": "user.name@example.com",
+    "smtp.password": "mySecret",
+    "smtp.encryption": "ssl"
+  }
+}

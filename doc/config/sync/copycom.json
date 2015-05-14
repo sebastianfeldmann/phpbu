@@ -1,0 +1,11 @@
+{
+  "type": "copycom",
+  "options": {
+    "app.key": "myAppKey",
+    "app.secret": "myCrazyLongApiSecret",
+    "user.key": "oauthUserKey",
+    "user.secret": "oauthUserSecret",
+    "path": "/some/dir"
+  }
+}
+

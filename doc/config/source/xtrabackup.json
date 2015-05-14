@@ -1,0 +1,11 @@
+{
+  "type": "xtrabackup",
+  "options": {
+    "showStdErr": "true",
+    "host": "myHost",
+    "user": "myUserName",
+    "password": "mySecretPassword",
+    "databases": "myDB1,myDB2,myDB3.table1",
+    "include": "^myDatabase[.]myTable"
+  }
+}

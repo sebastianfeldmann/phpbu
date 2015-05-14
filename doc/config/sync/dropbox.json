@@ -1,0 +1,7 @@
+{
+  "type": "dropbox",
+  "options": {
+    "token": "myCrazyLongApiTokenThatIGotFromDropbox",
+    "path": "/some/dir"
+  }
+}

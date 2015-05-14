@@ -1,0 +1,9 @@
+{
+  "type": "mail",
+  "options": {
+    "recipients": "forename.lastname@example.com",
+    "sendOnlyOnError": true,
+    "sender.mail": "no-replay@example.com",
+    "transport": "mail"
+  }
+}

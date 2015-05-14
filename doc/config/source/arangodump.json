@@ -1,0 +1,14 @@
+{
+  "type": "arangodump",
+  "options": {
+    "showStdErr": "true",
+    "endpoint": "tcp://host:8529",
+    "username": "myUserName",
+    "password": "mySecretPassword",
+    "disableAuthentication": "true",
+    "database": "myDatabase",
+    "dumpData": "true",
+    "includeSystemCollections": "true",
+    "collections": "myCollection1,myCollection2"
+  }
+}

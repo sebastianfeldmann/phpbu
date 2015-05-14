@@ -1,0 +1,10 @@
+{
+  "type": "softlayer",
+  "options": {
+    "user": "softlayerUsername",
+    "secret": "softlayerSecret",
+    "container": "softlayerContainer",
+    "host": "softlayerHost",
+    "path": "/some/dir"
+  }
+}

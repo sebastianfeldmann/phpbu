@@ -1,0 +1,13 @@
+{
+  "type": "rsync",
+  "options": {
+    "path": "/tmp",
+    "user": "root",
+    "host": "127.0.0.1",
+    "dirsync": "true",
+    "delete": "true",
+    "exclude": "*.cvs:*.jpg",
+    "args": "-avz '%TARGET_FILE%' ."
+  }
+}
+

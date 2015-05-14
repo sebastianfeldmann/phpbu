@@ -1,0 +1,15 @@
+{
+  "type": "mongodump",
+  "option": {
+    "showStdErr": "true",
+    "host": "localhost",
+    "user": "root",
+    "password": "secret",
+    "authenticationDatabase": "myAuthDB",
+    "databases": "myDB1,mydB2",
+    "collections": "myCollection1,myCollection2,myCollection3",
+    "excludeCollections": "myCollectionToExclude1,myCollectionToExclude2",
+    "excludeCollectionsWithPrefix": "myExcludePrefix1,myExcludePrefix2",
+    "ipv6": "true"
+  }
+}
