@@ -89,19 +89,20 @@ class Configuration
      *
      * @param string $wd
      */
-    public function __construct($wd)
+    public function __construct($wd = null)
     {
         $this->workingDirectory = $wd;
     }
 
     /**
-     * Filename setter
+     * Filename setter.
      *
      * @param string $file
      */
     public function setFilename($file)
     {
-        $this->filename = $file;
+        $this->filename         = $file;
+        $this->workingDirectory = dirname($file);
     }
 
     /**
@@ -135,7 +136,7 @@ class Configuration
     }
 
     /**
-     * Bootstrap setter
+     * Bootstrap setter.
      *
      * @param $file
      */

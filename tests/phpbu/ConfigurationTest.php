@@ -19,7 +19,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testVerbose()
     {
-        $conf = new Configuration('/tmp/foo.xml');
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
         $this->assertEquals(false, $conf->getVerbose());
         $conf->setVerbose(true);
         $this->assertEquals(true, $conf->getVerbose());
@@ -30,7 +31,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testColors()
     {
-        $conf = new Configuration('/tmp/foo.xml');
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
         $this->assertEquals(false, $conf->getColors());
         $conf->setColors(true);
         $this->assertEquals(true, $conf->getColors());
@@ -41,7 +43,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testDebug()
     {
-        $conf = new Configuration('/tmp/foo.xml');
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
         $this->assertEquals(false, $conf->getDebug());
         $conf->setDebug(true);
         $this->assertEquals(true, $conf->getDebug());
@@ -52,7 +55,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testBootstrap()
     {
-        $conf = new Configuration('/tmp/foo.xml');
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
         $this->assertEquals(null, $conf->getBootstrap());
         $conf->setBootstrap('file.php');
         $this->assertEquals('file.php', $conf->getBootstrap());
@@ -63,7 +67,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testIncludePath()
     {
-        $conf = new Configuration('/tmp/foo.xml');
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
         $this->assertEquals(array(), $conf->getIncludePaths());
         $conf->addIncludePath('/tmp');
         $this->assertEquals(1, count($conf->getIncludePaths()));
@@ -74,21 +79,22 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testIniSettings()
     {
-        $conf = new Configuration('/tmp/foo.xml');
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
         $this->assertEquals(array(), $conf->getIniSettings());
         $conf->addIniSetting('max_execution_time', 0);
         $this->assertEquals(1, count($conf->getIniSettings()));
     }
 
     /**
-     * Tests Configuration::getPath
+     * Tests Configuration::getWorkingDirectory
      */
-    public function testGetPath()
+    public function testGetWorkingDirectory()
     {
-        $conf = new Configuration('/tmp/foo.xml');
-        $this->assertEquals('foo.xml', $conf->getFilename());
-        $this->assertEquals('/tmp', $conf->getPath());
-        $this->assertEquals('/tmp/foo.xml', $conf->getPathname());
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
+        $this->assertEquals('/tmp/foo.xml', $conf->getFilename());
+        $this->assertEquals('/tmp', $conf->getWorkingDirectory());
     }
 
     /**
@@ -96,7 +102,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackup()
     {
-        $conf   = new Configuration('/tmp/foo.xml');
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
         $backup = new Configuration\Backup('backup', true);
         $this->assertEquals(array(), $conf->getBackups());
         $conf->addBackup($backup);
@@ -108,7 +115,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testLogger()
     {
-        $conf   = new Configuration('/tmp/foo.xml');
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
         $logger = new Configuration\Logger('json', array());
         $this->assertEquals(array(), $conf->getLoggers());
         $conf->addLogger($logger);
