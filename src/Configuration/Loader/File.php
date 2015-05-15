@@ -33,7 +33,7 @@ abstract class File
      */
     public function getConfiguration()
     {
-        $configuration = new Configuration(dirname($this->filename));
+        $configuration = new Configuration();
         $configuration->setFilename($this->filename);
 
         $this->setAppSettings($configuration);
