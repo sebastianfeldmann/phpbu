@@ -19,7 +19,7 @@ class TargetTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetupPath()
     {
-        $path     = sys_get_temp_dir() . '/foo';
+        $path     = sys_get_temp_dir() . '/dirFoo';
         $filename = 'foo.txt';
         $target   = new Target($path, $filename);
         $target->setupPath();
@@ -37,9 +37,8 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     public function testSetupPathNotWritable()
     {
         $filename = 'foo.txt';
-        $path     = sys_get_temp_dir() . '/bar';
+        $path     = sys_get_temp_dir() . '/dirBar';
         mkdir($path, 0100);
-
 
         try {
             $target = new Target($path, $filename);
@@ -59,10 +58,10 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     public function testSetupPathCantCreateDir()
     {
         $filename = 'foo.txt';
-        $path     = sys_get_temp_dir() . '/bar';
+        $path     = sys_get_temp_dir() . '/dirFiz';
         mkdir($path, 0100);
         try {
-            $target = new Target($path . '/baz', $filename);
+            $target = new Target($path . '/dirBuz', $filename);
             $target->setupPath();
         } catch (\Exception $e) {
             chmod($path, 0755);
