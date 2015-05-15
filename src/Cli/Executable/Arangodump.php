@@ -229,12 +229,12 @@ class Arangodump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('--server.database', $this->database, true, ' ');
 
         if (count($this->collections)) {
-            foreach($this->collections as $collection){
+            foreach ($this->collections as $collection) {
                 $cmd->addOption('--collection', $collection, ' ');
             }
         }
 
-        if($this->disableAuthentication){
+        if ($this->disableAuthentication){
             $cmd->addOption('--server.disable-authentication', 'true', ' ');
         }
 

@@ -12,7 +12,7 @@ namespace phpbu\App\Cli;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-Interface Executable
+interface Executable
 {
     /**
      * Executes the cli commands.

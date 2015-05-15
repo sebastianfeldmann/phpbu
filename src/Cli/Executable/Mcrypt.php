@@ -171,10 +171,10 @@ class Mcrypt extends Abstraction implements Executable
      */
     protected function createProcess()
     {
-        if(empty($this->targetFile)) {
+        if (empty($this->targetFile)) {
             throw new Exception('target file is missing');
         }
-        if(empty($this->key) && empty($this->keyFile)) {
+        if (empty($this->key) && empty($this->keyFile)) {
             throw new Exception('one of \'key\' or \'keyFile\' is mandatory');
         }
         $process = new Process();
