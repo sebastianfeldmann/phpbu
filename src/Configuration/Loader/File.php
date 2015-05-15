@@ -49,7 +49,7 @@ abstract class File
      *
      * @param  \phpbu\App\Configuration $configuration
      */
-    public abstract function setAppSettings(Configuration $configuration);
+    abstract public function setAppSettings(Configuration $configuration);
 
     /**
      * Set the php settings.
@@ -57,7 +57,7 @@ abstract class File
      *
      * @param  \phpbu\App\Configuration $configuration
      */
-    public abstract function setPhpSettings(Configuration $configuration);
+    abstract public function setPhpSettings(Configuration $configuration);
 
     /**
      * Set the log configuration.
@@ -65,7 +65,7 @@ abstract class File
      * @param  \phpbu\App\Configuration $configuration
      * @throws \phpbu\App\Exception
      */
-    public abstract function setLoggers(Configuration $configuration);
+    abstract public function setLoggers(Configuration $configuration);
 
     /**
      * Set the backup configurations.
@@ -73,7 +73,7 @@ abstract class File
      * @param  \phpbu\App\Configuration $configuration
      * @throws \phpbu\App\Exception
      */
-    public abstract function setBackups(Configuration $configuration);
+    abstract public function setBackups(Configuration $configuration);
 
     /**
      * Converts a path to an absolute one if necessary.
