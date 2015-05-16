@@ -97,6 +97,14 @@ class Mysqldump extends Abstraction implements Executable
     private $noData = false;
 
     /**
+     * Use mysqldump extended insert mode
+     * -e, --extended-insert
+     *
+     * @var boolean
+     */
+    private $extendedInsert = false;
+
+    /**
      * Dump blob fields as hex.
      * --hex-blob
      *
@@ -169,6 +177,18 @@ class Mysqldump extends Abstraction implements Executable
     public function useCompression($bool)
     {
         $this->compress = $bool;
+        return $this;
+    }
+
+    /**
+     * Use '-e' extended insert mode.
+     *
+     * @param  boolean $bool
+     * @return \phpbu\App\Cli\Executable\Mysqldump
+     */
+    public function useExtendedInsert($bool)
+    {
+        $this->extendedInsert = $bool;
         return $this;
     }
 
@@ -275,6 +295,7 @@ class Mysqldump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('--host', $this->host);
         $cmd->addOptionIfNotEmpty('-q', $this->quick, false);
         $cmd->addOptionIfNotEmpty('-C', $this->compress, false);
+        $cmd->addOptionIfNotEmpty('-e', $this->extendedInsert, false);
         $cmd->addOptionIfNotEmpty('--hex-blob', $this->hexBlob, false);
 
         if (count($this->tablesToDump)) {

@@ -107,6 +107,14 @@ class Mysqldump extends Cli implements Source
     private $compress;
 
     /**
+     * Use mysqldump with extended insert
+     * -e
+     *
+     * @var boolean
+     */
+    private $extendedInsert;
+
+    /**
      * Dump blob fields as hex.
      * --hex-blob
      *
@@ -147,6 +155,7 @@ class Mysqldump extends Cli implements Source
         $this->hexBlob         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'hexBlob', ''), false);
         $this->quick           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
         $this->compress        = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
+        $this->extendedInsert  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'extendedInsert', ''), false);
         $this->noData          = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
     }
 
@@ -202,6 +211,7 @@ class Mysqldump extends Cli implements Source
                              ->useQuickMode($this->quick)
                              ->dumpBlobsHexadecimal($this->hexBlob)
                              ->useCompression($this->compress)
+                             ->useExtendedInsert($this->extendedInsert)
                              ->dumpTables($this->tables)
                              ->dumpDatabases($this->databases)
                              ->ignoreTables($this->ignoreTables)

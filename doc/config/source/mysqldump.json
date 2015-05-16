@@ -11,6 +11,7 @@
     "structureOnly": "myTableWithoutData1,myTableWithoutData2",
     "quick": "true",
     "compress": "true",
+    "extendedInsert": "true",
     "hexBlob": "true"
   }
 }

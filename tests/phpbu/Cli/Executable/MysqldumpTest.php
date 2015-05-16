@@ -40,6 +40,19 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Mysqldump::useExtendedInsert
+     */
+    public function testUseExtendedInsert()
+    {
+        $path      = realpath(__DIR__ . '/../../../_files/bin');
+        $mysqldump = new Mysqldump($path);
+        $mysqldump->useExtendedInsert(true);
+        $cmd       = $mysqldump->getCommandLine();
+
+        $this->assertEquals($path . '/mysqldump -e --all-databases 2> /dev/null', $cmd);
+    }
+
+    /**
      * Tests Mysqldump::getCommandLine
      */
     public function testTables()
