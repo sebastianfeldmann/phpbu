@@ -17,7 +17,6 @@
     "support": {
         "issues": "https://github.com/sebastianfeldmann/phpbu/issues"
     },
-    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "phpbu\\App\\": "src/"
@@ -29,14 +28,16 @@
         "ext-spl": "*",
         "barracuda/copy": "1.1.*",
         "dropbox/dropbox-sdk": "1.1.*",
-        "phpseclib/phpseclib": "2.0.*@dev",
         "phpunit/php-timer": "~1.0.2",
         "sebastian/environment": "~1.1",
         "sebastian/version": "~1.0",
         "swiftmailer/swiftmailer": "5.3.*",
         "aws/aws-sdk-php": "2.7.*",
-        "softlayer/objectstorage": "dev-master",
         "symfony/event-dispatcher": "2.6.*"
+    },
+    "suggest": {
+        "phpseclib/phpseclib": "Require '2.0.*@dev' to use SFTP sync",
+        "softlayer/objectstorage": "Require 'dev-master' to use softlayer sync"
     },
     "bin": [
         "phpbu"
