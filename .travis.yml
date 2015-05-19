@@ -10,13 +10,15 @@ php:
 before_script:
   - composer self-update
   - composer install --no-interaction --prefer-source --no-dev
+  - composer require "phpseclib/phpseclib=2.0.*@dev"
+  - composer require "softlayer/objectstorage=dev-master"
 
 script:
   - phpunit --configuration ./build/travis-ci.phpunit.xml
 
 after_success:
   - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover clover.xml  
+  - php ocular.phar code-coverage:upload --format=php-clover clover.xml
 
 notifications:
   email: false
