@@ -577,7 +577,7 @@ class PrinterCli extends Printer implements Listener
                     $this->numChecks,
                     Str::appendPluralS('check', $this->numChecks),
                     $this->numCrypts,
-                    Str::appendPluralS('crypt', $this->numChecks),
+                    Str::appendPluralS('crypt', $this->numCrypts),
                     $this->numSyncs,
                     Str::appendPluralS('sync', $this->numSyncs),
                     $this->numCleanups,
