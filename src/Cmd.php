@@ -290,7 +290,7 @@ class Cmd
     {
         $this->printVersionString();
 
-        $remoteFilename = sprintf('http://phar.phpbu.de/phpbu%s.phar', Version::getReleaseChannel());
+        $remoteFilename = 'http://phar.phpbu.de/phpbu.phar';
         $localFilename  = realpath($_SERVER['argv'][0]);
         $tempFilename   = basename($localFilename, '.phar') . '-temp.phar';
 

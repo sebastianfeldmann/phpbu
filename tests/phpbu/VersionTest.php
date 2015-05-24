@@ -35,14 +35,4 @@ class VersionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('phpbu 2.1', substr($version, 0, 9), 'version should match');
     }
-
-    /**
-     * Tests Version::createSource
-     */
-    public function testGetReleaseChannel()
-    {
-        $channel = Version::getReleaseChannel();
-
-        $this->assertEquals('', $channel, 'default channel should not be alpha or beta');
-    }
 }

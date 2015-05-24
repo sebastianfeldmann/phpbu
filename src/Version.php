@@ -60,22 +60,4 @@ class Version
     {
         return 'phpbu ' . self::id();
     }
-
-    /**
-     * Return the current release channel ('alpha', 'beta', '')
-     *
-     * @return string
-     */
-    public static function getReleaseChannel()
-    {
-        if (strpos(self::$pharVersion, 'alpha') !== false) {
-            return '-alpha';
-        }
-
-        if (strpos(self::$pharVersion, 'beta') !== false) {
-            return '-beta';
-        }
-
-        return '';
-    }
 }
