@@ -14,6 +14,24 @@ namespace phpbu\App\Util;
  */
 class CliTest extends \PHPUnit_Framework_TestCase
 {
+    private static $server;
+
+    /**
+     * Backup $_SERVER settings.
+     */
+    public function setUp()
+    {
+        self::$server = $_SERVER;
+    }
+
+    /**
+     * Restore $_SERVER settings.
+     */
+    public function tearDown()
+    {
+        $_SERVER = self::$server;
+    }
+
     /**
      * Test detectCmdLocation Exception
      *
@@ -84,6 +102,19 @@ class CliTest extends \PHPUnit_Framework_TestCase
         $this->removeTempCommand($cmdPath);
 
         $this->assertEquals($cmdPath, $result, 'foo command should be found');
+    }
+
+    /**
+     * Tests Cli::getEnvPath
+     *
+     * @expectedException \RuntimeException
+     */
+    public function testGetEnvPathFail()
+    {
+        unset($_SERVER['PATH']);
+        unset($_SERVER['Path']);
+        unset($_SERVER['path']);
+        $path = Cli::getEnvPath();
     }
 
     /**
