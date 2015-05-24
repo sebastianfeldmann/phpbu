@@ -252,10 +252,7 @@ class Cmd
         $configLoader  = Configuration\Loader\Factory::createLoader($this->arguments['configuration']);
         $configuration = $configLoader->getConfiguration();
 
-        // arguments overrule config settings
-        if (isset($this->arguments['bootstrap'])) {
-            $configuration->setBootstrap($this->arguments['bootstrap']);
-        }
+        // command line arguments overrule the config file settings
 
         if (Arr::getValue($this->arguments, 'verbose') === true) {
             $configuration->setVerbose(true);
@@ -268,6 +265,21 @@ class Cmd
         if (Arr::getValue($this->arguments, 'debug') === true) {
             $configuration->setDebug(true);
         }
+
+        $bootstrap = Arr::getValue($this->arguments, 'bootstrap');
+        if (!empty($bootstrap)) {
+            $configuration->setBootstrap($bootstrap);
+        }
+
+        // add a cli printer for some output
+        $configuration->addLogger(
+            new Result\PrinterCli(
+                null,
+                $configuration->getVerbose(),
+                $configuration->getColors(),
+                $configuration->getDebug()
+            )
+        );
         return $configuration;
     }
 

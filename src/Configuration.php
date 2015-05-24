@@ -257,12 +257,17 @@ class Configuration
     }
 
     /**
-     * Add logger config.
+     * Add a logger.
+     * This accepts valid logger configs as well as valid Listener objects.
      *
-     * @param \phpbu\App\Configuration\Logger $logger
+     * @param  mixed $logger
+     * @throws \phpbu\App\Exception
      */
-    public function addLogger(Configuration\Logger $logger)
+    public function addLogger($logger)
     {
+        if (!is_a($logger, '\\phpbu\\App\\Listener') && !is_a($logger, '\\phpbu\\App\\Configuration\\Logger')) {
+            throw new Exception('invalid logger, only \'Listener\' and valid logger configurations are accepted');
+        }
         $this->loggers[] = $logger;
     }
 

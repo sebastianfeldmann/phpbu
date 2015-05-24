@@ -98,6 +98,16 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Configuration::setWorkingDirectory
+     */
+    public function testSetWorkingDirectory()
+    {
+        $conf = new Configuration();
+        $conf->setWorkingDirectory('/tmp');
+        $this->assertEquals('/tmp', $conf->getWorkingDirectory());
+    }
+
+    /**
      * Tests Configuration::addBackup
      */
     public function testBackup()
@@ -113,7 +123,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Configuration::addLogger
      */
-    public function testLogger()
+    public function testLoggerConfiguration()
     {
         $conf = new Configuration();
         $conf->setFilename('/tmp/foo.xml');
@@ -121,5 +131,30 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(), $conf->getLoggers());
         $conf->addLogger($logger);
         $this->assertEquals(1, count($conf->getLoggers()));
+    }
+
+    /**
+     * Tests Configuration::addLogger
+     */
+    public function testLoggerListener()
+    {
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
+        $logger = new Result\PrinterCli(null, false, false, false);
+        $this->assertEquals(array(), $conf->getLoggers());
+        $conf->addLogger($logger);
+        $this->assertEquals(1, count($conf->getLoggers()));
+    }
+
+    /**
+     * Tests Configuration::addLogger
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testLoggerInvalid()
+    {
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
+        $conf->addLogger('no valid logger at all');
     }
 }

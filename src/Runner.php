@@ -21,13 +21,6 @@ use phpbu\App\Backup\Target;
 class Runner
 {
     /**
-     * Application output
-     *
-     * @var \phpbu\App\Listener
-     */
-    protected $printer;
-
-    /**
      * Application result
      *
      * @var \phpbu\App\Result
@@ -52,13 +45,9 @@ class Runner
         Util\Cli::registerBase('configuration', $configuration->getWorkingDirectory());
         $this->handleIniSettings($configuration);
         $this->handleIncludePath($configuration);
-        $this->handleBootstrap($configuration);
 
-        $this->printer = $this->createPrinter($configuration);
         $stop          = false;
         $this->result  = new Result();
-        $this->result->addListener($this->printer);
-
         $this->setupLoggers($configuration);
 
         $this->result->phpbuStart($configuration);
@@ -176,34 +165,22 @@ class Runner
     }
 
     /**
-     * Creates the output printer.
-     *
-     * @param  \phpbu\App\Configuration $configuration
-     * @return \phpbu\App\Result\PrinterCli
-     */
-    protected function createPrinter(Configuration $configuration)
-    {
-        $printer = new Result\PrinterCli(
-            null,
-            $configuration->getVerbose(),
-            $configuration->getColors(),
-            $configuration->getDebug()
-        );
-
-        return $printer;
-    }
-
-    /**
      * Create and register all configured loggers.
      *
      * @param  \phpbu\App\Configuration $configuration
      */
     protected function setupLoggers(Configuration $configuration)
     {
-        /** @var \phpbu\App\Configuration\Logger $conf */
-        foreach ($configuration->getLoggers() as $conf) {
-            /** @var \phpbu\App\Listener $logger */
-            $logger = Factory::createLogger($conf->type, $conf->options);
+        foreach ($configuration->getLoggers() as $log) {
+            // this is a already fully setup Listener so just add it
+            if (is_a($log, '\\phpbu\\App\\Listener')) {
+                $logger = $log;
+            } else {
+                // this is a configuration blueprint for a logger, so create and add it
+                /** @var \phpbu\App\Configuration\Logger $log */
+                /** @var \phpbu\App\Listener $logger */
+                $logger = Factory::createLogger($log->type, $log->options);
+            }
             $this->result->addListener($logger);
         }
     }
