@@ -33,9 +33,9 @@
         "symfony/event-dispatcher": "2.6.*"
     },
     "suggest": {
+        "aws/aws-sdk-php": "Require '2.7.*' to sync to Amazon S3",
         "barracuda/copy": "Require '1.1.*' to sync to copy.com",
         "dropbox/dropbox-sdk": "Require '1.1.*' to sync to Dropbox",
-        "aws/aws-sdk-php": "Require '2.7.*' to sync to Amazon S3",
         "phpseclib/phpseclib": "Require '2.0.*@dev' to use SFTP sync",
         "softlayer/objectstorage": "Require 'dev-master' to sync to Softlayer"
     },
