@@ -10,6 +10,9 @@ php:
 before_script:
   - composer self-update
   - composer install --no-interaction --prefer-source --no-dev
+  - composer require "aws/aws-sdk-php=2.7.*"
+  - composer require "barracuda/copy=1.1.*"
+  - composer require "dropbox/dropbox-sdk=1.1.*"
   - composer require "phpseclib/phpseclib=2.0.*@dev"
   - composer require "softlayer/objectstorage=dev-master"
 
