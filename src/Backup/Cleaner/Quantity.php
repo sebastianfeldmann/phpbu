@@ -62,13 +62,11 @@ class Quantity implements Cleaner
     {
         $files = $collector->getBackupFiles();
 
-        // backups exceed capacity?
-        if (count($files) > $this->amount) {
+        if ($this->isCapacityExceeded($files)) {
             // oldest backups first
             ksort($files);
 
-            // add one for current backup
-            while (count($files) + 1 > $this->amount) {
+            while ($this->isCapacityExceeded($files)) {
                 $file = array_shift($files);
                 $result->debug(sprintf('delete %s', $file->getPathname()));
                 if (!$file->isWritable()) {
@@ -78,5 +76,19 @@ class Quantity implements Cleaner
                 $file->unlink();
             }
         }
+    }
+
+    /**
+     * Returns true when the capacity is exceeded.
+     *
+     * @return boolean
+     */
+    private function isCapacityExceeded(array $files)
+    {
+        $totalFiles                  = count($files);
+        $totalFilesPlusCurrentBackup = $totalFiles + 1;
+
+        return $totalFiles > 0
+            && $totalFilesPlusCurrentBackup > $this->amount;
     }
 }
