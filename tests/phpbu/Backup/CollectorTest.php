@@ -101,6 +101,17 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(7, count($files), '7 files should be found');
     }
 
+    public function testSkipsCurrentWhenTargetPathHasTrailingBackslash()
+    {
+        $path      = $this->getTestDataDir() . '/collector/static-dir/';
+        $filename  = 'foo-%d.txt';
+        $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
+        $collector = new Collector($target);
+        $files     = $collector->getBackupFiles();
+
+        $this->assertEquals(3, count($files), '3 files should be found');
+    }
+
     /**
      * Create Compressor Mock.
      *
