@@ -139,4 +139,31 @@ class QuantityTest extends TestCase
 
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }
+
+    /**
+     * Tests Capacity::cleanup
+     */
+    public function testCleanupDeleteFilesCountingCurrentBackup()
+    {
+        $fileList      = $this->getFileMockList(
+            array(
+                array('size' => 100, 'shouldBeDeleted' => true),
+            )
+        );
+        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
+                              ->getMock();
+        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
+                              ->disableOriginalConstructor()
+                              ->getMock();
+        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                              ->disableOriginalConstructor()
+                              ->getMock();
+
+        $collectorStub->method('getBackupFiles')->willReturn($fileList);
+
+        $cleaner = new Quantity();
+        $cleaner->setup(array('amount' => '1'));
+
+        $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
+    }
 }
