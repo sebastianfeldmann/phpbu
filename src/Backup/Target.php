@@ -166,7 +166,7 @@ class Target
         } else {
             $this->pathNotChanging = $path;
         }
-        $this->path = $path;
+        $this->path = rtrim($path, DIRECTORY_SEPARATOR);
     }
 
     /**
