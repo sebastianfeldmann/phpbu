@@ -35,7 +35,7 @@ Get detailed information about all the features and a 'getting started' tutorial
     + rsync
     + SFTP
     + Softlayer
-* Cleanup you backup location
+* Cleanup your backup location
     + Delete backups older x
     + Store only x MB of backups
     + Keep only last x backups

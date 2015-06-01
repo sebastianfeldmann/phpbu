@@ -46,8 +46,8 @@ class Runner
         $this->handleIniSettings($configuration);
         $this->handleIncludePath($configuration);
 
-        $stop          = false;
-        $this->result  = new Result();
+        $stop         = false;
+        $this->result = new Result();
         $this->setupLoggers($configuration);
 
         $this->result->phpbuStart($configuration);

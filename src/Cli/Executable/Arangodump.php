@@ -234,7 +234,7 @@ class Arangodump extends Abstraction implements Executable
             }
         }
 
-        if ($this->disableAuthentication){
+        if ($this->disableAuthentication) {
             $cmd->addOption('--server.disable-authentication', 'true', ' ');
         }
 
