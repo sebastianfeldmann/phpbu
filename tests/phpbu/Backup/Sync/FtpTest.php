@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup\Sync;
 
 /**
- * SftpTest
+ * FtpTest
  *
  * @package    phpbu
  * @subpackage tests
