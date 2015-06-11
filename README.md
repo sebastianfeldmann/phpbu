@@ -34,6 +34,7 @@ Get detailed information about all the features and a 'getting started' tutorial
     + Dropbox
     + rsync
     + SFTP
+    + FTP
     + Softlayer
 * Cleanup your backup location
     + Delete backups older x
