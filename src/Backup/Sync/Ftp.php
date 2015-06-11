@@ -121,7 +121,6 @@ class Ftp implements Sync
             }
         }
         $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
-        $result->debug(sprintf('last error \'%s\'', error_get_last()));
         
         if (!ftp_put($ftpConnection, $remoteFilename, $localFile, FTP_BINARY)) {
             $error = error_get_last();
