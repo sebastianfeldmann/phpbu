@@ -4,7 +4,7 @@
   <option name="host" value="backup.example.com" />
 
   <!-- mandatory -->
-  <option name="user" value="use.name" />
+  <option name="user" value="user.name" />
 
   <!-- mandatory -->
   <option name="password" value="mysecret" />
