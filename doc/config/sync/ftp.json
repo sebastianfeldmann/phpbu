@@ -1,0 +1,10 @@
+{
+  "type": "ftp",
+  "options": {
+    "host": "backup.example.com",
+    "user": "user.name",
+    "password": "mySecret",
+    "path": "someDir/someSubDir"
+  }
+}
+
