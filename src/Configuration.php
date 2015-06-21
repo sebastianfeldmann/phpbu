@@ -91,7 +91,7 @@ class Configuration
      */
     public function __construct($wd = null)
     {
-        $this->workingDirectory = $wd;
+        $this->workingDirectory = $wd === null ? getcwd() : $wd;
     }
 
     /**
