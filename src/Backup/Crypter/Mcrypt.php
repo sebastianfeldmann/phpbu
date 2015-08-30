@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Crypter;
 
-use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
@@ -19,7 +18,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.3.0
  */
-class Mcrypt extends Cli implements Crypter
+class Mcrypt extends Key implements Crypter
 {
     /**
      * Path to mcrypt command.
@@ -153,17 +152,5 @@ class Mcrypt extends Cli implements Crypter
         }
 
         return $this->executable;
-    }
-
-    /**
-     * Return an absolute path relative to the used configuration.
-     *
-     * @param  string $path
-     * @param  string $default
-     * @return string
-     */
-    protected function toAbsolutePath($path, $default = null)
-    {
-        return !empty($path) ? Util\Cli::toAbsolutePath($path, Util\Cli::getBase('configuration')) : $default;
     }
 }
