@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Util\Cli;
-
 /**
  * Mcrypt ExecutableTest
  *

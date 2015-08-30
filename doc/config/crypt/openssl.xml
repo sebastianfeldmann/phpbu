@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<crypt type="openssl">
+  <!-- use only one of the following -->
+  <option name="password" value="top-secret" />
+  <option name="certFile" value="cert.pem" />
+
+  <!-- mandatory -->
+  <!-- be careful certFile and password modes used different algorithms -->
+  <!-- use `openssl enc -h` and `openssl smime -h` for an exact list -->
+  <option name="algorithm" value="aes-256-cbc" />
+
+  <!-- optional, default=false -->
+  <option name="keepUncryptedFile" value="false" />
+
+  <!-- optional, default=false -->
+  <option name="showStdError" value="false" />
+</crypt>

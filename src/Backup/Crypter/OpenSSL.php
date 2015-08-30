@@ -8,7 +8,7 @@ use phpbu\App\Result;
 use phpbu\App\Util;
 
 /**
- * Mcrypt crypter class.
+ * OpenSSL crypter class.
  *
  * @package    phpbu
  * @subpackage Backup
@@ -16,16 +16,16 @@ use phpbu\App\Util;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://phpbu.de/
- * @since      Class available since Release 1.3.0
+ * @since      Class available since Release 2.1.6
  */
-class Mcrypt extends Key implements Crypter
+class OpenSSL extends Key implements Crypter
 {
     /**
      * Path to mcrypt command.
      *
      * @var string
      */
-    private $pathToMcrypt;
+    private $pathToOpenSSL;
 
     /**
      * @var boolean
@@ -33,18 +33,11 @@ class Mcrypt extends Key implements Crypter
     private $showStdErr;
 
     /**
-     * Key to pass via cli
-     *
-     * @var string
-     */
-    private $key;
-
-    /**
      * Key file
      *
      * @var string
      */
-    private $keyFile;
+    private $certFile;
 
     /**
      * Algorithm to use
@@ -54,18 +47,11 @@ class Mcrypt extends Key implements Crypter
     private $algorithm;
 
     /**
-     * Hash to use
+     * Password to use
      *
      * @var string
      */
-    private $hash;
-
-    /**
-     * Path to config file
-     *
-     * @var string
-     */
-    private $config;
+    private $password;
 
     /**
      * Keep the not encrypted file
@@ -84,21 +70,19 @@ class Mcrypt extends Key implements Crypter
     public function setup(array $options = array())
     {
         if (!Util\Arr::isSetAndNotEmptyString($options, 'algorithm')) {
-            throw new Exception('mcrypt \'algorithm\' is mandatory');
+            throw new Exception('openssl expects \'algorithm\'');
+        }
+        if (!Util\Arr::isSetAndNotEmptyString($options, 'password')
+         && !Util\Arr::isSetAndNotEmptyString($options, 'certFile')) {
+            throw new Exception('openssl expects \'key\' or \'password\'');
         }
 
-        $this->pathToMcrypt  = Util\Arr::getValue($options, 'pathToMcrypt');
+        $this->pathToOpenSSL = Util\Arr::getValue($options, 'pathToOpenSSL');
         $this->showStdErr    = Util\Str::toBoolean(Util\Arr::getValue($options, 'showStdErr', ''), false);
         $this->keepUncrypted = Util\Str::toBoolean(Util\Arr::getValue($options, 'keepUncrypted', ''), false);
-        $this->key           = Util\Arr::getValue($options, 'key');
-        $this->keyFile       = $this->toAbsolutePath(Util\Arr::getValue($options, 'keyFile'));
-        $this->algorithm     = $options['algorithm'];
-        $this->hash          = Util\Arr::getValue($options, 'hash');
-        $this->config        = $this->toAbsolutePath(Util\Arr::getValue($options, 'config'));
-
-        if (empty($this->key) && empty($this->keyFile)) {
-            throw new Exception('one of \'key\' or \'keyFile\' is mandatory');
-        }
+        $this->certFile      = $this->toAbsolutePath(Util\Arr::getValue($options, 'certFile'));
+        $this->algorithm     = Util\Arr::getValue($options, 'algorithm');
+        $this->password      = Util\Arr::getValue($options, 'password');
     }
 
     /**
@@ -111,12 +95,12 @@ class Mcrypt extends Key implements Crypter
      */
     public function crypt(Target $target, Result $result)
     {
-        $mcrypt = $this->execute($target);
+        $openssl = $this->execute($target);
 
-        $result->debug('mcrypt:' . $mcrypt->getCmd());
+        $result->debug('openssl:' . $openssl->getCmd());
 
-        if (!$mcrypt->wasSuccessful()) {
-            throw new Exception('mcrypt failed:' . PHP_EOL . $mcrypt->getOutputAsString());
+        if (!$openssl->wasSuccessful()) {
+            throw new Exception('openssl failed:' . PHP_EOL . $openssl->getOutputAsString());
         }
     }
 
@@ -128,7 +112,7 @@ class Mcrypt extends Key implements Crypter
      */
     public function getSuffix()
     {
-        return 'nc';
+        return 'enc';
     }
 
     /**
@@ -140,13 +124,17 @@ class Mcrypt extends Key implements Crypter
     public function getExecutable(Target $target)
     {
         if (null == $this->executable) {
-            $this->executable = new Executable\Mcrypt($this->pathToMcrypt);
+            $this->executable = new Executable\OpenSSL($this->pathToOpenSSL);
+            $this->executable->encryptFile($target->getPathname());
+
+            // use key or password to encrypt
+            if (!empty($this->certFile)) {
+                $this->executable->useSSLCert($this->certFile);
+            } else {
+                $this->executable->usePassword($this->password)
+                                 ->encodeBase64(true);
+            }
             $this->executable->useAlgorithm($this->algorithm)
-                             ->useKey($this->key)
-                             ->useKeyFile($this->keyFile)
-                             ->useConfig($this->config)
-                             ->useHash($this->hash)
-                             ->saveAt($target->getPathname())
                              ->deleteUncrypted(!$this->keepUncrypted)
                              ->showStdErr($this->showStdErr);
         }

@@ -13,7 +13,7 @@ before_script:
   - composer require "aws/aws-sdk-php=2.7.*"
   - composer require "barracuda/copy=1.1.*"
   - composer require "dropbox/dropbox-sdk=1.1.*"
-  - composer require "phpseclib/phpseclib=2.0.*@dev"
+  - composer require "phpseclib/phpseclib=2.0.*"
   - composer require "softlayer/objectstorage=dev-master"
 
 script:
