@@ -296,7 +296,7 @@ class OpenSSL extends Abstraction implements Executable
      */
     protected function setOptions(Cmd $cmd)
     {
-        if ($this->mode == SELF::MODE_CERT) {
+        if ($this->mode == self::MODE_CERT) {
             $this->setCertOptions($cmd);
         } else {
             $this->setPasswordOptions($cmd);
