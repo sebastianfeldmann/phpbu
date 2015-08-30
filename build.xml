@@ -166,7 +166,7 @@
 
   <copy file="${basedir}/vendor/phpunit/php-timer/LICENSE" tofile="${basedir}/build/phar/lib/php-timer/LICENSE"/>
   <copy todir="${basedir}/build/phar/lib/php-timer">
-   <fileset dir="${basedir}/vendor/phpunit/php-timer/PHP">
+   <fileset dir="${basedir}/vendor/phpunit/php-timer/src">
     <include name="**/*.php" />
     <exclude name="**/Autoload.*" />
    </fileset>
