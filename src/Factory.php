@@ -46,7 +46,8 @@ abstract class Factory
             'sizediffavgpercent'      => '\\phpbu\\App\\Backup\\Check\\SizeDiffAvgPercent',
         ),
         'crypter'   => array(
-            'mcrypt' => '\\phpbu\\App\\Backup\\Crypter\\Mcrypt',
+            'mcrypt'  => '\\phpbu\\App\\Backup\\Crypter\\Mcrypt',
+            'openssl' => '\\phpbu\\App\\Backup\\Crypter\\OpenSSL',
         ),
         'sync'    => array(
             'amazons3'  => '\\phpbu\\App\\Backup\\Sync\\AmazonS3',
