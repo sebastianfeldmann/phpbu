@@ -14,6 +14,11 @@ namespace phpbu\App\Util;
  */
 class CliTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * Fake global state
+     *
+     * @var array
+     */
     private static $server;
 
     /**

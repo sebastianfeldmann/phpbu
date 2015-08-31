@@ -14,6 +14,9 @@ namespace phpbu\App\Util;
  */
 class StrTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var integer
+     */
     static protected $time;
 
     /**
