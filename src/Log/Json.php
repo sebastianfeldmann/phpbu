@@ -17,7 +17,7 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Json extends Printer implements Listener, Logger
+class Json extends File implements Listener, Logger
 {
     /**
      * List of all debug messages
@@ -77,7 +77,7 @@ class Json extends Printer implements Listener, Logger
             'backups'   => $this->extractBackups($result)
         );
         $this->write($output);
-        $this->flush();
+        $this->close();
     }
 
     /**

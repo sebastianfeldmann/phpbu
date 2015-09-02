@@ -274,7 +274,6 @@ class Cmd
         // add a cli printer for some output
         $configuration->addLogger(
             new Result\PrinterCli(
-                null,
                 $configuration->getVerbose(),
                 $configuration->getColors(),
                 $configuration->getDebug()

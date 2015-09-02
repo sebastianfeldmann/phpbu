@@ -18,14 +18,13 @@ use SebastianBergmann\Environment\Console;
  *
  * @package    phpbu
  * @subpackage Result
- * @author     Sebastian Bergmann <sebastian@phpunit.de>
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class PrinterCli extends Printer implements Listener
+class PrinterCli implements Listener
 {
     /**
      * Verbose output
@@ -142,16 +141,13 @@ class PrinterCli extends Printer implements Listener
     /**
      * Constructor
      *
-     * @param  string  $out
      * @param  boolean $verbose
      * @param  boolean $colors
      * @param  boolean $debug
      * @throws \InvalidArgumentException
      */
-    public function __construct($out = null, $verbose = false, $colors = false, $debug = false)
+    public function __construct($verbose = false, $colors = false, $debug = false)
     {
-        $this->setOut($out);
-
         if (is_bool($verbose)) {
             $this->verbose = $verbose;
         } else {
@@ -658,5 +654,18 @@ class PrinterCli extends Printer implements Listener
     {
         $buffer = $this->formatWithColor($color, $buffer);
         $this->write($buffer . PHP_EOL);
+    }
+
+    /**
+     * Writes a buffer.
+     *
+     * @param string $buffer
+     */
+    public function write($buffer)
+    {
+        if (PHP_SAPI != 'cli') {
+            $buffer = htmlspecialchars($buffer);
+        }
+        echo $buffer;
     }
 }

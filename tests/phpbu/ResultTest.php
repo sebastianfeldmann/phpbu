@@ -23,7 +23,7 @@ class ResultTest extends \PHPUnit_Framework_TestCase
     public function testSuccessFullByDefault()
     {
         $result     = new Result();
-        $cliPrinter = new Result\PrinterCli(null);
+        $cliPrinter = new Result\PrinterCli();
         $result->addListener($cliPrinter);
 
         $this->assertTrue($result->wasSuccessful(), 'should be successful by default');
