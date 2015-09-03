@@ -140,7 +140,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     {
         $conf = new Configuration();
         $conf->setFilename('/tmp/foo.xml');
-        $logger = new Result\PrinterCli(null, false, false, false);
+        $logger = new Result\PrinterCli(false, false, false);
         $this->assertEquals(array(), $conf->getLoggers());
         $conf->addLogger($logger);
         $this->assertEquals(1, count($conf->getLoggers()));

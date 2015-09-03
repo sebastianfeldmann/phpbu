@@ -4,11 +4,10 @@ namespace phpbu\App;
 use SebastianBergmann;
 
 /**
- * Cli argument parser.
+ * Application Version.
  *
  * @package    phpbu
  * @subpackage App
- * @author     Sebastian Bergamann <sebastian@phpunit.de>
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
