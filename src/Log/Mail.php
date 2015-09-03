@@ -88,6 +88,13 @@ class Mail implements Listener, Logger
     private $numSyncs = 0;
 
     /**
+     * Amount of executed Crypts
+     *
+     * @var integer
+     */
+    private $numCrypts = 0;
+
+    /**
      * Amount of executed Cleanups
      *
      * @var integer
@@ -118,6 +125,7 @@ class Mail implements Listener, Logger
         return array(
             'phpbu.backup_start'  => 'onBackupStart',
             'phpbu.check_start'   => 'onCheckStart',
+            'phpbu.crypt_start'   => 'onCryptStart',
             'phpbu.sync_start'    => 'onSyncStart',
             'phpbu.cleanup_start' => 'onCleanupStart',
             'phpbu.app_end'       => 'onPhpbuEnd',
@@ -166,7 +174,7 @@ class Mail implements Listener, Logger
             $errors  = $this->getErrorHtml($result);
             $info    = $this->getInfoHtml($result);
             $footer  = $this->getFooterHtml();
-            $body    = $header . $errors . $info . $footer;
+            $body    = '<html><body>' . $header . $errors . $info . $footer . '</body></html>';
             $sent    = null;
 
             try {
@@ -205,6 +213,16 @@ class Mail implements Listener, Logger
     public function onCheckStart(Event\Check\Start $event)
     {
         $this->numChecks++;
+    }
+
+    /**
+     * Crypt start event.
+     *
+     * @param \phpbu\App\Event\Crypt\Start $event
+     */
+    public function onCryptStart(Event\Crypt\Start $event)
+    {
+        $this->numCrypts++;
     }
 
     /**
@@ -330,11 +348,13 @@ class Mail implements Listener, Logger
         } elseif ($result->allOk()) {
             $html .= '<p>' .
                 sprintf(
-                    'OK (%d %s, %d %s, %d %s, %d %s)',
+                    'OK (%d %s, %d %s, %d %s, %d %s, %d %s)',
                     count($result->getBackups()),
                     Str::appendPluralS('backup', count($result->getBackups())),
                     $this->numChecks,
                     Str::appendPluralS('check', $this->numChecks),
+                    $this->numCrypts,
+                    Str::appendPluralS('crypt', $this->numCrypts),
                     $this->numSyncs,
                     Str::appendPluralS('sync', $this->numSyncs),
                     $this->numCleanups,
@@ -345,8 +365,11 @@ class Mail implements Listener, Logger
             $html .= '<p style="color:#ffa500;">' .
                 sprintf(
                     'OK, but skipped or failed Syncs or Cleanups!<br />' .
-                    'Backups: %d, Syncs: skipped|failed %d|%d, Cleanups: skipped|failed %d|%d.',
+                    'Backups: %d, Crypts: skipped|failed %d|%d, ' .
+                    'Syncs: skipped|failed %d|%d, Cleanups: skipped|failed %d|%d.',
                     count($result->getBackups()),
+                    $result->cryptsSkippedCount(),
+                    $result->cryptsFailedCount(),
                     $result->syncsSkippedCount(),
                     $result->syncsFailedCount(),
                     $result->cleanupsSkippedCount(),
@@ -357,9 +380,12 @@ class Mail implements Listener, Logger
             $html .= '<p style="color:red;">' .
                 sprintf(
                     'FAILURE!<br />' .
-                    'Backups: %d, failed Checks: %d, failed Syncs: %d, failed Cleanups: %d.',
+                    'Backups: %d, failed Checks: %d, ' .
+                    'failed Crypts: %d, ' .
+                    'failed Syncs: %d, failed Cleanups: %d.',
                     count($result->getBackups()),
                     $result->checksFailedCount(),
+                    $result->cryptsFailedCount(),
                     $result->syncsFailedCount(),
                     $result->cleanupsFailedCount()
                 ) .
@@ -424,6 +450,10 @@ class Mail implements Listener, Logger
                        . '<td style="float:right;">' . $backup->checkCount() . '</td>'
                        . '<td></td>'
                        . '<td style="float:right;">' . $backup->checkCountFailed() . '</td></tr>'
+                        . '<tr><td>crypts</td>'
+                        . '<td style="float:right;">' . $backup->cryptCount() . '</td>'
+                        . '<td style="float:right;">' . $backup->cryptCountSkipped() . '</td>'
+                        . '<td style="float:right;">' . $backup->cryptCountFailed() . '</td></tr>'
                        . '<tr><td>syncs</td>'
                        . '<td style="float:right;">' . $backup->syncCount() . '</td>'
                        . '<td style="float:right;">' . $backup->syncCountSkipped() . '</td>'
