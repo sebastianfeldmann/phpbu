@@ -447,21 +447,21 @@ class Mail implements Listener, Logger
                 $html .= '</td></tr><tr><td></td><td>executed</td><td>skipped</td><td>failed</td></tr>';
 
                 $html .= '<tr><td>checks</td>'
-                       . '<td style="float:right;">' . $backup->checkCount() . '</td>'
+                       . '<td align="right">' . $backup->checkCount() . '</td>'
                        . '<td></td>'
-                       . '<td style="float:right;">' . $backup->checkCountFailed() . '</td></tr>'
+                       . '<td align="right">' . $backup->checkCountFailed() . '</td></tr>'
                        . '<tr><td>crypts</td>'
-                       . '<td style="float:right;">' . $backup->cryptCount() . '</td>'
-                       . '<td style="float:right;">' . $backup->cryptCountSkipped() . '</td>'
-                       . '<td style="float:right;">' . $backup->cryptCountFailed() . '</td></tr>'
+                       . '<td align="right">' . $backup->cryptCount() . '</td>'
+                       . '<td align="right">' . $backup->cryptCountSkipped() . '</td>'
+                       . '<td align="right">' . $backup->cryptCountFailed() . '</td></tr>'
                        . '<tr><td>syncs</td>'
-                       . '<td style="float:right;">' . $backup->syncCount() . '</td>'
-                       . '<td style="float:right;">' . $backup->syncCountSkipped() . '</td>'
-                       . '<td style="float:right;">' . $backup->syncCountFailed() . '</td></tr>'
+                       . '<td align="right">' . $backup->syncCount() . '</td>'
+                       . '<td align="right">' . $backup->syncCountSkipped() . '</td>'
+                       . '<td align="right">' . $backup->syncCountFailed() . '</td></tr>'
                        . '<tr><td>cleanups</td>'
-                       . '<td style="float:right;">' . $backup->cleanupCount() . '</td>'
-                       . '<td style="float:right;">' . $backup->cleanupCountSkipped() . '</td>'
-                       . '<td style="float:right;">' . $backup->cleanupCountFailed() . '</td></tr>';
+                       . '<td align="right">' . $backup->cleanupCount() . '</td>'
+                       . '<td align="right">' . $backup->cleanupCountSkipped() . '</td>'
+                       . '<td align="right">' . $backup->cleanupCountFailed() . '</td></tr>';
 
                 // put spacing row between backups but not at the end of the table
                 $i++;
