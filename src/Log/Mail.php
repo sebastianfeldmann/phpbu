@@ -5,6 +5,7 @@ use phpbu\App\Exception;
 use phpbu\App\Event;
 use phpbu\App\Listener;
 use phpbu\App\Result;
+use phpbu\App\Log\MailTemplate as TPL;
 use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
 use PHP_Timer;
@@ -170,11 +171,18 @@ class Mail implements Listener, Logger
         $allGood = $result->allOk();
 
         if (!$this->sendOnlyOnError || !$allGood) {
-            $header  = $this->getHeaderHtml($result);
+            $header  = $this->getHeaderHtml();
+            $status  = $this->getStatusHtml($result);
             $errors  = $this->getErrorHtml($result);
             $info    = $this->getInfoHtml($result);
             $footer  = $this->getFooterHtml();
-            $body    = '<html><body>' . $header . $errors . $info . $footer . '</body></html>';
+            $body    = '<html><body '. TPL::$sBody. '>'
+                     . $header
+                     . $status
+                     . $errors
+                     . $info
+                     . $footer
+                     . '</body></html>';
             $sent    = null;
 
             try {
@@ -337,10 +345,21 @@ class Mail implements Listener, Logger
     /**
      * Return mail header html
      *
+     * @return string
+     */
+    protected function getHeaderHtml()
+    {
+        return '<table ' . TPL::$sTableHeader . '><tr><td>PHPBU - backup report</td></tr></table>' .
+               '<table ' . TPL::$sTableContent . '><tr><td>';
+    }
+
+    /**
+     * Return mail status html
+     *
      * @param  \phpbu\App\Result $result
      * @return string
      */
-    protected function getHeaderHtml(Result $result)
+    protected function getStatusHtml(Result $result)
     {
         $html = '';
         if (count($result->getBackups()) === 0) {
@@ -431,41 +450,57 @@ class Mail implements Listener, Logger
         $backups = $result->getBackups();
         $amount  = count($backups);
         if ($amount > 0) {
-            $i     = 0;
-            $html .= '<table>';
+            $html .= '<table ' . TPL::$sTableBackup . '>';
             /** @var \phpbu\App\Result\Backup $backup */
             foreach ($backups as $backup) {
-                $html .= '<tr><td colspan="4">';
-                $html .= sprintf('backup %s ', $backup->getName());
                 if ($backup->allOk()) {
-                    $html .= 'OK';
-                } elseif (!$backup->okButSkipsOrFails()) {
-                    $html .= 'OK, but skipped or failed Syncs or Cleanups!';
+                    $color  = TPL::$cStatusOK;
+                    $status = 'OK';
+                } elseif($backup->okButSkipsOrFails()) {
+                    $color  = TPL::$cStatusWARN;
+                    $status = 'WARNING';
                 } else {
-                    $html .= 'FAILED';
+                    $color  = TPL::$cStatusFAIL;
+                    $status = 'FAILURE';
                 }
-                $html .= '</td></tr><tr><td></td><td>executed</td><td>skipped</td><td>failed</td></tr>';
+                $html .= '<tr>' .
+                          '<td ' . sprintf(TPL::$sTableBackupStatusColumn, $color) . ' colspan="4">' .
+                          sprintf('backup <em>%s</em>', $backup->getName()) .
+                          ' <span ' . TPL::$sTableBackupStatusText . '>' . $status .'</span>'.
+                          '</td>' .
+                         '</tr>' .
+                         '<tr>' .
+                          '<td ' . TPL::$sRowHead . '></td>' .
+                          '<td ' . TPL::$sRowHead . ' align="right">executed</td>' .
+                          '<td ' . TPL::$sRowHead . ' align="right">skipped</td>' .
+                          '<td ' . TPL::$sRowHead . ' align="right">failed</td>' .
+                         '</tr>';
 
-                $html .= '<tr><td>checks</td>'
-                       . '<td align="right">' . $backup->checkCount() . '</td>'
-                       . '<td></td>'
-                       . '<td align="right">' . $backup->checkCountFailed() . '</td></tr>'
-                       . '<tr><td>crypts</td>'
-                       . '<td align="right">' . $backup->cryptCount() . '</td>'
-                       . '<td align="right">' . $backup->cryptCountSkipped() . '</td>'
-                       . '<td align="right">' . $backup->cryptCountFailed() . '</td></tr>'
-                       . '<tr><td>syncs</td>'
-                       . '<td align="right">' . $backup->syncCount() . '</td>'
-                       . '<td align="right">' . $backup->syncCountSkipped() . '</td>'
-                       . '<td align="right">' . $backup->syncCountFailed() . '</td></tr>'
-                       . '<tr><td>cleanups</td>'
-                       . '<td align="right">' . $backup->cleanupCount() . '</td>'
-                       . '<td align="right">' . $backup->cleanupCountSkipped() . '</td>'
-                       . '<td align="right">' . $backup->cleanupCountFailed() . '</td></tr>';
+                $html .= '<tr>' .
+                          '<td ' . TPL::$sRowCheck . '>checks</td>' .
+                          '<td ' . TPL::$sRowCheck . ' align="right">' . $backup->checkCount() . '</td>' .
+                          '<td ' . TPL::$sRowCheck . ' align="right"></td>' .
+                          '<td ' . TPL::$sRowCheck . ' align="right">' . $backup->checkCountFailed() . '</td>' .
+                         '</tr>' .
+                         '<tr>' .
+                          '<td ' . TPL::$sRowCrypt . '>crypts</td>' .
+                          '<td ' . TPL::$sRowCrypt . ' align="right">' . $backup->cryptCount() . '</td>' .
+                          '<td ' . TPL::$sRowCrypt . ' align="right">' . $backup->cryptCountSkipped() . '</td>' .
+                          '<td ' . TPL::$sRowCrypt . ' align="right">' . $backup->cryptCountFailed() . '</td>' .
+                         '</tr>' .
+                         '<tr>' .
+                          '<td ' . TPL::$sRowSync . '>syncs</td>' .
+                          '<td ' . TPL::$sRowSync . ' align="right">' . $backup->syncCount() . '</td>' .
+                          '<td ' . TPL::$sRowSync . ' align="right">' . $backup->syncCountSkipped() . '</td>' .
+                          '<td ' . TPL::$sRowSync . ' align="right">' . $backup->syncCountFailed() . '</td>' .
+                         '</tr>' .
+                         '<tr>' .
+                          '<td ' . TPL::$sRowCleanup . '>cleanups</td>' .
+                          '<td ' . TPL::$sRowCleanup . ' align="right">' . $backup->cleanupCount() . '</td>' .
+                          '<td ' . TPL::$sRowCleanup . ' align="right">' . $backup->cleanupCountSkipped() . '</td>' .
+                          '<td ' . TPL::$sRowCleanup . ' align="right">' . $backup->cleanupCountFailed() . '</td>' .
+                         '</tr>';
 
-                // put spacing row between backups but not at the end of the table
-                $i++;
-                $html .= ($i < $amount ? '<tr><td colspan="4">&nbsp;</td>' : '');
             }
             $html .= '</table>';
         }
@@ -480,6 +515,7 @@ class Mail implements Listener, Logger
      */
     protected function getFooterHtml()
     {
-        return '<p>' . PHP_Timer::resourceUsage() . '</p>';
+        return '<p ' . TPL::$sStats. '>' . PHP_Timer::resourceUsage() . '</p>' .
+               '</td></tr></table>';
     }
 }
