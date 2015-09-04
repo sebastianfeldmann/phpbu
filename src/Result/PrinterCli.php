@@ -4,7 +4,6 @@ namespace phpbu\App\Result;
 use InvalidArgumentException;
 use phpbu\App\Event;
 use phpbu\App\Listener;
-use phpbu\App\Log\Printer;
 use phpbu\App\Result;
 use phpbu\App\Util\Str;
 use phpbu\App\Version;
