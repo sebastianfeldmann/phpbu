@@ -176,7 +176,7 @@ class Mail implements Listener, Logger
             $errors  = $this->getErrorHtml($result);
             $info    = $this->getInfoHtml($result);
             $footer  = $this->getFooterHtml();
-            $body    = '<html><body '. TPL::$sBody. '>'
+            $body    = '<html><body '. TPL::getSnippet('sBody') . '>'
                      . $header
                      . $status
                      . $errors
@@ -349,8 +349,8 @@ class Mail implements Listener, Logger
      */
     protected function getHeaderHtml()
     {
-        return '<table ' . TPL::$sTableHeader . '><tr><td>PHPBU - backup report</td></tr></table>' .
-               '<table ' . TPL::$sTableContent . '><tr><td>';
+        return '<table ' . TPL::getSnippet('sTableContent') . '><tr><td ' . TPL::getSnippet('sTableContentCol') . '>' .
+                 '<table ' . TPL::getSnippet('sTableHeader') . '><tr><td>PHPBU - backup report</td></tr></table>';
     }
 
     /**
@@ -361,55 +361,40 @@ class Mail implements Listener, Logger
      */
     protected function getStatusHtml(Result $result)
     {
-        $html = '';
         if (count($result->getBackups()) === 0) {
-            $html = '<p style="color:orange;">No backups executed!</p>';
+            $color  = TPL::getSnippet('cStatusWARN');
+            $status = 'WARNING';
         } elseif ($result->allOk()) {
-            $html .= '<p>' .
-                sprintf(
-                    'OK (%d %s, %d %s, %d %s, %d %s, %d %s)',
-                    count($result->getBackups()),
-                    Str::appendPluralS('backup', count($result->getBackups())),
-                    $this->numChecks,
-                    Str::appendPluralS('check', $this->numChecks),
-                    $this->numCrypts,
-                    Str::appendPluralS('crypt', $this->numCrypts),
-                    $this->numSyncs,
-                    Str::appendPluralS('sync', $this->numSyncs),
-                    $this->numCleanups,
-                    Str::appendPluralS('cleanup', $this->numCleanups)
-                ) .
-                '</p>';
+            $color  = TPL::getSnippet('cStatusOK');
+            $status = 'OK';
         } elseif ($result->backupOkButSkipsOrFails()) {
-            $html .= '<p style="color:#ffa500;">' .
-                sprintf(
-                    'OK, but skipped or failed Syncs or Cleanups!<br />' .
-                    'Backups: %d, Crypts: skipped|failed %d|%d, ' .
-                    'Syncs: skipped|failed %d|%d, Cleanups: skipped|failed %d|%d.',
-                    count($result->getBackups()),
-                    $result->cryptsSkippedCount(),
-                    $result->cryptsFailedCount(),
-                    $result->syncsSkippedCount(),
-                    $result->syncsFailedCount(),
-                    $result->cleanupsSkippedCount(),
-                    $result->cleanupsFailedCount()
-                ) .
-                '</p>';
+            $color  = TPL::getSnippet('cStatusWARN');
+            $status = 'WARNING';
         } else {
-            $html .= '<p style="color:red;">' .
-                sprintf(
-                    'FAILURE!<br />' .
-                    'Backups: %d, failed Checks: %d, ' .
-                    'failed Crypts: %d, ' .
-                    'failed Syncs: %d, failed Cleanups: %d.',
-                    count($result->getBackups()),
-                    $result->checksFailedCount(),
-                    $result->cryptsFailedCount(),
-                    $result->syncsFailedCount(),
-                    $result->cleanupsFailedCount()
-                ) .
-                '</p>';
+            $color  = TPL::getSnippet('cStatusFAIL');
+            $status = 'FAILURE';
         }
+        $info = sprintf(
+            '(%d %s, %d %s, %d %s, %d %s, %d %s)',
+            count($result->getBackups()),
+            Str::appendPluralS('backup', count($result->getBackups())),
+            $this->numChecks,
+            Str::appendPluralS('check', $this->numChecks),
+            $this->numCrypts,
+            Str::appendPluralS('crypt', $this->numCrypts),
+            $this->numSyncs,
+            Str::appendPluralS('sync', $this->numSyncs),
+            $this->numCleanups,
+            Str::appendPluralS('cleanup', $this->numCleanups)
+        );
+        $html = '<table ' . sprintf(TPL::getSnippet('sTableStatus'), $color) .'>' .
+                 '<tr><td>' .
+                  '<span ' . TPL::getSnippet('sTableStatusText') . '>' . date('Y-m-d H:i') . '</span>' .
+                  '<h1 ' . TPL::getSnippet('sTableStatusHead') . '>' . $status . '</h1>' .
+                  '<span ' . TPL::getSnippet('sTableStatusText') . '>' . $info . '</span>' .
+                 '</td></tr>' .
+                '</table>';
+
         return $html;
     }
 
@@ -421,19 +406,24 @@ class Mail implements Listener, Logger
      */
     protected function getErrorHtml(Result $result)
     {
-        $html = '';
-        /* @var $e Exception */
-        foreach ($result->getErrors() as $e) {
-            $html .= '<p style="color:red;">' .
-                sprintf(
-                    "Exception '%s' with message '%s'<br />in %s:%d",
-                    get_class($e),
-                    $e->getMessage(),
-                    $e->getFile(),
-                    $e->getLine()
-                ) .
-                '</p>';
+        $html   = '';
+        $errors = $result->getErrors();
+        if (count($errors)) {
+            $html .= '<table ' . TPL::getSnippet('sTableError') . '>';
+            /* @var $e Exception */
+            foreach ($errors as $e) {
+                $html .= '<tr><td ' . TPL::getSnippet('sTableErrorCol') . '>' .
+                    sprintf(
+                        "Exception '%s' with message '%s' in %s:%d",
+                        get_class($e),
+                        $e->getMessage(),
+                        $e->getFile(),
+                        $e->getLine()
+                    ) .
+                    '</td></tr>';
 
+            }
+            $html .= '</table>';
         }
         return $html;
     }
@@ -448,63 +438,84 @@ class Mail implements Listener, Logger
     {
         $html    = '';
         $backups = $result->getBackups();
-        $amount  = count($backups);
-        if ($amount > 0) {
-            $html .= '<table ' . TPL::$sTableBackup . '>';
+        if (count($backups)) {
+            $html .= '<table ' . TPL::getSnippet('sTableBackup') . '>';
             /** @var \phpbu\App\Result\Backup $backup */
             foreach ($backups as $backup) {
                 if ($backup->allOk()) {
-                    $color  = TPL::$cStatusOK;
+                    $color  = TPL::getSnippet('cStatusOK');
                     $status = 'OK';
                 } elseif($backup->okButSkipsOrFails()) {
-                    $color  = TPL::$cStatusWARN;
+                    $color  = TPL::getSnippet('cStatusWARN');
                     $status = 'WARNING';
                 } else {
-                    $color  = TPL::$cStatusFAIL;
+                    $color  = TPL::getSnippet('cStatusFAIL');
                     $status = 'FAILURE';
                 }
                 $html .= '<tr>' .
-                          '<td ' . sprintf(TPL::$sTableBackupStatusColumn, $color) . ' colspan="4">' .
+                          '<td ' . sprintf(TPL::getSnippet('sTableBackupStatusColumn'), $color) . ' colspan="4">' .
                           sprintf('backup <em>%s</em>', $backup->getName()) .
-                          ' <span ' . TPL::$sTableBackupStatusText . '>' . $status .'</span>'.
+                          ' <span ' . TPL::getSnippet('sTableBackupStatusText') . '>' . $status .'</span>'.
                           '</td>' .
                          '</tr>' .
                          '<tr>' .
-                          '<td ' . TPL::$sRowHead . '></td>' .
-                          '<td ' . TPL::$sRowHead . ' align="right">executed</td>' .
-                          '<td ' . TPL::$sRowHead . ' align="right">skipped</td>' .
-                          '<td ' . TPL::$sRowHead . ' align="right">failed</td>' .
+                          '<td ' . TPL::getSnippet('sRowHead') . '>&nbsp;</td>' .
+                          '<td ' . TPL::getSnippet('sRowHead') . ' align="right">executed</td>' .
+                          '<td ' . TPL::getSnippet('sRowHead') . ' align="right">skipped</td>' .
+                          '<td ' . TPL::getSnippet('sRowHead') . ' align="right">failed</td>' .
                          '</tr>';
 
                 $html .= '<tr>' .
-                          '<td ' . TPL::$sRowCheck . '>checks</td>' .
-                          '<td ' . TPL::$sRowCheck . ' align="right">' . $backup->checkCount() . '</td>' .
-                          '<td ' . TPL::$sRowCheck . ' align="right"></td>' .
-                          '<td ' . TPL::$sRowCheck . ' align="right">' . $backup->checkCountFailed() . '</td>' .
+                          '<td ' . TPL::getSnippet('sRowCheck') . '>checks</td>' .
+                          '<td ' . TPL::getSnippet('sRowCheck') . ' align="right">' .
+                            $backup->checkCount() . '
+                           </td>' .
+                          '<td ' . TPL::getSnippet('sRowCheck') . ' align="right">
+                            &nbsp;
+                           </td>' .
+                          '<td ' . TPL::getSnippet('sRowCheck') . ' align="right">' .
+                            $backup->checkCountFailed() .
+                          '</td>' .
                          '</tr>' .
                          '<tr>' .
-                          '<td ' . TPL::$sRowCrypt . '>crypts</td>' .
-                          '<td ' . TPL::$sRowCrypt . ' align="right">' . $backup->cryptCount() . '</td>' .
-                          '<td ' . TPL::$sRowCrypt . ' align="right">' . $backup->cryptCountSkipped() . '</td>' .
-                          '<td ' . TPL::$sRowCrypt . ' align="right">' . $backup->cryptCountFailed() . '</td>' .
+                          '<td ' . TPL::getSnippet('sRowCrypt') . '>crypts</td>' .
+                          '<td ' . TPL::getSnippet('sRowCrypt') . ' align="right">' .
+                            $backup->cryptCount() .
+                          '</td>' .
+                          '<td ' . TPL::getSnippet('sRowCrypt') . ' align="right">' .
+                            $backup->cryptCountSkipped() .
+                          '</td>' .
+                          '<td ' . TPL::getSnippet('sRowCrypt') . ' align="right">' .
+                            $backup->cryptCountFailed() .
+                          '</td>' .
                          '</tr>' .
                          '<tr>' .
-                          '<td ' . TPL::$sRowSync . '>syncs</td>' .
-                          '<td ' . TPL::$sRowSync . ' align="right">' . $backup->syncCount() . '</td>' .
-                          '<td ' . TPL::$sRowSync . ' align="right">' . $backup->syncCountSkipped() . '</td>' .
-                          '<td ' . TPL::$sRowSync . ' align="right">' . $backup->syncCountFailed() . '</td>' .
+                          '<td ' . TPL::getSnippet('sRowSync') . '>syncs</td>' .
+                          '<td ' . TPL::getSnippet('sRowSync') . ' align="right">' .
+                            $backup->syncCount() . '</td>' .
+                          '<td ' . TPL::getSnippet('sRowSync') . ' align="right">' .
+                            $backup->syncCountSkipped() .
+                          '</td>' .
+                          '<td ' . TPL::getSnippet('sRowSync') . ' align="right">' .
+                            $backup->syncCountFailed() .
+                          '</td>' .
                          '</tr>' .
                          '<tr>' .
-                          '<td ' . TPL::$sRowCleanup . '>cleanups</td>' .
-                          '<td ' . TPL::$sRowCleanup . ' align="right">' . $backup->cleanupCount() . '</td>' .
-                          '<td ' . TPL::$sRowCleanup . ' align="right">' . $backup->cleanupCountSkipped() . '</td>' .
-                          '<td ' . TPL::$sRowCleanup . ' align="right">' . $backup->cleanupCountFailed() . '</td>' .
+                          '<td ' . TPL::getSnippet('sRowCleanup') . '>cleanups</td>' .
+                          '<td ' . TPL::getSnippet('sRowCleanup') . ' align="right">' .
+                            $backup->cleanupCount() .
+                          '</td>' .
+                          '<td ' . TPL::getSnippet('sRowCleanup') . ' align="right">' .
+                            $backup->cleanupCountSkipped() .
+                          '</td>' .
+                          '<td ' . TPL::getSnippet('sRowCleanup') . ' align="right">' .
+                            $backup->cleanupCountFailed() .
+                          '</td>' .
                          '</tr>';
 
             }
             $html .= '</table>';
         }
-
         return $html;
     }
 
@@ -515,7 +526,7 @@ class Mail implements Listener, Logger
      */
     protected function getFooterHtml()
     {
-        return '<p ' . TPL::$sStats. '>' . PHP_Timer::resourceUsage() . '</p>' .
+        return '<p ' . TPL::getSnippet('sStats') . '>' . PHP_Timer::resourceUsage() . '</p>' .
                '</td></tr></table>';
     }
 }
