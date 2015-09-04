@@ -17,6 +17,14 @@ class MailTemplateTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests MailTemplate::setSnippets
      */
+    public function testDefaultSnippets()
+    {
+        $this->assertEquals('91ff94', MailTemplate::getSnippet('cStatusOK'));
+    }
+
+    /**
+     * Tests MailTemplate::setSnippets
+     */
     public function testSetSnippets()
     {
         MailTemplate::setSnippets(array('foo' => 'bar'));
