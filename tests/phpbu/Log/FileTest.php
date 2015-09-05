@@ -37,6 +37,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $output = ob_get_clean();
 
         $this->assertEquals('', $output);
+        $file->close();
     }
 
     /**
@@ -62,6 +63,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $file = new File();
         $file->setOut($log);
         $file->write('foo');
+        $file->close();
 
         $this->assertTrue(file_exists($log));
 
