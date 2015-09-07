@@ -14,7 +14,7 @@ use phpbu\App\Util\Str;
  * @subpackage Backup
  * @author     Chris Hawes <me@chrishawes.net>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
- * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
  */
 class Ftp implements Sync
@@ -121,7 +121,7 @@ class Ftp implements Sync
             }
         }
         $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
-        
+
         if (!ftp_put($ftpConnection, $remoteFilename, $localFile, FTP_BINARY)) {
             $error = error_get_last();
             $message = $error['message'];

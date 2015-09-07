@@ -6,7 +6,7 @@
         "backup", "mysql", "mongodb", "tar", "cloud", "rsync", "sftp"
     ],
     "homepage": "http://phpbu.de/",
-    "license": "BSD-3-Clause",
+    "license": "MIT",
     "authors": [
         {
             "name": "Sebastian Feldmann",

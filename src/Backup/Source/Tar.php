@@ -9,6 +9,17 @@ use phpbu\App\Exception;
 use phpbu\App\Result;
 use phpbu\App\Util;
 
+/**
+ * Tar source class.
+ *
+ * @package    phpbu
+ * @subpackage Backup
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
+ * @link       http://phpbu.de/
+ * @since      Class available since Release 1.0.0
+ */
 class Tar extends Cli implements Source
 {
     /**
