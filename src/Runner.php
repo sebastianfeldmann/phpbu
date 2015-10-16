@@ -45,6 +45,7 @@ class Runner
         Util\Cli::registerBase('configuration', $configuration->getWorkingDirectory());
         $this->handleIniSettings($configuration);
         $this->handleIncludePath($configuration);
+        $this->handleBootstrap($configuration);
 
         $stop         = false;
         $this->result = new Result();
