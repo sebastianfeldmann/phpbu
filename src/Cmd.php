@@ -257,7 +257,11 @@ class Cmd
 
         $bootstrap = Arr::getValue($this->arguments, 'bootstrap');
         if (!empty($bootstrap)) {
-            $configuration->setBootstrap($bootstrap);
+            if (file_exists($bootstrap) {
+                $configuration->setBootstrap($bootstrap);
+            } else {
+                $this->printError('Bootstrap file not found (' . $bootstrap . ')');
+            }
         }
 
         // add a cli printer for some output
