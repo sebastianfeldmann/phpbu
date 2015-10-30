@@ -97,7 +97,7 @@ class Cmd
         $this->findConfiguration();
 
         $ret    = self::EXIT_FAILURE;
-        $runner = new Runner();
+        $runner = new Runner(new Factory());
 
         try {
             $result = $runner->run($this->createConfiguration());

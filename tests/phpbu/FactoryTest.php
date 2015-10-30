@@ -22,13 +22,25 @@ use phpbu\App\Log\Logger;
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * Tests Factory::createRunner
+     */
+    public function testCreateRunner()
+    {
+        $factory = new Factory();
+        $runner  = $factory->createRunner('backup');
+
+        $this->assertEquals('phpbu\\App\\Runner\Backup', get_class($runner), 'runner classes should match');
+    }
+
+    /**
      * Tests Factory::createSource
      */
     public function testCreateSource()
     {
         // register dummy source, all default sources have system dependencies like cli binaries
         Factory::register('source', 'dummy', '\\phpbu\\App\\phpbuAppFactoryTestSource');
-        $source = Factory::createSource('dummy', array());
+        $factory = new Factory();
+        $source  = $factory->createSource('dummy', []);
 
         $this->assertEquals('phpbu\\App\\phpbuAppFactoryTestSource', get_class($source), 'classes should match');
     }
@@ -38,7 +50,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateLogger()
     {
-        $logger = Factory::createLogger('mail', array('recipients' => 'no-reply@phpbu.de'));
+        $factory = new Factory();
+        $logger  = $factory->createLogger('mail', ['recipients' => 'no-reply@phpbu.de']);
 
         $this->assertEquals('phpbu\\App\\Log\\Mail', get_class($logger), 'classes should match');
     }
@@ -48,7 +61,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateCheck()
     {
-        $check = Factory::createCheck('sizemin');
+        $factory = new Factory();
+        $check  = $factory->createCheck('sizemin');
 
         $this->assertEquals('phpbu\\App\\Backup\\Check\\SizeMin', get_class($check), 'classes should match');
     }
@@ -60,7 +74,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         Factory::register('crypter', 'dummy', '\\phpbu\\App\\phpbuAppFactoryTestCrypter');
 
-        $crypter = Factory::createCrypter('dummy', array('algorithm' => 'blowfish', 'key' => 'fooBarBaz'));
+        $factory = new Factory();
+        $crypter = $factory->createCrypter('dummy', ['algorithm' => 'blowfish', 'key' => 'fooBarBaz']);
 
         $this->assertEquals('phpbu\\App\\phpbuAppFactoryTestCrypter', get_class($crypter), 'classes should match');
     }
@@ -70,7 +85,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateSync()
     {
-        $sync = Factory::createSync('Rsync', array('args' => 'foo'));
+        $factory = new Factory();
+        $sync    = $factory->createSync('Rsync', ['args' => 'foo']);
 
         $this->assertEquals('phpbu\\App\\Backup\\Sync\\Rsync', get_class($sync), 'classes should match');
     }
@@ -80,7 +96,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateCleaner()
     {
-        $sync = Factory::createCleaner('Capacity', array('size' => '10M'));
+        $factory = new Factory();
+        $sync    = $factory->createCleaner('Capacity', ['size' => '10M']);
 
         $this->assertEquals('phpbu\\App\\Backup\\Cleaner\\Capacity', get_class($sync), 'classes should match');
     }
@@ -92,7 +109,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateUnknown()
     {
-        $sync = Factory::create('sync', 'Unknown', array('foo' => 'bar'));
+        $factory = new Factory();
+        $factory->create('sync', 'Unknown', ['foo' => 'bar']);
 
         $this->assertFalse(true, 'exception should be thrown');
     }
@@ -104,7 +122,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         Factory::register('check', 'dummy', '\\phpbu\\App\\phpbuAppFactoryTestCheck');
 
-        $dummy = Factory::create('check', 'dummy');
+        $factory = new Factory();
+        $dummy   = $factory->create('check', 'dummy');
 
         $this->assertEquals('phpbu\\App\\phpbuAppFactoryTestCheck', get_class($dummy), 'Factory should create dummy object');
     }
@@ -130,7 +149,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         Factory::register('source', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
 
-        $source = Factory::createSource('nothing');
+        $factory = new Factory();
+        $factory->createSource('nothing');
 
         $this->assertFalse(true, 'Exception should be thrown');
     }
@@ -144,7 +164,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         Factory::register('crypter', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
 
-        $crypter = Factory::createCrypter('nothing');
+        $factory = new Factory();
+        $factory->createCrypter('nothing');
 
         $this->assertFalse(true, 'Exception should be thrown');
     }
@@ -158,7 +179,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         Factory::register('logger', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
 
-        $logger = Factory::createLogger('nothing');
+        $factory = new Factory();
+        $factory->createLogger('nothing');
 
         $this->assertFalse(true, 'Exception should be thrown');
     }
@@ -172,7 +194,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         Factory::register('logger', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestLoggerButNoListener', true);
 
-        $logger = Factory::createLogger('nothing');
+        $factory = new Factory();
+        $factory->createLogger('nothing');
 
         $this->assertFalse(true, 'Exception should be thrown');
     }
@@ -186,7 +209,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         Factory::register('cleaner', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
 
-        $cleaner = Factory::createCleaner('nothing');
+        $factory = new Factory();
+        $factory->createCleaner('nothing');
 
         $this->assertFalse(true, 'Exception should be thrown');
     }
@@ -200,7 +224,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         Factory::register('sync', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
 
-        $sync = Factory::createSync('nothing');
+        $factory = new Factory();
+        $factory->createSync('nothing');
 
         $this->assertFalse(true, 'Exception should be thrown');
     }
@@ -214,12 +239,11 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         Factory::register('check', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
 
-        $check = Factory::createCheck('nothing');
+        $factory = new Factory();
+        $factory->createCheck('nothing');
 
         $this->assertFalse(true, 'Exception should be thrown');
     }
-
-
 
     /**
      * Tests Factory::register
@@ -242,7 +266,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         Factory::register('check', 'sizemin', '\\phpbu\\App\\phpbuAppFactoryTestCheck', true);
 
-        $dummy = Factory::create('check', 'sizemin');
+        $factory = new Factory();
+        $dummy   = $factory->create('check', 'sizemin');
 
         $this->assertEquals(get_class($dummy), 'phpbu\\App\\phpbuAppFactoryTestCheck', 'Factory should create dummy object');
     }
@@ -300,7 +325,7 @@ class phpbuAppFactoryTestCrypter implements Crypter
      *
      * @param array $options
      */
-    public function setup(array $options = array())
+    public function setup(array $options = [])
     {
         // do something fooish
     }
@@ -364,7 +389,7 @@ class phpbuAppFactoryTestSource implements Source
      *
      * @param array $conf
      */
-    public function setup(array $conf = array())
+    public function setup(array $conf = [])
     {
         // do something fooish
     }
@@ -373,10 +398,12 @@ class phpbuAppFactoryTestSource implements Source
      * Runner the backup
      *
      * @param  \phpbu\App\Backup\Target $target
-     * @param  \phpbu\App\Result        $result
+     * @param  \phpbu\App\Result $result
+     * @return \phpbu\App\Backup\Source\Status
      */
     public function backup(Target $target, Result $result)
     {
         // do something fooish
+        return new Source\Status();
     }
 }

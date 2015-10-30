@@ -19,37 +19,42 @@ use phpbu\App\Log\Logger;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-abstract class Factory
+class Factory
 {
     /**
      * Map of available sources, checks, syncs and cleanups.
      *
      * @var array
      */
-    private static $classMap = array(
-        //   type       => fqcn
-        'logger'  => array(
+    private static $classMap = [
+        // type
+        //   alias => fqcn
+        'runner' => [
+            'backup' => '\\phpbu\\App\\Runner\\Backup',
+            'sync'   => '\\phpbu\\App\\Runner\\Sync',
+        ],
+        'logger'  => [
             'json' => '\\phpbu\\App\\Log\\Json',
             'mail' => '\\phpbu\\App\\Log\\Mail',
-        ),
-        'source'  => array(
+        ],
+        'source'  => [
             'mongodump'   => '\\phpbu\\App\\Backup\\Source\\Mongodump',
             'mysqldump'   => '\\phpbu\\App\\Backup\\Source\\Mysqldump',
             'tar'         => '\\phpbu\\App\\Backup\\Source\\Tar',
             'elasticdump' => '\\phpbu\\App\\Backup\\Source\\Elasticdump',
-            'arangodump' => '\\phpbu\\App\\Backup\\Source\\Arangodump',
-            'xtrabackup' => '\\phpbu\\App\\Backup\\Source\\XtraBackup',
-        ),
-        'check'   => array(
+            'arangodump'  => '\\phpbu\\App\\Backup\\Source\\Arangodump',
+            'xtrabackup'  => '\\phpbu\\App\\Backup\\Source\\XtraBackup',
+        ],
+        'check'   => [
             'sizemin'                 => '\\phpbu\\App\\Backup\\Check\\SizeMin',
             'sizediffpreviouspercent' => '\\phpbu\\App\\Backup\\Check\\SizeDiffPreviousPercent',
             'sizediffavgpercent'      => '\\phpbu\\App\\Backup\\Check\\SizeDiffAvgPercent',
-        ),
-        'crypter'   => array(
+        ],
+        'crypter'   => [
             'mcrypt'  => '\\phpbu\\App\\Backup\\Crypter\\Mcrypt',
             'openssl' => '\\phpbu\\App\\Backup\\Crypter\\OpenSSL',
-        ),
-        'sync'    => array(
+        ],
+        'sync'    => [
             'amazons3'  => '\\phpbu\\App\\Backup\\Sync\\AmazonS3',
             'copycom'   => '\\phpbu\\App\\Backup\\Sync\\Copycom',
             'dropbox'   => '\\phpbu\\App\\Backup\\Sync\\Dropbox',
@@ -57,13 +62,13 @@ abstract class Factory
             'rsync'     => '\\phpbu\\App\\Backup\\Sync\\Rsync',
             'sftp'      => '\\phpbu\\App\\Backup\\Sync\\Sftp',
             'softlayer' => '\\phpbu\\App\\Backup\\Sync\\SoftLayer',
-        ),
-        'cleaner' => array(
+        ],
+        'cleaner' => [
             'capacity'  => '\\phpbu\\App\\Backup\\Cleaner\\Capacity',
             'outdated'  => '\\phpbu\\App\\Backup\\Cleaner\\Outdated',
             'quantity'  => '\\phpbu\\App\\Backup\\Cleaner\\Quantity',
-        ),
-    );
+        ],
+    ];
 
     /**
      * Backup Factory.
@@ -74,7 +79,7 @@ abstract class Factory
      * @throws \phpbu\App\Exception
      * @return mixed
      */
-    public static function create($type, $alias)
+    public function create($type, $alias)
     {
         $type  = strtolower($type);
         $alias = strtolower($alias);
@@ -87,6 +92,18 @@ abstract class Factory
     }
 
     /**
+     * Runner Factory.
+     *
+     * @param  string $alias
+     * @throws \phpbu\App\Exception
+     * @return \phpbu\App\Backup\Source
+     */
+    public function createRunner($alias)
+    {
+        return $this->create('runner', $alias);
+    }
+
+    /**
      * Logger Factory.
      *
      * @param  string $alias
@@ -94,10 +111,10 @@ abstract class Factory
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Source
      */
-    public static function createLogger($alias, $conf = array())
+    public function createLogger($alias, $conf = array())
     {
         /** @var \phpbu\App\Log\Logger $logger */
-        $logger = self::create('logger', $alias);
+        $logger = $this->create('logger', $alias);
         if (!($logger instanceof Logger)) {
             throw new Exception(sprintf('logger \'%s\' has to implement the \'Logger\' interfaces', $alias));
         }
@@ -116,10 +133,10 @@ abstract class Factory
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Source
      */
-    public static function createSource($alias, $conf = array())
+    public function createSource($alias, $conf = array())
     {
         /** @var \phpbu\App\Backup\Source $source */
-        $source = self::create('source', $alias);
+        $source = $this->create('source', $alias);
         if (!($source instanceof Source)) {
             throw new Exception(sprintf('source \'%s\' has to implement the \'Source\' interface', $alias));
         }
@@ -134,10 +151,10 @@ abstract class Factory
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Check
      */
-    public static function createCheck($alias)
+    public function createCheck($alias)
     {
         /** @var \phpbu\App\Backup\Check $check */
-        $check = self::create('check', $alias);
+        $check = $this->create('check', $alias);
         if (!($check instanceof Check)) {
             throw new Exception(sprintf('Check \'%s\' has to implement the \'Check\' interface', $alias));
         }
@@ -152,10 +169,10 @@ abstract class Factory
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Crypter
      */
-    public static function createCrypter($alias, $conf = array())
+    public function createCrypter($alias, $conf = array())
     {
         /** @var \phpbu\App\Backup\Crypter $crypter */
-        $crypter = self::create('crypter', $alias);
+        $crypter = $this->create('crypter', $alias);
         if (!($crypter instanceof Crypter)) {
             throw new Exception(sprintf('Crypter \'%s\' has to implement the \'Crypter\' interface', $alias));
         }
@@ -171,10 +188,10 @@ abstract class Factory
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Sync
      */
-    public static function createSync($alias, $conf = array())
+    public function createSync($alias, $conf = array())
     {
         /** @var \phpbu\App\Backup\Sync $sync */
-        $sync = self::create('sync', $alias);
+        $sync = $this->create('sync', $alias);
         if (!($sync instanceof Sync)) {
             throw new Exception(sprintf('sync \'%s\' has to implement the \'Sync\' interface', $alias));
         }
@@ -190,10 +207,10 @@ abstract class Factory
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Cleaner
      */
-    public static function createCleaner($alias, $conf = array())
+    public function createCleaner($alias, $conf = array())
     {
         /** @var \phpbu\App\Backup\Cleaner $cleaner */
-        $cleaner = self::create('cleaner', $alias);
+        $cleaner = $this->create('cleaner', $alias);
         if (!($cleaner instanceof Cleaner)) {
             throw new Exception(sprintf('cleaner \'%s\' has to implement the \'Cleaner\' interface', $alias));
         }

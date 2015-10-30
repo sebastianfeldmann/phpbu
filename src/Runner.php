@@ -4,7 +4,6 @@ namespace phpbu\App;
 use phpbu\App\Backup;
 use phpbu\App\Backup\Compressor;
 use phpbu\App\Backup\Collector;
-use phpbu\App\Backup\Source\Status;
 use phpbu\App\Backup\Target;
 
 /**
@@ -21,6 +20,13 @@ use phpbu\App\Backup\Target;
 class Runner
 {
     /**
+     * phpbu Factory
+     *
+     * @var \phpbu\App\Factory
+     */
+    protected $factory;
+
+    /**
      * Application result
      *
      * @var \phpbu\App\Result
@@ -35,9 +41,20 @@ class Runner
     protected $failure;
 
     /**
+     * Constructor
+     *
+     * @param \phpbu\App\Factory $factory
+     */
+    public function __construct(Factory $factory)
+    {
+        $this->factory = $factory;
+    }
+
+    /**
      * Run phpbu
      *
      * @param  \phpbu\App\Configuration $configuration
+     * @param  \phpbu\App\Factory
      * @return \phpbu\App\Result
      */
     public function run(Configuration $configuration)
@@ -180,7 +197,7 @@ class Runner
                 // this is a configuration blueprint for a logger, so create and add it
                 /** @var \phpbu\App\Configuration\Logger $log */
                 /** @var \phpbu\App\Listener $logger */
-                $logger = Factory::createLogger($log->type, $log->options);
+                $logger = $this->factory->createLogger($log->type, $log->options);
             }
             $this->result->addListener($logger);
         }
@@ -215,41 +232,10 @@ class Runner
     protected function executeBackup(Configuration\Backup $conf, Target $target)
     {
         $this->result->backupStart($conf);
-        $source = Factory::createSource($conf->getSource()->type, $conf->getSource()->options);
-        $status = $source->backup($target, $this->result);
-        if ($target->shouldBeCompressed()) {
-            if (is_a($status, '\\phpbu\\App\\Backup\\Source\\Status') && !$status->handledCompression()) {
-                $this->handleCompression($target, $status);
-            }
-        }
+        $source = $this->factory->createSource($conf->getSource()->type, $conf->getSource()->options);
+        $runner = $this->factory->createRunner('backup');
+        $runner->run($source, $target, $this->result);
         $this->result->backupEnd($conf);
-    }
-
-    /**
-     * Handle directory compression for sources which can't handle compression by them self.
-     *
-     * @param  \phpbu\App\Backup\Target        $target
-     * @param  \phpbu\App\Backup\Source\Status $status
-     * @throws \phpbu\App\Exception
-     */
-    protected function handleCompression(Target $target, Status $status)
-    {
-        // data directory or file
-        if (is_dir($status->getDataPath())) {
-            // archive data
-            $dirCompressor = new Compressor\Directory($status->getDataPath());
-            $dirCompressor->compress($target, $this->result);
-            // directory is archived but not compressed because tar couldn't handle the compression
-            if (!file_exists($target->getPathname()) && file_exists($target->getPathnamePlain())) {
-                // finally compress the file with the requested compressor
-                $fileCompressor = new Compressor\File($target->getPathnamePlain());
-                $fileCompressor->compress($target, $this->result);
-            }
-        } else {
-            // compress data
-            $fileCompressor = new Compressor\File($status->getDataPath());
-            $fileCompressor->compress($target, $this->result);
-        }
     }
 
     /**
@@ -266,7 +252,7 @@ class Runner
         foreach ($backup->getChecks() as $check) {
             try {
                 $this->result->checkStart($check);
-                $c = Factory::createCheck($check->type);
+                $c = $this->factory->createCheck($check->type);
                 if ($c->pass($target, $check->value, $collector, $this->result)) {
                     $this->result->checkEnd($check);
                 } else {
@@ -296,7 +282,7 @@ class Runner
                 if ($this->failure && $crypt->skipOnFailure) {
                     $this->result->cryptSkipped($crypt);
                 } else {
-                    $c = Factory::createCrypter($crypt->type, $crypt->options);
+                    $c = $this->factory->createCrypter($crypt->type, $crypt->options);
                     $c->crypt($target, $this->result);
                     $target->setCrypter($c);
                 }
@@ -324,7 +310,7 @@ class Runner
                 if ($this->failure && $sync->skipOnFailure) {
                     $this->result->syncSkipped($sync);
                 } else {
-                    $s = Factory::createSync($sync->type, $sync->options);
+                    $s = $this->factory->createSync($sync->type, $sync->options);
                     $s->sync($target, $this->result);
                     $this->result->syncEnd($sync);
                 }
@@ -353,7 +339,7 @@ class Runner
                 if ($this->failure && $cleanup->skipOnFailure) {
                     $this->result->cleanupSkipped($cleanup);
                 } else {
-                    $cleaner = Factory::createCleaner($cleanup->type, $cleanup->options);
+                    $cleaner = $this->factory->createCleaner($cleanup->type, $cleanup->options);
                     $cleaner->cleanup($target, $collector, $this->result);
                     $this->result->cleanupEnd($cleanup);
                 }
