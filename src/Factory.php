@@ -96,7 +96,7 @@ class Factory
      *
      * @param  string $alias
      * @throws \phpbu\App\Exception
-     * @return \phpbu\App\Backup\Source
+     * @return mixed
      */
     public function createRunner($alias)
     {
