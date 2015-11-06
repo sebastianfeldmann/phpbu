@@ -21,21 +21,21 @@ abstract class Cli
      *
      * @var array
      */
-    private static $basePaths = array();
+    private static $basePaths = [];
 
     /**
      * Optional command locations
      *
      * @var array
      */
-    private static $optionalCommandLocations = array(
-        'mongodump' => array(),
-        'mysqldump' => array(
+    private static $optionalCommandLocations = [
+        'mongodump' => [],
+        'mysqldump' => [
             '/usr/local/mysql/bin/mysqldump', // Mac OS X
             '/usr/mysql/bin/mysqldump',       // Linux
-        ),
-        'tar'       => array(),
-    );
+        ],
+        'tar'       => [],
+    ];
 
     /**
      * Register a base path.
@@ -72,7 +72,7 @@ abstract class Cli
      */
     public static function getCommandLocations($command)
     {
-        return isset(self::$optionalCommandLocations[$command]) ? self::$optionalCommandLocations[$command] : array();
+        return isset(self::$optionalCommandLocations[$command]) ? self::$optionalCommandLocations[$command] : [];
     }
 
     /**
@@ -99,7 +99,7 @@ abstract class Cli
      * @return string                    Absolute path to detected command including command itself
      * @throws \RuntimeException
      */
-    public static function detectCmdLocation($cmd, $path = null, $optionalLocations = array())
+    public static function detectCmdLocation($cmd, $path = null, $optionalLocations = [])
     {
         // explicit path given, so check it out
         if (null !== $path) {
@@ -150,7 +150,7 @@ abstract class Cli
     public static function getEnvPath()
     {
         // check for unix and windows case $_SERVER index
-        foreach (array('PATH', 'Path', 'path') as $index) {
+        foreach (['PATH', 'Path', 'path'] as $index) {
             if (isset($_SERVER[$index])) {
                 return $_SERVER[$index];
             }

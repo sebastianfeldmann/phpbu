@@ -59,8 +59,7 @@ class Runner
      */
     public function run(Configuration $configuration)
     {
-        // this is a hack to communicate the configuration directory across the whole application
-        // TODO: Fix this, maybe with a context object
+        // TODO: don't rely on static/global settings this is ugly
         Util\Cli::registerBase('configuration', $configuration->getWorkingDirectory());
 
         $stop         = false;
