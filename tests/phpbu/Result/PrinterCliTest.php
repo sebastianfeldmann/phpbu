@@ -4,7 +4,7 @@ namespace phpbu\App\Result;
 use phpbu\App\Configuration;
 
 /**
- * Version test
+ * PrinterCli test
  *
  * @package    phpbu
  * @subpackage tests
