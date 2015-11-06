@@ -236,72 +236,6 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests Target::disableCompression
-     */
-    public function testDisableEnableCompression()
-    {
-        $path     = '/tmp/foo/bar';
-        $filename = '%Y-test-%d.txt';
-        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip', 'application/zip'));
-        $target->disableCompression();
-
-        $this->assertEquals('2014-test-01.txt', $target->getFilename());
-
-        $target->enableCompression();
-
-        $this->assertEquals('2014-test-01.txt.zip', $target->getFilename());
-    }
-
-    /**
-     * Tests Target::enableCompression
-     *
-     * @expectedException \phpbu\App\Exception
-     */
-    public function testEnableCompressionFail()
-    {
-        $path     = '/tmp/foo/bar';
-        $filename = '%Y-test-%d.txt';
-        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $target->enableCompression();
-
-        $this->assertFalse(true, 'exception should be thrown');
-    }
-
-    /**
-     * Tests Target::disableEncryption
-     */
-    public function testDisableEnableEncryption()
-    {
-        $path     = '/tmp/foo/bar';
-        $filename = '%Y-test-%d.txt';
-        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $target->setCrypter($this->getCrypterMock('nc'));
-        $target->disableEncryption();
-
-        $this->assertEquals('2014-test-01.txt', $target->getFilename());
-
-        $target->enableEncryption();
-
-        $this->assertEquals('2014-test-01.txt.nc', $target->getFilename());
-    }
-
-    /**
-     * Tests Target::enableEncryption
-     *
-     * @expectedException \phpbu\App\Exception
-     */
-    public function testEnableEncryptionFail()
-    {
-        $path     = '/tmp/foo/bar';
-        $filename = '%Y-test-%d.txt';
-        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $target->enableEncryption();
-
-        $this->assertFalse(true, 'exception should be thrown');
-    }
-
-    /**
      * Tests Target::getCrypter
      */
     public function testGetCrypter()
@@ -358,47 +292,6 @@ class TargetTest extends \PHPUnit_Framework_TestCase
         $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip', 'application/zip'));
 
         $this->assertEquals('/tmp/12/01/foo.txt', $target->getPathnamePlain());
-    }
-
-    /**
-     * Tests Target::setPermission
-     */
-    public function testSetPermissionEmpty()
-    {
-        $path     = '/tmp/%m/%d';
-        $filename = 'foo.txt';
-        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $target->setPermissions('');
-
-        $this->assertEquals(0700, $target->getPermissions());
-    }
-
-    /**
-     * Tests Target::setPermission
-     */
-    public function testSetPermissionOk()
-    {
-        $path     = '/tmp/%m/%d';
-        $filename = 'foo.txt';
-        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $target->setPermissions('0644');
-
-        $this->assertEquals(0644, $target->getPermissions());
-    }
-
-    /**
-     * Tests Target::setPermission
-     *
-     * @expectedException \phpbu\App\Exception
-     */
-    public function testSetPermissionFail()
-    {
-        $path     = '/tmp/%m/%d';
-        $filename = 'foo.txt';
-        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $target->setPermissions('0999');
-
-        $this->assertFalse(true, 'exception should be thrown');
     }
 
     /**

@@ -88,13 +88,6 @@ class Target
     private $size;
 
     /**
-     * Permissions for potential directory or file creation.
-     *
-     * @var integer (octal)
-     */
-    private $permissions;
-
-    /**
      * Should the file be compressed.
      *
      * @var boolean
@@ -216,37 +209,6 @@ class Target
     public function setMimeType($mime)
     {
         $this->mimeType = $mime;
-    }
-
-    /**
-     * Permission setter.
-     *
-     * @param  string $permissions
-     * @throws \phpbu\App\Exception
-     */
-    public function setPermissions($permissions)
-    {
-        if (empty($permissions)) {
-            $permissions = 0700;
-        } else {
-            $oct = intval($permissions, 8);
-            $dec = octdec($oct);
-            if ($dec < 1 || $dec > octdec(0777)) {
-                throw new Exception(sprintf('invalid permissions: %s', $permissions));
-            }
-            $permissions = $oct;
-        }
-        $this->permissions = $permissions;
-    }
-
-    /**
-     * Permission getter.
-     *
-     * @return integer
-     */
-    public function getPermissions()
-    {
-        return $this->permissions;
     }
 
     /**
@@ -500,27 +462,6 @@ class Target
     }
 
     /**
-     * Disable file encryption.
-     */
-    public function disableEncryption()
-    {
-        $this->crypt = false;
-    }
-
-    /**
-     * Enable file compression.
-     *
-     * @throws \phpbu\App\Exception
-     */
-    public function enableEncryption()
-    {
-        if (null == $this->crypter) {
-            throw new Exception('can\'t enable encryption without a crypter');
-        }
-        $this->crypt = true;
-    }
-
-    /**
      * Crypter setter.
      *
      * @param \phpbu\App\Backup\Crypter $crypter
@@ -539,6 +480,14 @@ class Target
     public function getCrypter()
     {
         return $this->crypter;
+    }
+
+    /**
+     * Disable file encryption.
+     */
+    public function disableEncryption()
+    {
+        $this->crypt = false;
     }
 
     /**
