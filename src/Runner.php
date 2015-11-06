@@ -59,16 +59,16 @@ class Runner
      */
     public function run(Configuration $configuration)
     {
+        // this is a hack to communicate the configuration directory across the whole application
+        // TODO: Fix this, maybe with a context object
         Util\Cli::registerBase('configuration', $configuration->getWorkingDirectory());
-        $this->handleIniSettings($configuration);
-        $this->handleIncludePath($configuration);
-        $this->handleBootstrap($configuration);
 
         $stop         = false;
         $this->result = new Result();
-        $this->setupLoggers($configuration);
-
         $this->result->phpbuStart($configuration);
+
+        $this->setupEnvironment($configuration);
+        $this->setupLoggers($configuration);
 
         // create backups
         /** @var \phpbu\App\Configuration\Backup $backup */
@@ -132,54 +132,15 @@ class Runner
     }
 
     /**
-     * Handle configured ini settings.
-     *
-     * @param Configuration $configuration
-     */
-    public function handleIniSettings(Configuration $configuration)
-    {
-        // handle php.ini settings
-        foreach ($configuration->getIniSettings() as $name => $value) {
-            if (defined($value)) {
-                $value = constant($value);
-            }
-            ini_set($name, $value);
-        }
-    }
-
-
-    /**
-     * Handles the php include_path settings.
-     *
-     * @param  \phpbu\App\Configuration $configuration
-     * @return void
-     */
-    protected function handleIncludePath(Configuration $configuration)
-    {
-        $path = $configuration->getIncludePaths();
-        if (count($path)) {
-            $path = implode(PATH_SEPARATOR, $path);
-            ini_set('include_path', $path . PATH_SEPARATOR . ini_get('include_path'));
-        }
-    }
-
-    /**
-     * Handles the bootstrap file inclusion.
+     * This executes a bootstrap runner to handle ini settings and the bootstrap file inclusion.
      *
      * @param  \phpbu\App\Configuration $configuration
      * @throws \phpbu\App\Exception
      */
-    protected function handleBootstrap(Configuration $configuration)
+    protected function setupEnvironment(Configuration $configuration)
     {
-        $filename = $configuration->getBootstrap();
-
-        if (!empty($filename)) {
-            $pathToFile = stream_resolve_include_path($filename);
-            if (!$pathToFile || !is_readable($pathToFile)) {
-                throw new Exception(sprintf('Cannot open bootstrap file "%s".' . PHP_EOL, $filename));
-            }
-            require $pathToFile;
-        }
+        $runner = $this->factory->createRunner('Bootstrap');
+        $runner->run($configuration);
     }
 
     /**
@@ -248,23 +209,13 @@ class Runner
      */
     protected function executeChecks(Configuration\Backup $backup, Target $target, Collector $collector)
     {
+        $runner = $this->factory->createRunner('check');
         /** @var \phpbu\App\Configuration\Backup\Check $check */
-        foreach ($backup->getChecks() as $check) {
-            try {
-                $this->result->checkStart($check);
-                $c = $this->factory->createCheck($check->type);
-                if ($c->pass($target, $check->value, $collector, $this->result)) {
-                    $this->result->checkEnd($check);
-                } else {
-                    $this->failure = true;
-                    $this->result->checkFailed($check);
-                }
-            } catch (Backup\Check\Exception $e) {
-                $this->failure = true;
-                $this->result->addError($e);
-                $this->result->checkFailed($check);
-            }
+        foreach ($backup->getChecks() as $config) {
+            $check = $this->factory->createCheck($config->type);
+            $runner->run($check, $config, $target, $collector, $this->result);
         }
+        $this->failure = $runner->hasFailed();
     }
 
     /**

@@ -30,8 +30,10 @@ class Factory
         // type
         //   alias => fqcn
         'runner' => [
-            'backup' => '\\phpbu\\App\\Runner\\Backup',
-            'sync'   => '\\phpbu\\App\\Runner\\Sync',
+            'bootstrap' => '\\phpbu\\App\\Runner\\Bootstrap',
+            'backup'    => '\\phpbu\\App\\Runner\\Backup',
+            'check'     => '\\phpbu\\App\\Runner\\Check',
+            'sync'      => '\\phpbu\\App\\Runner\\Sync',
         ],
         'logger'  => [
             'json' => '\\phpbu\\App\\Log\\Json',
