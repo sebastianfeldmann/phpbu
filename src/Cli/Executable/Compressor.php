@@ -93,7 +93,10 @@ class Compressor extends Abstraction implements Executable
             $cmd->silence();
             // i kill you
         }
-        $cmd->addOptionIfNotEmpty('-f', $this->force, false);
+        // don't add '-f' option for 'zip' executable issue #34
+        if ($this->cmd !== 'zip') {
+            $cmd->addOptionIfNotEmpty('-f', $this->force, false);
+        }
         $cmd->addArgument($this->fileToCompress);
 
         return $process;
