@@ -27,6 +27,18 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Compressor::getCommandLine
+     */
+    public function testZipNoForceOption()
+    {
+        $path = realpath(__DIR__ . '/../../../_files/bin');
+        $gzip = new Compressor('zip', $path);
+        $gzip->force(true)->compressFile(__FILE__);
+
+        $this->assertEquals($path . '/zip \'' . __FILE__ . '\' 2> /dev/null', $gzip->getCommandLine());
+    }
+
+    /**
      * Tests Compressor::compressFile
      *
      * @expectedException \phpbu\App\Exception
