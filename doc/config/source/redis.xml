@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<source type="redis">
+  <!-- optional -->
+  <option name="pathToRedisCli" value="/use/local/bin" />
+
+  <!-- mandatory -->
+  <option name="pathToRedisData" value="/var/lib/redis/dump.rdb" />
+
+  <!-- optional, default=45 -->
+  <option name="timeout" value="90" />
+
+  <!-- optional, default=6379 -->
+  <option name="port" value="6379" />
+
+  <!-- optional, default=null -->
+  <option name="password" value="TopSecret" />
+
+  <!-- optional, default=false -->
+  <option name="showStdErr" value="true" />
+</source>

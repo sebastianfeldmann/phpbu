@@ -1,0 +1,5 @@
+#! /bin/bash
+
+# unit test fake redi-cli command that is executable
+
+exit 0

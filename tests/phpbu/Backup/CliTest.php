@@ -49,9 +49,10 @@ abstract class CliTest extends \PHPUnit_Framework_TestCase
      *
      * @param  integer $code
      * @param  string  $cmd
+     * @param  array   $output
      * @return \phpbu\App\Cli\Result
      */
-    protected function getCliResultMock($code, $cmd)
+    protected function getCliResultMock($code, $cmd, $output = [])
     {
         $cliResult = $this->getMockBuilder('\\phpbu\\App\\Cli\\Result')
                           ->disableOriginalConstructor()
@@ -59,7 +60,8 @@ abstract class CliTest extends \PHPUnit_Framework_TestCase
 
         $cliResult->method('getCode')->willReturn($code);
         $cliResult->method('getCmd')->willReturn($cmd);
-        $cliResult->method('getOutput')->willReturn(array());
+        $cliResult->method('getOutput')->willReturn($output);
+        $cliResult->method('getOutputAsString')->willReturn(implode(PHP_EOL, $output));
         $cliResult->method('wasSuccessful')->willReturn($code == 0);
 
         return $cliResult;

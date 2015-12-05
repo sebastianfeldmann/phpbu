@@ -22,7 +22,8 @@ Get detailed information about all the features and a 'getting started' tutorial
     + MongoDB
     + MySQL
     + Percona XtraBackup
-    + PostgreSQL (planned)
+    + PostgreSQL (in progress)
+    + Redis
 * Validate backups
     + Check min size
     + Comparing with previous backups
@@ -44,7 +45,7 @@ Get detailed information about all the features and a 'getting started' tutorial
 
 ## Requirements
 
-* PHP 5.3+
+* PHP 5.4+
     + ext/curl
     + ext/dom
     + ext/json
