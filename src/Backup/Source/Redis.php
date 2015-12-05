@@ -146,10 +146,10 @@ class Redis extends Cli implements Source
     /**
      * Creates a RedisLastSave command from a RedisSave command.
      *
-     * @param  \phpbu\App\Backup\Source\RedisCli $redis
-     * @return \phpbu\App\Backup\Source\RedisCli
+     * @param  \phpbu\App\Cli\Executable\RedisCli $redis
+     * @return \phpbu\App\Cli\Executable\RedisCli
      */
-    public function getRedisLastSave(RedisCli $redis)
+    public function getRedisLastSave(Executable\RedisCli $redis)
     {
         $redisLast = clone($redis);
         $redisLast->lastBackupTime();
