@@ -10,9 +10,9 @@
     </testsuite>
   </testsuites>
   <filter>
-    <blacklist>
-      <directory>vendor</directory>
-    </blacklist>
+    <whitelist>
+      <directory>src</directory>
+    </whitelist>
   </filter>
   <logging>
     <log type="coverage-html" target="build/coverage" title="PHPBU" charset="UTF-8" yui="true" highlight="true" lowUpperBound="35" highLowerBound="70" />
