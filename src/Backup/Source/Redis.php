@@ -128,7 +128,7 @@ class Redis extends Cli implements Source
      * Setup the Executable to run the 'tar' command.
      *
      * @param  \phpbu\App\Backup\Target
-     * @return \phpbu\App\Cli\Executable
+     * @return \phpbu\App\Cli\Executable\RedisCli
      */
     public function getExecutable(Target $target)
     {
