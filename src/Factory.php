@@ -33,19 +33,21 @@ abstract class Factory
             'mail' => '\\phpbu\\App\\Log\\Mail',
         ),
         'source'  => array(
+            'arangodump'  => '\\phpbu\\App\\Backup\\Source\\Arangodump',
+            'elasticdump' => '\\phpbu\\App\\Backup\\Source\\Elasticdump',
             'mongodump'   => '\\phpbu\\App\\Backup\\Source\\Mongodump',
             'mysqldump'   => '\\phpbu\\App\\Backup\\Source\\Mysqldump',
+            'redis'       => '\\phpbu\\App\\Backup\\Source\\Redis',
             'tar'         => '\\phpbu\\App\\Backup\\Source\\Tar',
-            'elasticdump' => '\\phpbu\\App\\Backup\\Source\\Elasticdump',
-            'arangodump' => '\\phpbu\\App\\Backup\\Source\\Arangodump',
-            'xtrabackup' => '\\phpbu\\App\\Backup\\Source\\XtraBackup',
+            'xtrabackup'  => '\\phpbu\\App\\Backup\\Source\\XtraBackup',
         ),
         'check'   => array(
+            'xtrabackup'              => '\\phpbu\\App\\Backup\\Source\\XtraBackup',
             'sizemin'                 => '\\phpbu\\App\\Backup\\Check\\SizeMin',
             'sizediffpreviouspercent' => '\\phpbu\\App\\Backup\\Check\\SizeDiffPreviousPercent',
             'sizediffavgpercent'      => '\\phpbu\\App\\Backup\\Check\\SizeDiffAvgPercent',
         ),
-        'crypter'   => array(
+        'crypter' => array(
             'mcrypt'  => '\\phpbu\\App\\Backup\\Crypter\\Mcrypt',
             'openssl' => '\\phpbu\\App\\Backup\\Crypter\\OpenSSL',
         ),
