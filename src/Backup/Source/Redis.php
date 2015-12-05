@@ -23,13 +23,6 @@ use phpbu\App\Util;
 class Redis extends Cli implements Source
 {
     /**
-     * Redis Executable
-     *
-     * @var \phpbu\App\Cli\Executable\RedisCli
-     */
-    private $executableLast;
-
-    /**
      * Path to executable.
      *
      * @var string
@@ -60,7 +53,7 @@ class Redis extends Cli implements Source
     /**
      * Port to connect to
      *
-     * @var boolean
+     * @var int
      */
     private $port;
 
@@ -115,8 +108,7 @@ class Redis extends Cli implements Source
         $target->setMimeType('application/octet-stream');
 
         $redisSave = $this->getExecutable($target);
-        $redisLast = clone($redisSave);
-        $redisLast->lastBackupTime();
+        $redisLast = $this->getRedisLastSave($redisSave);
 
         $lastBackupTimestamp = $this->getLastBackupTime($redisLast);
 
@@ -149,6 +141,19 @@ class Redis extends Cli implements Source
                              ->showStdErr($this->showStdErr);
         }
         return $this->executable;
+    }
+
+    /**
+     * Creates a RedisLastSave command from a RedisSave command.
+     *
+     * @param  \phpbu\App\Backup\Source\RedisCli $redis
+     * @return \phpbu\App\Backup\Source\RedisCli
+     */
+    public function getRedisLastSave(RedisCli $redis)
+    {
+        $redisLast = clone($redis);
+        $redisLast->lastBackupTime();
+        return $redisLast;
     }
 
     /**

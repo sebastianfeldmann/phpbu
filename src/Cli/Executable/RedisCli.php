@@ -45,7 +45,7 @@ class RedisCli extends Abstraction implements Executable
      * Port to connect to
      * -p
      *
-     * @var string
+     * @var integer
      */
     private $port;
 
@@ -122,7 +122,7 @@ class RedisCli extends Abstraction implements Executable
     /**
      * Port to connect to.
      *
-     * @param  integer $port
+     * @param  int $port
      * @return \phpbu\App\Cli\Executable\RedisCli
      */
     public function usePort($port)
