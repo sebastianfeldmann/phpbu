@@ -163,10 +163,10 @@ class Redis extends Cli implements Source
         $result  = $redis->run();
         $output  = $result->getOutputAsString();
         $matches = [];
-        if (!preg_match('#\(integer\) ([0-9]+)#i', $output, $matches)) {
+        if (!preg_match('#(\(integer\) )?([0-9]+)#i', $output, $matches)) {
             throw new Exception('invalid redis-cli LASTSAVE output');
         }
-        return $matches[1];
+        return (int) $matches[2];
     }
 
     /**
