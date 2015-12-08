@@ -86,7 +86,7 @@ class Runner
                  *    / _  / __ / /__/ ,< / /_/ / ___/
                  *   /____/_/ |_\___/_/|_|\____/_/
                  */
-                $this->executeBackup($backup, $target);
+                $this->executeSource($backup, $target);
 
                 /*     _______ _____________ ______
                  *    / ___/ // / __/ ___/ //_/ __/
@@ -189,11 +189,11 @@ class Runner
      * @param  \phpbu\App\Backup\Target        $target
      * @throws \Exception
      */
-    protected function executeBackup(Configuration\Backup $conf, Target $target)
+    protected function executeSource(Configuration\Backup $conf, Target $target)
     {
         $this->result->backupStart($conf);
         $source = $this->factory->createSource($conf->getSource()->type, $conf->getSource()->options);
-        $runner = $this->factory->createRunner('backup');
+        $runner = $this->factory->createRunner('source');
         $runner->run($source, $target, $this->result);
         $this->result->backupEnd($conf);
     }

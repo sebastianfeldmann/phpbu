@@ -27,9 +27,9 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateRunner()
     {
         $factory = new Factory();
-        $runner  = $factory->createRunner('backup');
+        $runner  = $factory->createRunner('source');
 
-        $this->assertEquals('phpbu\\App\\Runner\Backup', get_class($runner), 'runner classes should match');
+        $this->assertEquals('phpbu\\App\\Runner\Source', get_class($runner), 'runner classes should match');
     }
 
     /**

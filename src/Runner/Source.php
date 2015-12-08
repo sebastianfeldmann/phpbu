@@ -2,7 +2,7 @@
 namespace phpbu\App\Runner;
 
 use phpbu\App\Backup\Compressor;
-use phpbu\App\Backup\Source;
+use phpbu\App\Backup\Source as SourceExe;
 use phpbu\App\Backup\Source\Status;
 use phpbu\App\Backup\Target;
 use phpbu\App\Configuration;
@@ -19,7 +19,7 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class Backup
+class Source
 {
     /**
      * Executes the backup and compression.
@@ -29,7 +29,7 @@ class Backup
      * @param  \phpbu\App\Result        $result
      * @throws \phpbu\App\Exception
      */
-    public function run(Source $source, Target $target, Result $result)
+    public function run(SourceExe $source, Target $target, Result $result)
     {
         $status = $source->backup($target, $result);
         if ($target->shouldBeCompressed()) {

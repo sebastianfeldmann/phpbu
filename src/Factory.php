@@ -31,7 +31,7 @@ class Factory
         //   alias => fqcn
         'runner' => [
             'bootstrap' => '\\phpbu\\App\\Runner\\Bootstrap',
-            'backup'    => '\\phpbu\\App\\Runner\\Backup',
+            'source'    => '\\phpbu\\App\\Runner\\Source',
             'check'     => '\\phpbu\\App\\Runner\\Check',
             'sync'      => '\\phpbu\\App\\Runner\\Sync',
         ],
