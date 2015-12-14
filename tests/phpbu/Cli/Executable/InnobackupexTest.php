@@ -31,6 +31,21 @@ class InnobackupexTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests XtraBackup::getExec
+     */
+    public function testDataDir()
+    {
+        $expectedDump  = 'innobackupex --no-timestamp --datadir=\'/foo/bar\' \'./dump\' 2> /dev/null';
+        $expectedApply = 'innobackupex --apply-log \'./dump\' 2> /dev/null';
+        $path          = realpath(__DIR__ . '/../../../_files/bin');
+        $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
+        $xtra          = new Innobackupex($path);
+        $xtra->dumpFrom('/foo/bar')->dumpTo('./dump');
+
+        $this->assertEquals($expected, $xtra->getCommandLine());
+    }
+
+    /**
      * Tests Mongodump::createProcess
      *
      * @expectedException \phpbu\App\Exception

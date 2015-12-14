@@ -21,7 +21,14 @@ use phpbu\App\Exception;
 class Innobackupex extends Abstraction implements Executable
 {
     /**
-     * Dump Directory
+     * MySQL data directory
+     *
+     * @var string
+     */
+    private $dataDir;
+
+    /**
+     * Dump directory
      *
      * @var string
      */
@@ -78,6 +85,18 @@ class Innobackupex extends Abstraction implements Executable
     {
         $this->cmd = 'innobackupex';
         parent::__construct($path);
+    }
+
+    /**
+     * Set MySQL data dir.
+     *
+     * @param  string $path
+     * @return \phpbu\App\Cli\Executable\Innobackupex
+     */
+    public function dumpFrom($path)
+    {
+        $this->dataDir = $path;
+        return $this;
     }
 
     /**
@@ -167,6 +186,7 @@ class Innobackupex extends Abstraction implements Executable
         }
 
         $cmdDump->addOption('--no-timestamp');
+        $cmdDump->addOptionIfNotEmpty('--datadir', $this->dataDir);
         $cmdDump->addOptionIfNotEmpty('--user', $this->user);
         $cmdDump->addOptionIfNotEmpty('--password', $this->password);
         $cmdDump->addOptionIfNotEmpty('--host', $this->host);
