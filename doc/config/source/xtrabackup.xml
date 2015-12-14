@@ -3,6 +3,9 @@
   <!-- optional, default=false -->
   <option name="showStdErr" value="true" />
 
+  <!-- optional, default=none -->
+  <option name="dataDir" value="/x/mysql" />
+
   <!-- optional, default=localhost -->
   <option name="host" value="myhost" />
 

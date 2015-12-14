@@ -2,6 +2,7 @@
   "type": "xtrabackup",
   "options": {
     "showStdErr": "true",
+    "dataDir": "/x/mysql",
     "host": "myHost",
     "user": "myUserName",
     "password": "mySecretPassword",

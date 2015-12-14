@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\CliTest;
+use phpbu\App\Util\Cli;
 
 /**
  * XtraBackup Source Test
@@ -51,6 +52,23 @@ class XtraBackupTest extends CliTest
         $path          = $this->getBinDir();
         $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
         $this->xtrabackup->setup(array('pathToXtraBackup' => $path));
+
+        $executable = $this->xtrabackup->getExecutable($target);
+
+        $this->assertEquals($expected, $executable->getCommandLine());
+    }
+
+    /**
+     * Tests XtraBackup::getExec
+     */
+    public function testDataDir()
+    {
+        $expectedDump  = 'innobackupex --no-timestamp --datadir=\'/x/mysql\' \'./dump\' 2> /dev/null';
+        $expectedApply = 'innobackupex --apply-log \'./dump\' 2> /dev/null';
+        $target        = $this->getTargetMock('./foo.dump');
+        $path          = $this->getBinDir();
+        $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
+        $this->xtrabackup->setup(['pathToXtraBackup' => $path, 'dataDir' => '/x/mysql']);
 
         $executable = $this->xtrabackup->getExecutable($target);
 

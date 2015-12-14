@@ -38,6 +38,13 @@ class XtraBackup extends Cli implements Source
     private $showStdErr;
 
     /**
+     * Path to MySQL data directory
+     *
+     * @var string
+     */
+    private $dataDir;
+
+    /**
      * Host to connect to
      * --host <hostname>
      *
@@ -91,6 +98,7 @@ class XtraBackup extends Cli implements Source
         $this->setupSourceData($conf);
 
         $this->pathToXtraBackup = Util\Arr::getValue($conf, 'pathToXtraBackup');
+        $this->dataDir          = Util\Arr::getValue($conf, 'dataDir');
         $this->host             = Util\Arr::getValue($conf, 'host');
         $this->user             = Util\Arr::getValue($conf, 'user');
         $this->password         = Util\Arr::getValue($conf, 'password');
@@ -104,8 +112,8 @@ class XtraBackup extends Cli implements Source
      */
     protected function setupSourceData(array $conf)
     {
-        $this->include       = Util\Arr::getValue($conf, 'include');
-        $this->databases     = Util\Str::toList(Util\Arr::getValue($conf, 'databases'));
+        $this->include   = Util\Arr::getValue($conf, 'include');
+        $this->databases = Util\Str::toList(Util\Arr::getValue($conf, 'databases'));
     }
 
     /**
@@ -145,6 +153,7 @@ class XtraBackup extends Cli implements Source
                              ->credentials($this->user, $this->password)
                              ->dumpDatabases($this->databases)
                              ->including($this->include)
+                             ->dumpFrom($this->dataDir)
                              ->dumpTo($this->getDumpDir($target))
                              ->showStdErr($this->showStdErr);
         }
