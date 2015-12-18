@@ -56,6 +56,21 @@ class MysqldumpTest extends CliTest
     /**
      * Tests Mysqldump::getExecutable
      */
+    public function testLockTables()
+    {
+        $target = $this->getTargetMock();
+        $path   = realpath(__DIR__ . '/../../../_files/bin');
+        $this->mysqldump->setup(array('pathToMysqldump' => $path, 'lockTables' => 'true'));
+
+        $executable = $this->mysqldump->getExecutable($target);
+        $cmd        = $executable->getCommandLine();
+
+        $this->assertEquals($path . '/mysqldump --lock-tables --all-databases 2> /dev/null', $cmd);
+    }
+
+    /**
+     * Tests Mysqldump::getExecutable
+     */
     public function testHexBlob()
     {
         $target = $this->getTargetMock();

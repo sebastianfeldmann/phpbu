@@ -99,6 +99,15 @@ class Mysqldump extends Cli implements Source
     private $quick;
 
     /**
+     *
+     * Lock tables option
+     * --lock-tables
+     *
+     * @var bool
+     */
+    private $lockTables;
+
+    /**
      * Use mysqldump with compression
      * -C
      *
@@ -154,6 +163,7 @@ class Mysqldump extends Cli implements Source
         $this->showStdErr      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
         $this->hexBlob         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'hexBlob', ''), false);
         $this->quick           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
+        $this->lockTables      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'lockTables', ''), false);
         $this->compress        = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
         $this->extendedInsert  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'extendedInsert', ''), false);
         $this->noData          = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
@@ -209,6 +219,7 @@ class Mysqldump extends Cli implements Source
             $this->executable->credentials($this->user, $this->password)
                              ->useHost($this->host)
                              ->useQuickMode($this->quick)
+                             ->lockTables($this->lockTables)
                              ->dumpBlobsHexadecimal($this->hexBlob)
                              ->useCompression($this->compress)
                              ->useExtendedInsert($this->extendedInsert)
