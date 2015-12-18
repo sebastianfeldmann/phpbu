@@ -10,6 +10,7 @@
     "ignoreTables": "myTableToIgnore1,myTableToIgnore2",
     "structureOnly": "myTableWithoutData1,myTableWithoutData2",
     "quick": "true",
+    "lockTables": "true",
     "compress": "true",
     "extendedInsert": "true",
     "hexBlob": "true"

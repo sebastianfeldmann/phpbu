@@ -40,6 +40,19 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Mysqldump::getCommandLine
+     */
+    public function testLockTables()
+    {
+        $path      = realpath(__DIR__ . '/../../../_files/bin');
+        $mysqldump = new Mysqldump($path);
+        $mysqldump->lockTables(true);
+        $cmd       = $mysqldump->getCommandLine();
+
+        $this->assertEquals($path . '/mysqldump --lock-tables --all-databases 2> /dev/null', $cmd);
+    }
+
+    /**
      * Tests Mysqldump::useExtendedInsert
      */
     public function testUseExtendedInsert()

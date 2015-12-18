@@ -27,6 +27,9 @@
   <!-- optional, default=false -->
   <option name="quick" value="true" />
 
+  <!-- optional, default=none -->
+  <option name="lockTables" value="true" />
+
   <!-- optional, default=false -->
   <option name="compress" value="true" />
 
