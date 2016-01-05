@@ -38,14 +38,14 @@ class Configuration
     /**
      * Verbose output
      *
-     * @var boolean
+     * @var bool
      */
     private $verbose = false;
 
     /**
      * Use colors in output.
      *
-     * @var boolean
+     * @var bool
      */
     private $colors = false;
 
@@ -57,32 +57,39 @@ class Configuration
     private $debug = false;
 
     /**
+     * Don't execute anything just pretend to
+     *
+     * @var bool
+     */
+    private $simulate = false;
+
+    /**
      * List of include paths
      *
      * @var array
      */
-    private $includePaths = array();
+    private $includePaths = [];
 
     /**
      * List of ini settings
      *
      * @var array
      */
-    private $iniSettings = array();
+    private $iniSettings = [];
 
     /**
      * List of logger configurations
      *
      * @var array
      */
-    private $loggers = array();
+    private $loggers = [];
 
     /**
      * List of backup configurations
      *
      * @var array
      */
-    private $backups = array();
+    private $backups = [];
 
     /**
      * Constructor
@@ -158,7 +165,7 @@ class Configuration
     /**
      * Verbose setter.
      *
-     * @param boolean $bool
+     * @param bool $bool
      */
     public function setVerbose($bool)
     {
@@ -168,7 +175,7 @@ class Configuration
     /**
      * Verbose getter.
      *
-     * @return boolean
+     * @return bool
      */
     public function getVerbose()
     {
@@ -178,7 +185,7 @@ class Configuration
     /**
      * Colors setter.
      *
-     * @param boolean $bool
+     * @param bool $bool
      */
     public function setColors($bool)
     {
@@ -188,7 +195,7 @@ class Configuration
     /**
      * Colors getter.
      *
-     * @return boolean
+     * @return bool
      */
     public function getColors()
     {
@@ -198,7 +205,7 @@ class Configuration
     /**
      * Debug setter.
      *
-     * @param boolean $bool
+     * @param bool $bool
      */
     public function setDebug($bool)
     {
@@ -208,11 +215,31 @@ class Configuration
     /**
      * Debug getter.
      *
-     * @return boolean
+     * @return bool
      */
     public function getDebug()
     {
         return $this->debug;
+    }
+
+    /**
+     * Simulate setter.
+     *
+     * @param bool $bool
+     */
+    public function setSimulate($bool)
+    {
+        $this->simulate = $bool;
+    }
+
+    /**
+     * Simulate getter.
+     *
+     * @return bool
+     */
+    public function isSimulation()
+    {
+        return $this->simulate;
     }
 
     /**
@@ -292,7 +319,7 @@ class Configuration
     }
 
     /**
-     * Get the list of backup configuration.
+     * Get the list of backup configurations.
      *
      * @return array
      */

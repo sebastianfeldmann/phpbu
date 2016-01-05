@@ -51,6 +51,18 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Configuration::setSimulate
+     */
+    public function testSimulate()
+    {
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
+        $this->assertEquals(false, $conf->isSimulation());
+        $conf->setSimulate(true);
+        $this->assertEquals(true, $conf->isSimulation());
+    }
+
+    /**
      * Tests Configuration::setBootstrap
      */
     public function testBootstrap()

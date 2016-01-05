@@ -40,6 +40,7 @@ class Args
         'debug'          => true,
         'help'           => true,
         'include-path='  => true,
+        'simulate'       => true,
         'verbose'        => true,
         'version'        => true
     );

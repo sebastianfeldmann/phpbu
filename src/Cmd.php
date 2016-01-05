@@ -164,6 +164,9 @@ class Cmd
                 case '--self-update':
                     $this->handleSelfUpdate();
                     break;
+                case '--simulate':
+                    $this->arguments['simulate'] = $argument;
+                    break;
                 case '-v':
                 case '--verbose':
                     $this->arguments['verbose'] = true;
@@ -242,17 +245,18 @@ class Cmd
         $configuration = $configLoader->getConfiguration();
 
         // command line arguments overrule the config file settings
-
         if (Arr::getValue($this->arguments, 'verbose') === true) {
             $configuration->setVerbose(true);
         }
-
         if (Arr::getValue($this->arguments, 'colors') === true) {
             $configuration->setColors(true);
         }
-
         if (Arr::getValue($this->arguments, 'debug') === true) {
             $configuration->setDebug(true);
+        }
+
+        if (Arr::getValue($this->arguments, 'simulate') === true) {
+            $configuration->setSimulate(true);
         }
 
         $bootstrap = Arr::getValue($this->arguments, 'bootstrap');

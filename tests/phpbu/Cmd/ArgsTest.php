@@ -87,6 +87,16 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test log option --simulate
+     */
+    public function testGetOptionsLongSimulate()
+    {
+        $args    = new Args();
+        $options = $args->getOptions(array('foo', '--simulate', 'bar'));
+        $this->assertTrue($options['--simulate'], 'long option --simulate must be set');
+    }
+
+    /**
      * Test log option --verbose
      */
     public function testGetOptionsLongVerbose()
