@@ -127,7 +127,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
         $printer->onBackupStart($this->getEventMock('Backup\\Start', $backup));
         $printer->onBackupEnd($this->getEventMock('Backup\\End', $backup));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'create backup') !== false);
+        $this->assertTrue(strpos($output, 'backup') !== false);
     }
 
     /**
@@ -222,7 +222,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
         $printer->onCryptEnd($this->getEventMock('Crypt\\End', $crypt));
         $output = ob_get_clean();
         $this->assertTrue(strpos($output, 'crypt') !== false);
-        $this->assertTrue(strpos($output, 'done') !== false);
+        $this->assertTrue(strpos($output, 'ok') !== false);
     }
 
     /**
@@ -282,7 +282,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
         $printer->onSyncStart($this->getEventMock('Sync\\Start', $sync));
         $printer->onSyncEnd($this->getEventMock('Sync\\End', $sync));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'sync start') !== false);
+        $this->assertTrue(strpos($output, 'sync') !== false);
     }
 
     /**
@@ -342,7 +342,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
         $printer->onCleanupStart($this->getEventMock('Cleanup\\Start', $cleanup));
         $printer->onCleanupEnd($this->getEventMock('Cleanup\\End', $cleanup));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'cleanup start') !== false);
+        $this->assertTrue(strpos($output, 'cleanup') !== false);
     }
 
     /**
