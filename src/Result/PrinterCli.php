@@ -5,7 +5,7 @@ use InvalidArgumentException;
 use phpbu\App\Event;
 use phpbu\App\Listener;
 use phpbu\App\Result;
-use phpbu\App\Util\Str;
+use phpbu\App\Util;
 use phpbu\App\Version;
 use PHP_Timer;
 use SebastianBergmann\Environment\Console;
@@ -45,23 +45,6 @@ class PrinterCli implements Listener
      * @var boolean
      */
     protected $debug;
-
-    /**
-     * List of console color codes.
-     *
-     * @var array
-     */
-    private static $ansiCodes = array(
-        'bold'       => 1,
-        'fg-black'   => 30,
-        'fg-red'     => 31,
-        'fg-yellow'  => 33,
-        'fg-cyan'    => 36,
-        'fg-white'   => 37,
-        'bg-red'     => 41,
-        'bg-green'   => 42,
-        'bg-yellow'  => 43
-    );
 
     /**
      * Amount of executed backups
@@ -147,24 +130,20 @@ class PrinterCli implements Listener
      */
     public function __construct($verbose = false, $colors = false, $debug = false)
     {
-        if (is_bool($verbose)) {
-            $this->verbose = $verbose;
-        } else {
+        if (!is_bool($verbose)) {
             throw new InvalidArgumentException('Expected $verbose to be of type boolean');
         }
-
-        if (is_bool($colors)) {
-            $console      = new Console;
-            $this->colors = $colors && $console->hasColorSupport();
-        } else {
+        if (!is_bool($colors)) {
             throw new InvalidArgumentException('Expected $colors to be of type boolean');
         }
-
-        if (is_bool($debug)) {
-            $this->debug = $debug;
-        } else {
+        if (!is_bool($debug)) {
             throw new InvalidArgumentException('Expected $debug to be of type boolean');
         }
+
+        $this->debug   = $debug;
+        $this->verbose = $verbose;
+        $console       = new Console;
+        $this->colors  = $colors && $console->hasColorSupport();
     }
 
     /**
@@ -193,7 +172,7 @@ class PrinterCli implements Listener
         $backup = $event->getConfiguration();
         $this->numBackups++;
         if ($this->debug) {
-            $this->write('create backup (' . $backup->getSource()->type . '): ');
+            $this->write(Util\Cli::formatWithAsterisk('backup: [' . $backup->getSource()->type . '] '));
         }
     }
 
@@ -205,10 +184,7 @@ class PrinterCli implements Listener
     public function onBackupFailed(Event\Backup\Failed $event)
     {
         if ($this->debug) {
-            $this->writeWithColor(
-                'fg-white, bg-red, bold',
-                'failed'
-            );
+            $this->writeWithColor('fg-white, bg-red, bold', 'failed' . PHP_EOL);
         }
     }
 
@@ -220,7 +196,7 @@ class PrinterCli implements Listener
     public function onBackupEnd(Event\Backup\End $event)
     {
         if ($this->debug) {
-            $this->write('done' . PHP_EOL);
+            $this->writeWithColor('fg-black, bg-green', 'ok' . PHP_EOL);
         }
     }
 
@@ -234,7 +210,7 @@ class PrinterCli implements Listener
         $check = $event->getConfiguration();
         $this->numChecks++;
         if ($this->debug) {
-            $this->write('check (' . $check->type . '): ');
+            $this->write(Util\Cli::formatWithAsterisk('check: [' . $check->type . '] '));
         }
     }
 
@@ -246,10 +222,7 @@ class PrinterCli implements Listener
     public function onCheckFailed(Event\Check\Failed $event)
     {
         if ($this->debug) {
-            $this->writeWithColor(
-                'fg-white, bg-red, bold',
-                'failed'
-            );
+            $this->writeWithColor('fg-white, bg-red, bold', 'failed' . PHP_EOL);
         }
     }
 
@@ -261,7 +234,7 @@ class PrinterCli implements Listener
     public function onCheckEnd(Event\Check\End $event)
     {
         if ($this->debug) {
-            $this->write('passed' . PHP_EOL);
+            $this->writeWithColor('fg-black, bg-green', 'ok' . PHP_EOL);
         }
     }
 
@@ -275,7 +248,7 @@ class PrinterCli implements Listener
         $crypt = $event->getConfiguration();
         $this->numCrypts++;
         if ($this->debug) {
-            $this->write('crypt (' . $crypt->type . '): ');
+            $this->write(Util\Cli::formatWithAsterisk('crypt: [' . $crypt->type . '] '));
         }
     }
 
@@ -287,10 +260,7 @@ class PrinterCli implements Listener
     public function onCryptSkipped(Event\Crypt\Skipped $event)
     {
         if ($this->debug) {
-            $this->writeWithColor(
-                'fg-black, bg-yellow',
-                'skipped'
-            );
+            $this->writeWithColor('fg-black, bg-yellow', 'skipped' . PHP_EOL);
         }
     }
 
@@ -302,10 +272,7 @@ class PrinterCli implements Listener
     public function onCryptFailed(Event\Crypt\Failed $event)
     {
         if ($this->debug) {
-            $this->writeWithColor(
-                'fg-white, bg-red, bold',
-                'failed'
-            );
+            $this->writeWithColor('fg-white, bg-red, bold', 'failed' . PHP_EOL);
         }
     }
 
@@ -317,7 +284,7 @@ class PrinterCli implements Listener
     public function onCryptEnd(Event\Crypt\End $event)
     {
         if ($this->debug) {
-            $this->write('done' . PHP_EOL);
+            $this->writeWithColor('fg-black, bg-green', 'ok' . PHP_EOL);
         }
     }
 
@@ -331,7 +298,7 @@ class PrinterCli implements Listener
         $sync = $event->getConfiguration();
         $this->numSyncs++;
         if ($this->debug) {
-            $this->write('sync start (' . $sync->type . '): ');
+            $this->write(Util\Cli::formatWithAsterisk('sync: [' . $sync->type . '] '));
         }
     }
 
@@ -343,10 +310,7 @@ class PrinterCli implements Listener
     public function onSyncSkipped(Event\Sync\Skipped $event)
     {
         if ($this->debug) {
-            $this->writeWithColor(
-                'fg-black, bg-yellow',
-                'skipped'
-            );
+            $this->writeWithColor('fg-black, bg-yellow', 'skipped' . PHP_EOL);
         }
     }
 
@@ -358,10 +322,7 @@ class PrinterCli implements Listener
     public function onSyncFailed(Event\Sync\Failed $event)
     {
         if ($this->debug) {
-            $this->writeWithColor(
-                'fg-white, bg-red, bold',
-                'failed'
-            );
+            $this->writeWithColor('fg-white, bg-red, bold', 'failed' . PHP_EOL);
         }
     }
 
@@ -373,7 +334,7 @@ class PrinterCli implements Listener
     public function onSyncEnd(Event\Sync\End $event)
     {
         if ($this->debug) {
-            $this->write('done' . PHP_EOL);
+            $this->writeWithColor('fg-black, bg-green', 'ok' . PHP_EOL);
         }
     }
 
@@ -387,7 +348,7 @@ class PrinterCli implements Listener
         $cleanup = $event->getConfiguration();
         $this->numCleanups++;
         if ($this->debug) {
-            $this->write('cleanup start (' . $cleanup->type . '): ');
+            $this->write(Util\Cli::formatWithAsterisk('cleanup: [' . $cleanup->type . '] '));
         }
     }
 
@@ -399,10 +360,7 @@ class PrinterCli implements Listener
     public function onCleanupSkipped(Event\Cleanup\Skipped $event)
     {
         if ($this->debug) {
-            $this->writeWithColor(
-                'fg-black, bg-yellow',
-                'skipped'
-            );
+            $this->writeWithColor('fg-black, bg-yellow', 'skipped' . PHP_EOL);
         }
     }
 
@@ -414,10 +372,7 @@ class PrinterCli implements Listener
     public function onCleanupFailed(Event\Cleanup\Failed $event)
     {
         if ($this->debug) {
-            $this->writeWithColor(
-                'fg-white, bg-red, bold',
-                'failed'
-            );
+            $this->writeWithColor('fg-white, bg-red, bold', 'failed' . PHP_EOL);
         }
     }
 
@@ -429,7 +384,7 @@ class PrinterCli implements Listener
     public function onCleanupEnd(Event\Cleanup\End $event)
     {
         if ($this->debug) {
-            $this->write('done' . PHP_EOL);
+            $this->writeWithColor('fg-black, bg-green', 'ok' . PHP_EOL);
         }
     }
 
@@ -441,7 +396,7 @@ class PrinterCli implements Listener
     public function onDebug(Event\Debug $event)
     {
         if ($this->debug) {
-            $this->write($event->getMessage() . PHP_EOL);
+            $this->write(wordwrap($event->getMessage(), 70, PHP_EOL, true) . PHP_EOL);
         }
     }
 
@@ -528,16 +483,16 @@ class PrinterCli implements Listener
             );
         }
         $chExecuted = str_pad($backup->checkCount(), 8, ' ', STR_PAD_LEFT);
-        $chFailed = str_pad($backup->checkCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $chFailed   = str_pad($backup->checkCountFailed(), 6, ' ', STR_PAD_LEFT);
         $crExecuted = str_pad($backup->cryptCount(), 8, ' ', STR_PAD_LEFT);
-        $crSkipped = str_pad($backup->cryptCountSkipped(), 7, ' ', STR_PAD_LEFT);
-        $crFailed = str_pad($backup->cryptCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $crSkipped  = str_pad($backup->cryptCountSkipped(), 7, ' ', STR_PAD_LEFT);
+        $crFailed   = str_pad($backup->cryptCountFailed(), 6, ' ', STR_PAD_LEFT);
         $syExecuted = str_pad($backup->syncCount(), 8, ' ', STR_PAD_LEFT);
-        $sySkipped = str_pad($backup->syncCountSkipped(), 7, ' ', STR_PAD_LEFT);
-        $syFailed = str_pad($backup->syncCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $sySkipped  = str_pad($backup->syncCountSkipped(), 7, ' ', STR_PAD_LEFT);
+        $syFailed   = str_pad($backup->syncCountFailed(), 6, ' ', STR_PAD_LEFT);
         $clExecuted = str_pad($backup->cleanupCount(), 8, ' ', STR_PAD_LEFT);
-        $clSkipped = str_pad($backup->cleanupCountSkipped(), 7, ' ', STR_PAD_LEFT);
-        $clFailed = str_pad($backup->cleanupCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $clSkipped  = str_pad($backup->cleanupCountSkipped(), 7, ' ', STR_PAD_LEFT);
+        $clFailed   = str_pad($backup->cleanupCountFailed(), 6, ' ', STR_PAD_LEFT);
 
         $out = PHP_EOL . '          | executed | skipped | failed |' . PHP_EOL
             . '----------+----------+---------+--------+' . PHP_EOL
@@ -568,15 +523,15 @@ class PrinterCli implements Listener
                 sprintf(
                     'OK (%d %s, %d %s, %d %s, %d %s, %d %s)' . PHP_EOL,
                     count($result->getBackups()),
-                    Str::appendPluralS('backup', count($result->getBackups())),
+                    Util\Str::appendPluralS('backup', count($result->getBackups())),
                     $this->numChecks,
-                    Str::appendPluralS('check', $this->numChecks),
+                    Util\Str::appendPluralS('check', $this->numChecks),
                     $this->numCrypts,
-                    Str::appendPluralS('crypt', $this->numCrypts),
+                    Util\Str::appendPluralS('crypt', $this->numCrypts),
                     $this->numSyncs,
-                    Str::appendPluralS('sync', $this->numSyncs),
+                    Util\Str::appendPluralS('sync', $this->numSyncs),
                     $this->numCleanups,
-                    Str::appendPluralS('cleanup', $this->numCleanups)
+                    Util\Str::appendPluralS('cleanup', $this->numCleanups)
                 )
             );
         } elseif ($result->backupOkButSkipsOrFails()) {
@@ -611,38 +566,6 @@ class PrinterCli implements Listener
     }
 
     /**
-     * Formats a buffer with a specified ANSI color sequence if colors are enabled.
-     *
-     * @author Sebastian Bergmann <sebastian@phpunit.de>
-     * @param  string $color
-     * @param  string $buffer
-     * @return string
-     */
-    protected function formatWithColor($color, $buffer)
-    {
-        if (!$this->colors) {
-            return $buffer;
-        }
-
-        $codes   = array_map('trim', explode(',', $color));
-        $lines   = explode("\n", $buffer);
-        $padding = max(array_map('strlen', $lines));
-
-        $styles = array();
-        foreach ($codes as $code) {
-            $styles[] = self::$ansiCodes[$code];
-        }
-        $style = sprintf("\x1b[%sm", implode(';', $styles));
-
-        $styledLines = array();
-        foreach ($lines as $line) {
-            $styledLines[] = $style . str_pad($line, $padding) . "\x1b[0m";
-        }
-
-        return implode(PHP_EOL, $styledLines);
-    }
-
-    /**
      * Writes a buffer out with a color sequence if colors are enabled.
      *
      * @author Sebastian Bergmann <sebastian@phpunit.de>
@@ -651,7 +574,9 @@ class PrinterCli implements Listener
      */
     protected function writeWithColor($color, $buffer)
     {
-        $buffer = $this->formatWithColor($color, $buffer);
+        if ($this->colors) {
+            $buffer = Util\Cli::formatWithColor($color, $buffer);
+        }
         $this->write($buffer . PHP_EOL);
     }
 

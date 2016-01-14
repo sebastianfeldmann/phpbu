@@ -24,6 +24,23 @@ abstract class Cli
     private static $basePaths = [];
 
     /**
+     * List of console color codes.
+     *
+     * @var array
+     */
+    private static $ansiCodes = [
+        'bold'       => 1,
+        'fg-black'   => 30,
+        'fg-red'     => 31,
+        'fg-yellow'  => 33,
+        'fg-cyan'    => 36,
+        'fg-white'   => 37,
+        'bg-red'     => 41,
+        'bg-green'   => 42,
+        'bg-yellow'  => 43
+    ];
+
+    /**
      * Optional command locations
      *
      * @var array
@@ -247,6 +264,46 @@ abstract class Cli
             }
         }
         return $file;
+    }
+
+    /**
+     * Formats a buffer with a specified ANSI color sequence if colors are enabled.
+     *
+     * @author Sebastian Bergmann <sebastian@phpunit.de>
+     * @param  string $color
+     * @param  string $buffer
+     * @return string
+     */
+    public static function formatWithColor($color, $buffer)
+    {
+        $codes   = array_map('trim', explode(',', $color));
+        $lines   = explode("\n", $buffer);
+        $padding = max(array_map('strlen', $lines));
+
+        $styles = [];
+        foreach ($codes as $code) {
+            $styles[] = self::$ansiCodes[$code];
+        }
+        $style = sprintf("\x1b[%sm", implode(';', $styles));
+
+        $styledLines = [];
+        foreach ($lines as $line) {
+            $styledLines[] = strlen($line) ? $style . str_pad($line, $padding) . "\x1b[0m" : '';
+        }
+
+        return implode(PHP_EOL, $styledLines);
+    }
+
+    /**
+     * Fills up a text buffer with '*' to consume 72 chars.
+     *
+     * @param  string $buffer
+     * @param  int    $length
+     * @return string
+     */
+    public static function formatWithAsterisk($buffer, $length = 75)
+    {
+        return $buffer . str_repeat('*', $length - strlen($buffer)) . PHP_EOL;
     }
 
     /**
