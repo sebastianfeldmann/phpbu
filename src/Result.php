@@ -487,7 +487,7 @@ class Result
     }
 
     /**
-     * Return amount of skipped cleanups
+     * Return amount of skipped cleanups.
      *
      * @return integer
      */
@@ -511,7 +511,7 @@ class Result
     }
 
     /**
-     * Return amount of failed cleanups
+     * Return amount of failed cleanups.
      *
      * @return integer
      */
