@@ -172,7 +172,7 @@ class PrinterCli implements Listener
         $backup = $event->getConfiguration();
         $this->numBackups++;
         if ($this->debug) {
-            $this->write(Util\Cli::formatWithAsterisk('backup: [' . $backup->getSource()->type . '] '));
+            $this->writeWithAsterisk('backup: [' . $backup->getSource()->type . '] ');
         }
     }
 
@@ -210,7 +210,7 @@ class PrinterCli implements Listener
         $check = $event->getConfiguration();
         $this->numChecks++;
         if ($this->debug) {
-            $this->write(Util\Cli::formatWithAsterisk('check: [' . $check->type . '] '));
+            $this->writeWithAsterisk('check: [' . $check->type . '] ');
         }
     }
 
@@ -248,7 +248,7 @@ class PrinterCli implements Listener
         $crypt = $event->getConfiguration();
         $this->numCrypts++;
         if ($this->debug) {
-            $this->write(Util\Cli::formatWithAsterisk('crypt: [' . $crypt->type . '] '));
+            $this->writeWithAsterisk('crypt: [' . $crypt->type . '] ');
         }
     }
 
@@ -298,7 +298,7 @@ class PrinterCli implements Listener
         $sync = $event->getConfiguration();
         $this->numSyncs++;
         if ($this->debug) {
-            $this->write(Util\Cli::formatWithAsterisk('sync: [' . $sync->type . '] '));
+            $this->writeWithAsterisk('sync: [' . $sync->type . '] ');
         }
     }
 
@@ -348,7 +348,7 @@ class PrinterCli implements Listener
         $cleanup = $event->getConfiguration();
         $this->numCleanups++;
         if ($this->debug) {
-            $this->write(Util\Cli::formatWithAsterisk('cleanup: [' . $cleanup->type . '] '));
+            $this->writeWithAsterisk('cleanup: [' . $cleanup->type . '] ');
         }
     }
 
@@ -578,6 +578,16 @@ class PrinterCli implements Listener
             $buffer = Util\Cli::formatWithColor($color, $buffer);
         }
         $this->write($buffer . PHP_EOL);
+    }
+
+    /**
+     * Writes a buffer with Ansible like asterisk decoration.
+     *
+     * @param string $buffer
+     */
+    protected function writeWithAsterisk($buffer)
+    {
+        $this->write(Util\Cli::formatWithAsterisk($buffer));
     }
 
     /**
