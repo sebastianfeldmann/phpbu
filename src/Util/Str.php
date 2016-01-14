@@ -46,8 +46,8 @@ class Str
     public static function replaceTargetPlaceholders($string, $target)
     {
         $targetDir  = dirname($target);
-        $search     = array('%TARGET_DIR%', '%TARGET_FILE%');
-        $replace    = array($targetDir, $target);
+        $search     = ['%TARGET_DIR%', '%TARGET_FILE%'];
+        $replace    = [$targetDir, $target];
         return str_replace($search, $replace, $string);
     }
 
@@ -104,7 +104,7 @@ class Str
         if (!preg_match('#^[0-9]*[BKMGT]$#i', $value)) {
             throw new RuntimeException('Invalid size value');
         }
-        $units  = array('B' => 0, 'K' => 1, 'M' => 2, 'G' => 3, 'T' => 4, 'P' => 5);
+        $units  = ['B' => 0, 'K' => 1, 'M' => 2, 'G' => 3, 'T' => 4, 'P' => 5];
         $unit   = strtoupper(substr($value, -1));
         $number = intval(substr($value, 0, -1));
 
@@ -135,7 +135,7 @@ class Str
         if (!preg_match('#^[1-9]+[0-9]*[SIHDWMY]$#i', $offset)) {
             throw new RuntimeException(sprintf('Invalid value for offset: %s', $offset));
         }
-        $units  = array('S' => 1, 'I' => 60, 'H' => 3600, 'D' => 86400, 'W' => 604800, 'M' => 2678400, 'Y' => 31536000);
+        $units  = ['S' => 1, 'I' => 60, 'H' => 3600, 'D' => 86400, 'W' => 604800, 'M' => 2678400, 'Y' => 31536000];
         $unit   = strtoupper(substr($offset, -1));
         $number = intval(substr($offset, 0, -1));
 
@@ -153,7 +153,7 @@ class Str
      */
     public static function padAll(array $strings, $length, $pad = ' ', $mode = STR_PAD_LEFT)
     {
-        $result = array();
+        $result = [];
         foreach ($strings as $key => $s) {
             $result[$key] = str_pad($s, $length, $pad, $mode);
         }
@@ -170,7 +170,7 @@ class Str
      */
     public static function toList($separated, $separator = ',', $trim = true)
     {
-        $list = empty($separated) ? array() : explode($separator, $separated);
+        $list = empty($separated) ? [] : explode($separator, $separated);
         if ($trim) {
             $list = array_map('trim', $list);
         }
