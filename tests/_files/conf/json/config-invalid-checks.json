@@ -1,0 +1,65 @@
+{
+  "verbose": false,
+  "colors": true,
+  "bootstrap": "backup/bootstrap.php",
+  "php": {
+    "includePath": ["."],
+    "ini": {
+      "max_execution_time": 0
+    }
+  },
+  "logging": [
+    {
+      "type": "json",
+      "target": "backup/json.log"
+    }
+  ],
+  "backups": [
+    {
+      "name": "tarball",
+      "source": {
+        "type": "tar",
+        "options": {
+          "path": "src"
+        }
+      },
+      "target": {
+        "dirname": "backup/src",
+        "filename": "tarball-%Y%m%d-%H%i.tar",
+        "compress": "bzip2"
+      },
+      "checks": [
+        {
+          "type": "SizeMin"
+        },
+        {
+          "value": "10M"
+        }
+      ],
+      "crypt": {
+        "type": "openssl",
+        "options": {
+          "certFile": "myCertificate.pem",
+          "algorithm": "aes256",
+          "keepUncryptedFile": "false",
+          "showStdError": "false"
+        }
+      },
+      "syncs": [
+        {
+          "type": "dropbox",
+          "options": {
+            "token": "someCrazyDropboxToken",
+            "path": "/phpbu-backup/%Y"
+          }
+        }
+      ],
+      "cleanup": {
+        "type": "Capacity",
+        "options": {
+          "size": "5M"
+        }
+      }
+    }
+  ]
+}

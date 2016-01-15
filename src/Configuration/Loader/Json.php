@@ -205,7 +205,7 @@ class Json extends File implements Loader
         if (!isset($json['source'])) {
             throw new Exception('backup requires exactly one source config');
         }
-        if (!$json['source']['type']) {
+        if (!isset($json['source']['type'])) {
             throw new Exception('source requires type');
         }
 

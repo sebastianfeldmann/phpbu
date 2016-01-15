@@ -1,0 +1,54 @@
+{
+  "verbose": true,
+  "logging": [
+    {
+      "type": "json",
+      "target": "backup/json.log"
+    }
+  ],
+  "backups": [
+    {
+      "name": "sourcecode",
+      "source": {
+        "type": "tar",
+        "options": {
+          "path": "src"
+        }
+      },
+      "target": {
+        "dirname": "backup/src",
+        "filename": "tarball-%Y%m%d-%H%i.tar",
+        "compress": "bzip2"
+      },
+      "checks": [
+        {
+          "type": "sizemin",
+          "value": "1B"
+        }
+      ],
+      "crypt": {
+        "type": "openssl",
+        "options": {
+          "certFile": "myCertificate.pem",
+          "algorithm": "aes256",
+          "keepUncryptedFile": "false",
+          "showStdError": "false"
+        }
+      },
+      "syncs": [
+        {
+          "type": "dropbox",
+          "options": {
+            "token": "someCrazyDropboxToken",
+            "path": "/phpbu-backup/%Y"
+          }
+        }
+      ],
+      "cleanup": {
+        "options": {
+          "size": "5M"
+        }
+      }
+    }
+  ]
+}
