@@ -2,7 +2,7 @@
 namespace phpbu\App\Configuration\Loader;
 
 /**
- * Configuration test
+ * Xml Configuration Loader test
  *
  * @package    phpbu
  * @subpackage tests
@@ -32,7 +32,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNoXml()
     {
-        $json   = realpath(__DIR__ . '/../../../_files/conf/config-no-xml.json');
+        $json   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-xml.json');
         $loader = new Xml($json);
         $this->assertFalse($loader, 'exception should be thrown');
     }
@@ -44,7 +44,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupNoTarget()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/config-no-target.xml');
+        $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-target.xml');
         $loader = new Xml($file);
         $config = $loader->getConfiguration();
         $this->assertFalse($config, 'exception should be thrown');
@@ -57,7 +57,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupNoSource()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/config-no-source.xml');
+        $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-source.xml');
         $loader = new Xml($file);
         $config = $loader->getConfiguration();
         $this->assertFalse($config, 'exception should be thrown');
@@ -70,7 +70,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNoSourceType()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/config-no-source-type.xml');
+        $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-source-type.xml');
         $loader = new Xml($file);
         $config = $loader->getConfiguration();
         $this->assertFalse($config, 'exception should be thrown');
@@ -83,7 +83,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNoLoggerType()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/config-no-logger-type.xml');
+        $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-logger-type.xml');
         $loader = new Xml($file);
         $config = $loader->getConfiguration();
         $this->assertFalse($config, 'exception should be thrown');
@@ -96,7 +96,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNoCleanupType()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/config-no-cleanup-type.xml');
+        $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-cleanup-type.xml');
         $loader = new Xml($file);
         $config = $loader->getConfiguration();
         $this->assertFalse($config, 'exception should be thrown');
@@ -109,7 +109,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNoCryptType()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/config-no-crypt-type.xml');
+        $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-crypt-type.xml');
         $loader = new Xml($file);
         $config = $loader->getConfiguration();
         $this->assertFalse($config, 'exception should be thrown');
@@ -122,7 +122,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNoSyncType()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/config-no-sync-type.xml');
+        $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-sync-type.xml');
         $loader = new Xml($file);
         $config = $loader->getConfiguration();
         $this->assertFalse($config, 'exception should be thrown');
@@ -133,7 +133,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testAppSettings()
     {
-        $dir    = realpath(__DIR__ . '/../../../_files/conf');
+        $dir    = realpath(__DIR__ . '/../../../_files/conf/xml');
         $file   = 'config-valid.xml';
         $loader = new Xml($dir . '/' . $file);
         $config = $loader->getConfiguration();
@@ -148,7 +148,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testPhpSettings()
     {
-        $dir    = realpath(__DIR__ . '/../../../_files/conf');
+        $dir    = realpath(__DIR__ . '/../../../_files/conf/xml');
         $file   = 'config-valid.xml';
         $loader = new Xml($dir . '/' . $file);
         $conf   = $loader->getConfiguration();
@@ -165,7 +165,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupSettings()
     {
-        $dir      = realpath(__DIR__ . '/../../../_files/conf');
+        $dir      = realpath(__DIR__ . '/../../../_files/conf/xml');
         $file     = 'config-valid.xml';
         $loader   = new Xml($dir . '/' . $file);
         $conf     = $loader->getConfiguration();
@@ -198,7 +198,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupSettingsInvalidChecks()
     {
-        $xml     = realpath(__DIR__ . '/../../../_files/conf/config-invalid-checks.xml');
+        $xml     = realpath(__DIR__ . '/../../../_files/conf/xml/config-invalid-checks.xml');
         $loader  = new Xml($xml);
         $conf    = $loader->getConfiguration();
         $backups = $conf->getBackups();
@@ -215,7 +215,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoggingSettings()
     {
-        $dir     = realpath(__DIR__ . '/../../../_files/conf');
+        $dir     = realpath(__DIR__ . '/../../../_files/conf/xml');
         $file    = 'config-valid.xml';
         $loader  = new Xml($dir . '/' . $file);
         $conf    = $loader->getConfiguration();
@@ -232,7 +232,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
      */
     public function testAppLoggingSettingsWithOption()
     {
-        $xml     = realpath(__DIR__ . '/../../../_files/conf/config-logging.xml');
+        $xml     = realpath(__DIR__ . '/../../../_files/conf/xml/config-logging.xml');
         $loader  = new Xml($xml);
         $conf    = $loader->getConfiguration();
         $loggers = $conf->getLoggers();

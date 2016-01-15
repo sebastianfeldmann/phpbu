@@ -199,7 +199,7 @@ class CliTest extends \PHPUnit_Framework_TestCase
      */
     public function testToAbsolutePathWIthIncludePath()
     {
-        $filesDir = realpath(__DIR__ . '/../../_files/conf');
+        $filesDir = realpath(__DIR__ . '/../../_files/conf/xml');
         set_include_path(get_include_path() . PATH_SEPARATOR . $filesDir);
         $res = Cli::toAbsolutePath('config-valid.xml', '', true);
 
