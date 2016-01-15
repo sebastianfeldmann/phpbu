@@ -187,11 +187,11 @@ class CliTest extends \PHPUnit_Framework_TestCase
      */
     public function providerWindowsPaths()
     {
-        return array(
-            array('C:\foo', true),
-            array('\\foo\\bar', true),
-            array('..\\foo', false),
-        );
+        return [
+            ['C:\foo', true],
+            ['\\foo\\bar', true],
+            ['..\\foo', false],
+        ];
     }
 
     /**
@@ -225,6 +225,40 @@ class CliTest extends \PHPUnit_Framework_TestCase
     public function testGetBaseNotRegistered()
     {
         Cli::getBase('fooish');
+    }
+
+    /**
+     * Tests Cli::formatWithColor
+     */
+    public function testFormatWithColor()
+    {
+        $plainText   = 'Mein Test';
+        $coloredText = Cli::formatWithColor('fg-black, bg-green', $plainText);
+
+        $this->assertTrue(strpos($coloredText, "\x1b[0m") !== false);
+    }
+
+    /**
+     * Tests Cli::formatWithColor
+     */
+    public function testFormatWithColorEmptyLine()
+    {
+        $plainText   = '';
+        $coloredText = Cli::formatWithColor('fg-black, bg-green', $plainText);
+
+        $this->assertTrue(strpos($coloredText, "\x1b[0m") === false);
+    }
+
+    /**
+     * Tests Cli::formatWithAsterisk
+     */
+    public function testFormatWithAsterisk()
+    {
+        $plainText     = 'Mein Test ';
+        $decoratedText = Cli::formatWithAsterisk($plainText);
+
+        $this->assertEquals(75, strlen(trim($decoratedText)));
+        $this->assertTrue(strpos($decoratedText, '*') !== false);
     }
 
     /**
