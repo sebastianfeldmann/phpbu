@@ -24,7 +24,7 @@ class Json extends File implements Listener, Logger
      *
      * @var array
      */
-    protected $debug = array();
+    protected $debug = [];
 
     /**
      * Returns an array of event names this subscriber wants to listen to.
@@ -40,10 +40,10 @@ class Json extends File implements Listener, Logger
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             'phpbu.debug'     => 'onDebug',
             'phpbu.app_end' => 'onPhpbuEnd',
-        );
+        ];
     }
 
     /**
@@ -69,13 +69,13 @@ class Json extends File implements Listener, Logger
     public function onPhpbuEnd(Event\App\End $event)
     {
         $result = $event->getResult();
-        $output = array(
+        $output = [
             'status'    => $result->allOk() ? 0 : 1,
             'timestamp' => time(),
             'errors'    => $this->extractErrors($result),
             'debug'     => $this->debug,
             'backups'   => $this->extractBackups($result)
-        );
+        ];
         $this->write($output);
         $this->close();
     }
@@ -107,15 +107,15 @@ class Json extends File implements Listener, Logger
      */
     protected function extractErrors(Result $result)
     {
-        $errors = array();
+        $errors = [];
         /** @var \Exception $e */
         foreach ($result->getErrors() as $e) {
-            $errors[] = array(
+            $errors[] = [
                 'class' => get_class($e),
                 'msg'   => $e->getMessage(),
                 'file'  => $e->getFile(),
                 'line'  => $e->getLine()
-            );
+            ];
         }
         return $errors;
     }
@@ -128,32 +128,36 @@ class Json extends File implements Listener, Logger
      */
     protected function extractBackups(Result $result)
     {
-        $output = array();
+        $output = [];
         $backups = $result->getBackups();
         if (count($backups) > 0) {
             /** @var \phpbu\App\Result\Backup $backup */
             foreach ($backups as $backup) {
-                $output[] = array(
+                $output[] = [
                     'name'   => $backup->getName(),
                     'status' => $backup->wasSuccessful() ? 0 : 1,
-                    'checks' => array(
+                    'checks' => [
                         'executed' => $backup->checkCount(),
                         'failed'   => $backup->checkCountFailed()
-                    ),
-                    'syncs' => array(
+                    ],
+                    'crypt' => [
+                        'executed' => $backup->cryptCount(),
+                        'skipped'  => $backup->cryptCountSkipped(),
+                        'failed'   => $backup->cryptCountFailed()
+                    ],
+                    'syncs' => [
                         'executed' => $backup->syncCount(),
                         'skipped'  => $backup->syncCountSkipped(),
                         'failed'   => $backup->syncCountFailed()
-                    ),
-                    'cleanups' => array(
+                    ],
+                    'cleanups' => [
                         'executed' => $backup->cleanupCount(),
                         'skipped'  => $backup->cleanupCountSkipped(),
                         'failed'   => $backup->cleanupCountFailed()
-                    )
-                );
+                    ]
+                ];
             }
         }
-
         return $output;
     }
 }
