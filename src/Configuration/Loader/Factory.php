@@ -2,7 +2,6 @@
 namespace phpbu\App\Configuration\Loader;
 
 /**
- *
  * Factory class for file based Configuration Loader.
  *
  * @package    phpbu
@@ -27,10 +26,10 @@ abstract class Factory
      *
      * @var array
      */
-    private static $extToLoaderMap = array(
+    private static $extToLoaderMap = [
         'xml'  => 'Xml',
         'json' => 'Json',
-    );
+    ];
 
     /**
      * Create a Configuration Loader based on the file to load.
