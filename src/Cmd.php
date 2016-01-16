@@ -254,7 +254,6 @@ class Cmd
         if (Arr::getValue($this->arguments, 'debug') === true) {
             $configuration->setDebug(true);
         }
-
         if (Arr::getValue($this->arguments, 'simulate') === true) {
             $configuration->setSimulate(true);
         }
@@ -269,7 +268,7 @@ class Cmd
             new Result\PrinterCli(
                 $configuration->getVerbose(),
                 $configuration->getColors(),
-                $configuration->getDebug()
+                ($configuration->getDebug() || $configuration->isSimulation())
             )
         );
         return $configuration;
