@@ -2,7 +2,7 @@
 /**
  * phpbu
  *
- * Copyright (c) 2014 - 2015 Sebastian Feldmann <sebastian@phpbu.de>
+ * Copyright (c) 2014 - 2016 Sebastian Feldmann <sebastian@phpbu.de>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -245,19 +245,12 @@ class Cmd
         $configuration = $configLoader->getConfiguration();
 
         // command line arguments overrule the config file settings
-        if (Arr::getValue($this->arguments, 'verbose') === true) {
-            $configuration->setVerbose(true);
-        }
-        if (Arr::getValue($this->arguments, 'colors') === true) {
-            $configuration->setColors(true);
-        }
-        if (Arr::getValue($this->arguments, 'debug') === true) {
-            $configuration->setDebug(true);
-        }
-        if (Arr::getValue($this->arguments, 'simulate') === true) {
-            $configuration->setSimulate(true);
-        }
+        $this->overrideConfigWithArgument($configuration, 'verbose');
+        $this->overrideConfigWithArgument($configuration, 'colors');
+        $this->overrideConfigWithArgument($configuration, 'debug');
+        $this->overrideConfigWithArgument($configuration, 'simulate');
 
+        // check for command line bootstrap option
         $bootstrap = Arr::getValue($this->arguments, 'bootstrap');
         if (!empty($bootstrap)) {
             $configuration->setBootstrap($bootstrap);
@@ -272,6 +265,20 @@ class Cmd
             )
         );
         return $configuration;
+    }
+
+    /**
+     * Override configuration settings with command line arguments.
+     *
+     * @param \phpbu\App\Configuration $configuration
+     * @param string                   $value
+     */
+    protected function overrideConfigWithArgument(Configuration $configuration, $value)
+    {
+        if (Arr::getValue($this->arguments, $value) === true) {
+            $setter = 'set' . ucfirst($value);
+            $configuration->{$setter}(true);
+        }
     }
 
     /**
