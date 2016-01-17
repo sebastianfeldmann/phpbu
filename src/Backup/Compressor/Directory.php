@@ -3,7 +3,6 @@ namespace phpbu\App\Backup\Compressor;
 
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable\Tar;
-use phpbu\App\Exception;
 use phpbu\App\Result;
 
 /**
@@ -17,7 +16,7 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.1
  */
-class Directory extends Abstraction
+class Directory extends Abstraction implements Executable
 {
     /**
      * Validate path.
