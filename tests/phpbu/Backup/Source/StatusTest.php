@@ -40,7 +40,7 @@ class StatusTest extends \PHPUnit_Framework_TestCase
      */
     public function testUncompressedDataPath()
     {
-        $status = Status::create()->uncompressed()->dataPath('/foo');
+        $status = Status::create()->uncompressed('/foo');
 
         $this->assertFalse($status->handledCompression());
         $this->assertEquals('/foo', $status->getDataPath());
