@@ -49,7 +49,12 @@ class FileTest extends CliTest
      */
     public function testNoFile()
     {
-        $file = new File(__DIR__);
+        $file   = new File(__DIR__);
+        $result = $this->getAppResultMock();
+        $target = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
+        $target->method('getCompressor')->willReturn($this->getCompressorMock('gzip', 'gz'));
+
+        $file->compress($target, $result);
     }
 
     /**

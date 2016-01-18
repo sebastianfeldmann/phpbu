@@ -53,7 +53,12 @@ class DirectoryTest extends CliTest
      */
     public function testNoDir()
     {
-        $dir = new Directory(__FILE__);
+        $dir    = new Directory(__FILE__);
+        $result = $this->getAppResultMock();
+        $target = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
+        $target->method('getCompressor')->willReturn($this->getCompressorMock('gzip', 'gz'));
+
+        $dir->compress($target, $result);
     }
 
     /**
