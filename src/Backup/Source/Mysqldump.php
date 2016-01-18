@@ -20,7 +20,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Mysqldump extends Cli implements Source
+class Mysqldump extends Cli implements Source, Simulator
 {
     /**
      * Path to executable.
@@ -232,5 +232,18 @@ class Mysqldump extends Cli implements Source
                              ->showStdErr($this->showStdErr);
         }
         return $this->executable;
+    }
+
+    /**
+     * Simulate the backup execution.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Result        $result
+     * @return \phpbu\App\Backup\Source\Status
+     */
+    public function simulate(Target $target, Result $result)
+    {
+        $result->debug($this->getExecutable($target)->getCommandLine());
+
     }
 }
