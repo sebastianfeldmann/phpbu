@@ -2,8 +2,8 @@
 namespace phpbu\App;
 
 use phpbu\App\Backup;
-use phpbu\App\Backup\Compressor;
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Compressor;
 use phpbu\App\Backup\Target;
 
 /**
@@ -41,6 +41,13 @@ class Runner
     protected $failure;
 
     /**
+     * App Configuration
+     *
+     * @var \phpbu\App\Configuration
+     */
+    protected $configuration;
+
+    /**
      * Constructor
      *
      * @param \phpbu\App\Factory $factory
@@ -62,12 +69,13 @@ class Runner
         // TODO: don't rely on static/global settings this is ugly
         Util\Cli::registerBase('configuration', $configuration->getWorkingDirectory());
 
-        $stop         = false;
-        $this->result = new Result();
-        $this->result->phpbuStart($configuration);
+        $stop                = false;
+        $this->result        = new Result();
+        $this->configuration = $configuration;
 
         $this->setupEnvironment($configuration);
         $this->setupLoggers($configuration);
+        $this->result->phpbuStart($configuration);
 
         // create backups
         /** @var \phpbu\App\Configuration\Backup $backup */
@@ -192,9 +200,10 @@ class Runner
     protected function executeSource(Configuration\Backup $conf, Target $target)
     {
         $this->result->backupStart($conf);
+        /* @var \phpbu\App\Runner\Source $runner */
         $source = $this->factory->createSource($conf->getSource()->type, $conf->getSource()->options);
         $runner = $this->factory->createRunner('source');
-        $runner->run($source, $target, $this->result);
+        $runner->run($source, $target, $this->result, $this->configuration->isSimulation());
         $this->result->backupEnd($conf);
     }
 
