@@ -153,7 +153,7 @@ class Arangodump extends Cli implements Source
             throw new Exception('arangodump failed');
         }
 
-        return Status::create()->uncompressed()->dataPath($this->getDumpDir($target));
+        return Status::create()->uncompressed($this->getDumpDir($target));
     }
 
     /**

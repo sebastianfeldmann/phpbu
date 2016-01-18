@@ -152,7 +152,7 @@ class Mysqldump extends Cli implements Source
      * @param  array $conf
      * @throws \phpbu\App\Exception
      */
-    public function setup(array $conf = array())
+    public function setup(array $conf = [])
     {
         $this->setupSourceData($conf);
 
@@ -203,7 +203,7 @@ class Mysqldump extends Cli implements Source
             throw new Exception('mysqldump failed');
         }
 
-        return Status::create()->uncompressed()->dataPath($this->dumpPathname);
+        return Status::create()->uncompressed($this->dumpPathname);
     }
 
     /**

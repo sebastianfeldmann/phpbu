@@ -108,7 +108,7 @@ class Tar extends Cli implements Source
 
         // if tar doesn't handle the compression mark status uncompressed so the app can take care of compression
         if (!$this->executable->handlesCompression()) {
-            $status->uncompressed()->dataPath($target->getPathnamePlain());
+            $status->uncompressed($target->getPathnamePlain());
         }
 
         $result->debug($tar->getCmd());

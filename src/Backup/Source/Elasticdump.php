@@ -123,7 +123,7 @@ class Elasticdump extends Cli implements Source
             throw new Exception('elasticdump failed');
         }
 
-        return Status::create()->uncompressed()->dataPath($target->getPathnamePlain());
+        return Status::create()->uncompressed($target->getPathnamePlain());
     }
 
     /**

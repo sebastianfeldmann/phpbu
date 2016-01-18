@@ -172,7 +172,7 @@ class Mongodump extends Cli implements Source
             throw new Exception('Mongodump failed');
         }
 
-        return Status::create()->uncompressed()->dataPath($this->getDumpDir($target));
+        return Status::create()->uncompressed($this->getDumpDir($target));
     }
 
     /**

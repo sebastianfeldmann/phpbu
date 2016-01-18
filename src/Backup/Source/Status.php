@@ -41,11 +41,13 @@ class Status
     /**
      * Source doesn't handle compression.
      *
+     * @param  string $path
      * @return \phpbu\App\Backup\Source\Status
      */
-    public function uncompressed()
+    public function uncompressed($path)
     {
         $this->handledCompression = false;
+        $this->dataPath           = $path;
         return $this;
     }
 
@@ -57,18 +59,6 @@ class Status
     public function handledCompression()
     {
         return $this->handledCompression;
-    }
-
-    /**
-     * Add a data location.
-     *
-     * @param  string $path
-     * @return \phpbu\App\Backup\Source\Status
-     */
-    public function dataPath($path)
-    {
-        $this->dataPath = $path;
-        return $this;
     }
 
     /**

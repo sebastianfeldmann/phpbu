@@ -135,7 +135,7 @@ class XtraBackup extends Cli implements Source
             throw new Exception('XtraBackup failed');
         }
 
-        return Status::create()->uncompressed()->dataPath($this->getDumpDir($target));
+        return Status::create()->uncompressed($this->getDumpDir($target));
     }
 
     /**

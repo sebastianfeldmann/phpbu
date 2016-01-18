@@ -121,7 +121,7 @@ class Redis extends Cli implements Source
 
         $pathToDump = $this->copyDumpToTargetDir($target);
 
-        return Status::create()->uncompressed()->dataPath($pathToDump);
+        return Status::create()->uncompressed($pathToDump);
     }
 
     /**
