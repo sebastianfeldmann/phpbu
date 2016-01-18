@@ -49,20 +49,20 @@ class Compressor
      *
      * @var array
      */
-    protected static $availableCompressors = array(
-        'gzip' => array(
+    protected static $availableCompressors = [
+        'gzip' => [
             'suffix' => 'gz',
             'mime'   => 'application/x-gzip'
-        ),
-        'bzip2' => array(
+        ],
+        'bzip2' => [
             'suffix' => 'bz2',
             'mime'   => 'application/x-bzip2'
-        ),
-        'zip' => array(
+        ],
+        'zip' => [
             'suffix' => 'zip',
             'mime'   => 'application/zip'
-        )
-    );
+        ]
+    ];
 
     /**
      * Constructor.
