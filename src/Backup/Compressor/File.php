@@ -16,7 +16,7 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class File extends Abstraction implements Executable
+class File extends Abstraction
 {
     /**
      * Validate path.
@@ -37,10 +37,21 @@ class File extends Abstraction implements Executable
      */
     public function getExecutable(Target $target) {
         if (null === $this->executable) {
-            $cmd              = $target->getCompressor()->getCommand();
-            $this->executable = new Compressor($cmd, $this->pathToCommand);
+            $this->executable = new Compressor($target->getCompressor()->getCommand(), $this->pathToCommand);
             $this->executable->force(true)->compressFile($this->path);
         }
         return $this->executable;
+    }
+
+
+    /**
+     * Return final archive file.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return string
+     */
+    public function getArchiveFile(Target $target)
+    {
+        return $target->getPathname();
     }
 }

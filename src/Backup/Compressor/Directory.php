@@ -16,7 +16,7 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.1
  */
-class Directory extends Abstraction implements Executable
+class Directory extends Abstraction
 {
     /**
      * Validate path.
@@ -30,16 +30,28 @@ class Directory extends Abstraction implements Executable
     }
 
     /**
+     * If 'tar' can't compress with the requested compressor this will return false.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return bool
+     */
+    public function canCompress(Target $target)
+    {
+        return Tar::isCompressorValid($target->getCompressor()->getCommand());
+    }
+
+    /**
      * Compress the configured directory.
      *
      * @param  \phpbu\App\Backup\Target $target
      * @param  \phpbu\App\Result        $result
+     * @return string
      * @throws \phpbu\App\Exception
      */
     public function compress(Target $target, Result $result)
     {
         $target->setMimeType('application/x-tar');
-        parent::compress($target, $result);
+        return parent::compress($target, $result);
     }
 
     /**
@@ -52,14 +64,21 @@ class Directory extends Abstraction implements Executable
         if (null === $this->executable) {
             $this->executable = new Tar($this->pathToCommand);
             $this->executable->archiveDirectory($this->path);
-
-            $archiveName = Tar::isCompressorValid($target->getCompressor()->getCommand())
-                         ? $target->getPathname()
-                         : $target->getPathnamePlain();
-            $this->executable->archiveTo($archiveName)
+            $this->executable->archiveTo($this->getArchiveFile($target))
                              ->useCompression($target->getCompressor()->getCommand())
                              ->removeSourceDirectory(true);
         }
         return $this->executable;
+    }
+
+    /**
+     * Get final archive name.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return string
+     */
+    public function getArchiveFile(Target $target)
+    {
+        return $this->canCompress($target) ? $target->getPathname() : $target->getPathnamePlain();
     }
 }

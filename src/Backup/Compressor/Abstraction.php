@@ -17,7 +17,7 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-abstract class Abstraction extends Cli
+abstract class Abstraction extends Cli implements Executable
 {
     /**
      * Path to cli binary.
@@ -45,9 +45,6 @@ abstract class Abstraction extends Cli
         if (empty($path)) {
             throw new Exception('no path to compress set');
         }
-        if (!$this->isPathValid($path)) {
-            throw new Exception('path to compress should be a file');
-        }
         $this->path          = $path;
         $this->pathToCommand = $pathToCommand;
     }
@@ -57,12 +54,16 @@ abstract class Abstraction extends Cli
      *
      * @param  \phpbu\App\Backup\Target $target
      * @param  \phpbu\App\Result        $result
+     * @return string
      * @throws \phpbu\App\Exception
      */
     public function compress(Target $target, Result $result)
     {
         if (!$target->shouldBeCompressed()) {
             throw new Exception('target should not be compressed');
+        }
+        if (!$this->isPathValid($this->path)) {
+            throw new Exception('path to compress should be valid');
         }
 
         $res = $this->execute($target);
@@ -71,6 +72,8 @@ abstract class Abstraction extends Cli
         if (0 !== $res->getCode()) {
             throw new Exception('Failed to \'compress\' file: ' . $this->path);
         }
+
+        return $this->getArchiveFile($target);
     }
 
     /**
@@ -80,4 +83,12 @@ abstract class Abstraction extends Cli
      * @return boolean
      */
     abstract public function isPathValid($path);
+
+    /**
+     * Return final archive file.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return string
+     */
+    abstract public function getArchiveFile(Target $target);
 }

@@ -34,4 +34,12 @@ interface Executable
      * @return \phpbu\App\Cli\Executable
      */
     public function getExecutable(Target $target);
+
+    /**
+     * Return final archive file.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return string
+     */
+    public function getArchiveFile(Target $target);
 }
