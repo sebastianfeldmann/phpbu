@@ -159,7 +159,7 @@ class Runner
     {
         foreach ($configuration->getLoggers() as $log) {
             // this is a already fully setup Listener so just add it
-            if (is_a($log, '\\phpbu\\App\\Listener')) {
+            if ($log instanceof Listener) {
                 $logger = $log;
             } else {
                 // this is a configuration blueprint for a logger, so create and add it

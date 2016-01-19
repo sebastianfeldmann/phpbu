@@ -66,7 +66,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
         $outputPHP  = json_decode($outputJson);
 
 
-        $this->assertTrue(is_a($outputPHP, '\\stdClass'));
+        $this->assertTrue($outputPHP instanceof \stdClass);
     }
 
     /**

@@ -22,6 +22,6 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $file   = realpath(__DIR__ . '/../../../_files/conf/json/config-valid.json');
         $loader = Factory::createLoader($file);
 
-        $this->assertTrue(is_a($loader, '\\phpbu\\App\\Configuration\\Loader\\Json'));
+        $this->assertTrue($loader instanceof Json);
     }
 }

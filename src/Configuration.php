@@ -292,7 +292,7 @@ class Configuration
      */
     public function addLogger($logger)
     {
-        if (!is_a($logger, '\\phpbu\\App\\Listener') && !is_a($logger, '\\phpbu\\App\\Configuration\\Logger')) {
+        if (!($logger instanceof Listener) && !($logger instanceof Configuration\Logger)) {
             throw new Exception('invalid logger, only \'Listener\' and valid logger configurations are accepted');
         }
         $this->loggers[] = $logger;
