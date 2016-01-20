@@ -1,7 +1,6 @@
 {
   "type": "arangodump",
   "options": {
-    "showStdErr": "true",
     "endpoint": "tcp://host:8529",
     "username": "myUserName",
     "password": "mySecretPassword",

@@ -19,7 +19,7 @@ class McryptTest extends \PHPUnit_Framework_TestCase
      */
     public function testKeyAndAlgorithm()
     {
-        $expected = 'mcrypt -u -k \'fooBarBaz\' -a \'blowfish\' \'/foo/bar.txt.nc\' 2> /dev/null';
+        $expected = 'mcrypt -u -k \'fooBarBaz\' -a \'blowfish\' \'/foo/bar.txt.nc\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $mcrypt   = new Mcrypt($path);
         $mcrypt->useKey('fooBarBaz')->useAlgorithm('blowfish')->saveAt('/foo/bar.txt.nc');
@@ -32,7 +32,7 @@ class McryptTest extends \PHPUnit_Framework_TestCase
      */
     public function testKeyFile()
     {
-        $expected = 'mcrypt -u -f \'/foo/my.key\' -a \'blowfish\' \'/foo/bar.txt.nc\' 2> /dev/null';
+        $expected = 'mcrypt -u -f \'/foo/my.key\' -a \'blowfish\' \'/foo/bar.txt.nc\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $mcrypt   = new Mcrypt($path);
         $mcrypt->useKeyFile('/foo/my.key')->useAlgorithm('blowfish')->saveAt('/foo/bar.txt.nc');
@@ -45,7 +45,7 @@ class McryptTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigFile()
     {
-        $expected = 'mcrypt -u -k \'fooBarBaz\' -a \'blowfish\' -c \'config.cnf\' \'/foo/bar.txt.nc\' 2> /dev/null';
+        $expected = 'mcrypt -u -k \'fooBarBaz\' -a \'blowfish\' -c \'config.cnf\' \'/foo/bar.txt.nc\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $mcrypt   = new Mcrypt($path);
         $mcrypt->useKey('fooBarBaz')->useAlgorithm('blowfish')->useConfig('config.cnf')->saveAt('/foo/bar.txt.nc');
@@ -58,7 +58,7 @@ class McryptTest extends \PHPUnit_Framework_TestCase
      */
     public function testHash()
     {
-        $expected = 'mcrypt -u -k \'fooBarBaz\' -h \'myHash\' -a \'blowfish\' \'/foo/bar.txt.nc\' 2> /dev/null';
+        $expected = 'mcrypt -u -k \'fooBarBaz\' -h \'myHash\' -a \'blowfish\' \'/foo/bar.txt.nc\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $mcrypt   = new Mcrypt($path);
         $mcrypt->useKey('fooBarBaz')->useAlgorithm('blowfish')->useHash('myHash')->saveAt('/foo/bar.txt.nc');

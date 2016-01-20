@@ -20,7 +20,7 @@ class ElasticdumpTest extends \PHPUnit_Framework_TestCase
      */
     public function testDefault()
     {
-        $expected = 'elasticdump --input=\'http://localhost:9200/\' --output=\'./foo.json\' 2> /dev/null';
+        $expected = 'elasticdump --input=\'http://localhost:9200/\' --output=\'./foo.json\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $elastic  = new Elasticdump($path);
         $elastic->useHost('localhost:9200')->dumpTo('./foo.json');
@@ -31,22 +31,9 @@ class ElasticdumpTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Elasticdump::createProcess
      */
-    public function testShowStdErr()
-    {
-        $expected = 'elasticdump --input=\'http://localhost:9200/\' --output=\'./foo.json\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $elastic  = new Elasticdump($path);
-        $elastic->useHost('localhost:9200')->dumpTo('./foo.json')->showStdErr(true);
-
-        $this->assertEquals($path . '/' . $expected, $elastic->getCommandLine());
-    }
-
-    /**
-     * Tests Elasticdump::createProcess
-     */
     public function testUser()
     {
-        $expected = 'elasticdump --input=\'http://root@localhost:9200/\' --output=\'./foo.json\' 2> /dev/null';
+        $expected = 'elasticdump --input=\'http://root@localhost:9200/\' --output=\'./foo.json\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $elastic  = new Elasticdump($path);
         $elastic->useHost('localhost:9200')->dumpTo('./foo.json')->credentials('root');
@@ -59,7 +46,7 @@ class ElasticdumpTest extends \PHPUnit_Framework_TestCase
      */
     public function testUserPassword()
     {
-        $expected = 'elasticdump --input=\'http://root:secret@localhost:9200/\' --output=\'./foo.json\' 2> /dev/null';
+        $expected = 'elasticdump --input=\'http://root:secret@localhost:9200/\' --output=\'./foo.json\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $elastic  = new Elasticdump($path);
         $elastic->useHost('localhost:9200')->dumpTo('./foo.json')->credentials('root', 'secret');
@@ -72,7 +59,7 @@ class ElasticdumpTest extends \PHPUnit_Framework_TestCase
      */
     public function testIndex()
     {
-        $expected = 'elasticdump --input=\'http://localhost:9200/myIndex\' --output=\'./foo.json\' 2> /dev/null';
+        $expected = 'elasticdump --input=\'http://localhost:9200/myIndex\' --output=\'./foo.json\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $elastic  = new Elasticdump($path);
         $elastic->useHost('localhost:9200')->dumpIndex('myIndex')->dumpTo('./foo.json');
@@ -85,7 +72,7 @@ class ElasticdumpTest extends \PHPUnit_Framework_TestCase
      */
     public function testType()
     {
-        $expected = 'elasticdump --input=\'http://localhost:9200/\' --type=\'mapping\' --output=\'./foo.json\' 2> /dev/null';
+        $expected = 'elasticdump --input=\'http://localhost:9200/\' --type=\'mapping\' --output=\'./foo.json\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $elastic  = new Elasticdump($path);
         $elastic->useHost('localhost:9200')->dumpType('mapping')->dumpTo('./foo.json');
@@ -98,7 +85,7 @@ class ElasticdumpTest extends \PHPUnit_Framework_TestCase
      */
     public function testHostWithPath()
     {
-        $expected = 'elasticdump --input=\'http://localhost:9200/foo/\' --output=\'./foo.json\' 2> /dev/null';
+        $expected = 'elasticdump --input=\'http://localhost:9200/foo/\' --output=\'./foo.json\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $elastic  = new Elasticdump($path);
         $elastic->useHost('localhost:9200/foo')->dumpTo('./foo.json');

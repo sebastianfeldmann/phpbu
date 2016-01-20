@@ -5,7 +5,6 @@
     "pathToRedisData": "/var/lib/redis/6379/dump.rdb",
     "timeout": "90",
     "port": "6379",
-    "password": "TopSecret",
-    "showStdErr": "true"
+    "password": "TopSecret"
   }
 }

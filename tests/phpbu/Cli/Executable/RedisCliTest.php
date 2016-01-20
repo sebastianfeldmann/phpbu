@@ -35,7 +35,7 @@ class RedisCliTest extends \PHPUnit_Framework_TestCase
         $redis = new RedisCli($path);
         $redis->backup();
 
-        $this->assertEquals($path . '/redis-cli BGSAVE 2> /dev/null', $redis->getCommandLine());
+        $this->assertEquals($path . '/redis-cli BGSAVE', $redis->getCommandLine());
     }
 
     /**
@@ -47,7 +47,7 @@ class RedisCliTest extends \PHPUnit_Framework_TestCase
         $redis = new RedisCli($path);
         $redis->lastBackupTime();
 
-        $this->assertEquals($path . '/redis-cli LASTSAVE 2> /dev/null', $redis->getCommandLine());
+        $this->assertEquals($path . '/redis-cli LASTSAVE', $redis->getCommandLine());
     }
 
     /**
@@ -55,7 +55,7 @@ class RedisCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testPassword()
     {
-        $expected = 'redis-cli -a \'fooBarBaz\' BGSAVE 2> /dev/null';
+        $expected = 'redis-cli -a \'fooBarBaz\' BGSAVE';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $redis  = new RedisCli($path);
         $redis->backup()->usePassword('fooBarBaz');
@@ -68,7 +68,7 @@ class RedisCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testHost()
     {
-        $expected = 'redis-cli -h \'example.com\' BGSAVE 2> /dev/null';
+        $expected = 'redis-cli -h \'example.com\' BGSAVE';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $redis  = new RedisCli($path);
         $redis->backup()->useHost('example.com');
@@ -81,7 +81,7 @@ class RedisCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testPort()
     {
-        $expected = 'redis-cli -p \'1313\' BGSAVE 2> /dev/null';
+        $expected = 'redis-cli -p \'1313\' BGSAVE';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $redis  = new RedisCli($path);
         $redis->backup()->usePort(1313);

@@ -203,8 +203,6 @@ class Rsync extends Abstraction implements Executable
             if (empty($this->path)) {
                 throw new Exception('target path is missing');
             }
-            // std err > dev null
-            $cmd->silence();
 
             // use archive mode, verbose and compress if not already done
             $options = '-av' . ($this->compressed ? 'z' : '');

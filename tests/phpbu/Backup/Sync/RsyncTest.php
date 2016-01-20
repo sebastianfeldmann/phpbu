@@ -82,7 +82,7 @@ class RsyncTest extends CliTest
         $rsync->setup(array('pathToRsync' => $path, 'path' => '/tmp'));
         $exec = $rsync->getExecutable($target);
 
-        $this->assertEquals($path . '/rsync -avz \'/foo/bar.txt\' \'/tmp\' 2> /dev/null', $exec->getCommandLine());
+        $this->assertEquals($path . '/rsync -avz \'/foo/bar.txt\' \'/tmp\'', $exec->getCommandLine());
     }
 
     /**
@@ -96,7 +96,7 @@ class RsyncTest extends CliTest
         $rsync->setup(array('pathToRsync' => $path, 'path' => '/tmp'));
         $exec = $rsync->getExecutable($target);
 
-        $this->assertEquals($path . '/rsync -av \'/foo/bar.txt.gz\' \'/tmp\' 2> /dev/null', $exec->getCommandLine());
+        $this->assertEquals($path . '/rsync -av \'/foo/bar.txt.gz\' \'/tmp\'', $exec->getCommandLine());
     }
 
     /**
@@ -112,7 +112,7 @@ class RsyncTest extends CliTest
         $rsync->setup(array('pathToRsync' => $path, 'path' => '/tmp', 'exclude' => 'fiz:buz'));
         $exec = $rsync->getExecutable($target);
 
-        $this->assertEquals($path . '/rsync -avz --exclude=\'fiz\' --exclude=\'buz\' \'/foo/bar.txt\' \'/tmp\' 2> /dev/null', $exec->getCommandLine());
+        $this->assertEquals($path . '/rsync -avz --exclude=\'fiz\' --exclude=\'buz\' \'/foo/bar.txt\' \'/tmp\'', $exec->getCommandLine());
     }
 
     /**

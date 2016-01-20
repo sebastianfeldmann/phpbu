@@ -23,7 +23,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
         $mysqldump = new Mysqldump($path);
         $cmd       = $mysqldump->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump --all-databases 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/mysqldump --all-databases', $cmd);
     }
 
     /**
@@ -36,7 +36,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
         $mysqldump->dumpBlobsHexadecimal(true);
         $cmd       = $mysqldump->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump --hex-blob --all-databases 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/mysqldump --hex-blob --all-databases', $cmd);
     }
 
     /**
@@ -49,7 +49,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
         $mysqldump->lockTables(true);
         $cmd       = $mysqldump->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump --lock-tables --all-databases 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/mysqldump --lock-tables --all-databases', $cmd);
     }
 
     /**
@@ -62,7 +62,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
         $mysqldump->useExtendedInsert(true);
         $cmd       = $mysqldump->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump -e --all-databases 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/mysqldump -e --all-databases', $cmd);
     }
 
     /**
@@ -75,7 +75,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
         $mysqldump->dumpTables(array('foo', 'bar'));
         $cmd       = $mysqldump->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump --tables \'foo\' \'bar\' 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/mysqldump --tables \'foo\' \'bar\'', $cmd);
     }
 
     /**
@@ -88,7 +88,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
         $mysqldump->dumpDatabases(array('foo', 'bar'));
         $cmd       = $mysqldump->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump --databases \'foo\' \'bar\' 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/mysqldump --databases \'foo\' \'bar\'', $cmd);
     }
 
     /**
@@ -101,7 +101,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
         $mysqldump->ignoreTables(array('foo', 'bar'));
         $cmd       = $mysqldump->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump --all-databases --ignore-table=\'foo\' --ignore-table=\'bar\' 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/mysqldump --all-databases --ignore-table=\'foo\' --ignore-table=\'bar\'', $cmd);
     }
 
     /**
@@ -114,7 +114,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
         $mysqldump->dumpNoData(true);
         $cmd       = $mysqldump->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump --all-databases --no-data 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/mysqldump --all-databases --no-data', $cmd);
     }
 
     /**
@@ -128,10 +128,10 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
         $cmd       = $mysqldump->getCommandLine();
 
         $this->assertEquals(
-            '(' . $path . '/mysqldump --all-databases --no-data 2> /dev/null'
+            '(' . $path . '/mysqldump --all-databases --no-data'
           . ' && '
           . $path . '/mysqldump --all-databases --ignore-table=\'foo\' --ignore-table=\'bar\''
-          . ' --skip-add-drop-table --no-create-db --no-create-info 2> /dev/null)',
+          . ' --skip-add-drop-table --no-create-db --no-create-info)',
             $cmd
         );
     }

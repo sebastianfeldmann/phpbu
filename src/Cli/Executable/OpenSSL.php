@@ -273,17 +273,11 @@ class OpenSSL extends Abstraction implements Executable
         }
 
         $process = new Process();
-        $cmd = new Cmd($this->binary);
+        $cmd     = new Cmd($this->binary);
+
         $process->addCommand($cmd);
 
-        // no std error unless it is activated
-        if (!$this->showStdErr) {
-            $cmd->silence();
-            // i kill you
-        }
-
         $this->setOptions($cmd);
-
         $this->addDeleteCommand($process);
 
         return $process;
@@ -347,10 +341,6 @@ class OpenSSL extends Abstraction implements Executable
     {
         if ($this->deleteUncrypted) {
             $cmd = new Cmd('rm');
-            if (!$this->showStdErr) {
-                $cmd->silence();
-                // i kill you
-            }
             $cmd->addArgument($this->sourceFile);
             $process->addCommand($cmd);
         }

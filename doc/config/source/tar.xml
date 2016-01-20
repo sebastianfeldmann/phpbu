@@ -2,7 +2,4 @@
 <source type="tar">
   <!-- mandatory -->
   <option name="path" value="src" />
-
-  <!-- optional, default=false -->
-  <option name="showStdErr" value="true" />
 </source>

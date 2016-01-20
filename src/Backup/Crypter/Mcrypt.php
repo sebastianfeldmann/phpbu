@@ -28,11 +28,6 @@ class Mcrypt extends Key implements Crypter
     private $pathToMcrypt;
 
     /**
-     * @var boolean
-     */
-    private $showStdErr;
-
-    /**
      * Key to pass via cli
      *
      * @var string
@@ -88,7 +83,6 @@ class Mcrypt extends Key implements Crypter
         }
 
         $this->pathToMcrypt  = Util\Arr::getValue($options, 'pathToMcrypt');
-        $this->showStdErr    = Util\Str::toBoolean(Util\Arr::getValue($options, 'showStdErr', ''), false);
         $this->keepUncrypted = Util\Str::toBoolean(Util\Arr::getValue($options, 'keepUncrypted', ''), false);
         $this->key           = Util\Arr::getValue($options, 'key');
         $this->keyFile       = $this->toAbsolutePath(Util\Arr::getValue($options, 'keyFile'));
@@ -116,7 +110,7 @@ class Mcrypt extends Key implements Crypter
         $result->debug('mcrypt:' . $mcrypt->getCmd());
 
         if (!$mcrypt->wasSuccessful()) {
-            throw new Exception('mcrypt failed:' . PHP_EOL . $mcrypt->getOutputAsString());
+            throw new Exception('mcrypt failed:' . PHP_EOL . $mcrypt->getStdErr());
         }
     }
 
@@ -147,8 +141,7 @@ class Mcrypt extends Key implements Crypter
                              ->useConfig($this->config)
                              ->useHash($this->hash)
                              ->saveAt($target->getPathname())
-                             ->deleteUncrypted(!$this->keepUncrypted)
-                             ->showStdErr($this->showStdErr);
+                             ->deleteUncrypted(!$this->keepUncrypted);
         }
 
         return $this->executable;

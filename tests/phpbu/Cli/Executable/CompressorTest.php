@@ -23,7 +23,7 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
         $gzip = new Compressor('gzip', $path);
         $gzip->force(true)->compressFile(__FILE__);
 
-        $this->assertEquals($path . '/gzip -f \'' . __FILE__ . '\' 2> /dev/null', $gzip->getCommandLine());
+        $this->assertEquals($path . '/gzip -f \'' . __FILE__ . '\'', $gzip->getCommandLine());
     }
 
     /**
@@ -35,7 +35,7 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
         $gzip = new Compressor('zip', $path);
         $gzip->force(true)->compressFile(__FILE__);
 
-        $this->assertEquals($path . '/zip \'' . __FILE__ . '\' 2> /dev/null', $gzip->getCommandLine());
+        $this->assertEquals($path . '/zip \'' . __FILE__ . '\'', $gzip->getCommandLine());
     }
 
     /**

@@ -29,7 +29,7 @@ class FileTest extends CliTest
         $executable = $dir->getExecutable($target);
         $cmd        = $executable->getCommandLine();
 
-        $this->assertEquals($path . '/gzip -f \'' . __FILE__ . '\' 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/gzip -f \'' . __FILE__ . '\'', $cmd);
     }
 
     /**

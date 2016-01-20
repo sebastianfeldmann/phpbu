@@ -1,7 +1,6 @@
 {
   "type": "mysqldump",
   "option": {
-    "showStdErr": "true",
     "host": "myHost",
     "user": "myUserName",
     "password": "mySecretPassword",

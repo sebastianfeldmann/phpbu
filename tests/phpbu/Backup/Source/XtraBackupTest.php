@@ -46,8 +46,8 @@ class XtraBackupTest extends CliTest
      */
     public function testDefault()
     {
-        $expectedDump  = 'innobackupex --no-timestamp \'./dump\' 2> /dev/null';
-        $expectedApply = 'innobackupex --apply-log \'./dump\' 2> /dev/null';
+        $expectedDump  = 'innobackupex --no-timestamp \'./dump\'';
+        $expectedApply = 'innobackupex --apply-log \'./dump\'';
         $target        = $this->getTargetMock('./foo.dump');
         $path          = $this->getBinDir();
         $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
@@ -63,8 +63,8 @@ class XtraBackupTest extends CliTest
      */
     public function testDataDir()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --datadir=\'/x/mysql\' \'./dump\' 2> /dev/null';
-        $expectedApply = 'innobackupex --apply-log \'./dump\' 2> /dev/null';
+        $expectedDump  = 'innobackupex --no-timestamp --datadir=\'/x/mysql\' \'./dump\'';
+        $expectedApply = 'innobackupex --apply-log \'./dump\'';
         $target        = $this->getTargetMock('./foo.dump');
         $path          = $this->getBinDir();
         $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
@@ -80,8 +80,8 @@ class XtraBackupTest extends CliTest
      */
     public function testDatabases()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --databases=\'db1 db2 db3.table1\' \'./dump\' 2> /dev/null';
-        $expectedApply = 'innobackupex --apply-log \'./dump\' 2> /dev/null';
+        $expectedDump  = 'innobackupex --no-timestamp --databases=\'db1 db2 db3.table1\' \'./dump\'';
+        $expectedApply = 'innobackupex --apply-log \'./dump\'';
         $target        = $this->getTargetMock('./foo.dump');
         $path          = $this->getBinDir();
         $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';

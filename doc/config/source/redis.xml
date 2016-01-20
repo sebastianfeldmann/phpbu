@@ -14,7 +14,4 @@
 
   <!-- optional, default=null -->
   <option name="password" value="TopSecret" />
-
-  <!-- optional, default=false -->
-  <option name="showStdErr" value="true" />
 </source>

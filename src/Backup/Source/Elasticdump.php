@@ -31,13 +31,6 @@ class Elasticdump extends Cli implements Source
     private $pathToElasticdump;
 
     /**
-     * Show stdErr
-     *
-     * @var boolean
-     */
-    private $showStdErr;
-
-    /**
      * Host to connect to
      *
      * @var string
@@ -90,7 +83,6 @@ class Elasticdump extends Cli implements Source
         $this->host       = Util\Arr::getValue($conf, 'host', 'http://localhost:9200');
         $this->user       = Util\Arr::getValue($conf, 'user');
         $this->password   = Util\Arr::getValue($conf, 'password');
-        $this->showStdErr = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
     }
 
     /**
@@ -120,7 +112,7 @@ class Elasticdump extends Cli implements Source
         $result->debug($elasticdump->getCmd());
 
         if (!$elasticdump->wasSuccessful()) {
-            throw new Exception('elasticdump failed');
+            throw new Exception('elasticdump failed: ' . $elasticdump->getStdErr());
         }
 
         return Status::create()->uncompressed($target->getPathnamePlain());
@@ -141,8 +133,7 @@ class Elasticdump extends Cli implements Source
                              ->credentials($this->user, $this->password)
                              ->dumpIndex($this->index)
                              ->dumpType($this->type)
-                             ->dumpTo($target->getPathnamePlain())
-                             ->showStdErr($this->showStdErr);
+                             ->dumpTo($target->getPathnamePlain());
         }
         return $this->executable;
     }

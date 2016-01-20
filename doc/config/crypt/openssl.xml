@@ -11,7 +11,4 @@
 
   <!-- optional, default=false -->
   <option name="keepUncryptedFile" value="false" />
-
-  <!-- optional, default=false -->
-  <option name="showStdError" value="false" />
 </crypt>

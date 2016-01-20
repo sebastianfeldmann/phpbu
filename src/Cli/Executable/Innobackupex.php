@@ -178,13 +178,6 @@ class Innobackupex extends Abstraction implements Executable
         $process->addCommand($cmdDump);
         $process->addCommand($cmdApply);
 
-        // no std error unless it is activated
-        if (!$this->showStdErr) {
-            $cmdDump->silence();
-            $cmdApply->silence();
-            // i kill you
-        }
-
         $cmdDump->addOption('--no-timestamp');
         $cmdDump->addOptionIfNotEmpty('--datadir', $this->dataDir);
         $cmdDump->addOptionIfNotEmpty('--user', $this->user);

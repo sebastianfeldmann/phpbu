@@ -45,7 +45,7 @@ class ElasticdumpTest extends CliTest
      */
     public function testDefault()
     {
-        $expected = 'elasticdump --input=\'http://localhost:9200/\' --output=\'backup.json\' 2> /dev/null';
+        $expected = 'elasticdump --input=\'http://localhost:9200/\' --output=\'backup.json\'';
         $target   = $this->getTargetMock('backup.json');
         $path     = $this->getBinDir();
         $this->elasticdump->setup(array('pathToElasticdump' => $path));
@@ -58,24 +58,9 @@ class ElasticdumpTest extends CliTest
     /**
      * Tests Elasticdump::getExec
      */
-    public function testShowStdErr()
-    {
-        $expected = 'elasticdump --input=\'http://localhost:9200/\' --output=\'backup.json\'';
-        $target   = $this->getTargetMock('backup.json');
-        $path     = $this->getBinDir();
-        $this->elasticdump->setup(array('pathToElasticdump' => $path, 'showStdErr' => 'true'));
-
-        $executable = $this->elasticdump->getExecutable($target);
-
-        $this->assertEquals($path . '/' . $expected, $executable->getCommandLine());
-    }
-
-    /**
-     * Tests Elasticdump::getExec
-     */
     public function testUser()
     {
-        $expected = 'elasticdump --input=\'http://root@localhost:9200/\' --output=\'backup.json\' 2> /dev/null';
+        $expected = 'elasticdump --input=\'http://root@localhost:9200/\' --output=\'backup.json\'';
         $target   = $this->getTargetMock('backup.json');
         $path     = $this->getBinDir();
         $this->elasticdump->setup(array('pathToElasticdump' => $path, 'user' => 'root'));

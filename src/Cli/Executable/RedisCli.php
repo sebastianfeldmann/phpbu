@@ -159,11 +159,6 @@ class RedisCli extends Abstraction implements Executable
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 
-        // no std error unless it is activated
-        if (!$this->showStdErr) {
-            $cmd->silence();
-        }
-
         $this->setOptions($cmd);
         $cmd->addOption($this->command);
 

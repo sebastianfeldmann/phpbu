@@ -71,7 +71,7 @@ class RsyncTest extends \PHPUnit_Framework_TestCase
      */
     public function testMinimal()
     {
-        $expected = 'rsync -av \'./foo\' \'/tmp\' 2> /dev/null';
+        $expected = 'rsync -av \'./foo\' \'/tmp\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $rsync    = new Rsync($path);
         $rsync->syncFrom('./foo')->toPath('/tmp');
@@ -84,7 +84,7 @@ class RsyncTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithCompression()
     {
-        $expected = 'rsync -avz \'./foo\' \'/tmp\' 2> /dev/null';
+        $expected = 'rsync -avz \'./foo\' \'/tmp\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $rsync    = new Rsync($path);
         $rsync->syncFrom('./foo')->toPath('/tmp')->compressed(true);
@@ -97,7 +97,7 @@ class RsyncTest extends \PHPUnit_Framework_TestCase
      */
     public function testDelete()
     {
-        $expected = 'rsync -av --delete \'./foo\' \'/tmp\' 2> /dev/null';
+        $expected = 'rsync -av --delete \'./foo\' \'/tmp\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $rsync    = new Rsync($path);
         $rsync->syncFrom('./foo')->toPath('/tmp')->removeDeleted(true);
@@ -110,7 +110,7 @@ class RsyncTest extends \PHPUnit_Framework_TestCase
      */
     public function testExcludes()
     {
-        $expected = 'rsync -av --exclude=\'fiz\' --exclude=\'buz\' \'./foo\' \'/tmp\' 2> /dev/null';
+        $expected = 'rsync -av --exclude=\'fiz\' --exclude=\'buz\' \'./foo\' \'/tmp\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $rsync    = new Rsync($path);
         $rsync->syncFrom('./foo')->toPath('/tmp')->exclude(array('fiz', 'buz'));

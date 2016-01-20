@@ -28,11 +28,6 @@ class OpenSSL extends Key implements Crypter
     private $pathToOpenSSL;
 
     /**
-     * @var boolean
-     */
-    private $showStdErr;
-
-    /**
      * Key file
      *
      * @var string
@@ -78,7 +73,6 @@ class OpenSSL extends Key implements Crypter
         }
 
         $this->pathToOpenSSL = Util\Arr::getValue($options, 'pathToOpenSSL');
-        $this->showStdErr    = Util\Str::toBoolean(Util\Arr::getValue($options, 'showStdErr', ''), false);
         $this->keepUncrypted = Util\Str::toBoolean(Util\Arr::getValue($options, 'keepUncrypted', ''), false);
         $this->certFile      = $this->toAbsolutePath(Util\Arr::getValue($options, 'certFile'));
         $this->algorithm     = Util\Arr::getValue($options, 'algorithm');
@@ -100,7 +94,7 @@ class OpenSSL extends Key implements Crypter
         $result->debug('openssl:' . $openssl->getCmd());
 
         if (!$openssl->wasSuccessful()) {
-            throw new Exception('openssl failed:' . PHP_EOL . $openssl->getOutputAsString());
+            throw new Exception('openssl failed:' . PHP_EOL . $openssl->getStdErr());
         }
     }
 
@@ -135,8 +129,7 @@ class OpenSSL extends Key implements Crypter
                                  ->encodeBase64(true);
             }
             $this->executable->useAlgorithm($this->algorithm)
-                             ->deleteUncrypted(!$this->keepUncrypted)
-                             ->showStdErr($this->showStdErr);
+                             ->deleteUncrypted(!$this->keepUncrypted);
         }
 
         return $this->executable;

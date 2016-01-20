@@ -31,13 +31,6 @@ class Arangodump extends Cli implements Source
     private $pathToArangodump;
 
     /**
-     * Show stdErr
-     *
-     * @var boolean
-     */
-    private $showStdErr;
-
-    /**
      * Endpoint to connect to
      * --server.endpoint <endpoint>
      *
@@ -118,7 +111,6 @@ class Arangodump extends Cli implements Source
         $this->username              = Util\Arr::getValue($conf, 'username');
         $this->password              = Util\Arr::getValue($conf, 'password');
         $this->database              = Util\Arr::getValue($conf, 'database');
-        $this->showStdErr            = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr'), false);
         $this->disableAuthentication = Util\Str::toBoolean(Util\Arr::getValue($conf, 'disableAuthentication'), false);
     }
 
@@ -150,7 +142,7 @@ class Arangodump extends Cli implements Source
         $result->debug($arangodump->getCmd());
 
         if (!$arangodump->wasSuccessful()) {
-            throw new Exception('arangodump failed');
+            throw new Exception('arangodump failed: ' . $arangodump->getStdErr());
         }
 
         return Status::create()->uncompressed($this->getDumpDir($target));
@@ -174,8 +166,7 @@ class Arangodump extends Cli implements Source
                              ->disableAuthentication($this->disableAuthentication)
                              ->includeSystemCollections($this->includeSystemCollections)
                              ->dumpData($this->dumpData)
-                             ->dumpTo($this->getDumpDir($target))
-                             ->showStdErr($this->showStdErr);
+                             ->dumpTo($this->getDumpDir($target));
         }
 
         return $this->executable;

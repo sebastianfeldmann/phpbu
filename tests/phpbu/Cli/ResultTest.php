@@ -19,7 +19,7 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCode()
     {
-        $result = new Result('echo 1', 0, array());
+        $result = new Result('echo 1', 0);
         $this->assertEquals(0, $result->getCode(), 'code getter should work properly');
     }
 
@@ -28,7 +28,7 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testWasSuccessfulTrue()
     {
-        $result = new Result('echo 1', 0, array());
+        $result = new Result('echo 1', 0);
         $this->assertEquals(true, $result->wasSuccessful(), 'should be successful on code 0');
     }
 
@@ -37,7 +37,7 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testWasSuccessfulFalse()
     {
-        $result = new Result('echo 1', 1, array());
+        $result = new Result('echo 1', 1);
         $this->assertEquals(false, $result->wasSuccessful(), 'should not be successful on code 1');
     }
 
@@ -46,26 +46,35 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCmd()
     {
-        $result = new Result('echo 1', 0, array());
+        $result = new Result('echo 1', 0);
         $this->assertEquals('echo 1', $result->getCmd(), 'cmd getter should work properly');
     }
 
     /**
-     * Tests Cmd::getOutput
+     * Tests Cmd::getStdOut
      */
-    public function testGetOutput()
+    public function testGetStdOut()
     {
-        $result = new Result('echo 1', 0, array('foo', 'bar'));
-        $this->assertEquals(2, count($result->getOutput()), 'output getter should work properly');
+        $result = new Result('echo 1', 0, 'foo bar');
+        $this->assertEquals('foo bar', $result->getStdOut(), 'output getter should work properly');
     }
 
     /**
-     * Tests Cmd::getOutput
+     * Tests Cmd::getStdErr
      */
-    public function testGetOutputAsString()
+    public function testGetStdErr()
     {
-        $result = new Result('echo 1', 0, array('foo', 'bar'));
-        $this->assertEquals('foo' . PHP_EOL . 'bar', $result->getOutputAsString(), 'outputAsString getter should work properly');
+        $result = new Result('echo 1', 0, 'foo bar', 'fiz baz');
+        $this->assertEquals('fiz baz', $result->getStdErr(), 'error getter should work properly');
+    }
+
+    /**
+     * Tests Cmd::getStdOut
+     */
+    public function testGetStdOutAsArray()
+    {
+        $result = new Result('echo 1', 0, 'foo' . PHP_EOL . 'bar');
+        $this->assertEquals(2, count($result->getStdOutAsArray()));
     }
 
     /**
@@ -73,7 +82,7 @@ class ResultTest extends \PHPUnit_Framework_TestCase
      */
     public function testToString()
     {
-        $result = new Result('echo 1', 0, array('foo'));
+        $result = new Result('echo 1', 0, 'foo');
         $this->assertEquals('foo', (string) $result, 'toString should work properly');
     }
 }

@@ -88,11 +88,6 @@ class Compressor extends Abstraction implements Executable
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 
-        // no std error unless it is activated
-        if (!$this->showStdErr) {
-            $cmd->silence();
-            // i kill you
-        }
         // don't add '-f' option for 'zip' executable issue #34
         if ($this->cmd !== 'zip') {
             $cmd->addOptionIfNotEmpty('-f', $this->force, false);

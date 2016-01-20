@@ -74,8 +74,8 @@ class OpenSSLTest extends CliTest
     public function testPasswordAndAlgorithm()
     {
         $expected = 'openssl enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' '
-                  . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' 2> /dev/null '
-                  . '&& rm \'/foo/bar.txt\' 2> /dev/null';
+                  . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
+                  . '&& rm \'/foo/bar.txt\'';
         $target   = $this->getTargetMock('/foo/bar.txt');
         $path     = $this->getBinDir();
         $this->openSSL->setup(array('pathToOpenSSL' => $path, 'password' => 'fooBarBaz', 'algorithm' => 'aes-256-cbc'));
@@ -93,8 +93,8 @@ class OpenSSLTest extends CliTest
         Cli::registerBase('configuration', '/foo');
 
         $expected = 'openssl smime -encrypt -aes256 -binary -in \'/foo/bar.txt\' '
-                  . '-out \'/foo/bar.txt.enc\' -outform DER \'/foo/my.pem\' 2> /dev/null '
-                  . '&& rm \'/foo/bar.txt\' 2> /dev/null';
+                  . '-out \'/foo/bar.txt.enc\' -outform DER \'/foo/my.pem\' '
+                  . '&& rm \'/foo/bar.txt\'';
         $target   = $this->getTargetMock('/foo/bar.txt');
         $path     = $this->getBinDir();
         $this->openSSL->setup(array('pathToOpenSSL' => $path, 'certFile' => '/foo/my.pem', 'algorithm' => 'aes256'));

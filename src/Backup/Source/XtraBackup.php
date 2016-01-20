@@ -31,13 +31,6 @@ class XtraBackup extends Cli implements Source
     private $pathToXtraBackup;
 
     /**
-     * Show stdErr
-     *
-     * @var boolean
-     */
-    private $showStdErr;
-
-    /**
      * Path to MySQL data directory
      *
      * @var string
@@ -102,7 +95,6 @@ class XtraBackup extends Cli implements Source
         $this->host             = Util\Arr::getValue($conf, 'host');
         $this->user             = Util\Arr::getValue($conf, 'user');
         $this->password         = Util\Arr::getValue($conf, 'password');
-        $this->showStdErr       = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
     }
 
     /**
@@ -132,7 +124,7 @@ class XtraBackup extends Cli implements Source
         $result->debug($innobackupex->getCmd());
 
         if (!$innobackupex->wasSuccessful()) {
-            throw new Exception('XtraBackup failed');
+            throw new Exception('XtraBackup failed: ' . $innobackupex->getStdErr());
         }
 
         return Status::create()->uncompressed($this->getDumpDir($target));
@@ -154,8 +146,7 @@ class XtraBackup extends Cli implements Source
                              ->dumpDatabases($this->databases)
                              ->including($this->include)
                              ->dumpFrom($this->dataDir)
-                             ->dumpTo($this->getDumpDir($target))
-                             ->showStdErr($this->showStdErr);
+                             ->dumpTo($this->getDumpDir($target));
         }
 
         return $this->executable;

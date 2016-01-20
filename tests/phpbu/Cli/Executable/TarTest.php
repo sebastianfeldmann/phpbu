@@ -24,7 +24,7 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $tar  = new Tar($path);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar');
 
-        $this->assertEquals($path . '/tar -cf \'/tmp/foo.tar\' -C \'' . $dir .  '\' \'.\' 2> /dev/null', $tar->getCommandLine());
+        $this->assertEquals($path . '/tar -cf \'/tmp/foo.tar\' -C \'' . $dir .  '\' \'.\'', $tar->getCommandLine());
     }
 
     /**
@@ -37,7 +37,7 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $tar  = new Tar($path);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar.gz')->useCompression('gzip');
 
-        $this->assertEquals($path . '/tar -zcf \'/tmp/foo.tar.gz\' -C \'' . $dir .  '\' \'.\' 2> /dev/null', $tar->getCommandLine());
+        $this->assertEquals($path . '/tar -zcf \'/tmp/foo.tar.gz\' -C \'' . $dir .  '\' \'.\'', $tar->getCommandLine());
     }
 
     /**
@@ -50,7 +50,7 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $tar  = new Tar($path);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar.bzip2')->useCompression('bzip2');
 
-        $this->assertEquals($path . '/tar -jcf \'/tmp/foo.tar.bzip2\' -C \'' . $dir .  '\' \'.\' 2> /dev/null', $tar->getCommandLine());
+        $this->assertEquals($path . '/tar -jcf \'/tmp/foo.tar.bzip2\' -C \'' . $dir .  '\' \'.\'', $tar->getCommandLine());
     }
 
     /**
@@ -64,23 +64,10 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->removeSourceDirectory(true);
 
         $this->assertEquals(
-            '(' . $path . '/tar -cf \'/tmp/foo.tar\' -C \'' . $dir .  '\' \'.\' 2> /dev/null'
-          . ' && rm -rf \'' . $dir . '\' 2> /dev/null)',
+            '(' . $path . '/tar -cf \'/tmp/foo.tar\' -C \'' . $dir .  '\' \'.\''
+          . ' && rm -rf \'' . $dir . '\')',
             $tar->getCommandLine()
         );
-    }
-
-    /**
-     * Tests Tar::getCommandLine
-     */
-    public function testCompressionShowStdErr()
-    {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $dir  = sys_get_temp_dir();
-        $tar  = new Tar($path);
-        $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar.bzip2')->useCompression('bzip2')->showStdErr(true);
-
-        $this->assertEquals($path . '/tar -jcf \'/tmp/foo.tar.bzip2\' -C \'' . $dir .  '\' \'.\'', $tar->getCommandLine());
     }
 
     /**

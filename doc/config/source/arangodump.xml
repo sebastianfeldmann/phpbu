@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <source type="arangodump">
-  <!-- optional, default=false -->
-  <option name="showStdErr" value="true" />
-
   <!-- optional, default=tcp://localhost:8529 -->
   <option name="endpoint" value="tcp://myhost:8529" />
 

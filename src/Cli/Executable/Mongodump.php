@@ -224,12 +224,6 @@ class Mongodump extends Abstraction implements Executable
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 
-        // no std error unless it is activated
-        if (!$this->showStdErr) {
-            $cmd->silence();
-            // i kill you
-        }
-
         $cmd->addOption('--out', $this->dumpDir, ' ');
         $cmd->addOptionIfNotEmpty('--ipv6', $this->useIPv6, false);
         $cmd->addOptionIfNotEmpty('--host', $this->host, true, ' ');

@@ -30,13 +30,6 @@ class Redis extends Cli implements Source
     private $pathToRedisCli;
 
     /**
-     * Show stdErr
-     *
-     * @var boolean
-     */
-    private $showStdErr;
-
-    /**
      * Time to wait for the dump to finish
      *
      * @var integer
@@ -78,10 +71,9 @@ class Redis extends Cli implements Source
      * @param  array $conf
      * @throws \phpbu\App\Exception
      */
-    public function setup(array $conf = array())
+    public function setup(array $conf = [])
     {
         $this->pathToRedisCli  = Util\Arr::getValue($conf, 'pathToRedisCli');
-        $this->showStdErr      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
         $this->pathToRedisData = Util\Arr::getValue($conf, 'pathToRedisData');
         $this->timeout         = Util\Arr::getValue($conf, 'timeout', 45);
         $this->host            = Util\Arr::getValue($conf, 'host');
@@ -137,8 +129,7 @@ class Redis extends Cli implements Source
             $this->executable->backup()
                              ->useHost($this->host)
                              ->usePort($this->port)
-                             ->usePassword($this->password)
-                             ->showStdErr($this->showStdErr);
+                             ->usePassword($this->password);
         }
         return $this->executable;
     }
@@ -166,7 +157,7 @@ class Redis extends Cli implements Source
     private function getLastBackupTime(Executable\RedisCli $redis)
     {
         $result  = $redis->run();
-        $output  = $result->getOutputAsString();
+        $output  = $result->getStdOut();
         $matches = [];
         if (!preg_match('#(\(integer\) )?([0-9]+)#i', $output, $matches)) {
             throw new Exception('invalid redis-cli LASTSAVE output');

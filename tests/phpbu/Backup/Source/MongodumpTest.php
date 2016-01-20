@@ -51,7 +51,7 @@ class MongodumpTest extends CliTest
         $executable = $this->mongodump->getExecutable($target);
         $cmd        = $executable->getCommandLine();
 
-        $this->assertEquals($path . '/mongodump --out \'' . __DIR__ . '/dump\' 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/mongodump --out \'' . __DIR__ . '/dump\'', $cmd);
     }
 
     /**

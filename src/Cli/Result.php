@@ -33,27 +33,36 @@ class Result
      *
      * @var array
      */
-    private $buffer = array();
+    private $buffer;
 
     /**
-     * Text output
+     * StdOut
      *
      * @var string
      */
-    private $output;
+    private $stdOut;
+
+    /**
+     * StdErr
+     *
+     * @var string
+     */
+    private $stdErr;
 
     /**
      * Constructor
      *
      * @param string  $cmd
      * @param integer $code
-     * @param array   $output
+     * @param string  $stdOut
+     * @param string  $stdErr
      */
-    public function __construct($cmd, $code, array $output = array())
+    public function __construct($cmd, $code, $stdOut = '', $stdErr = '')
     {
         $this->cmd    = $cmd;
         $this->code   = $code;
-        $this->buffer = $output;
+        $this->stdOut = $stdOut;
+        $this->stdErr = $stdErr;
     }
 
     /**
@@ -85,13 +94,23 @@ class Result
     }
 
     /**
-     * Output getter.
+     * StdOutput getter.
      *
      * @return mixed array
      */
-    public function getOutput()
+    public function getStdOut()
     {
-        return $this->buffer;
+        return $this->stdOut;
+    }
+
+    /**
+     * StdError getter.
+     *
+     * @return mixed array
+     */
+    public function getStdErr()
+    {
+        return $this->stdErr;
     }
 
     /**
@@ -99,12 +118,12 @@ class Result
      *
      * @return string
      */
-    public function getOutputAsString()
+    public function getStdOutAsArray()
     {
-        if (null === $this->output) {
-            $this->output = $this->bufferToText();
+        if (null === $this->buffer) {
+            $this->buffer = $this->textToBuffer();
         }
-        return $this->output;
+        return $this->buffer;
     }
 
     /**
@@ -112,9 +131,9 @@ class Result
      *
      * @return string
      */
-    private function bufferToText()
+    private function textToBuffer()
     {
-        return implode(PHP_EOL, $this->buffer);
+        return explode(PHP_EOL, $this->stdOut);
     }
 
     /**
@@ -124,6 +143,6 @@ class Result
      */
     public function __toString()
     {
-        return $this->getOutputAsString();
+        return $this->stdOut;
     }
 }

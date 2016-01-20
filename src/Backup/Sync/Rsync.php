@@ -129,7 +129,7 @@ class Rsync extends Cli implements Sync
         $result->debug($rsync->getCmd());
 
         if (!$rsync->wasSuccessful()) {
-            throw new Exception('rsync failed: ' . PHP_EOL . $rsync->getOutputAsString());
+            throw new Exception('rsync failed: ' . $rsync->getStdErr());
         }
     }
 

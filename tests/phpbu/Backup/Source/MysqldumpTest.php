@@ -50,7 +50,7 @@ class MysqldumpTest extends CliTest
         $executable = $this->mysqldump->getExecutable($target);
         $cmd        = $executable->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump --all-databases 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/mysqldump --all-databases', $cmd);
     }
 
     /**
@@ -65,7 +65,7 @@ class MysqldumpTest extends CliTest
         $executable = $this->mysqldump->getExecutable($target);
         $cmd        = $executable->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump --lock-tables --all-databases 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/mysqldump --lock-tables --all-databases', $cmd);
     }
 
     /**
@@ -80,7 +80,7 @@ class MysqldumpTest extends CliTest
         $executable = $this->mysqldump->getExecutable($target);
         $cmd        = $executable->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump --hex-blob --all-databases 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/mysqldump --hex-blob --all-databases', $cmd);
     }
 
     /**
@@ -95,7 +95,7 @@ class MysqldumpTest extends CliTest
         $executable = $this->mysqldump->getExecutable($target);
         $cmd        = $executable->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump -e --all-databases 2> /dev/null', $cmd);
+        $this->assertEquals($path . '/mysqldump -e --all-databases', $cmd);
     }
 
     /**

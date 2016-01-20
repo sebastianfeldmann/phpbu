@@ -65,7 +65,7 @@ class TarTest extends CliTest
         $this->tar->setup(array('path' => __DIR__, 'pathToTar' => $path));
         $exec = $this->tar->getExecutable($target);
 
-        $this->assertEquals($path . '/tar -cf \'/tmp/backup.tar\' -C \'' . __DIR__ . '\' \'.\' 2> /dev/null', $exec->getCommandLine());
+        $this->assertEquals($path . '/tar -cf \'/tmp/backup.tar\' -C \'' . __DIR__ . '\' \'.\'', $exec->getCommandLine());
     }
 
     /**
@@ -83,7 +83,7 @@ class TarTest extends CliTest
         $this->tar->setup(array('path' => __DIR__, 'pathToTar' => $path));
         $exec = $this->tar->getExecutable($target);
 
-        $this->assertEquals($path . '/tar -zcf \'/tmp/backup.tar.gz\' -C \'' . __DIR__ . '\' \'.\' 2> /dev/null', $exec->getCommandLine());
+        $this->assertEquals($path . '/tar -zcf \'/tmp/backup.tar.gz\' -C \'' . __DIR__ . '\' \'.\'', $exec->getCommandLine());
     }
 
     /**
@@ -102,7 +102,7 @@ class TarTest extends CliTest
         $this->tar->setup(array('path' => __DIR__, 'pathToTar' => $path));
         $exec = $this->tar->getExecutable($target);
 
-        $this->assertEquals($path . '/tar -cf \'/tmp/backup.tar\' -C \'' . __DIR__ . '\' \'.\' 2> /dev/null', $exec->getCommandLine());
+        $this->assertEquals($path . '/tar -cf \'/tmp/backup.tar\' -C \'' . __DIR__ . '\' \'.\'', $exec->getCommandLine());
     }
 
     /**

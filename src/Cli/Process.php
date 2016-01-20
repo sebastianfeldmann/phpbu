@@ -21,7 +21,7 @@ class Process
      *
      * @var array<\phpbu\Backup\Cli\Cmd>
      */
-    private $commands = array();
+    private $commands = [];
 
     /**
      * Redirect the output
@@ -82,8 +82,8 @@ class Process
         if ($amount < 1) {
             throw new Exception('no command to execute');
         }
-        $cmd = ($amount > 1                   ? '(' . implode(' && ', $this->commands) . ')' : $this->commands[0])
-             . (!empty($this->redirectOutput) ? ' > ' . $this->redirectOutput                : '');
+        $cmd = ($amount > 1 ? '(' . implode(' && ', $this->commands) . ')' : $this->commands[0])
+             . (!empty($this->redirectOutput) ? ' > ' . $this->redirectOutput : '');
 
         return $cmd;
     }
@@ -96,13 +96,29 @@ class Process
      */
     public function run()
     {
-        $cmd    = $this->getCommandLine();
-        $output = array();
-        $code   = 0;
-        $old    = error_reporting(0);
-        exec($cmd, $output, $code);
+        $cmd            = $this->getCommandLine();
+        $old            = error_reporting(0);
+        $descriptorSpec = [
+            ['pipe', 'r'],
+            ['pipe', 'w'],
+            ['pipe', 'w'],
+        ];
+
+        $process = proc_open($cmd, $descriptorSpec, $pipes);
+        if (!is_resource($process)) {
+            throw new Exception('can\'t execute \'proc_open\'');
+        }
+
+        $stdOut = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
+
+        $stdErr = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+
+        $code = proc_close($process);
+        //exec($cmd, $output, $code);
         error_reporting($old);
 
-        return new Result($cmd, $code, $output);
+        return new Result($cmd, $code, $stdOut, $stdErr);
     }
 }

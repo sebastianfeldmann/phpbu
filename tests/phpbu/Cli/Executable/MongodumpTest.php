@@ -23,7 +23,7 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
         $mongo = new Mongodump($path);
         $mongo->dumpToDirectory('./dump');
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' 2> /dev/null', $mongo->getCommandLine());
+        $this->assertEquals($path . '/mongodump --out \'./dump' . '\'', $mongo->getCommandLine());
     }
 
     /**
@@ -41,25 +41,13 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Mongodump::createProcess
      */
-    public function testShowStdErr()
-    {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $mongo = new Mongodump($path);
-        $mongo->dumpToDirectory('./dump')->showStdErr(true);
-
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\'', $mongo->getCommandLine());
-    }
-
-    /**
-     * Tests Mongodump::createProcess
-     */
     public function testUser()
     {
         $path  = realpath(__DIR__ . '/../../../_files/bin');
         $mongo = new Mongodump($path);
         $mongo->dumpToDirectory('./dump')->credentials('root');
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --user \'root\' 2> /dev/null', $mongo->getCommandLine());
+        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --user \'root\'', $mongo->getCommandLine());
     }
 
     /**
@@ -71,7 +59,7 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
         $mongo = new Mongodump($path);
         $mongo->dumpToDirectory('./dump')->credentials(null, 'secret');
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --password \'secret\' 2> /dev/null', $mongo->getCommandLine());
+        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --password \'secret\'', $mongo->getCommandLine());
     }
 
     /**
@@ -83,7 +71,7 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
         $mongo = new Mongodump($path);
         $mongo->dumpToDirectory('./dump')->useHost('example.com');
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --host \'example.com\' 2> /dev/null', $mongo->getCommandLine());
+        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --host \'example.com\'', $mongo->getCommandLine());
     }
 
     /**
@@ -95,7 +83,7 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
         $mongo = new Mongodump($path);
         $mongo->dumpToDirectory('./dump')->dumpDatabases(array('db1', 'db2'));
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --database \'db1\' --database \'db2\' 2> /dev/null', $mongo->getCommandLine());
+        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --database \'db1\' --database \'db2\'', $mongo->getCommandLine());
     }
 
     /**
@@ -107,7 +95,7 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
         $mongo = new Mongodump($path);
         $mongo->dumpToDirectory('./dump')->dumpCollections(array('collection1', 'collection2'));
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --collection \'collection1\' --collection \'collection2\' 2> /dev/null', $mongo->getCommandLine());
+        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --collection \'collection1\' --collection \'collection2\'', $mongo->getCommandLine());
     }
 
     /**
@@ -119,7 +107,7 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
         $mongo = new Mongodump($path);
         $mongo->dumpToDirectory('./dump')->useIpv6(true);
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --ipv6 2> /dev/null', $mongo->getCommandLine());
+        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --ipv6', $mongo->getCommandLine());
     }
 
     /**
@@ -131,7 +119,7 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
         $mongo = new Mongodump($path);
         $mongo->dumpToDirectory('./dump')->excludeCollections(array('col1', 'col2'));
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --excludeCollection \'col1\' \'col2\' 2> /dev/null', $mongo->getCommandLine());
+        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --excludeCollection \'col1\' \'col2\'', $mongo->getCommandLine());
     }
 
     /**
@@ -143,6 +131,6 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
         $mongo = new Mongodump($path);
         $mongo->dumpToDirectory('./dump')->excludeCollectionsWithPrefix(array('pre1', 'pre2'));
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --excludeCollectionWithPrefix \'pre1\' \'pre2\' 2> /dev/null', $mongo->getCommandLine());
+        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --excludeCollectionWithPrefix \'pre1\' \'pre2\'', $mongo->getCommandLine());
     }
 }

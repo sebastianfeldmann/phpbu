@@ -20,8 +20,8 @@ class InnobackupexTest extends \PHPUnit_Framework_TestCase
      */
     public function testDefault()
     {
-        $expectedDump  = 'innobackupex --no-timestamp \'./dump\' 2> /dev/null';
-        $expectedApply = 'innobackupex --apply-log \'./dump\' 2> /dev/null';
+        $expectedDump  = 'innobackupex --no-timestamp \'./dump\'';
+        $expectedApply = 'innobackupex --apply-log \'./dump\'';
         $path          = realpath(__DIR__ . '/../../../_files/bin');
         $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
         $xtra          = new Innobackupex($path);
@@ -35,8 +35,8 @@ class InnobackupexTest extends \PHPUnit_Framework_TestCase
      */
     public function testDataDir()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --datadir=\'/foo/bar\' \'./dump\' 2> /dev/null';
-        $expectedApply = 'innobackupex --apply-log \'./dump\' 2> /dev/null';
+        $expectedDump  = 'innobackupex --no-timestamp --datadir=\'/foo/bar\' \'./dump\'';
+        $expectedApply = 'innobackupex --apply-log \'./dump\'';
         $path          = realpath(__DIR__ . '/../../../_files/bin');
         $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
         $xtra          = new Innobackupex($path);
@@ -60,25 +60,10 @@ class InnobackupexTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests XtraBackup::getExec
      */
-    public function testShowStdErr()
-    {
-        $expectedDump  = 'innobackupex --no-timestamp \'./dump\'';
-        $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $path          = realpath(__DIR__ . '/../../../_files/bin');
-        $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
-        $xtra          = new Innobackupex($path);
-        $xtra->dumpTo('./dump')->showStdErr(true);
-
-        $this->assertEquals($expected, $xtra->getCommandLine());
-    }
-
-    /**
-     * Tests XtraBackup::getExec
-     */
     public function testUser()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --user=\'root\' \'./dump\' 2> /dev/null';
-        $expectedApply = 'innobackupex --apply-log \'./dump\' 2> /dev/null';
+        $expectedDump  = 'innobackupex --no-timestamp --user=\'root\' \'./dump\'';
+        $expectedApply = 'innobackupex --apply-log \'./dump\'';
         $path          = realpath(__DIR__ . '/../../../_files/bin');
         $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
         $xtra          = new Innobackupex($path);
@@ -92,8 +77,8 @@ class InnobackupexTest extends \PHPUnit_Framework_TestCase
      */
     public function testPassword()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --password=\'secret\' \'./dump\' 2> /dev/null';
-        $expectedApply = 'innobackupex --apply-log \'./dump\' 2> /dev/null';
+        $expectedDump  = 'innobackupex --no-timestamp --password=\'secret\' \'./dump\'';
+        $expectedApply = 'innobackupex --apply-log \'./dump\'';
         $path          = realpath(__DIR__ . '/../../../_files/bin');
         $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
         $xtra          = new Innobackupex($path);
@@ -107,8 +92,8 @@ class InnobackupexTest extends \PHPUnit_Framework_TestCase
      */
     public function testHost()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --host=\'example.com\' \'./dump\' 2> /dev/null';
-        $expectedApply = 'innobackupex --apply-log \'./dump\' 2> /dev/null';
+        $expectedDump  = 'innobackupex --no-timestamp --host=\'example.com\' \'./dump\'';
+        $expectedApply = 'innobackupex --apply-log \'./dump\'';
         $path          = realpath(__DIR__ . '/../../../_files/bin');
         $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
         $xtra          = new Innobackupex($path);
@@ -122,8 +107,8 @@ class InnobackupexTest extends \PHPUnit_Framework_TestCase
      */
     public function testDatabases()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --databases=\'db1 db2 db3.table1\' \'./dump\' 2> /dev/null';
-        $expectedApply = 'innobackupex --apply-log \'./dump\' 2> /dev/null';
+        $expectedDump  = 'innobackupex --no-timestamp --databases=\'db1 db2 db3.table1\' \'./dump\'';
+        $expectedApply = 'innobackupex --apply-log \'./dump\'';
         $path          = realpath(__DIR__ . '/../../../_files/bin');
         $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
         $xtra          = new Innobackupex($path);
@@ -137,8 +122,8 @@ class InnobackupexTest extends \PHPUnit_Framework_TestCase
      */
     public function testInclude()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --include=\'^myDatabase[.]myTable\' \'./dump\' 2> /dev/null';
-        $expectedApply = 'innobackupex --apply-log \'./dump\' 2> /dev/null';
+        $expectedDump  = 'innobackupex --no-timestamp --include=\'^myDatabase[.]myTable\' \'./dump\'';
+        $expectedApply = 'innobackupex --apply-log \'./dump\'';
         $path          = realpath(__DIR__ . '/../../../_files/bin');
         $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
         $xtra          = new Innobackupex($path);

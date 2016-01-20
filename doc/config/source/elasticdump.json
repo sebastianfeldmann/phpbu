@@ -1,7 +1,6 @@
 {
   "type": "elasticdump",
   "options": {
-    "showStdErr": "true",
     "host": "localhost:9200",
     "user": "myUserName",
     "password": "mySecretPassword",

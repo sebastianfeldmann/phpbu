@@ -33,7 +33,7 @@ class Cmd
      *
      * @var array<string>
      */
-    private $options = array();
+    private $options = [];
 
     /**
      * Constructor.

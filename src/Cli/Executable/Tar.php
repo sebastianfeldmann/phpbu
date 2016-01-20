@@ -159,12 +159,6 @@ class Tar extends Abstraction implements Executable
         $process = new Process();
         $tar     = new Cmd($this->binary);
 
-        // no std error unless it is activated
-        if (!$this->showStdErr) {
-            $tar->silence();
-            // i kill you
-        }
-
         $tar->addOption('-' . $this->compression . 'cf');
         $tar->addArgument($this->tarPathname);
         $tar->addOption('-C', $this->path, ' ');
@@ -189,9 +183,6 @@ class Tar extends Abstraction implements Executable
     {
         $rm = new Cmd('rm');
         $rm->addOption('-rf', $this->path, ' ');
-        if (!$this->showStdErr) {
-            $rm->silence();
-        }
         return $rm;
     }
 

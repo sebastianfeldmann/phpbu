@@ -3,7 +3,6 @@
   "options": {
     "certFile": "myCertificate.pem",
     "algorithm": "aes256",
-    "keepUncryptedFile": "false",
-    "showStdError": "false"
+    "keepUncryptedFile": "false"
   }
 }

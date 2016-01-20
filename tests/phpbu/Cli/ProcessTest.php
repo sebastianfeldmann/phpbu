@@ -94,4 +94,36 @@ class ProcessTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(0, $res->getCode(), 'echo should work everywhere');
     }
+
+    /**
+     * Tests Process::run
+     */
+    public function testRunStdOut()
+    {
+        $path    = realpath(__DIR__ .'/../../_files/bin/test');
+        $cmd     = new Cmd($path);
+        $process = new Process();
+        $process->addCommand($cmd);
+
+        $res = $process->run();
+
+        $this->assertTrue((strpos($res->getStdOut(), 'is on stdout') !== false), 'stdout should be found');
+    }
+
+    /**
+     * Tests Process::run
+     */
+    public function testRunStdErr()
+    {
+        $path    = realpath(__DIR__ .'/../../_files/bin/test');
+        $cmd     = new Cmd($path);
+        $process = new Process();
+        $process->addCommand($cmd);
+
+        $res = $process->run();
+
+        $this->assertTrue((strpos($res->getStdErr(), 'is on stderr') !== false), 'stderr should be found');
+
+
+    }
 }

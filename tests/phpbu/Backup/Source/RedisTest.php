@@ -65,7 +65,7 @@ class RedisTest extends CliTest
         $this->redis->setup(['pathToRedisData' => $rdbPath, 'pathToRedisCli' => $binPath]);
         $exec = $this->redis->getExecutable($target);
 
-        $this->assertEquals($binPath . '/redis-cli BGSAVE 2> /dev/null', $exec->getCommandLine());
+        $this->assertEquals($binPath . '/redis-cli BGSAVE', $exec->getCommandLine());
     }
 
     /**
@@ -82,9 +82,9 @@ class RedisTest extends CliTest
 
         $this->redis->setup(['pathToRedisData' => $rdbPath, 'pathToRedisCli' => $binPath]);
 
-        $cliResult1 = $this->getCliResultMock(0, 'redis', ['(integer) 100000000']);
-        $cliResult2 = $this->getCliResultMock(0, 'redis', ['(integer) 100000000']);
-        $cliResult3 = $this->getCliResultMock(0, 'redis', ['(integer) 100000002']);
+        $cliResult1 = $this->getCliResultMock(0, 'redis', '(integer) 100000000');
+        $cliResult2 = $this->getCliResultMock(0, 'redis', '(integer) 100000000');
+        $cliResult3 = $this->getCliResultMock(0, 'redis', '(integer) 100000002');
 
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
@@ -127,7 +127,7 @@ class RedisTest extends CliTest
 
         $this->redis->setup(['pathToRedisData' => $rdbPath, 'pathToRedisCli' => $binPath, 'timeout' => 2]);
 
-        $cliResult = $this->getCliResultMock(0, 'redis', ['(integer) 100000000']);
+        $cliResult = $this->getCliResultMock(0, 'redis', '(integer) 100000000');
 
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
@@ -159,7 +159,7 @@ class RedisTest extends CliTest
 
         $this->redis->setup(['pathToRedisData' => $rdbPath, 'pathToRedisCli' => $binPath]);
 
-        $cliResult1 = $this->getCliResultMock(0, 'redis', ['(integer) 100000000']);
+        $cliResult1 = $this->getCliResultMock(0, 'redis', '(integer) 100000000');
         $cliResult2 = $this->getCliResultMock(1, 'redis');
 
         $appResult = $this->getAppResultMock();

@@ -1,7 +1,6 @@
 {
   "type": "mongodump",
   "option": {
-    "showStdErr": "true",
     "host": "localhost",
     "user": "root",
     "password": "secret",

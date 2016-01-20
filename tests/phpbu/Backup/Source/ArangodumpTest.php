@@ -45,7 +45,7 @@ class ArangodumpTest extends CliTest
      */
     public function testDefault()
     {
-        $expected = 'arangodump --output-directory \'./dir/dump\' 2> /dev/null';
+        $expected = 'arangodump --output-directory \'./dir/dump\'';
         $target   = $this->getTargetMock('./dir/foo.dump');
         $path     = $this->getBinDir();
         $this->arangodump->setup(array('pathToArangodump' => $path));
@@ -60,7 +60,7 @@ class ArangodumpTest extends CliTest
      */
     public function testUser()
     {
-        $expected = 'arangodump --server.username \'root\' --output-directory \'./dir/dump\' 2> /dev/null';
+        $expected = 'arangodump --server.username \'root\' --output-directory \'./dir/dump\'';
         $target   = $this->getTargetMock('./dir/foo.dump');
         $path     = $this->getBinDir();
         $this->arangodump->setup(array('pathToArangodump' => $path, 'username' => 'root'));
@@ -75,7 +75,7 @@ class ArangodumpTest extends CliTest
      */
     public function testCollections()
     {
-        $expected = 'arangodump --collection \'collection1\' --collection \'collection2\' --output-directory \'./dir/dump\' 2> /dev/null';
+        $expected = 'arangodump --collection \'collection1\' --collection \'collection2\' --output-directory \'./dir/dump\'';
         $target   = $this->getTargetMock('./dir/foo.dump');
         $path     = $this->getBinDir();
         $this->arangodump->setup(array('pathToArangodump' => $path, 'collections' => 'collection1,collection2'));

@@ -34,8 +34,8 @@ class OpenSLLTest extends \PHPUnit_Framework_TestCase
     public function testPasswordBase64Encode()
     {
         $expected = 'openssl enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' '
-            . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' 2> /dev/null '
-            . '&& rm \'/foo/bar.txt\' 2> /dev/null';
+            . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
+            . '&& rm \'/foo/bar.txt\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $openSSL  = new OpenSSL($path);
         $openSSL->encryptFile('/foo/bar.txt')
@@ -52,8 +52,8 @@ class OpenSLLTest extends \PHPUnit_Framework_TestCase
     public function testPassword()
     {
         $expected = 'openssl enc -e -aes-256-cbc -pass \'pass:fooBarBaz\' '
-                  . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' 2> /dev/null '
-                  . '&& rm \'/foo/bar.txt\' 2> /dev/null';
+                  . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
+                  . '&& rm \'/foo/bar.txt\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $openSSL  = new OpenSSL($path);
         $openSSL->encryptFile('/foo/bar.txt')
@@ -69,7 +69,7 @@ class OpenSLLTest extends \PHPUnit_Framework_TestCase
     public function testDoNotDeleteUncrypted()
     {
         $expected = 'openssl enc -e -aes-256-cbc -pass \'pass:fooBarBaz\' '
-                  . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' 2> /dev/null';
+                  . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $openSSL  = new OpenSSL($path);
         $openSSL->encryptFile('/foo/bar.txt')
@@ -86,8 +86,8 @@ class OpenSLLTest extends \PHPUnit_Framework_TestCase
     public function testCert()
     {
         $expected = 'openssl smime -encrypt -aes256 -binary -in \'/foo/bar.txt\' '
-                  . '-out \'/foo/bar.txt.enc\' -outform DER \'/foo/my.pem\' 2> /dev/null '
-                  . '&& rm \'/foo/bar.txt\' 2> /dev/null';
+                  . '-out \'/foo/bar.txt.enc\' -outform DER \'/foo/my.pem\' '
+                  . '&& rm \'/foo/bar.txt\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $openSSL  = new OpenSSL($path);
         $openSSL->encryptFile('/foo/bar.txt')

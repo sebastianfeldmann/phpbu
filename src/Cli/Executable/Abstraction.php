@@ -39,13 +39,6 @@ abstract class Abstraction
     protected $process;
 
     /**
-     * Display stdErr
-     *
-     * @var boolean
-     */
-    protected $showStdErr = false;
-
-    /**
      * Constructor.
      *
      * @param string $path
@@ -83,18 +76,6 @@ abstract class Abstraction
      * @return \phpbu\App\Cli\Process
      */
     abstract protected function createProcess();
-
-    /**
-     * Show the stdError output.
-     *
-     * @param  boolean $bool
-     * @return \phpbu\App\Cli\Executable
-     */
-    public function showStdErr($bool)
-    {
-        $this->showStdErr = $bool;
-        return $this;
-    }
 
     /**
      * Executes the cli commands.

@@ -217,12 +217,6 @@ class Arangodump extends Abstraction implements Executable
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 
-        // no std error unless it is activated
-        if (!$this->showStdErr) {
-            $cmd->silence();
-            // i kill you
-        }
-
         $cmd->addOptionIfNotEmpty('--server.username', $this->username, true, ' ');
         $cmd->addOptionIfNotEmpty('--server.password', $this->password, true, ' ');
         $cmd->addOptionIfNotEmpty('--server.endpoint', $this->endpoint, true, ' ');

@@ -30,13 +30,6 @@ class Mongodump extends Cli implements Source
     private $pathToMongodump;
 
     /**
-     * Show stdErr
-     *
-     * @var boolean
-     */
-    private $showStdErr;
-
-    /**
      * Use IPv6
      * --ipv6
      *
@@ -123,7 +116,6 @@ class Mongodump extends Cli implements Source
         // environment settings, config & validation
         $this->pathToMongodump = Util\Arr::getValue($conf, 'pathToMongodump');
         $this->useIPv6         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ipv6', ''), false);
-        $this->showStdErr      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
     }
 
     /**
@@ -192,8 +184,7 @@ class Mongodump extends Cli implements Source
                              ->dumpDatabases($this->databases)
                              ->dumpCollections($this->collections)
                              ->excludeCollections($this->excludeCollections)
-                             ->excludeCollectionsWithPrefix($this->excludeCollectionsWithPrefix)
-                             ->showStdErr($this->showStdErr);
+                             ->excludeCollectionsWithPrefix($this->excludeCollectionsWithPrefix);
         }
 
         return $this->executable;

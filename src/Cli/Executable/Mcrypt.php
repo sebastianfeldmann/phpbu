@@ -181,12 +181,6 @@ class Mcrypt extends Abstraction implements Executable
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 
-        // no std error unless it is activated
-        if (!$this->showStdErr) {
-            $cmd->silence();
-            // i kill you
-        }
-
         $cmd->addOptionIfNotEmpty('-u', $this->deleteUncrypted, false);
         $cmd->addOptionIfNotEmpty('-k', $this->key, true, ' ');
         $cmd->addOptionIfNotEmpty('-f', $this->keyFile, true, ' ');

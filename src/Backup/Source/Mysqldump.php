@@ -30,13 +30,6 @@ class Mysqldump extends Cli implements Source, Simulator
     private $pathToMysqldump;
 
     /**
-     * Show stdErr
-     *
-     * @var boolean
-     */
-    private $showStdErr;
-
-    /**
      * Host to connect to
      * --host <hostname>
      *
@@ -160,7 +153,6 @@ class Mysqldump extends Cli implements Source, Simulator
         $this->host            = Util\Arr::getValue($conf, 'host');
         $this->user            = Util\Arr::getValue($conf, 'user');
         $this->password        = Util\Arr::getValue($conf, 'password');
-        $this->showStdErr      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
         $this->hexBlob         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'hexBlob', ''), false);
         $this->quick           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
         $this->lockTables      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'lockTables', ''), false);
@@ -200,7 +192,7 @@ class Mysqldump extends Cli implements Source, Simulator
         $result->debug($mysqldump->getCmd());
 
         if (!$mysqldump->wasSuccessful()) {
-            throw new Exception('mysqldump failed');
+            throw new Exception('mysqldump failed:' . $mysqldump->getStdErr());
         }
 
         return Status::create()->uncompressed($this->dumpPathname);
@@ -228,8 +220,7 @@ class Mysqldump extends Cli implements Source, Simulator
                              ->ignoreTables($this->ignoreTables)
                              ->dumpNoData($this->noData)
                              ->dumpStructureOnly($this->structureOnly)
-                             ->dumpTo($this->dumpPathname)
-                             ->showStdErr($this->showStdErr);
+                             ->dumpTo($this->dumpPathname);
         }
         return $this->executable;
     }

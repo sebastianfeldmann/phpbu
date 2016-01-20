@@ -155,12 +155,6 @@ class Elasticdump extends Abstraction implements Executable
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 
-        // no std error unless it is activated
-        if (!$this->showStdErr) {
-            $cmd->silence();
-            // i kill you
-        }
-
         $cmd->addOption('--input', $this->generateNodeUrl($this->host, $this->user, $this->password, $this->index));
         $cmd->addOptionIfNotEmpty('--type', $this->type);
         $cmd->addOption('--output', $this->dumpPathname);

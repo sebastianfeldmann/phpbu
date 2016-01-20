@@ -37,13 +37,6 @@ class Tar extends Cli implements Source
     private $pathToTar;
 
     /**
-     * Show stdErr
-     *
-     * @var boolean
-     */
-    private $showStdErr;
-
-    /**
      * Path to backup
      *
      * @var string
@@ -81,7 +74,6 @@ class Tar extends Cli implements Source
     public function setup(array $conf = array())
     {
         $this->pathToTar  = Util\Arr::getValue($conf, 'pathToTar');
-        $this->showStdErr = Util\Str::toBoolean(Util\Arr::getValue($conf, 'showStdErr', ''), false);
         $this->path       = Util\Arr::getValue($conf, 'path');
         $this->removeDir  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeDir', ''), false);
 
@@ -114,7 +106,7 @@ class Tar extends Cli implements Source
         $result->debug($tar->getCmd());
 
         if (!$tar->wasSuccessful()) {
-            throw new Exception('tar failed');
+            throw new Exception('tar failed: ' . $tar->getStdErr());
         }
 
         return $status;
@@ -145,8 +137,7 @@ class Tar extends Cli implements Source
             $this->executable = new Executable\Tar($this->pathToTar);
             $this->executable->archiveDirectory($this->path)
                              ->useCompression($this->compression)
-                             ->archiveTo($this->pathToArchive)
-                             ->showStdErr($this->showStdErr);
+                             ->archiveTo($this->pathToArchive);
         }
         return $this->executable;
     }

@@ -73,7 +73,7 @@ class McryptTest extends CliTest
      */
     public function testKeyAndAlgorithm()
     {
-        $expected = 'mcrypt -u -k \'fooBarBaz\' -a \'blowfish\' \'/foo/bar.txt\' 2> /dev/null';
+        $expected = 'mcrypt -u -k \'fooBarBaz\' -a \'blowfish\' \'/foo/bar.txt\'';
         $target   = $this->getTargetMock('/foo/bar.txt');
         $path     = $this->getBinDir();
         $this->mcrypt->setup(array('pathToMcrypt' => $path, 'key' => 'fooBarBaz', 'algorithm' => 'blowfish'));
@@ -90,7 +90,7 @@ class McryptTest extends CliTest
     {
         Cli::registerBase('configuration', '/foo');
 
-        $expected = 'mcrypt -u -f \'/foo/my.key\' -a \'blowfish\' \'/foo/bar.txt\' 2> /dev/null';
+        $expected = 'mcrypt -u -f \'/foo/my.key\' -a \'blowfish\' \'/foo/bar.txt\'';
         $target   = $this->getTargetMock('/foo/bar.txt');
         $path     = $this->getBinDir();
         $this->mcrypt->setup(array('pathToMcrypt' => $path, 'keyFile' => '/foo/my.key', 'algorithm' => 'blowfish'));
