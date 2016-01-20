@@ -9,6 +9,7 @@ use phpbu\App\Util;
 use phpbu\App\Version;
 use PHP_Timer;
 use SebastianBergmann\Environment\Console;
+use SebastianBergmann\Environment\Runtime;
 
 /**
  * Default app output.
@@ -82,6 +83,20 @@ class PrinterCli implements Listener
     private $numCleanups = 0;
 
     /**
+     * Console
+     *
+     * @var \SebastianBergmann\Environment\Console
+     */
+    private $console;
+
+    /**
+     * PHP Runtime
+     *
+     * @var \SebastianBergmann\Environment\Runtime
+     */
+    private $runtime;
+
+    /**
      * Returns an array of event names this subscriber wants to listen to.
      *
      * The array keys are event names and the value can be:
@@ -95,7 +110,7 @@ class PrinterCli implements Listener
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             'phpbu.debug'           => 'onDebug',
             'phpbu.app_start'       => 'onPhpbuStart',
             'phpbu.backup_start'    => 'onBackupStart',
@@ -117,7 +132,7 @@ class PrinterCli implements Listener
             'phpbu.cleanup_failed'  => 'onCleanupFailed',
             'phpbu.cleanup_end'     => 'onCleanupEnd',
             'phpbu.app_end'         => 'onPhpbuEnd',
-        );
+        ];
     }
 
     /**
@@ -140,10 +155,11 @@ class PrinterCli implements Listener
             throw new InvalidArgumentException('Expected $debug to be of type boolean');
         }
 
+        $this->console = new Console;
+        $this->runtime = new Runtime;
         $this->debug   = $debug;
         $this->verbose = $verbose;
-        $console       = new Console;
-        $this->colors  = $colors && $console->hasColorSupport();
+        $this->colors  = $colors && $this->console->hasColorSupport();
     }
 
     /**
@@ -157,7 +173,8 @@ class PrinterCli implements Listener
         $this->write(
             Version::getVersionString() . PHP_EOL .
             PHP_EOL .
-            'Configuration read from ' . $configuration->getFilename() . PHP_EOL .
+            'Runtime:       ' . $this->runtime->getNameWithVersion() . PHP_EOL .
+            'Configuration: ' . $configuration->getFilename() . PHP_EOL .
             PHP_EOL
         );
     }
