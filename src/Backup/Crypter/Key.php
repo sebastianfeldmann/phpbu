@@ -3,6 +3,7 @@ namespace phpbu\App\Backup\Crypter;
 
 use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Crypter;
+use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Result;
 use phpbu\App\Util;
@@ -20,6 +21,27 @@ use phpbu\App\Util;
  */
 abstract class Key extends Cli
 {
+
+    /**
+     * (non-PHPDoc)
+     *
+     * @see    \phpbu\App\Backup\Crypter
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Result        $result
+     * @throws Exception
+     */
+    public function crypt(Target $target, Result $result)
+    {
+        $crypt = $this->execute($target);
+        $name  = strtolower(get_class($this));
+
+        $result->debug($name . ':' . $crypt->getCmd());
+
+        if (!$crypt->wasSuccessful()) {
+            throw new Exception($name . ' failed:' . PHP_EOL . $crypt->getStdErr());
+        }
+    }
+
     /**
      * Return an absolute path relative to the used file.
      *

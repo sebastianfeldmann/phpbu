@@ -99,25 +99,6 @@ class Mcrypt extends Key implements Crypter
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Crypter
-     * @param  \phpbu\App\Backup\Target $target
-     * @param  \phpbu\App\Result        $result
-     * @throws Exception
-     */
-    public function crypt(Target $target, Result $result)
-    {
-        $mcrypt = $this->execute($target);
-
-        $result->debug('mcrypt:' . $mcrypt->getCmd());
-
-        if (!$mcrypt->wasSuccessful()) {
-            throw new Exception('mcrypt failed:' . PHP_EOL . $mcrypt->getStdErr());
-        }
-    }
-
-    /**
-     * (non-PHPDoc)
-     *
-     * @see    \phpbu\App\Backup\Crypter
      * @return string
      */
     public function getSuffix()

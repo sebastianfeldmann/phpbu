@@ -83,25 +83,6 @@ class OpenSSL extends Key implements Crypter
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Crypter
-     * @param  \phpbu\App\Backup\Target $target
-     * @param  \phpbu\App\Result        $result
-     * @throws Exception
-     */
-    public function crypt(Target $target, Result $result)
-    {
-        $openssl = $this->execute($target);
-
-        $result->debug('openssl:' . $openssl->getCmd());
-
-        if (!$openssl->wasSuccessful()) {
-            throw new Exception('openssl failed:' . PHP_EOL . $openssl->getStdErr());
-        }
-    }
-
-    /**
-     * (non-PHPDoc)
-     *
-     * @see    \phpbu\App\Backup\Crypter
      * @return string
      */
     public function getSuffix()
