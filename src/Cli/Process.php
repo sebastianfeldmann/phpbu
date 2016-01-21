@@ -116,7 +116,6 @@ class Process
         fclose($pipes[2]);
 
         $code = proc_close($process);
-        //exec($cmd, $output, $code);
         error_reporting($old);
 
         return new Result($cmd, $code, $stdOut, $stdErr);
