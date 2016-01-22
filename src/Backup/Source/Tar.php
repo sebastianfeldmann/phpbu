@@ -73,9 +73,9 @@ class Tar extends Cli implements Source
      */
     public function setup(array $conf = array())
     {
-        $this->pathToTar  = Util\Arr::getValue($conf, 'pathToTar');
-        $this->path       = Util\Arr::getValue($conf, 'path');
-        $this->removeDir  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeDir', ''), false);
+        $this->pathToTar = Util\Arr::getValue($conf, 'pathToTar');
+        $this->path      = Util\Arr::getValue($conf, 'path');
+        $this->removeDir = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeDir', ''), false);
 
         if (empty($this->path)) {
             throw new Exception('path option is mandatory');
