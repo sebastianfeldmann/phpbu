@@ -85,9 +85,9 @@ class Factory
      */
     protected function create($type, $alias)
     {
-        $type  = strtolower($type);
-        $alias = strtolower($alias);
         self::checkType($type);
+        $alias = strtolower($alias);
+
         if (!isset(self::$classMap[$type][$alias])) {
             throw new Exception(sprintf('unknown %s: %s', $type, $alias));
         }
@@ -121,7 +121,7 @@ class Factory
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Source
      */
-    public function createLogger($alias, $conf = array())
+    public function createLogger($alias, $conf = [])
     {
         /** @var \phpbu\App\Log\Logger $logger */
         $logger = $this->create('logger', $alias);
@@ -143,7 +143,7 @@ class Factory
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Source
      */
-    public function createSource($alias, $conf = array())
+    public function createSource($alias, $conf = [])
     {
         /** @var \phpbu\App\Backup\Source $source */
         $source = $this->create('source', $alias);
@@ -179,7 +179,7 @@ class Factory
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Crypter
      */
-    public function createCrypter($alias, $conf = array())
+    public function createCrypter($alias, $conf = [])
     {
         /** @var \phpbu\App\Backup\Crypter $crypter */
         $crypter = $this->create('crypter', $alias);
@@ -198,7 +198,7 @@ class Factory
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Sync
      */
-    public function createSync($alias, $conf = array())
+    public function createSync($alias, $conf = [])
     {
         /** @var \phpbu\App\Backup\Sync $sync */
         $sync = $this->create('sync', $alias);
@@ -217,7 +217,7 @@ class Factory
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Cleaner
      */
-    public function createCleaner($alias, $conf = array())
+    public function createCleaner($alias, $conf = [])
     {
         /** @var \phpbu\App\Backup\Cleaner $cleaner */
         $cleaner = $this->create('cleaner', $alias);
@@ -239,9 +239,9 @@ class Factory
      */
     public static function register($type, $alias, $fqcn, $force = false)
     {
-        $type  = strtolower($type);
-        $alias = strtolower($alias);
         self::checkType($type);
+        $alias = strtolower($alias);
+
         if (!$force && isset(self::$classMap[$type][$alias])) {
             throw new Exception(sprintf('%s is already registered use force parameter to overwrite', $type));
         }
