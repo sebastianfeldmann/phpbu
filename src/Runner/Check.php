@@ -42,7 +42,7 @@ class Check extends Abstraction
         try {
             $result->checkStart($config);
 
-            if ($this->check($check, $config->value, $target, $collector, $result)) {
+            if ($this->runCheck($check, $config->value, $target, $collector)) {
                 $result->checkEnd($config);
             } else {
                 $this->failure = true;
@@ -74,9 +74,8 @@ class Check extends Abstraction
      * @param  \phpbu\App\Backup\Collector $collector
      * @return bool
      */
-    protected function check(CheckExe $check, $value, Target $target, Collector $collector)
+    protected function runCheck(CheckExe $check, $value, Target $target, Collector $collector)
     {
         return $this->isSimulation() ? true : $check->pass($target, $value, $collector);
     }
-
 }
