@@ -7,6 +7,7 @@ use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Log\Logger;
+use phpbu\App\Runner\Task;
 
 /**
  * Source Factory
@@ -82,7 +83,7 @@ class Factory
      * @throws \phpbu\App\Exception
      * @return mixed
      */
-    public function create($type, $alias)
+    protected function create($type, $alias)
     {
         $type  = strtolower($type);
         $alias = strtolower($alias);
@@ -98,12 +99,18 @@ class Factory
      * Runner Factory.
      *
      * @param  string $alias
-     * @throws \phpbu\App\Exception
+     * @param  bool   $isSimulation
      * @return mixed
+     * @throws \phpbu\App\Exception
      */
-    public function createRunner($alias)
+    public function createRunner($alias, $isSimulation)
     {
-        return $this->create('runner', $alias);
+        $runner = $this->create('runner', $alias);
+        if (!($runner instanceof Task)) {
+            throw new Exception(sprintf('Runner \'%s\' has to implement the \'Task\' interface', $alias));
+        }
+        $runner->setSimulation($isSimulation);
+        return $runner;
     }
 
     /**
@@ -250,7 +257,9 @@ class Factory
     private static function checkType($type)
     {
         if (!isset(self::$classMap[$type])) {
-            throw new Exception('invalid type, use \'source\', \'check\', \'sync\', \'cleaner\' or \'logger\'');
+            throw new Exception(
+                'invalid type, use \'runner\' \'source\', \'check\', \'sync\', \'cleaner\' or \'logger\''
+            );
         }
     }
 }

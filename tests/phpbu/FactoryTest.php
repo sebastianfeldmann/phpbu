@@ -27,7 +27,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateRunner()
     {
         $factory = new Factory();
-        $runner  = $factory->createRunner('source');
+        $runner  = $factory->createRunner('source', false);
 
         $this->assertEquals('phpbu\\App\\Runner\Source', get_class($runner), 'runner classes should match');
     }
@@ -110,7 +110,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateUnknown()
     {
         $factory = new Factory();
-        $factory->create('sync', 'Unknown', ['foo' => 'bar']);
+        $factory->createSync('Unknown', ['foo' => 'bar']);
 
         $this->assertFalse(true, 'exception should be thrown');
     }
@@ -123,7 +123,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         Factory::register('check', 'dummy', '\\phpbu\\App\\phpbuAppFactoryTestCheck');
 
         $factory = new Factory();
-        $dummy   = $factory->create('check', 'dummy');
+        $dummy   = $factory->createCheck('dummy');
 
         $this->assertEquals('phpbu\\App\\phpbuAppFactoryTestCheck', get_class($dummy), 'Factory should create dummy object');
     }
@@ -267,7 +267,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         Factory::register('check', 'sizemin', '\\phpbu\\App\\phpbuAppFactoryTestCheck', true);
 
         $factory = new Factory();
-        $dummy   = $factory->create('check', 'sizemin');
+        $dummy   = $factory->createCheck('sizemin');
 
         $this->assertEquals(get_class($dummy), 'phpbu\\App\\phpbuAppFactoryTestCheck', 'Factory should create dummy object');
     }
@@ -287,7 +287,7 @@ class phpbuAppFactoryTestCheck implements Check
      * @param  \phpbu\App\Result
      * @return boolean
      */
-    public function pass(Target $target, $value, Collector $collector, Result $result)
+    public function pass(Target $target, $value, Collector $collector)
     {
         // do something fooish
     }
