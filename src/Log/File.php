@@ -37,23 +37,24 @@ class File
             throw new InvalidArgumentException('Out can\'t be empty');
         }
         if (is_string($out)) {
-            if (strpos($out, 'socket://') === 0) {
-                $socket = explode(':', str_replace('socket://', '', $out));
-
-                if (count($socket) != 2) {
-                    throw new InvalidArgumentException(sprintf('Invalid socket: %s', $out));
-                }
-                $this->out = fsockopen($socket[0], $socket[1]);
-            } else {
-                if (strpos($out, 'php://') === false && !is_dir(dirname($out))) {
-                    mkdir(dirname($out), 0777, true);
-                }
-                $this->out = fopen($out, 'wt');
-            }
-            $this->outTarget = $out;
+            $this->setupOut($out);
         } else {
             $this->out = $out;
         }
+    }
+
+    /**
+     * Setup the out resource
+     *
+     * @param string $out
+     */
+    protected function setupOut($out)
+    {
+        if (strpos($out, 'php://') === false && !is_dir(dirname($out))) {
+            mkdir(dirname($out), 0777, true);
+        }
+        $this->out       = fopen($out, 'wt');
+        $this->outTarget = $out;
     }
 
     /**

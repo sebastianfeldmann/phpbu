@@ -70,15 +70,4 @@ class FileTest extends \PHPUnit_Framework_TestCase
         unlink($log);
         rmdir(dirname($log));
     }
-
-    /**
-     * Tests Printer::write
-     *
-     * @expectedException \InvalidArgumentException
-     */
-    public function testCreateSocketFail()
-    {
-        $file = new File();
-        $file->setOut('socket://');
-    }
 }
