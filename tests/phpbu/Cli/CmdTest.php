@@ -27,7 +27,7 @@ class CmdTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests Cmd::addArgument
+     * Tests Cmd::silence
      */
     public function testSilence()
     {
