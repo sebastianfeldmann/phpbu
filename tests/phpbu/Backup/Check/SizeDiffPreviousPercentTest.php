@@ -20,8 +20,6 @@ class SizeDiffPreviousPercentTest extends \PHPUnit_Framework_TestCase
     public function testPass()
     {
         $fileList      = $this->getFileListMock(1000);
-        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
-                              ->getMock();
         $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
                               ->disableOriginalConstructor()
                               ->getMock();
@@ -35,12 +33,12 @@ class SizeDiffPreviousPercentTest extends \PHPUnit_Framework_TestCase
         $check = new SizeDiffPreviousPercent();
 
         $this->assertTrue(
-            $check->pass($targetStub, '10', $collectorStub, $resultStub),
+            $check->pass($targetStub, '10', $collectorStub),
             'size of stub should not differ more then 10%'
         );
 
         $this->assertFalse(
-            $check->pass($targetStub, '5', $collectorStub, $resultStub),
+            $check->pass($targetStub, '5', $collectorStub),
             'size of stub should differ more then 5%'
         );
     }
