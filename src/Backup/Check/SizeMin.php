@@ -27,11 +27,10 @@ class SizeMin implements Check
      * @param  \phpbu\App\Backup\Target    $target
      * @param  string                      $value
      * @param  \phpbu\App\Backup\Collector $collector
-     * @param  \phpbu\App\Result           $result
      * @return boolean
      * @throws \phpbu\App\Exception
      */
-    public function pass(Target $target, $value, Collector $collector, Result $result)
+    public function pass(Target $target, $value, Collector $collector)
     {
         // throws App\Exception if file doesn't exist
         $actualSize = $target->getSize();

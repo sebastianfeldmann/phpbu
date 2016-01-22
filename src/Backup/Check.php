@@ -22,8 +22,7 @@ interface Check
      * @param  \phpbu\App\Backup\Target    $target
      * @param  string                      $value
      * @param  \phpbu\App\Backup\Collector
-     * @param  \phpbu\App\Result
      * @return boolean
      */
-    public function pass(Target $target, $value, Collector $collector, Result $result);
+    public function pass(Target $target, $value, Collector $collector);
 }
