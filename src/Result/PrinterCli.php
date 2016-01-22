@@ -186,9 +186,9 @@ class PrinterCli implements Listener
      */
     public function onBackupStart(Event\Backup\Start $event)
     {
-        $backup = $event->getConfiguration();
         $this->numBackups++;
         if ($this->debug) {
+            $backup = $event->getConfiguration();
             $this->writeWithAsterisk('backup: [' . $backup->getSource()->type . '] ');
         }
     }
@@ -224,10 +224,11 @@ class PrinterCli implements Listener
      */
     public function onCheckStart(Event\Check\Start $event)
     {
-        $check = $event->getConfiguration();
         $this->numChecks++;
         if ($this->debug) {
+            $check = $event->getConfiguration();
             $this->writeWithAsterisk('check: [' . $check->type . '] ');
+            $this->write('checking: [' . $check->value . '] ');
         }
     }
 
@@ -262,9 +263,9 @@ class PrinterCli implements Listener
      */
     public function onCryptStart(Event\Crypt\Start $event)
     {
-        $crypt = $event->getConfiguration();
         $this->numCrypts++;
         if ($this->debug) {
+            $crypt = $event->getConfiguration();
             $this->writeWithAsterisk('crypt: [' . $crypt->type . '] ');
         }
     }
@@ -312,9 +313,9 @@ class PrinterCli implements Listener
      */
     public function onSyncStart(Event\Sync\Start $event)
     {
-        $sync = $event->getConfiguration();
         $this->numSyncs++;
         if ($this->debug) {
+            $sync = $event->getConfiguration();
             $this->writeWithAsterisk('sync: [' . $sync->type . '] ');
         }
     }
@@ -362,9 +363,9 @@ class PrinterCli implements Listener
      */
     public function onCleanupStart(Event\Cleanup\Start $event)
     {
-        $cleanup = $event->getConfiguration();
         $this->numCleanups++;
         if ($this->debug) {
+            $cleanup = $event->getConfiguration();
             $this->writeWithAsterisk('cleanup: [' . $cleanup->type . '] ');
         }
     }
