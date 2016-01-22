@@ -118,16 +118,17 @@ class MailTest extends \PHPUnit_Framework_TestCase
     {
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('allOk')->willReturn(true);
-        $appResult->method('getBackups')->willReturn(array());
-        $appResult->expects($this->once())->method('getErrors')->willReturn(array());
+        $appResult->method('getBackups')->willReturn([]);
+        $appResult->expects($this->once())->method('getErrors')->willReturn([]);
 
         $mail = new Mail();
-        $mail->setup(array('recipients' => 'test@example.com', 'transport' => 'null'));
+        $mail->setup(['recipients' => 'test@example.com', 'transport' => 'null']);
 
-        $mail->onBackupStart($this->getEventMock('Backup\\Start', array()));
-        $mail->onCheckStart($this->getEventMock('Check\\Start', array()));
-        $mail->onSyncStart($this->getEventMock('Sync\\Start', array()));
-        $mail->onCleanupStart($this->getEventMock('Cleanup\\Start', array()));
+        $mail->onBackupStart($this->getEventMock('Backup\\Start', []));
+        $mail->onCheckStart($this->getEventMock('Check\\Start', []));
+        $mail->onCryptStart($this->getEventMock('Crypt\\Start', []));
+        $mail->onSyncStart($this->getEventMock('Sync\\Start', []));
+        $mail->onCleanupStart($this->getEventMock('Cleanup\\Start', []));
         $mail->onPhpbuEnd($this->getEventMock('App\\End', $appResult));
     }
 
@@ -150,13 +151,13 @@ class MailTest extends \PHPUnit_Framework_TestCase
 
         $app = $this->getAppResultMock();
         $app->expects($this->exactly(2))->method('allOk')->willReturn(true);
-        $app->method('getBackups')->willReturn(array($backup));
-        $app->expects($this->once())->method('getErrors')->willReturn(array());
+        $app->method('getBackups')->willReturn([$backup]);
+        $app->expects($this->once())->method('getErrors')->willReturn([]);
 
         $mail = new Mail();
-        $mail->setup(array('recipients' => 'test@example.com', 'transport' => 'null'));
+        $mail->setup(['recipients' => 'test@example.com', 'transport' => 'null']);
 
-        $mail->onBackupStart($this->getEventMock('Backup\\Start', array()));
+        $mail->onBackupStart($this->getEventMock('Backup\\Start', []));
         $mail->onPhpbuEnd($this->getEventMock('App\\End', $app));
     }
 
@@ -181,13 +182,13 @@ class MailTest extends \PHPUnit_Framework_TestCase
         $app = $this->getAppResultMock();
         $app->expects($this->exactly(2))->method('allOk')->willReturn(false);
         $app->expects($this->once())->method('backupOkButSkipsOrFails')->willReturn(true);
-        $app->method('getBackups')->willReturn(array($backup));
-        $app->expects($this->once())->method('getErrors')->willReturn(array());
+        $app->method('getBackups')->willReturn([$backup]);
+        $app->expects($this->once())->method('getErrors')->willReturn([]);
 
         $mail = new Mail();
-        $mail->setup(array('recipients' => 'test@example.com', 'transport' => 'null'));
+        $mail->setup(['recipients' => 'test@example.com', 'transport' => 'null']);
 
-        $mail->onBackupStart($this->getEventMock('Backup\\Start', array()));
+        $mail->onBackupStart($this->getEventMock('Backup\\Start', []));
         $mail->onPhpbuEnd($this->getEventMock('App\\End', $app));
     }
 
@@ -214,13 +215,13 @@ class MailTest extends \PHPUnit_Framework_TestCase
         $app = $this->getAppResultMock();
         $app->expects($this->exactly(2))->method('allOk')->willReturn(false);
         $app->expects($this->once())->method('backupOkButSkipsOrFails')->willReturn(false);
-        $app->method('getBackups')->willReturn(array($backup));
-        $app->expects($this->once())->method('getErrors')->willReturn(array($e));
+        $app->method('getBackups')->willReturn([$backup]);
+        $app->expects($this->once())->method('getErrors')->willReturn([$e]);
 
         $mail = new Mail();
-        $mail->setup(array('recipients' => 'test@example.com', 'transport' => 'null'));
+        $mail->setup(['recipients' => 'test@example.com', 'transport' => 'null']);
 
-        $mail->onBackupStart($this->getEventMock('Backup\\Start', array()));
+        $mail->onBackupStart($this->getEventMock('Backup\\Start', []));
         $mail->onPhpbuEnd($this->getEventMock('App\\End', $app));
     }
 
