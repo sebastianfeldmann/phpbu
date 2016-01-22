@@ -146,7 +146,7 @@ class Runner
      */
     protected function setupEnvironment(Configuration $configuration)
     {
-        $runner = $this->factory->createRunner('Bootstrap');
+        $runner = $this->factory->createRunner('Bootstrap', $this->configuration->isSimulation());
         $runner->run($configuration);
     }
 
@@ -202,8 +202,8 @@ class Runner
         $this->result->backupStart($conf);
         /* @var \phpbu\App\Runner\Source $runner */
         $source = $this->factory->createSource($conf->getSource()->type, $conf->getSource()->options);
-        $runner = $this->factory->createRunner('source');
-        $runner->run($source, $target, $this->result, $this->configuration->isSimulation());
+        $runner = $this->factory->createRunner('source', $this->configuration->isSimulation());
+        $runner->run($source, $target, $this->result);
         $this->result->backupEnd($conf);
     }
 
@@ -217,7 +217,7 @@ class Runner
      */
     protected function executeChecks(Configuration\Backup $backup, Target $target, Collector $collector)
     {
-        $runner = $this->factory->createRunner('check');
+        $runner = $this->factory->createRunner('check', $this->configuration->isSimulation());
         /** @var \phpbu\App\Configuration\Backup\Check $check */
         foreach ($backup->getChecks() as $config) {
             $check = $this->factory->createCheck($config->type);

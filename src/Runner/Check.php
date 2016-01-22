@@ -19,7 +19,7 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class Check
+class Check extends Abstraction
 {
     /**
      * Failure state of all executed Checks.
@@ -42,7 +42,7 @@ class Check
         try {
             $result->checkStart($config);
 
-            if ($check->pass($target, $config->value, $collector, $result)) {
+            if ($this->check($check, $config->value, $target, $collector, $result)) {
                 $result->checkEnd($config);
             } else {
                 $this->failure = true;
@@ -64,4 +64,19 @@ class Check
     {
         return $this->failure;
     }
+
+    /**
+     * Executes the actual check.
+     *
+     * @param  \phpbu\App\Backup\Check     $check
+     * @param  string                      $value
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @return bool
+     */
+    protected function check(CheckExe $check, $value, Target $target, Collector $collector)
+    {
+        return $this->isSimulation() ? true : $check->pass($target, $value, $collector);
+    }
+
 }

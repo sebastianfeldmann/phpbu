@@ -15,7 +15,7 @@ use phpbu\App\Exception;
  * @link       http://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class Bootstrap
+class Bootstrap extends Abstraction
 {
     /**
      * Execute bootstrap runner.

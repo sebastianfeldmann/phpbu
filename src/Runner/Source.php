@@ -20,28 +20,19 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class Source
+class Source extends Abstraction
 {
-    /**
-     * Run a simulation
-     *
-     * @var bool
-     */
-    private $isSimulation;
-
     /**
      * Executes the backup and compression.
      *
      * @param  \phpbu\App\Backup\Source $source
      * @param  \phpbu\App\Backup\Target $target
      * @param  \phpbu\App\Result        $result
-     * @param  bool                     $simulate
      * @throws \phpbu\App\Exception
      */
-    public function run(SourceExe $source, Target $target, Result $result, $simulate)
+    public function run(SourceExe $source, Target $target, Result $result)
     {
-        $this->isSimulation = $simulate;
-        $action             = $simulate ? 'simulate' : 'backup';
+        $action             = $this->isSimulation() ? 'simulate' : 'backup';
         $this->{$action}($source, $target, $result);
     }
 
@@ -154,7 +145,7 @@ class Source
     private function executeCompressor(Compressor\Executable $compressor, Target $target, Result $result)
     {
         // if this is a simulation just debug the command that would have been executed
-        if ($this->isSimulation) {
+        if ($this->isSimulation()) {
             $result->debug($compressor->getExecutable($target)->getCommandLine());
             return $compressor->getArchiveFile($target);
         } else {
