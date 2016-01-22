@@ -31,7 +31,7 @@ class Result
      *
      * @var array<\phpbu\App\Result\Backup>
      */
-    protected $backups = array();
+    protected $backups = [];
 
     /**
      * Currently running backup.
@@ -45,7 +45,7 @@ class Result
      *
      * @var array
      */
-    protected $errors = array();
+    protected $errors = [];
 
     /**
      * @var integer
