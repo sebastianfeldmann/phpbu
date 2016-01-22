@@ -19,11 +19,23 @@ class RedisCliTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \phpbu\App\Exception
      */
-    public function testInvalidCommand()
+    public function testNoCommand()
     {
         $path  = realpath(__DIR__ . '/../../../_files/bin');
         $redis = new RedisCli($path);
         $redis->getCommandLine();
+    }
+
+    /**
+     * Tests RedisCli::getProcess
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testInvalidCommand()
+    {
+        $path  = realpath(__DIR__ . '/../../../_files/bin');
+        $redis = new RedisCli($path);
+        $redis->runCommand('foo');
     }
 
     /**
