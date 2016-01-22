@@ -123,7 +123,5 @@ class ProcessTest extends \PHPUnit_Framework_TestCase
         $res = $process->run();
 
         $this->assertTrue((strpos($res->getStdErr(), 'is on stderr') !== false), 'stderr should be found');
-
-
     }
 }

@@ -29,6 +29,17 @@ class CmdTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Cmd::addArgument
      */
+    public function testSilence()
+    {
+        $cmd = new Cmd('foo');
+        $cmd->silence(true);
+
+        $this->assertEquals('foo 2> /dev/null', (string) $cmd, 'command should be silenced');
+    }
+
+    /**
+     * Tests Cmd::addArgument
+     */
     public function testAddArgumentArray()
     {
         $cmd = new Cmd('foo');
