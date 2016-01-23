@@ -146,7 +146,7 @@ class Runner
      */
     protected function setupEnvironment(Configuration $configuration)
     {
-        $runner = $this->factory->createRunner('Bootstrap', $this->configuration->isSimulation());
+        $runner = $this->factory->createRunner('Bootstrap',  $this->configuration->isSimulation());
         $runner->run($configuration);
     }
 
@@ -234,16 +234,18 @@ class Runner
      */
     protected function executeCrypt(Configuration\Backup $backup, Target $target)
     {
-        $crypt = $backup->getCrypt();
-        if (!empty($crypt)) {
+        if ($backup->hasCrypt()) {
             try {
+                $crypt = $backup->getCrypt();
                 $this->result->cryptStart($crypt);
                 if ($this->failure && $crypt->skipOnFailure) {
                     $this->result->cryptSkipped($crypt);
                 } else {
-                    $c = $this->factory->createCrypter($crypt->type, $crypt->options);
-                    $c->crypt($target, $this->result);
-                    $target->setCrypter($c);
+                    /* @var \phpbu\App\Runner\Crypter $runner */
+                    /* @var \phpbu\App\Backup\Crypter $crypter */
+                    $runner  = $this->factory->createRunner('crypter', $this->configuration->isSimulation());
+                    $crypter = $this->factory->createCrypter($crypt->type, $crypt->options);
+                    $runner->run($crypter, $target, $this->result);
                 }
             } catch (Backup\Crypter\Exception $e) {
                 $this->failure = true;
@@ -254,7 +256,7 @@ class Runner
     }
 
     /**
-     * Execute the syncs.
+     * Execute all syncs.
      *
      * @param  \phpbu\App\Configuration\Backup $backup
      * @param  \phpbu\App\Backup\Target        $target
@@ -291,9 +293,9 @@ class Runner
      */
     protected function executeCleanup(Configuration\Backup $backup, Target $target, Collector $collector)
     {
-        $cleanup = $backup->getCleanup();
-        if (!empty($cleanup)) {
+        if ($backup->hasCleanup()) {
             try {
+                $cleanup = $backup->getCleanup();
                 $this->result->cleanupStart($cleanup);
                 if ($this->failure && $cleanup->skipOnFailure) {
                     $this->result->cleanupSkipped($cleanup);

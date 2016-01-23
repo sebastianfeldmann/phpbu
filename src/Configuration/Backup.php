@@ -49,7 +49,7 @@ class Backup
      *
      * @var array<\phpbu\App\Configuration\Backup\Check>
      */
-    private $checks = array();
+    private $checks = [];
 
     /**
      * Crypt configuration
@@ -63,7 +63,7 @@ class Backup
      *
      * @var array<\phpbu\App\Configuration\Backup\Sync>
      */
-    private $syncs = array();
+    private $syncs = [];
 
     /**
      * Cleanup configuration
@@ -192,6 +192,16 @@ class Backup
     }
 
     /**
+     * Is crypt set.
+     *
+     * @return bool
+     */
+    public function hasCrypt()
+    {
+        return !empty($this->crypt);
+    }
+
+    /**
      * Add sync to list.
      *
      * @param \phpbu\App\Configuration\Backup\Sync $sync
@@ -229,5 +239,15 @@ class Backup
     public function getCleanup()
     {
         return $this->cleanup;
+    }
+
+    /**
+     * Is cleanup set.
+     *
+     * @return bool
+     */
+    public function hasCleanup()
+    {
+        return !empty($this->cleanup);
     }
 }

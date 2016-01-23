@@ -34,6 +34,7 @@ class Factory
             'bootstrap' => '\\phpbu\\App\\Runner\\Bootstrap',
             'source'    => '\\phpbu\\App\\Runner\\Source',
             'check'     => '\\phpbu\\App\\Runner\\Check',
+            'crypter'   => '\\phpbu\\App\\Runner\\Crypter',
             'sync'      => '\\phpbu\\App\\Runner\\Sync',
         ],
         'logger'  => [
