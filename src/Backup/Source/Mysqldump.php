@@ -2,7 +2,6 @@
 namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\Cli;
-use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
@@ -20,7 +19,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Mysqldump extends Cli implements Source, Simulator
+class Mysqldump extends Cli implements Simulator
 {
     /**
      * Path to executable.

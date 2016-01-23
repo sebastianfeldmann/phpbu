@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
+use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 
@@ -15,7 +16,7 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-interface Simulator
+interface Simulator extends Source
 {
     /**
      * Simulate the backup execution.
