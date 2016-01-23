@@ -32,7 +32,7 @@ class Source extends Abstraction
      */
     public function run(SourceExe $source, Target $target, Result $result)
     {
-        $action             = $this->isSimulation() ? 'simulate' : 'backup';
+        $action = $this->isSimulation() ? 'simulate' : 'backup';
         $this->{$action}($source, $target, $result);
     }
 
