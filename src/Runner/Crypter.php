@@ -30,11 +30,7 @@ class Crypter extends Abstraction
      */
     public function run(CrypterExe $crypter, Target $target, Result $result)
     {
-        if ($this->isSimulation()) {
-            $this->simulate($crypter, $target, $result);
-        } else {
-            $this->crypt($crypter, $target, $result);
-        }
+        $this->isSimulation() ? $this->simulate($crypter, $target, $result) : $this->crypt($crypter, $target, $result);
         $target->setCrypter($crypter);
     }
 
