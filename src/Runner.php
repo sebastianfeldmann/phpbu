@@ -146,7 +146,7 @@ class Runner
      */
     protected function setupEnvironment(Configuration $configuration)
     {
-        $runner = $this->factory->createRunner('Bootstrap',  $this->configuration->isSimulation());
+        $runner = $this->factory->createRunner('Bootstrap', $this->configuration->isSimulation());
         $runner->run($configuration);
     }
 
@@ -219,9 +219,8 @@ class Runner
     {
         $runner = $this->factory->createRunner('check', $this->configuration->isSimulation());
         /** @var \phpbu\App\Configuration\Backup\Check $check */
-        foreach ($backup->getChecks() as $config) {
-            $check = $this->factory->createCheck($config->type);
-            $runner->run($check, $config, $target, $collector, $this->result);
+        foreach ($backup->getChecks() as $config) {;
+            $runner->run($this->factory->createCheck($config->type), $config, $target, $collector, $this->result);
         }
         $this->failure = $runner->hasFailed();
     }
@@ -242,10 +241,8 @@ class Runner
                     $this->result->cryptSkipped($crypt);
                 } else {
                     /* @var \phpbu\App\Runner\Crypter $runner */
-                    /* @var \phpbu\App\Backup\Crypter $crypter */
                     $runner  = $this->factory->createRunner('crypter', $this->configuration->isSimulation());
-                    $crypter = $this->factory->createCrypter($crypt->type, $crypt->options);
-                    $runner->run($crypter, $target, $this->result);
+                    $runner->run($this->factory->createCrypter($crypt->type, $crypt->options), $target, $this->result);
                 }
             } catch (Backup\Crypter\Exception $e) {
                 $this->failure = true;
@@ -264,15 +261,16 @@ class Runner
      */
     protected function executeSyncs(Configuration\Backup $backup, Target $target)
     {
-        /** @var \phpbu\App\Configuration\Backup\Sync $sync */
+        /* @var \phpbu\App\Runner\Crypter $runner */
+        /* @var \phpbu\App\Configuration\Backup\Sync $sync */
+        $runner  = $this->factory->createRunner('sync', $this->configuration->isSimulation());
         foreach ($backup->getSyncs() as $sync) {
             try {
                 $this->result->syncStart($sync);
                 if ($this->failure && $sync->skipOnFailure) {
                     $this->result->syncSkipped($sync);
                 } else {
-                    $s = $this->factory->createSync($sync->type, $sync->options);
-                    $s->sync($target, $this->result);
+                    $runner->run($this->factory->createSync($sync->type, $sync->options), $target, $this->result);
                     $this->result->syncEnd($sync);
                 }
             } catch (Backup\Sync\Exception $e) {
