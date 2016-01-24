@@ -19,11 +19,10 @@ use phpbu\App\Result;
 interface Simulator extends Sync
 {
     /**
-     * Simulate the backup execution.
+     * Simulate the sync execution.
      *
-     * @param  \phpbu\App\Backup\Target $target
-     * @param  \phpbu\App\Result        $result
-     * @return \phpbu\App\Backup\Source\Status
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
      */
     public function simulate(Target $target, Result $result);
 }

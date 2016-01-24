@@ -6,7 +6,6 @@ use phpbu\App\Backup\Source as SourceExe;
 use phpbu\App\Backup\Source\Simulator;
 use phpbu\App\Backup\Source\Status;
 use phpbu\App\Backup\Target;
-use phpbu\App\Configuration;
 use phpbu\App\Result;
 
 /**

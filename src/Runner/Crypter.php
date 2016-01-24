@@ -4,7 +4,6 @@ namespace phpbu\App\Runner;
 use phpbu\App\Backup\Crypter as CrypterExe;
 use phpbu\App\Backup\Crypter\Simulator;
 use phpbu\App\Backup\Target;
-use phpbu\App\Configuration;
 use phpbu\App\Result;
 
 /**

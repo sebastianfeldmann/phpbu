@@ -28,10 +28,11 @@ class SizeDiffPreviousPercent implements Check
      * @param  \phpbu\App\Backup\Target    $target
      * @param  string                      $value
      * @param  \phpbu\App\Backup\Collector $collector
-     * @return boolean
+     * @param  \phpbu\App\Result           $result
+     * @return bool
      * @throws \phpbu\App\Exception
      */
-    public function pass(Target $target, $value, Collector $collector)
+    public function pass(Target $target, $value, Collector $collector, Result $result)
     {
         // throws App\Exception if file doesn't exist
         $backupSize   = $target->getSize();

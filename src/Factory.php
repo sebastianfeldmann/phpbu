@@ -33,7 +33,7 @@ class Factory
         'runner' => [
             'bootstrap' => '\\phpbu\\App\\Runner\\Bootstrap',
             'check'     => '\\phpbu\\App\\Runner\\Check',
-            'Cleanup'   => '\\phpbu\\App\\Runner\\Cleanup',
+            'cleaner'   => '\\phpbu\\App\\Runner\\Cleaner',
             'crypter'   => '\\phpbu\\App\\Runner\\Crypter',
             'source'    => '\\phpbu\\App\\Runner\\Source',
             'sync'      => '\\phpbu\\App\\Runner\\Sync',

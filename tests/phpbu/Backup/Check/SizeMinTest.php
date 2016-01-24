@@ -19,6 +19,8 @@ class SizeMinTest extends \PHPUnit_Framework_TestCase
      */
     public function testPass()
     {
+        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
+                              ->getMock();
         $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
                               ->disableOriginalConstructor()
                               ->getMock();
@@ -30,15 +32,15 @@ class SizeMinTest extends \PHPUnit_Framework_TestCase
         $check = new SizeMin();
 
         $this->assertTrue(
-            $check->pass($targetStub, '500B', $collectorStub),
+            $check->pass($targetStub, '500B', $collectorStub, $resultStub),
             'size of stub should be greater 500'
         );
         $this->assertTrue(
-            $check->pass($targetStub, '1k', $collectorStub),
+            $check->pass($targetStub, '1k', $collectorStub, $resultStub),
             'size of stub should be greater 1024B'
         );
         $this->assertFalse(
-            $check->pass($targetStub, '2k', $collectorStub),
+            $check->pass($targetStub, '2k', $collectorStub, $resultStub),
             'size of stub should be smaller 2048'
         );
     }

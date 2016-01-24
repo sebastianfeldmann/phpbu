@@ -287,7 +287,7 @@ class phpbuAppFactoryTestCheck implements Check
      * @param  \phpbu\App\Result
      * @return boolean
      */
-    public function pass(Target $target, $value, Collector $collector)
+    public function pass(Target $target, $value, Collector $collector, Result $result)
     {
         // do something fooish
     }

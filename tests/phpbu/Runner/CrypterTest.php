@@ -28,9 +28,9 @@ class CrypterTest extends \PHPUnit_Framework_TestCase
         $crypter->expects($this->once())
                 ->method('crypt');
 
-        $target    = $this->getTargetMock();
-        $result    = $this->getResultMock();
-        $runner    = new Crypter();
+        $target = $this->getTargetMock();
+        $result = $this->getResultMock();
+        $runner = new Crypter();
         $runner->setSimulation(false);
         $runner->run($crypter, $target, $result);
     }
@@ -49,9 +49,9 @@ class CrypterTest extends \PHPUnit_Framework_TestCase
                 ->method('crypt')
                 ->will($this->throwException(new Exception));
 
-        $target    = $this->getTargetMock();
-        $result    = $this->getResultMock();
-        $runner    = new Crypter();
+        $target = $this->getTargetMock();
+        $result = $this->getResultMock();
+        $runner = new Crypter();
         $runner->setSimulation(false);
         $runner->run($crypter, $target, $result);
     }
@@ -67,9 +67,9 @@ class CrypterTest extends \PHPUnit_Framework_TestCase
         $crypter->expects($this->once())
                 ->method('simulate');
 
-        $target    = $this->getTargetMock();
-        $result    = $this->getResultMock();
-        $runner    = new Crypter();
+        $target = $this->getTargetMock();
+        $result = $this->getResultMock();
+        $runner = new Crypter();
         $runner->setSimulation(true);
         $runner->run($crypter, $target, $result);
     }

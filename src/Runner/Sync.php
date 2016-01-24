@@ -4,7 +4,6 @@ namespace phpbu\App\Runner;
 use phpbu\App\Backup\Sync as SyncExe;
 use phpbu\App\Backup\Sync\Simulator;
 use phpbu\App\Backup\Target;
-use phpbu\App\Configuration;
 use phpbu\App\Result;
 
 /**

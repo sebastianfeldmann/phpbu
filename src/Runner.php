@@ -217,12 +217,25 @@ class Runner
      */
     protected function executeChecks(Configuration\Backup $backup, Target $target, Collector $collector)
     {
+        /* @var \phpbu\App\Runner\Check $runner */
+        /* @var \phpbu\App\Configuration\Backup\Check $check */
         $runner = $this->factory->createRunner('check', $this->configuration->isSimulation());
-        /** @var \phpbu\App\Configuration\Backup\Check $check */
-        foreach ($backup->getChecks() as $config) {;
-            $runner->run($this->factory->createCheck($config->type), $config, $target, $collector, $this->result);
+        foreach ($backup->getChecks() as $config) {
+            try {
+                $this->result->checkStart($config);
+                $check = $this->factory->createCheck($config->type);
+                if ($runner->run($check, $target, $config->value, $collector, $this->result)) {
+                    $this->result->checkEnd($config);
+                } else {
+                    $this->failure = true;
+                    $this->result->checkFailed($config);
+                }
+            } catch (Exception $e) {
+                $this->failure = true;
+                $this->result->addError($e);
+                $this->result->checkFailed($config);
+            }
         }
-        $this->failure = $runner->hasFailed();
     }
 
     /**
@@ -291,15 +304,18 @@ class Runner
      */
     protected function executeCleanup(Configuration\Backup $backup, Target $target, Collector $collector)
     {
+        /* @var \phpbu\App\Runner\Cleaner $runner */
+        /* @var \phpbu\App\Configuration\Backup\Cleanup $cleanup */
         if ($backup->hasCleanup()) {
             try {
+                $runner  = $this->factory->createRunner('cleaner', $this->configuration->isSimulation());
                 $cleanup = $backup->getCleanup();
                 $this->result->cleanupStart($cleanup);
                 if ($this->failure && $cleanup->skipOnFailure) {
                     $this->result->cleanupSkipped($cleanup);
                 } else {
                     $cleaner = $this->factory->createCleaner($cleanup->type, $cleanup->options);
-                    $cleaner->cleanup($target, $collector, $this->result);
+                    $runner->run($cleaner, $target, $collector, $this->result);
                     $this->result->cleanupEnd($cleanup);
                 }
             } catch (Backup\Cleaner\Exception $e) {

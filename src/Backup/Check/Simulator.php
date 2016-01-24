@@ -1,10 +1,13 @@
 <?php
-namespace phpbu\App\Backup;
+namespace phpbu\App\Backup\Check;
 
+use phpbu\App\Backup\Check;
+use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 
 /**
- * Check
+ * Simulator interface.
  *
  * @package    phpbu
  * @subpackage Backup
@@ -12,12 +15,12 @@ use phpbu\App\Result;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
- * @since      Class available since Release 1.0.0
+ * @since      Class available since Release 3.0.0
  */
-interface Check
+interface Simulator extends Check
 {
     /**
-     * Checks the created backup.
+     * Simulate the check execution.
      *
      * @param  \phpbu\App\Backup\Target    $target
      * @param  string                      $value
@@ -25,5 +28,5 @@ interface Check
      * @param  \phpbu\App\Result           $result
      * @return bool
      */
-    public function pass(Target $target, $value, Collector $collector, Result $result);
+    public function simulate(Target $target, $value, Collector $collector, Result $result);
 }

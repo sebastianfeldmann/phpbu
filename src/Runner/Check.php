@@ -2,10 +2,9 @@
 namespace phpbu\App\Runner;
 
 use phpbu\App\Backup\Check as CheckExe;
-use phpbu\App\Backup\Check\Exception;
+use phpbu\App\Backup\Check\Simulator;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
-use phpbu\App\Configuration\Backup\Check as CheckConfig;
 use phpbu\App\Result;
 
 /**
@@ -22,60 +21,49 @@ use phpbu\App\Result;
 class Check extends Abstraction
 {
     /**
-     * Failure state of all executed Checks.
-     *
-     * @var boolean
-     */
-    private $failure = false;
-
-    /**
-     * Executes a backup check.
-     *
-     * @param \phpbu\App\Backup\Check               $check
-     * @param \phpbu\App\Configuration\Backup\Check $config
-     * @param \phpbu\App\Backup\Target              $target
-     * @param \phpbu\App\Backup\Collector           $collector
-     * @param \phpbu\App\Result                     $result
-     */
-    public function run(CheckExe $check, CheckConfig $config, Target $target, Collector $collector, Result $result)
-    {
-        try {
-            $result->checkStart($config);
-
-            if ($this->runCheck($check, $config->value, $target, $collector)) {
-                $result->checkEnd($config);
-            } else {
-                $this->failure = true;
-                $result->checkFailed($config);
-            }
-        } catch (Exception $e) {
-            $this->failure = true;
-            $result->addError($e);
-            $result->checkFailed($config);
-        }
-    }
-
-    /**
-     * Return true if the last check did fail.
-     *
-     * @return boolean
-     */
-    public function hasFailed()
-    {
-        return $this->failure;
-    }
-
-    /**
-     * Executes the actual check.
+     * Executes or simulate backup check.
      *
      * @param  \phpbu\App\Backup\Check     $check
-     * @param  string                      $value
      * @param  \phpbu\App\Backup\Target    $target
+     * @param  mixed                       $value
      * @param  \phpbu\App\Backup\Collector $collector
+     * @param  \phpbu\App\Result           $result
      * @return bool
      */
-    protected function runCheck(CheckExe $check, $value, Target $target, Collector $collector)
+    public function run(CheckExe $check, Target $target, $value, Collector $collector, Result $result)
     {
-        return $this->isSimulation() ? true : $check->pass($target, $value, $collector);
+        return $this->isSimulation()
+            ? $this->simulate($check, $target, $value, $collector, $result)
+            : $this->check($check, $target, $value, $collector, $result);
+    }
+
+    /**
+     * Execute the backup check.
+     *
+     * @param  \phpbu\App\Backup\Check     $check
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  mixed                       $value
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @param  \phpbu\App\Result           $result
+     * @return bool
+     */
+    protected function check(CheckExe $check, Target $target, $value, Collector $collector, Result $result)
+    {
+        return $check->pass($target, $value, $collector, $result);
+    }
+
+    /**
+     * Simulate the backup check.
+     *
+     * @param  \phpbu\App\Backup\Check     $check
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  mixed                       $value
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @param  \phpbu\App\Result           $result
+     * @return bool
+     */
+    protected function simulate(CheckExe $check, Target $target, $value, Collector $collector, Result $result)
+    {
+        return ($check instanceof Simulator) ? $check->simulate($target, $value, $collector, $result) : true;
     }
 }

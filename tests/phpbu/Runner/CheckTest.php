@@ -32,17 +32,17 @@ class CheckTest extends \PHPUnit_Framework_TestCase
         $target    = $this->getTargetMock();
         $result    = $this->getResultMock();
         $collector = $this->getCollectorMock();
-        $config    = new Configuration\Backup\Check('SizeMin', '10M');
         $runner    = new Check();
-        $runner->run($check, $config, $target, $collector, $result);
+        $runner->setSimulation(false);
 
-        $this->assertFalse($runner->hasFailed(), 'check should not fail');
+        $pass = $runner->run($check, $target, '10M', $collector, $result);
+        $this->assertTrue($pass, 'check should not fail');
     }
 
     /**
      * Tests Check::run
      */
-    public function testCheckFailingByResult()
+    public function testCheckFailed()
     {
         $check = $this->getMockBuilder('\\phpbu\\App\\Backup\\Check')
                       ->disableOriginalConstructor()
@@ -54,33 +54,53 @@ class CheckTest extends \PHPUnit_Framework_TestCase
         $target    = $this->getTargetMock();
         $result    = $this->getResultMock();
         $collector = $this->getCollectorMock();
-        $config    = new Configuration\Backup\Check('SizeMin', '10M');
         $runner    = new Check();
-        $runner->run($check, $config, $target, $collector, $result);
+        $runner->setSimulation(false);
 
-        $this->assertTrue($runner->hasFailed(), 'check should fail');
+        $pass = $runner->run($check, $target, '10M', $collector, $result);
+        $this->assertFalse($pass, 'check should fail');
     }
 
     /**
      * Tests Check::run
      */
-    public function testCheckFailingByException()
+    public function testCheckSimulationNoSimulator()
     {
         $check = $this->getMockBuilder('\\phpbu\\App\\Backup\\Check')
                       ->disableOriginalConstructor()
                       ->getMock();
-        $check->expects($this->once())
-              ->method('pass')
-              ->will($this->throwException(new Exception('foo')));
 
         $target    = $this->getTargetMock();
         $result    = $this->getResultMock();
         $collector = $this->getCollectorMock();
-        $config    = new Configuration\Backup\Check('SizeMin', '10M');
         $runner    = new Check();
-        $runner->run($check, $config, $target, $collector, $result);
+        $runner->setSimulation(true);
 
-        $this->assertTrue($runner->hasFailed(), 'check should fail');
+        $pass = $runner->run($check, $target, '10M', $collector, $result);
+        $this->assertTrue($pass, 'check should succeed');
+    }
+
+    /**
+     * Tests Check::run
+     */
+    public function testCheckSimulation()
+    {
+        $check = $this->getMockBuilder('\\phpbu\\App\\Backup\\Check\\Simulator')
+                      ->disableOriginalConstructor()
+                      ->getMock();
+
+        $check->expects($this->once())
+              ->method('simulate')
+              ->willReturn(true);
+
+        $target    = $this->getTargetMock();
+        $result    = $this->getResultMock();
+        $collector = $this->getCollectorMock();
+        $runner    = new Check();
+        $runner->setSimulation(true);
+
+        $pass = $runner->run($check, $target, '10M', $collector, $result);
+        $this->assertTrue($pass, 'check should succeed');
     }
 
     /**
