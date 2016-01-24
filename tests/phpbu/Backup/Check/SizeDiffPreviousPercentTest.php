@@ -24,43 +24,63 @@ class SizeDiffPreviousPercentTest extends \PHPUnit_Framework_TestCase
         $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
                               ->disableOriginalConstructor()
                               ->getMock();
+        $collectorStub->expects($this->once())
+                      ->method('getBackupFiles')
+                      ->willReturn($this->getFileListMock([100, 500, 1000]));
         $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                               ->disableOriginalConstructor()
                               ->getMock();
-        $targetStub->method('getSize')->willReturn(1030);
+        $targetStub->method('getSize')->willReturn(1060);
 
-        $check = new SizeMin();
+        $check = new SizeDiffPreviousPercent();
 
         $this->assertTrue(
-            $check->pass($targetStub, '500B', $collectorStub, $resultStub),
-            'size of stub should be greater 500'
+            $check->pass($targetStub, '10', $collectorStub, $resultStub),
+            'size of stub should be about 900 -  1100'
         );
-        $this->assertTrue(
-            $check->pass($targetStub, '1k', $collectorStub, $resultStub),
-            'size of stub should be greater 1024B'
-        );
+    }
+
+    /**
+     * Tests SizeDiffPreviousPercent::pass
+     */
+    public function testFail()
+    {
+        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
+                              ->getMock();
+        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
+                              ->disableOriginalConstructor()
+                              ->getMock();
+        $collectorStub->expects($this->once())
+                              ->method('getBackupFiles')
+                              ->willReturn($this->getFileListMock([100, 500, 1000]));
+        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                              ->disableOriginalConstructor()
+                              ->getMock();
+        $targetStub->method('getSize')->willReturn(1060);
+
+        $check = new SizeDiffPreviousPercent();
+
         $this->assertFalse(
-            $check->pass($targetStub, '2k', $collectorStub, $resultStub),
-            'size of stub should be smaller 2048'
+            $check->pass($targetStub, '5', $collectorStub, $resultStub),
+            'size of stub should be about 900 -  1100'
         );
     }
 
     /**
      * Create a list of File stubs
      *
-     * @param  integer $size      Size in byte the stubs will return on getSize()
-     * @param  integer $amount    Amount of stubs in list
-     * @return array<splFileInfo>
+     * @param  array $sizes Size in byte the stubs will return on getSize()
+     * @return \phpbu\App\Backup\File[]
      */
-    protected function getFileListMock($size, $amount = 5)
+    protected function getFileListMock(array $sizes)
     {
-        $list = array();
-        for ($i = 0; $i < $amount; $i++) {
+        $list = [];
+        foreach ($sizes as $i => $size) {
             $fileStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\File')
                              ->disableOriginalConstructor()
                              ->getMock();
             $fileStub->method('getSize')->willReturn($size);
-            $list['201401' . str_pad($i, 2, '0', STR_PAD_LEFT)] = $fileStub;
+            $list['201401' . str_pad($i + 1, 2, '0', STR_PAD_LEFT)] = $fileStub;
         }
         return $list;
     }

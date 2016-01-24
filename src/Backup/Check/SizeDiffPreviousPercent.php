@@ -43,8 +43,7 @@ class SizeDiffPreviousPercent implements Check
         if ($historyCount > 0) {
             // oldest backups first
             ksort($history);
-            /* @var $prevFile \SplFileInfo */
-            $prevFile    = array_shift($history);
+            $prevFile    = array_pop($history);
             $prevSize    = $prevFile->getSize();
             $diffPercent = Math::getDiffInPercent($backupSize, $prevSize);
 
