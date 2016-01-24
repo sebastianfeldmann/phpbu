@@ -43,7 +43,7 @@ class Collector
     /**
      * Get all created backups.
      *
-     * @return array<\phpbu\App\Backup\File>
+     * @return \phpbu\App\Backup\File[]
      */
     public function getBackupFiles()
     {
