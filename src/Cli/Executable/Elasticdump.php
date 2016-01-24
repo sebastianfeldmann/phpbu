@@ -5,6 +5,7 @@ use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Cli\Process;
 use phpbu\App\Exception;
+use phpbu\App\Util\Str;
 
 /**
  * Elasticdump source class.
@@ -175,29 +176,12 @@ class Elasticdump extends Abstraction implements Executable
     {
         $parsed = parse_url($host);
 
+        // make sure there is a scheme
         if (!isset($parsed['scheme'])) {
             $parsed = parse_url('http://' . $host);
         }
 
-        $url = '';
-
-        if (isset($parsed['scheme'])) {
-            $url .= $parsed['scheme'] . '://';
-        }
-
-        if (!empty($user)) {
-            $url .= $user;
-        }
-
-        if (!empty($password)) {
-            $url .= ':' . $password;
-        }
-
-        if (!empty($user) || !empty($password)) {
-            $url .= '@';
-        }
-
-        $url .= $parsed['host'];
+        $url = $parsed['scheme'] . '://' . $this->getAuthUrlSnippet($user, $password) . $parsed['host'];
 
         if (isset($parsed['port'])) {
             $url .= ':' . $parsed['port'];
@@ -207,12 +191,32 @@ class Elasticdump extends Abstraction implements Executable
             $url .= $parsed['path'];
         }
 
-        if (substr($url, -1) != '/') {
-            $url .= '/';
-        }
+        $url = Str::withTrailingSlash($url);
 
         if ($index !== null) {
             $url .= $index;
+        }
+
+        return $url;
+    }
+
+    /**
+     * Generate user password url snippet
+     *
+     * @param  string $user
+     * @param  string $password
+     * @return string
+     */
+    protected function getAuthUrlSnippet($user, $password)
+    {
+        $url = $user;
+
+        if (!empty($password)) {
+            $url .= ':' . $password;
+        }
+
+        if (!empty($url)) {
+            $url .= '@';
         }
 
         return $url;
