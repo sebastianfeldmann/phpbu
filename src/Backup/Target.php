@@ -50,7 +50,7 @@ class Target
      *
      * @var array
      */
-    private $pathElementsChanging = array();
+    private $pathElementsChanging = [];
 
     /**
      * Backup filename.
@@ -307,6 +307,16 @@ class Target
     public function fileExists($plain = false)
     {
         return file_exists($this->getPathname($plain));
+    }
+
+    /**
+     * Return as backup file object.
+     *
+     * @return \phpbu\App\Backup\File
+     */
+    public function toFile()
+    {
+        return new File(new \SplFileInfo($this->getPathname()));
     }
 
     /**

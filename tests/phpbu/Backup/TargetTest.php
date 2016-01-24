@@ -31,6 +31,20 @@ class TargetTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Target::setupPath
+     */
+    public function testToFile()
+    {
+        $path     = sys_get_temp_dir() . '/dirFoo';
+        $filename = 'foo.txt';
+        $target   = new Target($path, $filename);
+
+        $file = $target->toFile();
+
+        $this->assertEquals($path . '/' . $filename, $file->getPathname());
+    }
+
+    /**
+     * Tests Target::setupPath
      *
      * @expectedException \phpbu\App\Exception
      */
@@ -172,6 +186,64 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Target::disableCompressor
+     */
+    public function testDisbaleCompressor()
+    {
+        $compressor = $this->getCompressorMockForCmd('zip', 'zip', 'application/zip');
+
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setCompressor($compressor);
+
+        $this->assertTrue($target->shouldBeCompressed());
+
+        $target->disableCompression();
+
+        $this->assertFalse($target->shouldBeCompressed());
+    }
+
+    /**
+     * Tests Target::enableCompressor
+     */
+    public function testEnableCompressor()
+    {
+        $compressor = $this->getCompressorMockForCmd('zip', 'zip', 'application/zip');
+
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setCompressor($compressor);
+
+        $this->assertTrue($target->shouldBeCompressed());
+
+        $target->disableCompression();
+
+        $this->assertFalse($target->shouldBeCompressed());
+
+        $target->enableCompression();
+
+        $this->assertTrue($target->shouldBeCompressed());
+    }
+
+    /**
+     * Tests Target::enableCompressor
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testEnableCompressorWithoutCompressor()
+    {
+        $compressor = $this->getCompressorMockForCmd('zip', 'zip', 'application/zip');
+
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+
+        $target->enableCompression();
+    }
+
+    /**
      * Tests Target::getMimeType
      */
     public function testGetMimeTypeDefault()
@@ -250,6 +322,25 @@ class TargetTest extends \PHPUnit_Framework_TestCase
         $crypter = $target->getCrypter($mock);
 
         $this->assertEquals($mock, $crypter);
+    }
+
+    /**
+     * Tests Target::getCrypter
+     */
+    public function testDisableCrypter()
+    {
+        $mock     = $this->getCrypterMock('nc');
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+
+        $target->setCrypter($mock);
+
+        $this->assertTrue($target->shouldBeEncrypted());
+
+        $target->disableEncryption();
+
+        $this->assertFalse($target->shouldBeEncrypted());
     }
 
     /**
