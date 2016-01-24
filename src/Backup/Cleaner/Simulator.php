@@ -20,7 +20,7 @@ use phpbu\App\Backup\Target;
 interface Simulator extends Cleaner
 {
     /**
-     * Simulate the backup execution.
+     * Simulate the cleanup execution.
      *
      * @param \phpbu\App\Backup\Target    $target
      * @param \phpbu\App\Backup\Collector $collector
