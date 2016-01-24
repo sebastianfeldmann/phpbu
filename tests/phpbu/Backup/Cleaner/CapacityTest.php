@@ -22,7 +22,7 @@ class CapacityTest extends TestCase
     public function testSetUpNoSize()
     {
         $cleaner = new Capacity();
-        $cleaner->setup(array('foo' => 'bar'));
+        $cleaner->setup(['foo' => 'bar']);
     }
 
     /**
@@ -33,7 +33,7 @@ class CapacityTest extends TestCase
     public function testSetUpInvalidValue()
     {
         $cleaner = new Capacity();
-        $cleaner->setup(array('size' => '10'));
+        $cleaner->setup(['size' => '10']);
     }
 
     /**
@@ -42,12 +42,12 @@ class CapacityTest extends TestCase
     public function testCleanupDeleteOldestFile()
     {
         $fileList      = $this->getFileMockList(
-            array(
-                array('size' => 100, 'shouldBeDeleted' => true),
-                array('size' => 100, 'shouldBeDeleted' => false),
-                array('size' => 100, 'shouldBeDeleted' => false),
-                array('size' => 100, 'shouldBeDeleted' => false),
-            )
+            [
+                ['size' => 100, 'shouldBeDeleted' => true],
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+            ]
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
@@ -62,9 +62,43 @@ class CapacityTest extends TestCase
         $targetStub->method('getSize')->willReturn(100);
 
         $cleaner = new Capacity();
-        $cleaner->setup(array('size' => '400B'));
+        $cleaner->setup(['size' => '400B']);
 
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
+    }
+
+    /**
+     * Tests Capacity::cleanup
+     */
+    public function testSimulateDeleteOldestFile()
+    {
+        $fileList      = $this->getFileMockList(
+            [
+                // should be deleted but not called because of simulation
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+            ]
+        );
+        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
+                              ->getMock();
+        $resultStub->expects($this->once())
+                   ->method('debug');
+        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
+                              ->disableOriginalConstructor()
+                              ->getMock();
+        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                              ->disableOriginalConstructor()
+                              ->getMock();
+
+        $collectorStub->method('getBackupFiles')->willReturn($fileList);
+        $targetStub->method('getSize')->willReturn(100);
+
+        $cleaner = new Capacity();
+        $cleaner->setup(['size' => '400B']);
+
+        $cleaner->simulate($targetStub, $collectorStub, $resultStub);
     }
 
     /**
@@ -75,12 +109,12 @@ class CapacityTest extends TestCase
     public function testCleanupFileNotWritable()
     {
         $fileList      = $this->getFileMockList(
-            array(
-                array('size' => 100, 'shouldBeDeleted' => false, 'writable' => false),
-                array('size' => 100, 'shouldBeDeleted' => false),
-                array('size' => 100, 'shouldBeDeleted' => false),
-                array('size' => 100, 'shouldBeDeleted' => false),
-            )
+            [
+                ['size' => 100, 'shouldBeDeleted' => false, 'writable' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+            ]
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
             ->getMock();
@@ -95,7 +129,7 @@ class CapacityTest extends TestCase
         $targetStub->method('getSize')->willReturn(100);
 
         $cleaner = new Capacity();
-        $cleaner->setup(array('size' => '400B'));
+        $cleaner->setup(['size' => '400B']);
 
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }
@@ -106,13 +140,13 @@ class CapacityTest extends TestCase
     public function testCleanupDeleteNoFile()
     {
         $fileList      = $this->getFileMockList(
-            array(
-                array('size' => 100, 'shouldBeDeleted' => false),
-                array('size' => 100, 'shouldBeDeleted' => false),
-                array('size' => 100, 'shouldBeDeleted' => false),
-                array('size' => 100, 'shouldBeDeleted' => false),
-                array('size' => 100, 'shouldBeDeleted' => false),
-            )
+            [
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+            ]
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
@@ -127,7 +161,7 @@ class CapacityTest extends TestCase
         $targetStub->method('getSize')->willReturn(100);
 
         $cleaner = new Capacity();
-        $cleaner->setup(array('size' => '1M'));
+        $cleaner->setup(['size' => '1M']);
 
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }
@@ -138,13 +172,13 @@ class CapacityTest extends TestCase
     public function testCleanupDeleteTarget()
     {
         $fileList      = $this->getFileMockList(
-            array(
-                array('size' => 100, 'shouldBeDeleted' => true),
-                array('size' => 100, 'shouldBeDeleted' => true),
-                array('size' => 100, 'shouldBeDeleted' => true),
-                array('size' => 100, 'shouldBeDeleted' => true),
-                array('size' => 100, 'shouldBeDeleted' => true),
-            )
+            [
+                ['size' => 100, 'shouldBeDeleted' => true],
+                ['size' => 100, 'shouldBeDeleted' => true],
+                ['size' => 100, 'shouldBeDeleted' => true],
+                ['size' => 100, 'shouldBeDeleted' => true],
+                ['size' => 100, 'shouldBeDeleted' => true],
+            ]
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
@@ -160,10 +194,11 @@ class CapacityTest extends TestCase
         $targetStub->method('getSize')
                    ->willReturn(100);
         $targetStub->expects($this->once())
-                   ->method('unlink');
+                   ->method('toFile')
+                   ->willReturn($this->getFileMock(100, true, 0, true));
 
         $cleaner = new Capacity();
-        $cleaner->setup(array('size' => '0B', 'deleteTarget' => 'true'));
+        $cleaner->setup(['size' => '0B', 'deleteTarget' => 'true']);
 
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }

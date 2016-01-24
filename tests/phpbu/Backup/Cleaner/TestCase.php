@@ -31,7 +31,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getFileMockList(array $files)
     {
-        $list = array();
+        $list = [];
         foreach ($files as $i => $file) {
             $index        = isset($file['mTime'])
                           ? date('YmdHis', $file['mTime'])

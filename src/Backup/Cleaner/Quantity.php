@@ -19,7 +19,7 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Quantity implements Cleaner
+class Quantity extends Abstraction implements Cleaner
 {
     /**
      * Amount of backups to keep
@@ -50,37 +50,35 @@ class Quantity implements Cleaner
     }
 
     /**
-     * Cleanup your backup directory.
+     * Return list of files to delete.
      *
-     * @see    \phpbu\App\Backup\Cleanup::cleanup()
      * @param  \phpbu\App\Backup\Target    $target
      * @param  \phpbu\App\Backup\Collector $collector
-     * @param  \phpbu\App\Result           $result
-     * @throws \phpbu\App\Backup\Cleaner\Exception
+     * @return \phpbu\App\Backup\File[]
+     * @throws \phpbu\App\Exception
      */
-    public function cleanup(Target $target, Collector $collector, Result $result)
+    protected function getFilesToDelete(Target $target, Collector $collector)
     {
-        $files = $collector->getBackupFiles();
+        $files  = $collector->getBackupFiles();
+        $delete = [];
 
         if ($this->isCapacityExceeded($files)) {
             // oldest backups first
             ksort($files);
 
             while ($this->isCapacityExceeded($files)) {
-                $file = array_shift($files);
-                $result->debug(sprintf('delete %s', $file->getPathname()));
-                if (!$file->isWritable()) {
-                    throw new Exception(sprintf('can\'t delete file: %s', $file->getPathname()));
-                }
-                $result->debug(sprintf('delete %s', $file->getPathname()));
-                $file->unlink();
+                $file     = array_shift($files);
+                $delete[] = $file;
             }
         }
+
+        return $delete;
     }
 
     /**
      * Returns true when the capacity is exceeded.
      *
+     * @param  array
      * @return boolean
      */
     private function isCapacityExceeded(array $files)
@@ -89,6 +87,6 @@ class Quantity implements Cleaner
         $totalFilesPlusCurrentBackup = $totalFiles + 1;
 
         return $totalFiles > 0
-            && $totalFilesPlusCurrentBackup > $this->amount;
+               && $totalFilesPlusCurrentBackup > $this->amount;
     }
 }

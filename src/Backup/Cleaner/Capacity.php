@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Cleaner;
 
-use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
@@ -21,7 +20,7 @@ use RuntimeException;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Capacity implements Cleaner
+class Capacity extends Abstraction implements Simulator
 {
     /**
      * Original XML value
@@ -69,18 +68,18 @@ class Capacity implements Cleaner
     }
 
     /**
-     * Cleanup your backup directory.
+     * Return list of files to delete.
      *
-     * @see    \phpbu\App\Backup\Cleanup::cleanup()
      * @param  \phpbu\App\Backup\Target    $target
      * @param  \phpbu\App\Backup\Collector $collector
-     * @param  \phpbu\App\Result           $result
-     * @throws \phpbu\App\Backup\Cleaner\Exception
+     * @return \phpbu\App\Backup\File[]
+     * @throws \phpbu\App\Exception
      */
-    public function cleanup(Target $target, Collector $collector, Result $result)
+    protected function getFilesToDelete(Target $target, Collector $collector)
     {
-        $files = $collector->getBackupFiles();
-        $size  = $target->getSize();
+        $files  = $collector->getBackupFiles();
+        $size   = $target->getSize();
+        $delete = [];
 
         /** @var \phpbu\App\Backup\File $file */
         foreach ($files as $file) {
@@ -93,20 +92,18 @@ class Capacity implements Cleaner
             ksort($files);
 
             while ($size > $this->capacityBytes && count($files) > 0) {
-                $file  = array_shift($files);
-                $size -= $file->getSize();
-                if (!$file->isWritable()) {
-                    throw new Exception(sprintf('can\'t delete file: %s', $file->getPathname()));
-                }
-                $result->debug(sprintf('delete %s', $file->getPathname()));
-                $file->unlink();
+                $file     = array_shift($files);
+                $size    -= $file->getSize();
+                $delete[] = $file;
             }
 
             // deleted all old backups but still exceeding the space limit
             // delete the currently created backup as well
             if ($this->deleteTarget && $size > $this->capacityBytes) {
-                $target->unlink();
+                $delete[] = $target->toFile();
             }
         }
+
+        return $delete;
     }
 }

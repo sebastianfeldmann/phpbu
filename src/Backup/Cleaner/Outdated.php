@@ -21,7 +21,7 @@ use RuntimeException;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Outdated implements Cleaner
+class Outdated extends Abstraction implements Simulator
 {
     /**
      * Original XML value
@@ -59,29 +59,26 @@ class Outdated implements Cleaner
     }
 
     /**
-     * Cleanup your backup directory.
+     * Return list of files to delete.
      *
-     * @see    \phpbu\App\Backup\Cleanup::cleanup()
      * @param  \phpbu\App\Backup\Target    $target
      * @param  \phpbu\App\Backup\Collector $collector
-     * @param  \phpbu\App\Result           $result
-     * @throws \phpbu\App\Backup\Cleaner\Exception
+     * @return \phpbu\App\Backup\File[]
      */
-    public function cleanup(Target $target, Collector $collector, Result $result)
+    protected function getFilesToDelete(Target $target, Collector $collector)
     {
         $minTime = time() - $this->offsetSeconds;
         $files   = $collector->getBackupFiles();
+        $delete  = [];
 
         /** @var \phpbu\App\Backup\File $file */
         foreach ($files as $file) {
             // last mod date < min date? delete!
             if ($file->getMTime() < $minTime) {
-                if (!$file->isWritable()) {
-                    throw new Exception(sprintf('can\'t delete file: %s', $file->getPathname()));
-                }
-                $result->debug(sprintf('delete %s', $file->getPathname()));
-                $file->unlink();
+                $delete[] = $file;
             }
         }
+
+        return $delete;
     }
 }
