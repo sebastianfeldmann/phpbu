@@ -19,7 +19,7 @@ use phpbu\App\Util\Str;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.1
  */
-class Dropbox implements Sync
+class Dropbox implements Simulator
 {
     /**
      * API access token
@@ -101,5 +101,20 @@ class Dropbox implements Sync
             throw new Exception($e->getMessage(), null, $e);
         }
         $result->debug('upload: done  (' . $res['size'] . ')');
+    }
+
+    /**
+     * Simulate the sync execution.
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
+     */
+    public function simulate(Target $target, Result $result)
+    {
+        $result->debug(
+            'sync backup to dropbox' . PHP_EOL
+            . '  token:    ********' . PHP_EOL
+            . '  location: ' . $this->path
+        );
     }
 }

@@ -9,7 +9,7 @@ use phpbu\App\Result;
 use phpbu\App\Util;
 
 /**
- * Abstract key crypter class.
+ * Abstract crypter class.
  *
  * @package    phpbu
  * @subpackage Backup
@@ -19,7 +19,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.6
  */
-abstract class Key extends Cli
+abstract class Abstraction extends Cli
 {
 
     /**
@@ -40,6 +40,20 @@ abstract class Key extends Cli
         if (!$crypt->wasSuccessful()) {
             throw new Exception($name . ' failed:' . PHP_EOL . $crypt->getStdErr());
         }
+    }
+
+    /**
+     * Simulate the encryption.
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
+     */
+    public function simulate(Target $target, Result $result)
+    {
+        $result->debug(
+            'execute encryption:' . PHP_EOL .
+            $this->getExecutable($target)->getCmd()
+        );
     }
 
     /**

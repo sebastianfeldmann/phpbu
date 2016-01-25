@@ -19,7 +19,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.0
  */
-class Rsync extends Cli implements Sync
+class Rsync extends Cli implements Simulator
 {
     /**
      * Path to rsync binary.
@@ -131,6 +131,21 @@ class Rsync extends Cli implements Sync
         if (!$rsync->wasSuccessful()) {
             throw new Exception('rsync failed: ' . $rsync->getStdErr());
         }
+    }
+
+
+    /**
+     * Simulate the sync execution.
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
+     */
+    public function simulate(Target $target, Result $result)
+    {
+        $result->debug(
+            'sync backup with rsync' . PHP_EOL
+            . $this->getExecutable($target)->getCommandLine()
+        );
     }
 
     /**

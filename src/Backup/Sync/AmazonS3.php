@@ -19,7 +19,7 @@ use phpbu\App\Util\Str;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.4
  */
-class AmazonS3 implements Sync
+class AmazonS3 implements Simulator
 {
     /**
      * AWS key
@@ -113,14 +113,14 @@ class AmazonS3 implements Sync
         $targetPath = $this->path . $target->getFilename();
 
         $s3 = S3Client::factory(
-            array(
+            [
                 'signature' => 'v4',
                 'region'    => $this->region,
-                'credentials' => array(
+                'credentials' => [
                     'key'    => $this->key,
                     'secret' => $this->secret,
-                )
-            )
+                ]
+            ]
         );
 
         try {
@@ -131,5 +131,22 @@ class AmazonS3 implements Sync
         }
 
         $result->debug('upload: done');
+    }
+
+    /**
+     * Simulate the sync execution.
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
+     */
+    public function simulate(Target $target, Result $result)
+    {
+        $result->debug(
+            'sync backup to Amazon S3' . PHP_EOL
+            . '  region:   ' . $this->region . PHP_EOL
+            . '  key:      ' . $this->key . PHP_EOL
+            . '  secret:    ********' . PHP_EOL
+            . '  location: ' . $this->bucket
+        );
     }
 }

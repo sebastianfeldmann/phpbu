@@ -20,15 +20,41 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
     public function testSetUpOk()
     {
         $amazonS3 = new AmazonS3();
-        $amazonS3->setup(array(
+        $amazonS3->setup([
             'key'    => 'dummy-key',
             'secret' => 'dummy-secret',
             'bucket' => 'dummy-bucket',
             'region' => 'dummy-region',
             'path'   => '/'
-        ));
+        ]);
 
         $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
+     * Tests AmazonS3::simulate
+     */
+    public function testSimulate()
+    {
+        $amazonS3 = new AmazonS3();
+        $amazonS3->setup([
+            'key'    => 'dummy-key',
+            'secret' => 'dummy-secret',
+            'bucket' => 'dummy-bucket',
+            'region' => 'dummy-region',
+            'path'   => '/'
+        ]);
+
+        $resultStub = $this->getMockBuilder('\\phpbu\\App\\Result')
+                           ->getMock();
+        $resultStub->expects($this->once())
+                   ->method('debug');
+
+        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                           ->disableOriginalConstructor()
+                           ->getMock();
+
+        $amazonS3->simulate($targetStub, $resultStub);
     }
 
     /**
@@ -39,12 +65,12 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
     public function testSetUpNoKey()
     {
         $amazonS3 = new AmazonS3();
-        $amazonS3->setup(array(
+        $amazonS3->setup([
             'secret' => 'dummy-secret',
             'bucket' => 'dummy-bucket',
             'region' => 'dummy-region',
             'path'   => '/'
-        ));
+        ]);
     }
 
     /**
@@ -55,12 +81,12 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
     public function testSetUpNoSecret()
     {
         $amazonS3 = new AmazonS3();
-        $amazonS3->setup(array(
+        $amazonS3->setup([
             'key'    => 'dummy-key',
             'bucket' => 'dummy-bucket',
             'region' => 'dummy-region',
             'path'   => '/'
-        ));
+        ]);
     }
 
     /**
@@ -71,12 +97,12 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
     public function testSetUpNoBucket()
     {
         $amazonS3 = new AmazonS3();
-        $amazonS3->setup(array(
+        $amazonS3->setup([
             'key'    => 'dummy-key',
             'secret' => 'dummy-secret',
             'region' => 'dummy-region',
             'path'   => '/'
-        ));
+        ]);
     }
 
     /**
@@ -87,12 +113,12 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
     public function testSetUpNoRegion()
     {
         $amazonS3 = new AmazonS3();
-        $amazonS3->setup(array(
+        $amazonS3->setup([
             'key'    => 'dummy-key',
             'secret' => 'dummy-secret',
             'bucket' => 'dummy-bucket',
             'path'   => '/'
-        ));
+        ]);
     }
 
     /**
@@ -103,11 +129,11 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
     public function testSetUpNoPath()
     {
         $amazonS3 = new AmazonS3();
-        $amazonS3->setup(array(
+        $amazonS3->setup([
             'key'    => 'dummy-key',
             'secret' => 'dummy-secret',
             'bucket' => 'dummy-bucket',
             'region' => 'dummy-region'
-        ));
+        ]);
     }
 }

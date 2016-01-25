@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Crypter;
 
-use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Result;
@@ -18,7 +17,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.3.0
  */
-class Mcrypt extends Key implements Crypter
+class Mcrypt extends Abstraction implements Simulator
 {
     /**
      * Path to mcrypt command.

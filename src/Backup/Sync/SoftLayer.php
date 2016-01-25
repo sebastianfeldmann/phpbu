@@ -21,7 +21,7 @@ use ObjectStorage;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class SoftLayer implements Sync
+class SoftLayer implements Simulator
 {
     /**
      * SoftLayer user
@@ -125,5 +125,23 @@ class SoftLayer implements Sync
         }
 
         $result->debug('upload: done');
+    }
+
+    /**
+     * Simulate the sync execution.
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
+     */
+    public function simulate(Target $target, Result $result)
+    {
+        $result->debug(
+            'sync backup to SoftLayer' . PHP_EOL
+            . '  host:      ' . $this->host . PHP_EOL
+            . '  user:      ' . $this->user . PHP_EOL
+            . '  secret:     ********' . PHP_EOL
+            . '  conatiner: ' . $this->container . PHP_EOL
+            . '  location:  ' . $this->path
+        );
     }
 }

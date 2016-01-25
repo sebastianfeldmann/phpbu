@@ -20,12 +20,35 @@ class DropboxTest extends \PHPUnit_Framework_TestCase
     public function testSetUpOk()
     {
         $dropbox = new Dropbox();
-        $dropbox->setup(array(
+        $dropbox->setup([
             'token' => 'this-is-no-token',
             'path'  => '/'
-        ));
+        ]);
 
         $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
+     * Tests Dropbox::simulate
+     */
+    public function testSimulate()
+    {
+        $dropbox = new Dropbox();
+        $dropbox->setup([
+            'token' => 'this-is-no-token',
+            'path'  => '/'
+        ]);
+
+        $resultStub = $this->getMockBuilder('\\phpbu\\App\\Result')
+                           ->getMock();
+        $resultStub->expects($this->once())
+                   ->method('debug');
+
+        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                           ->disableOriginalConstructor()
+                           ->getMock();
+
+        $dropbox->simulate($targetStub, $resultStub);
     }
 
     /**
@@ -36,7 +59,7 @@ class DropboxTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoToken()
     {
         $dropbox = new Dropbox();
-        $dropbox->setup(array('path' => '/'));
+        $dropbox->setup(['path' => '/']);
     }
 
     /**
@@ -47,6 +70,6 @@ class DropboxTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoPath()
     {
         $dropbox = new Dropbox();
-        $dropbox->setup(array('token' => 'this-is-no-token'));
+        $dropbox->setup(['token' => 'this-is-no-token']);
     }
 }

@@ -19,14 +19,39 @@ class FtpTest extends \PHPUnit_Framework_TestCase
     public function testSetUpOk()
     {
         $ftp = new Ftp();
-        $ftp->setup(array(
+        $ftp->setup([
             'host'     => 'example.com',
             'user'     => 'user.name',
             'password' => 'secret',
             'path'     => 'foo'
-        ));
+        ]);
 
         $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
+     * Tests Ftp::simulate
+     */
+    public function testSimulate()
+    {
+        $ftp = new Ftp();
+        $ftp->setup([
+            'host'     => 'example.com',
+            'user'     => 'user.name',
+            'password' => 'secret',
+            'path'     => 'foo'
+        ]);
+
+        $resultStub = $this->getMockBuilder('\\phpbu\\App\\Result')
+                           ->getMock();
+        $resultStub->expects($this->once())
+                   ->method('debug');
+
+        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                           ->disableOriginalConstructor()
+                           ->getMock();
+
+        $ftp->simulate($targetStub, $resultStub);
     }
 
     /**
@@ -38,10 +63,10 @@ class FtpTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoHost()
     {
         $ftp = new Ftp();
-        $ftp->setup(array(
+        $ftp->setup([
             'user' => 'user.name',
             'path' => 'foo'
-        ));
+        ]);
     }
 
     /**
@@ -53,10 +78,10 @@ class FtpTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoUser()
     {
         $ftp = new Ftp();
-        $ftp->setup(array(
+        $ftp->setup([
             'host' => 'example.com',
             'path' => 'foo'
-        ));
+        ]);
     }
 
     /**
@@ -68,11 +93,11 @@ class FtpTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoPassword()
     {
         $ftp = new Ftp();
-        $ftp->setup(array(
+        $ftp->setup([
             'host' => 'example.com',
             'user' => 'user.name',
             'path' => 'foo'
-        ));
+        ]);
     }
 
     /**
@@ -84,11 +109,11 @@ class FtpTest extends \PHPUnit_Framework_TestCase
     public function testSetUpPathWithRootSlash()
     {
         $ftp = new Ftp();
-        $ftp->setup(array(
-            'host' => 'example.com',
-            'user' => 'user.name',
+        $ftp->setup([
+            'host'     => 'example.com',
+            'user'     => 'user.name',
             'password' => 'password',
-            'path' => '/foo'
-        ));
+            'path'     => '/foo'
+        ]);
     }
 }

@@ -20,15 +20,41 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     public function testSetUpOk()
     {
         $SoftLayer = new SoftLayer();
-        $SoftLayer->setup(array(
+        $SoftLayer->setup([
             'user'      => 'dummy-username',
             'secret'    => 'dummy-secret',
             'container' => 'dummy-container',
             'host'      => 'dummy-host',
             'path'      => '/'
-        ));
+        ]);
 
         $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
+     * Tests SoftLayer::simulate
+     */
+    public function testSimulate()
+    {
+        $softLayer = new SoftLayer();
+        $softLayer->setup([
+            'user'      => 'dummy-username',
+            'secret'    => 'dummy-secret',
+            'container' => 'dummy-container',
+            'host'      => 'dummy-host',
+            'path'      => '/'
+        ]);
+
+        $resultStub = $this->getMockBuilder('\\phpbu\\App\\Result')
+                           ->getMock();
+        $resultStub->expects($this->once())
+                   ->method('debug');
+
+        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                           ->disableOriginalConstructor()
+                           ->getMock();
+
+        $softLayer->simulate($targetStub, $resultStub);
     }
 
     /**
@@ -39,12 +65,12 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoUsername()
     {
         $SoftLayer = new SoftLayer();
-        $SoftLayer->setup(array(
+        $SoftLayer->setup([
             'secret'    => 'dummy-secret',
             'container' => 'dummy-container',
             'host'      => 'dummy-host',
             'path'      => '/'
-        ));
+        ]);
     }
 
     /**
@@ -55,12 +81,12 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoSecret()
     {
         $SoftLayer = new SoftLayer();
-        $SoftLayer->setup(array(
+        $SoftLayer->setup([
             'user'      => 'dummy-username',
             'container' => 'dummy-container',
             'host'      => 'dummy-host',
             'path'      => '/'
-        ));
+        ]);
     }
 
     /**
@@ -71,12 +97,12 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoContainer()
     {
         $SoftLayer = new SoftLayer();
-        $SoftLayer->setup(array(
+        $SoftLayer->setup([
             'user'   => 'dummy-username',
             'secret' => 'dummy-secret',
             'host'   => 'dummy-host',
             'path'   => '/'
-        ));
+        ]);
     }
 
     /**
@@ -87,12 +113,12 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoHost()
     {
         $SoftLayer = new SoftLayer();
-        $SoftLayer->setup(array(
+        $SoftLayer->setup([
             'user'      => 'dummy-username',
             'secret'    => 'dummy-secret',
             'container' => 'dummy-container',
             'path'      => '/'
-        ));
+        ]);
     }
 
     /**
@@ -103,11 +129,11 @@ class SoftLayerTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoPath()
     {
         $SoftLayer = new SoftLayer();
-        $SoftLayer->setup(array(
+        $SoftLayer->setup([
             'user'      => 'dummy-username',
             'secret'    => 'dummy-secret',
             'container' => 'dummy-container',
             'host'      => 'dummy-host'
-        ));
+        ]);
     }
 }

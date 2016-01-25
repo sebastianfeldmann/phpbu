@@ -17,58 +17,28 @@ use phpbu\App\Util\Str;
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
  */
-class Ftp implements Sync
+class Ftp extends Xtp implements Simulator
 {
     /**
-     * Host to connect to
+     * Check for required loaded libraries or extensions.
      *
-     * @var string
+     * @throws \phpbu\App\Backup\Sync\Exception
      */
-    protected $host;
-
-    /**
-     * User to connect with
-     *
-     * @var string
-     */
-    protected $user;
-
-    /**
-     * Password to authenticate user
-     *
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * Remote path where to put the backup
-     *
-     * @var string
-     */
-    protected $remotePath;
-
-    public function setup(array $config)
+    protected function checkRequirements()
     {
         if (!function_exists('ftp_connect')) {
             throw new Exception('ftp functions not enabled');
         }
-        if (!Arr::isSetAndNotEmptyString($config, 'host')) {
-            throw new Exception('option \'host\' is missing');
-        }
-        if (!Arr::isSetAndNotEmptyString($config, 'user')) {
-            throw new Exception('option \'user\' is missing');
-        }
-        if (!Arr::isSetAndNotEmptyString($config, 'password')) {
-            throw new Exception('option \'password\' is missing');
-        }
-        $path = Arr::getValue($config, 'path', '');
-        if ('/' === substr($path, 0, 1)) {
-            throw new Exception('absolute path is not allowed');
-        }
-        $this->host       = $config['host'];
-        $this->user       = $config['user'];
-        $this->password   = $config['password'];
-        $this->remotePath = Str::withoutTrailingSlash(Str::replaceDatePlaceholders($path));
+    }
+
+    /**
+     * Return implemented (*)TP protocol name.
+     *
+     * @return string
+     */
+    protected function getProtocolName()
+    {
+        return 'FTP';
     }
 
     /**
@@ -81,7 +51,6 @@ class Ftp implements Sync
      */
     public function sync(Target $target, Result $result)
     {
-
         // silence ftp errors
         $old  = error_reporting(0);
         if (!$ftpConnection = ftp_connect($this->host)) {
@@ -129,6 +98,5 @@ class Ftp implements Sync
         }
 
         error_reporting($old);
-
     }
 }

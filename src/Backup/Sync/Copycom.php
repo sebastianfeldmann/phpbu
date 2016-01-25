@@ -19,7 +19,7 @@ use phpbu\App\Util\Str;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.2
  */
-class Copycom implements Sync
+class Copycom implements Simulator
 {
     /**
      * API access key
@@ -121,5 +121,23 @@ class Copycom implements Sync
             throw new Exception($e->getMessage(), null, $e);
         }
         $result->debug('upload: done');
+    }
+
+    /**
+     * Simulate the sync execution.
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
+     */
+    public function simulate(Target $target, Result $result)
+    {
+        $result->debug(
+            'sync backup to copy.com' . PHP_EOL
+            . '  app.key:  ' . $this->appKey . PHP_EOL
+            . '  user.key: ' . $this->userKey . PHP_EOL
+            . '  secret:    ********' . PHP_EOL
+            . '  location: ' . $this->path
+
+        );
     }
 }

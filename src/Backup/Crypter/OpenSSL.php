@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Crypter;
 
-use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Result;
@@ -18,7 +17,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.6
  */
-class OpenSSL extends Key implements Crypter
+class OpenSSL extends Abstraction implements Simulator
 {
     /**
      * Path to mcrypt command.
@@ -62,7 +61,7 @@ class OpenSSL extends Key implements Crypter
      * @param  array $options
      * @throws Exception
      */
-    public function setup(array $options = array())
+    public function setup(array $options = [])
     {
         if (!Util\Arr::isSetAndNotEmptyString($options, 'algorithm')) {
             throw new Exception('openssl expects \'algorithm\'');
@@ -80,7 +79,7 @@ class OpenSSL extends Key implements Crypter
     }
 
     /**
-     * (non-PHPDoc)
+     * Return file suffix of encrypted target.
      *
      * @see    \phpbu\App\Backup\Crypter
      * @return string
@@ -91,7 +90,7 @@ class OpenSSL extends Key implements Crypter
     }
 
     /**
-     * Create the Exec to run the 'mcrypt' command.
+     * Create the Executable to run the 'mcrypt' command.
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable

@@ -19,65 +19,28 @@ use phpbu\App\Util\Str;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Sftp implements Sync
+class Sftp extends Xtp implements Simulator
 {
     /**
-     * Host to connect to
+     * Check for required loaded libraries or extensions.
      *
-     * @var string
-     */
-    protected $host;
-
-    /**
-     * User to connect with
-     *
-     * @var string
-     */
-    protected $user;
-
-    /**
-     * Password to authenticate user
-     *
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * Remote path where to put the backup
-     *
-     * @var string
-     */
-    protected $remotePath;
-
-    /**
-     * (non-PHPDoc)
-     *
-     * @see    \phpbu\App\Backup\Sync::setup()
-     * @param  array $config
      * @throws \phpbu\App\Backup\Sync\Exception
      */
-    public function setup(array $config)
+    protected function checkRequirements()
     {
         if (!class_exists('\\phpseclib\\Net\\SFTP')) {
             throw new Exception('phpseclib not installed - use composer to install "phpseclib/phpseclib" version 2.x');
         }
-        if (!Arr::isSetAndNotEmptyString($config, 'host')) {
-            throw new Exception('option \'host\' is missing');
-        }
-        if (!Arr::isSetAndNotEmptyString($config, 'user')) {
-            throw new Exception('option \'user\' is missing');
-        }
-        if (!Arr::isSetAndNotEmptyString($config, 'password')) {
-            throw new Exception('option \'password\' is missing');
-        }
-        $path = Arr::getValue($config, 'path', '');
-        if ('/' === substr($path, 0, 1)) {
-            throw new Exception('absolute path is not allowed');
-        }
-        $this->host       = $config['host'];
-        $this->user       = $config['user'];
-        $this->password   = $config['password'];
-        $this->remotePath = Str::withoutTrailingSlash(Str::replaceDatePlaceholders($path));
+    }
+
+    /**
+     * Return implemented (*)TP protocol name.
+     *
+     * @return string
+     */
+    protected function getProtocolName()
+    {
+        return 'SFTP';
     }
 
     /**

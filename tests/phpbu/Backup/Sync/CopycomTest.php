@@ -20,15 +20,41 @@ class CopycomTest extends \PHPUnit_Framework_TestCase
     public function testSetUpOk()
     {
         $copycom = new Copycom();
-        $copycom->setup(array(
+        $copycom->setup([
             'app.key'     => 'dummy-app-key',
             'app.secret'  => 'dummy-app-secret',
             'user.key'    => 'dummy-user-key',
             'user.secret' => 'dummy-user-secret',
             'path'        => '/'
-        ));
+        ]);
 
         $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
+     * Tests Copycom::simulate
+     */
+    public function testSimulate()
+    {
+        $copycom = new Copycom();
+        $copycom->setup([
+            'app.key'     => 'dummy-app-key',
+            'app.secret'  => 'dummy-app-secret',
+            'user.key'    => 'dummy-user-key',
+            'user.secret' => 'dummy-user-secret',
+            'path'        => '/'
+        ]);
+
+        $resultStub = $this->getMockBuilder('\\phpbu\\App\\Result')
+                           ->getMock();
+        $resultStub->expects($this->once())
+                   ->method('debug');
+
+        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                           ->disableOriginalConstructor()
+                           ->getMock();
+
+        $copycom->simulate($targetStub, $resultStub);
     }
 
     /**
@@ -39,12 +65,12 @@ class CopycomTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoAppKey()
     {
         $copycom = new Copycom();
-        $copycom->setup(array(
+        $copycom->setup([
             'app.secret'  => 'dummy-app-secret',
             'user.key'    => 'dummy-user-key',
             'user.secret' => 'dummy-user-secret',
             'path'        => '/'
-        ));
+        ]);
     }
 
     /**
@@ -55,12 +81,12 @@ class CopycomTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoApSecret()
     {
         $copycom = new Copycom();
-        $copycom->setup(array(
+        $copycom->setup([
             'app.key'     => 'dummy-app-key',
             'user.key'    => 'dummy-user-key',
             'user.secret' => 'dummy-user-secret',
             'path'        => '/'
-        ));
+        ]);
     }
 
     /**
@@ -71,12 +97,12 @@ class CopycomTest extends \PHPUnit_Framework_TestCase
     public function testSetUpUserKey()
     {
         $copycom = new Copycom();
-        $copycom->setup(array(
+        $copycom->setup([
             'app.key'     => 'dummy-app-key',
             'app.secret'  => 'dummy-app-secret',
             'user.secret' => 'dummy-user-secret',
             'path'        => '/'
-        ));
+        ]);
     }
 
     /**
@@ -87,12 +113,12 @@ class CopycomTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoUserSecret()
     {
         $copycom = new Copycom();
-        $copycom->setup(array(
+        $copycom->setup([
             'app.key'     => 'dummy-app-key',
             'app.secret'  => 'dummy-app-secret',
             'user.key'    => 'dummy-user-key',
             'path'        => '/'
-        ));
+        ]);
     }
 
     /**
@@ -103,11 +129,11 @@ class CopycomTest extends \PHPUnit_Framework_TestCase
     public function testSetUpNoPath()
     {
         $copycom = new Copycom();
-        $copycom->setup(array(
+        $copycom->setup([
             'app.key'     => 'dummy-app-key',
             'app.secret'  => 'dummy-app-secret',
             'user.key'    => 'dummy-user-key',
             'user.secret' => 'dummy-user-secret',
-        ));
+        ]);
     }
 }

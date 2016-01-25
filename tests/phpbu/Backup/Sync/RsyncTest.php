@@ -22,13 +22,43 @@ class RsyncTest extends CliTest
     public function testSetUpOk()
     {
         $rsync = new Rsync();
-        $rsync->setup(array(
+        $rsync->setup([
             'path' => 'foo',
             'user' => 'dummy-user',
             'host' => 'dummy-host'
-        ));
+        ]);
 
         $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
+     * Tests Rsync::simulate
+     */
+    public function testSimulate()
+    {
+        $rsync = new Rsync();
+        $rsync->setup([
+            'path' => 'foo',
+            'user' => 'dummy-user',
+            'host' => 'dummy-host'
+        ]);
+
+        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Rsync')
+                          ->disableOriginalConstructor()
+                          ->getMock();
+        $exec->expects($this->once())->method('getCommandLine')->willReturn('foo');
+        $rsync->setExecutable($exec);
+
+        $resultStub = $this->getMockBuilder('\\phpbu\\App\\Result')
+                           ->getMock();
+        $resultStub->expects($this->once())
+                    ->method('debug');
+
+        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                           ->disableOriginalConstructor()
+                           ->getMock();
+
+        $rsync->simulate($targetStub, $resultStub);
     }
 
     /**
@@ -39,10 +69,10 @@ class RsyncTest extends CliTest
     public function testSetUpNoPath()
     {
         $rsync = new Rsync();
-        $rsync->setup(array(
+        $rsync->setup([
             'user' => 'dummy-user',
             'host' => 'dummy-host'
-        ));
+        ]);
     }
 
     /**
@@ -51,9 +81,9 @@ class RsyncTest extends CliTest
     public function testSetUpNoPathOkWithRawArgs()
     {
         $rsync = new Rsync();
-        $rsync->setup(array(
+        $rsync->setup([
             'args' => 'dummy-args'
-        ));
+        ]);
         $this->assertTrue(true, 'there should not be an Exception');
     }
 
@@ -65,7 +95,7 @@ class RsyncTest extends CliTest
         $target = $this->getTargetMock('/foo/bar.txt');
         $path   = $this->getBinDir();
         $rsync  = new Rsync();
-        $rsync->setup(array('pathToRsync' => $path, 'args' => '--foo --bar'));
+        $rsync->setup(['pathToRsync' => $path, 'args' => '--foo --bar']);
         $exec = $rsync->getExecutable($target);
 
         $this->assertEquals($path . '/rsync --foo --bar', $exec->getCommandLine());
@@ -79,7 +109,7 @@ class RsyncTest extends CliTest
         $target = $this->getTargetMock('/foo/bar.txt');
         $path   = $this->getBinDir();
         $rsync  = new Rsync();
-        $rsync->setup(array('pathToRsync' => $path, 'path' => '/tmp'));
+        $rsync->setup(['pathToRsync' => $path, 'path' => '/tmp']);
         $exec = $rsync->getExecutable($target);
 
         $this->assertEquals($path . '/rsync -avz \'/foo/bar.txt\' \'/tmp\'', $exec->getCommandLine());
@@ -93,7 +123,7 @@ class RsyncTest extends CliTest
         $target = $this->getTargetMock('/foo/bar.txt', '/foo/bar.txt.gz');
         $path   = $this->getBinDir();
         $rsync  = new Rsync();
-        $rsync->setup(array('pathToRsync' => $path, 'path' => '/tmp'));
+        $rsync->setup(['pathToRsync' => $path, 'path' => '/tmp']);
         $exec = $rsync->getExecutable($target);
 
         $this->assertEquals($path . '/rsync -av \'/foo/bar.txt.gz\' \'/tmp\'', $exec->getCommandLine());
@@ -109,7 +139,7 @@ class RsyncTest extends CliTest
 
         $path  = $this->getBinDir();
         $rsync = new Rsync();
-        $rsync->setup(array('pathToRsync' => $path, 'path' => '/tmp', 'exclude' => 'fiz:buz'));
+        $rsync->setup(['pathToRsync' => $path, 'path' => '/tmp', 'exclude' => 'fiz:buz']);
         $exec = $rsync->getExecutable($target);
 
         $this->assertEquals($path . '/rsync -avz --exclude=\'fiz\' --exclude=\'buz\' \'/foo/bar.txt\' \'/tmp\'', $exec->getCommandLine());
@@ -154,7 +184,7 @@ class RsyncTest extends CliTest
 
         $rsync = new Rsync();
         $rsync->setExecutable($exec);
-        $rsync->setup(array('args' => '-foo -bar'));
+        $rsync->setup(['args' => '-foo -bar']);
         $rsync->sync($target, $appResult);
     }
 }

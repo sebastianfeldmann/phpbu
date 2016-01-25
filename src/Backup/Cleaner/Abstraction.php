@@ -6,9 +6,7 @@ use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 
 /**
- * Cleanup Abstraction.
- *
- * Removes oldest backup till the given capacity isn't exceeded anymore.
+ * Cleaner Abstraction.
  *
  * @package    phpbu
  * @subpackage Backup
@@ -16,7 +14,7 @@ use phpbu\App\Result;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
- * @since      Class available since Release 1.0.0
+ * @since      Class available since Release 3.0.0
  */
 abstract class Abstraction
 {
