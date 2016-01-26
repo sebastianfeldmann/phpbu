@@ -47,7 +47,7 @@ class TarTest extends CliTest
      */
     public function testSetupPathMissing()
     {
-        $this->tar->setup(array());
+        $this->tar->setup([]);
 
         $this->assertFalse(true, 'exception should be thrown');
     }
@@ -62,7 +62,7 @@ class TarTest extends CliTest
         $target->method('shouldBeCompressed')->willReturn(false);
         $target->method('getPathname')->willReturn('/tmp/backup.tar');
 
-        $this->tar->setup(array('path' => __DIR__, 'pathToTar' => $path));
+        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
         $exec = $this->tar->getExecutable($target);
 
         $this->assertEquals($path . '/tar -cf \'/tmp/backup.tar\' -C \'' . __DIR__ . '\' \'.\'', $exec->getCommandLine());
@@ -80,7 +80,7 @@ class TarTest extends CliTest
         $target->method('getCompressor')->willReturn($compressor);
         $target->method('getPathname')->willReturn('/tmp/backup.tar.gz');
 
-        $this->tar->setup(array('path' => __DIR__, 'pathToTar' => $path));
+        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
         $exec = $this->tar->getExecutable($target);
 
         $this->assertEquals($path . '/tar -zcf \'/tmp/backup.tar.gz\' -C \'' . __DIR__ . '\' \'.\'', $exec->getCommandLine());
@@ -99,7 +99,7 @@ class TarTest extends CliTest
         $target->method('getPathname')->willReturn('/tmp/backup.tar.zip');
         $target->method('getPathnamePlain')->willReturn('/tmp/backup.tar');
 
-        $this->tar->setup(array('path' => __DIR__, 'pathToTar' => $path));
+        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
         $exec = $this->tar->getExecutable($target);
 
         $this->assertEquals($path . '/tar -cf \'/tmp/backup.tar\' -C \'' . __DIR__ . '\' \'.\'', $exec->getCommandLine());
@@ -122,7 +122,7 @@ class TarTest extends CliTest
         $tar->expects($this->once())->method('run')->willReturn($cliResult);
         $tar->expects($this->once())->method('handlesCompression')->willReturn(true);
 
-        $this->tar->setup(array('path' => __DIR__, 'pathToTar' => $path));
+        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
         $this->tar->setExecutable($tar);
 
         $status = $this->tar->backup($target, $appResult);
@@ -147,7 +147,7 @@ class TarTest extends CliTest
         $tar->expects($this->once())->method('run')->willReturn($cliResult);
         $tar->expects($this->once())->method('handlesCompression')->willReturn(false);
 
-        $this->tar->setup(array('path' => __DIR__, 'pathToTar' => $path));
+        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
         $this->tar->setExecutable($tar);
 
         $status = $this->tar->backup($target, $appResult);
@@ -172,9 +172,9 @@ class TarTest extends CliTest
 
         $appResult->expects($this->once())->method('debug');
         $tar->expects($this->once())->method('run')->willReturn($cliResult);
-        $tar->expects($this->once())->method('handlesCompression')->willReturn(true);
+        $tar->method('handlesCompression')->willReturn(true);
 
-        $this->tar->setup(array('path' => __DIR__, 'pathToTar' => $path));
+        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
         $this->tar->setExecutable($tar);
 
         $this->tar->backup($target, $appResult);

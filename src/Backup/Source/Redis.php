@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
@@ -20,7 +19,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.12
  */
-class Redis extends Cli implements Source
+class Redis extends SimulatorExecutable implements Simulator
 {
     /**
      * Path to executable.
@@ -111,9 +110,7 @@ class Redis extends Cli implements Source
         }
         $this->isDumpCreatedYet($lastBackupTimestamp, $redisLast);
 
-        $pathToDump = $this->copyDumpToTargetDir($target);
-
-        return Status::create()->uncompressed($pathToDump);
+        return $this->createStatus($target);
     }
 
     /**
@@ -201,5 +198,18 @@ class Redis extends Cli implements Source
         $targetFile = $target->getPathnamePlain();
         copy($this->pathToRedisData, $targetFile);
         return $targetFile;
+    }
+
+    /**
+     * Create backup status.
+     *
+     * @param  \phpbu\App\Backup\Target
+     * @return \phpbu\App\Backup\Source\Status
+     */
+    protected function createStatus(Target $target)
+    {
+        $pathToDump = $this->copyDumpToTargetDir($target);
+
+        return Status::create()->uncompressed($pathToDump);
     }
 }

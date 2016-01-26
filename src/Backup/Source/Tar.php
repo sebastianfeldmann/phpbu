@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
@@ -20,7 +19,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Tar extends Cli implements Source
+class Tar extends SimulatorExecutable implements Simulator
 {
     /**
      * Tar Executable
@@ -95,13 +94,7 @@ class Tar extends Cli implements Source
     {
         // set uncompressed default MIME type
         $target->setMimeType('application/x-tar');
-        $status = Status::create();
         $tar    = $this->execute($target);
-
-        // if tar doesn't handle the compression mark status uncompressed so the app can take care of compression
-        if (!$this->executable->handlesCompression()) {
-            $status->uncompressed($target->getPathnamePlain());
-        }
 
         $result->debug($tar->getCmd());
 
@@ -109,7 +102,7 @@ class Tar extends Cli implements Source
             throw new Exception('tar failed: ' . $tar->getStdErr());
         }
 
-        return $status;
+        return $this->createStatus($target);
     }
 
     /**
@@ -140,5 +133,21 @@ class Tar extends Cli implements Source
                              ->archiveTo($this->pathToArchive);
         }
         return $this->executable;
+    }
+
+    /**
+     * Create backup status.
+     *
+     * @param  \phpbu\App\Backup\Target
+     * @return \phpbu\App\Backup\Source\Status
+     */
+    protected function createStatus(Target $target)
+    {
+        $status = Status::create();
+        // if tar doesn't handle the compression mark status uncompressed so the app can take care of compression
+        if (!$this->getExecutable($target)->handlesCompression()) {
+            $status->uncompressed($target->getPathnamePlain());
+        }
+        return $status;
     }
 }

@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
@@ -20,7 +19,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class Mongodump extends Cli implements Source
+class Mongodump extends SimulatorExecutable implements Simulator
 {
     /**
      * Path to mongodump command.
@@ -108,7 +107,7 @@ class Mongodump extends Cli implements Source
      * @param  array $conf
      * @throws \phpbu\App\Exception
      */
-    public function setup(array $conf = array())
+    public function setup(array $conf = [])
     {
         $this->setupSourceData($conf);
         $this->setupCredentials($conf);
@@ -164,7 +163,7 @@ class Mongodump extends Cli implements Source
             throw new Exception('Mongodump failed');
         }
 
-        return Status::create()->uncompressed($this->getDumpDir($target));
+        return $this->createStatus($target);
     }
 
     /**
@@ -188,6 +187,17 @@ class Mongodump extends Cli implements Source
         }
 
         return $this->executable;
+    }
+
+    /**
+     * Create backup status.
+     *
+     * @param  \phpbu\App\Backup\Target
+     * @return \phpbu\App\Backup\Source\Status
+     */
+    protected function createStatus(Target $target)
+    {
+        return Status::create()->uncompressed($this->getDumpDir($target));
     }
 
     /**

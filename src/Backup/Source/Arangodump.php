@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
@@ -21,7 +20,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class Arangodump extends Cli implements Source
+class Arangodump extends SimulatorExecutable implements Simulator
 {
     /**
      * Path to arangodump command.
@@ -145,7 +144,7 @@ class Arangodump extends Cli implements Source
             throw new Exception('arangodump failed: ' . $arangodump->getStdErr());
         }
 
-        return Status::create()->uncompressed($this->getDumpDir($target));
+        return $this->createStatus($target);
     }
 
     /**
@@ -170,6 +169,17 @@ class Arangodump extends Cli implements Source
         }
 
         return $this->executable;
+    }
+
+    /**
+     * Create backup status.
+     *
+     * @param  \phpbu\App\Backup\Target
+     * @return \phpbu\App\Backup\Source\Status
+     */
+    protected function createStatus(Target $target)
+    {
+        return Status::create()->uncompressed($this->getDumpDir($target));
     }
 
     /**

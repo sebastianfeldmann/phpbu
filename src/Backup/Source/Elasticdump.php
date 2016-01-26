@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
@@ -21,7 +20,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.1
  */
-class Elasticdump extends Cli implements Source
+class Elasticdump extends SimulatorExecutable implements Simulator
 {
     /**
      * Path to elasticdump binary.
@@ -115,7 +114,7 @@ class Elasticdump extends Cli implements Source
             throw new Exception('elasticdump failed: ' . $elasticdump->getStdErr());
         }
 
-        return Status::create()->uncompressed($target->getPathnamePlain());
+        return $this->createStatus($target);
     }
 
     /**
@@ -136,5 +135,16 @@ class Elasticdump extends Cli implements Source
                              ->dumpTo($target->getPathnamePlain());
         }
         return $this->executable;
+    }
+
+    /**
+     * Create backup status.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Backup\Source\Status
+     */
+    protected function createStatus(Target $target)
+    {
+        return Status::create()->uncompressed($target->getPathnamePlain());
     }
 }

@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
@@ -19,7 +18,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Mysqldump extends Cli implements Simulator
+class Mysqldump extends SimulatorExecutable implements Simulator
 {
     /**
      * Path to executable.
@@ -194,7 +193,7 @@ class Mysqldump extends Cli implements Simulator
             throw new Exception('mysqldump failed:' . $mysqldump->getStdErr());
         }
 
-        return Status::create()->uncompressed($this->dumpPathname);
+        return $this->createStatus($target);
     }
 
     /**
@@ -225,15 +224,13 @@ class Mysqldump extends Cli implements Simulator
     }
 
     /**
-     * Simulate the backup execution.
+     * Create backup status.
      *
-     * @param  \phpbu\App\Backup\Target $target
-     * @param  \phpbu\App\Result        $result
+     * @param  \phpbu\App\Backup\Target
      * @return \phpbu\App\Backup\Source\Status
      */
-    public function simulate(Target $target, Result $result)
+    protected function createStatus(Target $target)
     {
-        $result->debug($this->getExecutable($target)->getCommandLine());
-
+        return Status::create()->uncompressed($this->dumpPathname);
     }
 }

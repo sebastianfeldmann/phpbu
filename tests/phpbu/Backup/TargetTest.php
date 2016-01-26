@@ -422,6 +422,19 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Target::setSize
+     */
+    public function testSetSize()
+    {
+        $path     = dirname(__FILE__);
+        $filename = basename(__FILE__);
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->setSize(10000);
+
+        $this->assertEquals(10000, $target->getSize());
+    }
+
+    /**
      * Tests Target::getSize
      *
      * @expectedException \phpbu\App\Exception

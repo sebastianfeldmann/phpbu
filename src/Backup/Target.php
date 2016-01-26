@@ -282,6 +282,16 @@ class Target
     }
 
     /**
+     * Size setter.
+     *
+     * @param int $size
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+    }
+
+    /**
      * Return the actual filesize in bytes.
      *
      * @throws Exception
