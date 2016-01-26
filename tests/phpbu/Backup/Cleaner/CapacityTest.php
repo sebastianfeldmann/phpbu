@@ -83,7 +83,7 @@ class CapacityTest extends TestCase
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
-        $resultStub->expects($this->once())
+        $resultStub->expects($this->exactly(2))
                    ->method('debug');
         $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
                               ->disableOriginalConstructor()

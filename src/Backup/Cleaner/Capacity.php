@@ -68,6 +68,20 @@ class Capacity extends Abstraction implements Simulator
     }
 
     /**
+     * Simulate the cleanup execution.
+     *
+     * @param \phpbu\App\Backup\Target    $target
+     * @param \phpbu\App\Backup\Collector $collector
+     * @param \phpbu\App\Result           $result
+     */
+    public function simulate(Target $target, Collector $collector, Result $result)
+    {
+        $target->setSize('20000000');
+        $result->debug('assuming backup size 20MB');
+        parent::simulate($target, $collector, $result);
+    }
+
+    /**
      * Return list of files to delete.
      *
      * @param  \phpbu\App\Backup\Target    $target
