@@ -21,7 +21,6 @@ use phpbu\App\Util;
  */
 abstract class Abstraction extends Cli
 {
-
     /**
      * (non-PHPDoc)
      *
