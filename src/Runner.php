@@ -307,9 +307,9 @@ class Runner
         /* @var \phpbu\App\Runner\Cleaner $runner */
         /* @var \phpbu\App\Configuration\Backup\Cleanup $cleanup */
         if ($backup->hasCleanup()) {
+            $cleanup = $backup->getCleanup();
             try {
-                $runner  = $this->factory->createRunner('cleaner', $this->configuration->isSimulation());
-                $cleanup = $backup->getCleanup();
+                $runner = $this->factory->createRunner('cleaner', $this->configuration->isSimulation());
                 $this->result->cleanupStart($cleanup);
                 if ($this->failure && $cleanup->skipOnFailure) {
                     $this->result->cleanupSkipped($cleanup);
