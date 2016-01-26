@@ -51,7 +51,7 @@ abstract class Abstraction extends Cli
     {
         $result->debug(
             'execute encryption:' . PHP_EOL .
-            $this->getExecutable($target)->getCmd()
+            $this->getExecutable($target)->getCommandLine()
         );
     }
 
