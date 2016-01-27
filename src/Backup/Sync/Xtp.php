@@ -101,7 +101,7 @@ abstract class Xtp implements Simulator
     public function simulate(Target $target, Result $result)
     {
         $result->debug(
-            'sync backup to ' . $this->getProtocolName() .' server' . PHP_EOL
+            'sync backup to ' . $this->getProtocolName() . ' server' . PHP_EOL
             . '  host:     ' . $this->host . PHP_EOL
             . '  user:     ' . $this->user . PHP_EOL
             . '  password:  ********' . PHP_EOL
