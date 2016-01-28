@@ -247,8 +247,8 @@ class Runner
     protected function executeCrypt(Configuration\Backup $backup, Target $target)
     {
         if ($backup->hasCrypt()) {
+            $crypt = $backup->getCrypt();
             try {
-                $crypt = $backup->getCrypt();
                 $this->result->cryptStart($crypt);
                 if ($this->failure && $crypt->skipOnFailure) {
                     $this->result->cryptSkipped($crypt);
