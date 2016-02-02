@@ -118,15 +118,6 @@
     </fileset>
   </copy>
 
-  <!-- COPY.COM -->
-  <copy file="${basedir}/vendor/barracuda/copy/LICENSE" tofile="${basedir}/build/phar/lib/copy/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/copy">
-    <fileset dir="${basedir}/vendor/barracuda/copy/src">
-      <include name="**/*.php" />
-      <include name="**/*.crt" />
-    </fileset>
-  </copy>
-
   <!-- DROPBOX SDK -->
   <copy file="${basedir}/vendor/dropbox/dropbox-sdk/License.txt" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
   <copy todir="${basedir}/build/phar/lib/dropbox">
@@ -135,13 +126,6 @@
       <include name="**/*.crt" />
       <exclude name="**/autoload.php" />
       <exclude name="**/strict.php" />
-    </fileset>
-  </copy>
-
-  <!-- COPY.COM OAUTH -->
-  <copy todir="${basedir}/build/phar/lib/eher">
-    <fileset dir="${basedir}/vendor/eher/oauth/src">
-      <include name="**/*.php" />
     </fileset>
   </copy>
 

@@ -32,7 +32,6 @@ Get detailed information about all the features and a 'getting started' tutorial
     + openssl
 * Sync backups to other locations
     + Amazon s3
-    + copy.com
     + Dropbox
     + rsync
     + SFTP

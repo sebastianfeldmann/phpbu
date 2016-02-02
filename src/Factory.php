@@ -62,7 +62,6 @@ class Factory
         ],
         'sync'    => [
             'amazons3'  => '\\phpbu\\App\\Backup\\Sync\\AmazonS3',
-            'copycom'   => '\\phpbu\\App\\Backup\\Sync\\Copycom',
             'dropbox'   => '\\phpbu\\App\\Backup\\Sync\\Dropbox',
             'ftp'       => '\\phpbu\\App\\Backup\\Sync\\Ftp',
             'rsync'     => '\\phpbu\\App\\Backup\\Sync\\Rsync',
