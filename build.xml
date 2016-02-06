@@ -186,12 +186,12 @@
    </fileset>
   </copy>
 
-  <copy file="${basedir}/vendor/symfony/event-dispatcher/Symfony/Component/EventDispatcher/LICENSE" tofile="${basedir}/build/phar/lib/symfony/event-dispatcher/LICENSE"/>
+  <copy file="${basedir}/vendor/symfony/event-dispatcher/LICENSE" tofile="${basedir}/build/phar/lib/symfony/event-dispatcher/LICENSE"/>
   <copy todir="${basedir}/build/phar/lib/symfony/event-dispatcher">
-    <fileset dir="${basedir}/vendor/symfony/event-dispatcher/Symfony/Component/EventDispatcher">
-      <include name="**/*.php" />
-      <exclude name="**/Test*" />
-    </fileset>
+   <fileset dir="${basedir}/vendor/symfony/event-dispatcher">
+    <include name="**/*.php" />
+    <exclude name="**/Test*" />
+   </fileset>
   </copy>
 
   <exec executable="${basedir}/build/phar-patch.php"/>
