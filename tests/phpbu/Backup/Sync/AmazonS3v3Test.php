@@ -12,14 +12,14 @@ namespace phpbu\App\Backup\Sync;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class AmazonS3Test extends \PHPUnit_Framework_TestCase
+class AmazonS3v3Test extends \PHPUnit_Framework_TestCase
 {
     /**
      * Tests AmazonS3::setUp
      */
     public function testSetUpOk()
     {
-        $amazonS3 = new AmazonS3();
+        $amazonS3 = new AmazonS3v3();
         $amazonS3->setup([
             'key'    => 'dummy-key',
             'secret' => 'dummy-secret',
@@ -32,11 +32,55 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests AmazonS3::setUp
+     */
+    public function testGetUploadPath()
+    {
+        $amazonS3 = new AmazonS3v3();
+        $amazonS3->setup([
+            'key'    => 'dummy-key',
+            'secret' => 'dummy-secret',
+            'bucket' => 'dummy-bucket',
+            'region' => 'dummy-region',
+            'path'   => '/'
+        ]);
+
+        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                           ->disableOriginalConstructor()
+                           ->getMock();
+        $targetStub->expects($this->once())->method('getFilename')->willReturn('foo.zip');
+
+        $this->assertEquals('s3://dummy-bucket/foo.zip', $amazonS3->getUploadPath($targetStub));
+    }
+
+    /**
+     * Tests AmazonS3::setUp
+     */
+    public function testGetUploadPathAddingMissingSlashes()
+    {
+        $amazonS3 = new AmazonS3v3();
+        $amazonS3->setup([
+            'key'    => 'dummy-key',
+            'secret' => 'dummy-secret',
+            'bucket' => 'dummy-bucket',
+            'region' => 'dummy-region',
+            'path'   => 'fiz'
+        ]);
+
+        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $targetStub->expects($this->once())->method('getFilename')->willReturn('foo.zip');
+
+        $this->assertEquals('s3://dummy-bucket/fiz/foo.zip', $amazonS3->getUploadPath($targetStub));
+    }
+
+    /**
      * Tests AmazonS3::simulate
      */
     public function testSimulate()
     {
-        $amazonS3 = new AmazonS3();
+        $amazonS3 = new AmazonS3v3();
         $amazonS3->setup([
             'key'    => 'dummy-key',
             'secret' => 'dummy-secret',
@@ -64,7 +108,7 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
      */
     public function testSetUpNoKey()
     {
-        $amazonS3 = new AmazonS3();
+        $amazonS3 = new AmazonS3v3();
         $amazonS3->setup([
             'secret' => 'dummy-secret',
             'bucket' => 'dummy-bucket',
@@ -80,7 +124,7 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
      */
     public function testSetUpNoSecret()
     {
-        $amazonS3 = new AmazonS3();
+        $amazonS3 = new AmazonS3v3();
         $amazonS3->setup([
             'key'    => 'dummy-key',
             'bucket' => 'dummy-bucket',
@@ -96,7 +140,7 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
      */
     public function testSetUpNoBucket()
     {
-        $amazonS3 = new AmazonS3();
+        $amazonS3 = new AmazonS3v3();
         $amazonS3->setup([
             'key'    => 'dummy-key',
             'secret' => 'dummy-secret',
@@ -112,7 +156,7 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
      */
     public function testSetUpNoRegion()
     {
-        $amazonS3 = new AmazonS3();
+        $amazonS3 = new AmazonS3v3();
         $amazonS3->setup([
             'key'    => 'dummy-key',
             'secret' => 'dummy-secret',
@@ -128,7 +172,7 @@ class AmazonS3Test extends \PHPUnit_Framework_TestCase
      */
     public function testSetUpNoPath()
     {
-        $amazonS3 = new AmazonS3();
+        $amazonS3 = new AmazonS3v3();
         $amazonS3->setup([
             'key'    => 'dummy-key',
             'secret' => 'dummy-secret',

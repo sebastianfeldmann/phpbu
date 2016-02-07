@@ -105,37 +105,45 @@
 
   <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
 
-  <!-- AMAZON AWS -->
-  <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE.md" tofile="${basedir}/build/phar/lib/aws-sdk/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/aws-sdk/Aws/Common">
-    <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src/Aws/Common">
-      <include name="**/*.php" />
-    </fileset>
-  </copy>
-  <copy todir="${basedir}/build/phar/lib/aws-sdk/Aws/S3">
-    <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src/Aws/S3">
-      <include name="**/*.php" />
-    </fileset>
-  </copy>
-
   <!-- DROPBOX SDK -->
   <copy file="${basedir}/vendor/dropbox/dropbox-sdk/License.txt" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
   <copy todir="${basedir}/build/phar/lib/dropbox">
-    <fileset dir="${basedir}/vendor/dropbox/dropbox-sdk/lib/Dropbox">
-      <include name="**/*.php" />
-      <include name="**/*.crt" />
-      <exclude name="**/autoload.php" />
-      <exclude name="**/strict.php" />
-    </fileset>
+   <fileset dir="${basedir}/vendor/dropbox/dropbox-sdk/lib/Dropbox">
+    <include name="**/*.php" />
+   </fileset>
+  </copy>
+
+  <!-- AMAZON AWS -->
+  <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE.md" tofile="${basedir}/build/phar/lib/aws-sdk/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/aws-sdk">
+   <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src" />
   </copy>
 
   <!-- AMAZON AWS GUZZLE -->
-  <copy file="${basedir}/vendor/guzzle/guzzle/LICENSE" tofile="${basedir}/build/phar/lib/guzzle/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/guzzle">
-    <fileset dir="${basedir}/vendor/guzzle/guzzle/src">
+  <copy file="${basedir}/vendor/guzzlehttp/guzzle/LICENSE" tofile="${basedir}/build/phar/lib/guzzlehttp/guzzle/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/guzzlehttp/guzzle">
+    <fileset dir="${basedir}/vendor/guzzlehttp/guzzle/src">
       <include name="**/*.php" />
       <include name="**/*.pem" />
     </fileset>
+  </copy>
+  <copy file="${basedir}/vendor/guzzlehttp/promises/LICENSE" tofile="${basedir}/build/phar/lib/guzzlehttp/promises/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/guzzlehttp/promises">
+   <fileset dir="${basedir}/vendor/guzzlehttp/promises/src">
+    <include name="**/*.php" />
+   </fileset>
+  </copy>
+  <copy file="${basedir}/vendor/guzzlehttp/psr7/LICENSE" tofile="${basedir}/build/phar/lib/guzzlehttp/psr7/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/guzzlehttp/psr7">
+   <fileset dir="${basedir}/vendor/guzzlehttp/psr7/src">
+    <include name="**/*.php" />
+   </fileset>
+  </copy>
+  <copy file="${basedir}/vendor/psr/http-message/LICENSE" tofile="${basedir}/build/phar/lib/psr/http-message/LICENSE"/>
+  <copy todir="${basedir}/build/phar/lib/psr/http-message">
+   <fileset dir="${basedir}/vendor/psr/http-message/src">
+    <include name="**/*.php" />
+   </fileset>
   </copy>
 
   <!-- PHPSECLIB -->

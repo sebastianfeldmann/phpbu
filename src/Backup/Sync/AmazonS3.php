@@ -19,7 +19,7 @@ use phpbu\App\Util\Str;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.4
  */
-class AmazonS3 implements Simulator
+abstract class AmazonS3 implements Simulator
 {
     /**
      * AWS key
@@ -107,31 +107,7 @@ class AmazonS3 implements Simulator
      * @param  \phpbu\App\Result        $result
      * @throws \phpbu\App\Backup\Sync\Exception
      */
-    public function sync(Target $target, Result $result)
-    {
-        $sourcePath = $target->getPathname();
-        $targetPath = $this->path . $target->getFilename();
-
-        $s3 = S3Client::factory(
-            [
-                'signature' => 'v4',
-                'region'    => $this->region,
-                'credentials' => [
-                    'key'    => $this->key,
-                    'secret' => $this->secret,
-                ]
-            ]
-        );
-
-        try {
-            $fh = fopen($sourcePath, 'r');
-            $s3->upload($this->bucket, $targetPath, $fh, $this->acl);
-        } catch (\Exception $e) {
-            throw new Exception($e->getMessage(), null, $e);
-        }
-
-        $result->debug('upload: done');
-    }
+    abstract public function sync(Target $target, Result $result);
 
     /**
      * Simulate the sync execution.

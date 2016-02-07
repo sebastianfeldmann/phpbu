@@ -39,6 +39,13 @@ if ($execute) {
         exit;
     }
 
+    // aws functions
+    require __PHPBU_PHAR_ROOT__ . '/lib/aws-sdk/functions.php';
+    // guzzle functions
+    require __PHPBU_PHAR_ROOT__ . '/lib/guzzlehttp/guzzle/functions_include.php';
+    require __PHPBU_PHAR_ROOT__ . '/lib/guzzlehttp/psr7/functions_include.php';
+    require __PHPBU_PHAR_ROOT__ . '/lib/guzzlehttp/promises/functions_include.php';
+    // swift dependency init
     require __PHPBU_PHAR_ROOT__ . '/lib/swiftmailer/swift_init.php';
 
     phpbu\App\Cmd::main();

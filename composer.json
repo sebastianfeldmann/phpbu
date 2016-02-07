@@ -39,13 +39,13 @@
     "symfony/event-dispatcher": "~2.6"
   },
   "require-dev": {
-    "aws/aws-sdk-php": "~2.7",
+    "aws/aws-sdk-php": "~3.10",
     "dropbox/dropbox-sdk": "~1.1",
     "phpseclib/phpseclib": "~2.0",
     "softlayer/objectstorage": "dev-master"
   },
   "suggest": {
-    "aws/aws-sdk-php": "Require '~2.7' to sync to Amazon S3",
+    "aws/aws-sdk-php": "Require '~3.10' to sync to Amazon S3",
     "dropbox/dropbox-sdk": "Require '~1.1' to sync to Dropbox",
     "phpseclib/phpseclib": "Require '~2.0' to use SFTP sync",
     "softlayer/objectstorage": "Require 'dev-master' to sync to Softlayer"
