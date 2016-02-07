@@ -22,7 +22,7 @@ Get detailed information about all the features and a 'getting started' tutorial
     + MongoDB
     + MySQL
     + Percona XtraBackup
-    + PostgreSQL (in progress)
+    + PostgreSQL
     + Redis
 * Validate backups
     + Check min size
@@ -31,7 +31,7 @@ Get detailed information about all the features and a 'getting started' tutorial
     + mcrypt
     + openssl
 * Sync backups to other locations
-    + Amazon s3
+    + Amazon s3 (using sdk version 2 or 3)
     + Dropbox
     + rsync
     + SFTP
@@ -70,7 +70,7 @@ Installing *PHPBU* via Composer is also supported.
 
 ```json
   "require": {
-    "phpbu/phpbu": "2.1.*"
+    "phpbu/phpbu": "3.0.*"
   }
 ```
 
@@ -103,7 +103,7 @@ Simple configuration example:
 ```xml
   <?xml version="1.0" encoding="UTF-8"?>
   <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/2.1/phpbu.xsd"
+         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/3.0/phpbu.xsd"
          verbose="true">
     <backups>
       <backup>
