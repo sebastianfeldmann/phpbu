@@ -131,12 +131,6 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     private $noData;
 
     /**
-     * Dump target location
-     * @var string
-     */
-    private $dumpPathname;
-
-    /**
      * Setup.
      *
      * @see    \phpbu\App\Backup\Source
@@ -183,9 +177,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      */
     public function backup(Target $target, Result $result)
     {
-        // setup dump location and execute the dump
-        $this->dumpPathname = $target->getPathnamePlain();
-        $mysqldump          = $this->execute($target);
+        $mysqldump = $this->execute($target);
 
         $result->debug($mysqldump->getCmd());
 
@@ -218,7 +210,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
                              ->ignoreTables($this->ignoreTables)
                              ->dumpNoData($this->noData)
                              ->dumpStructureOnly($this->structureOnly)
-                             ->dumpTo($this->dumpPathname);
+                             ->dumpTo($target->getPathnamePlain());
         }
         return $this->executable;
     }
@@ -231,6 +223,6 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      */
     protected function createStatus(Target $target)
     {
-        return Status::create()->uncompressed($this->dumpPathname);
+        return Status::create()->uncompressed($target->getPathnamePlain());
     }
 }
