@@ -414,7 +414,7 @@ class PrinterCli implements Listener
     public function onDebug(Event\Debug $event)
     {
         if ($this->debug) {
-            $this->write(wordwrap($event->getMessage(), 70, PHP_EOL, true) . PHP_EOL);
+            $this->write($event->getMessage() . PHP_EOL);
         }
     }
 
