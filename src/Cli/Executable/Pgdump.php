@@ -127,12 +127,12 @@ class Pgdump extends Abstraction implements Executable
      * Encoding of the dump file
      * --encoding
      *
-     * @var boolean
+     * @var string
      */
     private $encoding;
 
     /**
-     * postgreSQLdump format definition
+     * postgreSQL dump format definition
      * --format [plain|custom|directory|tar]
      *
      * @var string

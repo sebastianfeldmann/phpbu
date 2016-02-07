@@ -46,7 +46,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
      * Port to connect to
      * --port=<portnumber>
      *
-     * @var string
+     * @var int
      */
     private $port;
 
@@ -141,7 +141,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
      * Dump format
      * --format=<format>
      *
-     * @var bool
+     * @var string
      */
     private $format;
 
