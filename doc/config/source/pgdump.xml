@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<source type="pgdump">
+  <!-- optional, default=localhost -->
+  <option name="host" value="localhost" />
+
+  <!-- optional, default none -->
+  <option name="port" value="1234" />
+
+  <!-- optional, default none -->
+  <option name="user" value="myUserName" />
+
+  <!-- optional, default none -->
+  <option name="password" value="topSecret" />
+
+  <!-- mandatory -->
+  <option name="database" value="myDatabaseName" />
+
+  <!-- optional, default=false -->
+  <option name="schemaOnly" value="true" />
+
+  <!-- optional, default=false -->
+  <option name="dataOnly" value="true" />
+
+  <!-- optional, default all -->
+  <option name="schemas" value="schema1,schema2,schema3" />
+
+  <!-- optional, default none -->
+  <option name="excludeSchemas" value="schema4,schema5,schema6" />
+
+  <!-- optional, default all -->
+  <option name="tables" value="table1,table2,table3" />
+
+  <!-- optional, default none -->
+  <option name="excludeTables" value="table4,table5,table6" />
+
+  <!-- optional, default none -->
+  <option name="excludeTableData" value="table7,table8,table9" />
+
+  <!-- optional, default=false -->
+  <option name="noPermissions" value="true" />
+
+  <!-- optional, default=false -->
+  <option name="noOwner" value="true" />
+
+  <!-- optional, default=false -->
+  <option name="clean" value="true" />
+
+  <!-- optional, default=plain -->
+  <option name="format" value="custom" />
+
+  <!-- optional, default db encoding -->
+  <option name="encoding" value="utf-8" />
+</source>

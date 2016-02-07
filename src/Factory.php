@@ -47,6 +47,7 @@ class Factory
             'elasticdump' => '\\phpbu\\App\\Backup\\Source\\Elasticdump',
             'mongodump'   => '\\phpbu\\App\\Backup\\Source\\Mongodump',
             'mysqldump'   => '\\phpbu\\App\\Backup\\Source\\Mysqldump',
+            'pgdump'      => '\\phpbu\\App\\Backup\\Source\\Pgdump',
             'redis'       => '\\phpbu\\App\\Backup\\Source\\Redis',
             'tar'         => '\\phpbu\\App\\Backup\\Source\\Tar',
             'xtrabackup'  => '\\phpbu\\App\\Backup\\Source\\XtraBackup',
