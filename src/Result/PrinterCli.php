@@ -556,9 +556,10 @@ class PrinterCli implements Listener
             $this->writeWithColor(
                 'fg-black, bg-yellow',
                 sprintf(
-                    "OK, but skipped|failed Crypts, Syncs or Cleanups!\n" .
-                    'Backups: %d, Crypts: %d|%d, Syncs: %d|%d, Cleanups: %d|%d.' . PHP_EOL,
+                    "OK, but skipped|failed Checks, Crypts, Syncs or Cleanups!\n" .
+                    'Backups: %d, Checks: -|%d, Crypts: %d|%d, Syncs: %d|%d, Cleanups: %d|%d ' . PHP_EOL,
                     count($result->getBackups()),
+                    $result->checksFailedCount(),
                     $result->cryptsSkippedCount(),
                     $result->cryptsFailedCount(),
                     $result->syncsSkippedCount(),
