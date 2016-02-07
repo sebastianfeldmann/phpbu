@@ -9,7 +9,7 @@ use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
 
 /**
- * Amazon S3 Sync
+ * Amazon S3 Sync base class
  *
  * @package    phpbu
  * @subpackage Backup
@@ -17,7 +17,7 @@ use phpbu\App\Util\Str;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
- * @since      Class available since Release 1.1.4
+ * @since      Class available since Release 3.0.0
  */
 abstract class AmazonS3 implements Simulator
 {
@@ -65,7 +65,7 @@ abstract class AmazonS3 implements Simulator
     protected $acl;
 
     /**
-     * (non-PHPDoc)
+     * Configure the sync.
      *
      * @see    \phpbu\App\Backup\Sync::setup()
      * @param  array $config

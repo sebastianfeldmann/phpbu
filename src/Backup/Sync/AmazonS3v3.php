@@ -5,8 +5,6 @@ use Aws\S3\S3Client;
 use phpbu\App\Result;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Arr;
-use phpbu\App\Util\Str;
 
 /**
  * Amazon S3 Sync
@@ -17,7 +15,7 @@ use phpbu\App\Util\Str;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
- * @since      Class available since Release 1.1.4
+ * @since      Class available since Release 3.0.0
  */
 class AmazonS3v3 extends AmazonS3
 {
