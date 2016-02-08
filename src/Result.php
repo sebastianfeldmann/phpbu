@@ -142,7 +142,7 @@ class Result
      */
     public function noneSkipped()
     {
-        return $this->syncsSkipped + $this->cleanupsSkipped === 0;
+        return $this->cryptsSkipped + $this->syncsSkipped + $this->cleanupsSkipped === 0;
     }
 
     /**
@@ -152,7 +152,7 @@ class Result
      */
     public function noneFailed()
     {
-        return $this->syncsFailed + $this->cleanupsFailed === 0;
+        return $this->checksFailed + $this->cryptsFailed + $this->syncsFailed + $this->cleanupsFailed === 0;
     }
 
     /**
