@@ -284,6 +284,11 @@ class Result
      */
     public function checkFailed(Configuration\Backup\Check $check)
     {
+        // if this is the first check that fails
+        if ($this->backupActive->wasSuccessful()) {
+            $this->backupsFailed++;
+        }
+
         $this->checksFailed++;
         $this->backupActive->fail();
         $this->backupActive->checkFailed($check);
