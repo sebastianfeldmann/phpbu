@@ -202,7 +202,6 @@ class ResultTest extends \PHPUnit_Framework_TestCase
         $result->checkStart($check);
         $result->addError(new Exception('failed'));
         $result->checkFailed($check);
-        $result->backupFailed($backup);
         $result->backupEnd($backup);
         $result->phpbuEnd();
 

@@ -82,7 +82,8 @@ phpbu [option]
   --configuration=<file> A phpbu xml config file.
   --colors               Use colors in output.
   --debug                Display debugging information during backup generation.
-  -h, --help             Prints this usage information.
+  --simulate             Show what phpbu would do without actually executing anything.
+  -h, --help             Print this usage information.
   -v, --verbose          Output more verbose information.
   -V, --version          Output version information and exit.
 ```

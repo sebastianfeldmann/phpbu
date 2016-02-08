@@ -142,7 +142,7 @@ class Result
      */
     public function noneSkipped()
     {
-        return $this->syncsSkipped + $this->cleanupsSkipped === 0;
+        return $this->cryptsSkipped + $this->syncsSkipped + $this->cleanupsSkipped === 0;
     }
 
     /**
@@ -152,7 +152,7 @@ class Result
      */
     public function noneFailed()
     {
-        return $this->syncsFailed + $this->cleanupsFailed === 0;
+        return $this->checksFailed + $this->cryptsFailed + $this->syncsFailed + $this->cleanupsFailed === 0;
     }
 
     /**
@@ -284,6 +284,11 @@ class Result
      */
     public function checkFailed(Configuration\Backup\Check $check)
     {
+        // if this is the first check that fails
+        if ($this->backupActive->wasSuccessful()) {
+            $this->backupsFailed++;
+        }
+
         $this->checksFailed++;
         $this->backupActive->fail();
         $this->backupActive->checkFailed($check);

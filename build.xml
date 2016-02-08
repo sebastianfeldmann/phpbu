@@ -116,7 +116,69 @@
   <!-- AMAZON AWS -->
   <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE.md" tofile="${basedir}/build/phar/lib/aws-sdk/LICENSE"/>
   <copy todir="${basedir}/build/phar/lib/aws-sdk">
-   <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src" />
+    <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src">
+      <include name="**/*.php" />
+      <exclude name="Acm/**" />
+      <exclude name="AutoScaling/**" />
+      <exclude name="CloudFormation/**" />
+      <exclude name="CloudFront/**" />
+      <exclude name="CloudHsm/**" />
+      <exclude name="CloudSearch/**" />
+      <exclude name="CloudSearchDomain/**" />
+      <exclude name="CloudTrail/**" />
+      <exclude name="CloudWatch/**" />
+      <exclude name="CloudWatchEvents/**" />
+      <exclude name="CloudWatchLogs/**" />
+      <exclude name="CodeCommit/**" />
+      <exclude name="CodeDeploy/**" />
+      <exclude name="CodePipeline/**" />
+      <exclude name="CognitoIdentity/**" />
+      <exclude name="CognitoSync/**" />
+      <exclude name="ConfigService/**" />
+      <exclude name="DataPipeline/**" />
+      <exclude name="DeviceFarm/**" />
+      <exclude name="DirectConnect/**" />
+      <exclude name="DirectoryService/**" />
+      <exclude name="DynamoDb/**" />
+      <exclude name="DynamoDbStreams/**" />
+      <exclude name="Ec2/**" />
+      <exclude name="Ecr/**" />
+      <exclude name="Ecs/**" />
+      <exclude name="Efs/**" />
+      <exclude name="ElastiCache/**" />
+      <exclude name="ElasticBeanstalk/**" />
+      <exclude name="ElasticLoadBalancing/**" />
+      <exclude name="ElasticsearchService/**" />
+      <exclude name="ElasticTranscoder/**" />
+      <exclude name="Emr/**" />
+      <exclude name="Firehose/**" />
+      <exclude name="Glacier/**" />
+      <exclude name="AutoScaling/**" />
+      <exclude name="Iam/**" />
+      <exclude name="Inspector/**" />
+      <exclude name="Iot/**" />
+      <exclude name="IotDataPlane/**" />
+      <exclude name="Kinesis/**" />
+      <exclude name="Kms/**" />
+      <exclude name="Lambda/**" />
+      <exclude name="MachineLearning/**" />
+      <exclude name="MarketplaceCommerceAnalytics/**" />
+      <exclude name="OpsWorks/**" />
+      <exclude name="Rds/**" />
+      <exclude name="Redshift/**" />
+      <exclude name="Route53/**" />
+      <exclude name="Route53Domains/**" />
+      <exclude name="Ses/**" />
+      <exclude name="Sns/**" />
+      <exclude name="Sqs/**" />
+      <exclude name="Ssm/**" />
+      <exclude name="StorageGateway/**" />
+      <exclude name="Sts/**" />
+      <exclude name="Support/**" />
+      <exclude name="Swf/**" />
+      <exclude name="Waf/**" />
+      <exclude name="WorkSpaces/**" />
+    </fileset>
   </copy>
 
   <!-- AMAZON AWS GUZZLE -->
@@ -221,6 +283,7 @@
   <exec executable="phpab">
    <arg value="--all" />
    <arg value="--phar" />
+   <!-- <arg value="- -bzip2" /> -->
    <arg value="--output" />
    <arg path="${basedir}/build/phpbu-${phar_version}.phar" />
    <arg value="--template" />
