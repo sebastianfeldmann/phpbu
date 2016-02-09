@@ -29,9 +29,6 @@ class AmazonS3v3 extends AmazonS3
      */
     public function sync(Target $target, Result $result)
     {
-        $sourcePath = $target->getPathname();
-        $targetPath = $this->getUploadPath($target);
-
         $s3 = new S3Client([
             'region'  => $this->region,
             'version' => '2006-03-01',
@@ -41,10 +38,11 @@ class AmazonS3v3 extends AmazonS3
             ]
         ]);
 
+        $s3->registerStreamWrapper();
+        $source = $this->getFileHandle($target->getPathname(), 'r');
+        $stream = $this->getFileHandle($this->getUploadPath($target), 'w');
+
         try {
-            $s3->registerStreamWrapper();
-            $stream = fopen($targetPath, 'w');
-            $source = fopen($sourcePath, 'r');
             while(!feof($source)) {
                 fwrite($stream, fread($source, 4096));
             }
@@ -53,8 +51,24 @@ class AmazonS3v3 extends AmazonS3
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }
-
         $result->debug('upload: done');
+    }
+
+    /**
+     * Open stream and validate it.
+     *
+     * @param  string $path
+     * @param  string $mode
+     * @return resource
+     * @throws \phpbu\App\Backup\Sync\Exception
+     */
+    private function getFileHandle($path, $mode)
+    {
+        $handle = fopen($path, $mode);
+        if (!is_resource($handle)) {
+            throw new Exception('fopen failed: could not open stream ' . $path);
+        }
+        return $handle;
     }
 
     /**
