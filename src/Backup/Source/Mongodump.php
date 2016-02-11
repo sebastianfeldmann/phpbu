@@ -160,7 +160,7 @@ class Mongodump extends SimulatorExecutable implements Simulator
         $result->debug($mongodump->getCmd());
 
         if (!$mongodump->wasSuccessful()) {
-            throw new Exception('Mongodump failed');
+            throw new Exception('mongodump failed: ' . $mongodump->getStdErr());
         }
 
         return $this->createStatus($target);
