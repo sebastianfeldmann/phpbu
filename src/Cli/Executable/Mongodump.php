@@ -233,7 +233,7 @@ class Mongodump extends Abstraction implements Executable
 
         if (count($this->databases)) {
             foreach ($this->databases as $db) {
-                $cmd->addOption('--database', $db, ' ');
+                $cmd->addOption('--db', $db, ' ');
             }
         }
 
