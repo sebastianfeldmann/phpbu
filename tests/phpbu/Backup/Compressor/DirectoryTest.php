@@ -30,8 +30,8 @@ class DirectoryTest extends CliTest
         $cmd        = $executable->getCommandLine();
 
         $this->assertEquals(
-            '(' . $path . '/tar -zcf \'' . __FILE__ . '.gz\' -C \'' . __DIR__ .  '\' \'.\''
-          . ' && rm -rf \'' . __DIR__ . '\')',
+            '(' . $path . '/tar -zcf \'' . __FILE__ . '.gz\' -C \'' . dirname(__DIR__) . '\' \'' . basename(__DIR__) . '\''
+            . ' && rm -rf \'' . __DIR__ . '\')',
             $cmd
         );
     }
@@ -73,8 +73,8 @@ class DirectoryTest extends CliTest
 
         $appResult = $this->getAppResultMock();
         $tar       = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Tar')
-                          ->disableOriginalConstructor()
-                          ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
         $tar->method('run')->willReturn($cliResult);
 
 
@@ -110,8 +110,8 @@ class DirectoryTest extends CliTest
 
         $appResult = $this->getAppResultMock();
         $tar       = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Tar')
-                          ->disableOriginalConstructor()
-                          ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
         $tar->method('run')->willReturn($cliResult);
 
 

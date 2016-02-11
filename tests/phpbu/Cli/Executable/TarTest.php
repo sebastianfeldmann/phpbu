@@ -21,10 +21,12 @@ class TarTest extends \PHPUnit_Framework_TestCase
     {
         $path = realpath(__DIR__ . '/../../../_files/bin');
         $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
         $tar  = new Tar($path);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar');
 
-        $this->assertEquals($path . '/tar -cf \'/tmp/foo.tar\' -C \'' . $dir .  '\' \'.\'', $tar->getCommandLine());
+        $this->assertEquals($path . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommandLine());
     }
 
     /**
@@ -34,10 +36,12 @@ class TarTest extends \PHPUnit_Framework_TestCase
     {
         $path = realpath(__DIR__ . '/../../../_files/bin');
         $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
         $tar  = new Tar($path);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar.gz')->useCompression('gzip');
 
-        $this->assertEquals($path . '/tar -zcf \'/tmp/foo.tar.gz\' -C \'' . $dir .  '\' \'.\'', $tar->getCommandLine());
+        $this->assertEquals($path . '/tar -zcf \'/tmp/foo.tar.gz\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommandLine());
     }
 
     /**
@@ -47,10 +51,12 @@ class TarTest extends \PHPUnit_Framework_TestCase
     {
         $path = realpath(__DIR__ . '/../../../_files/bin');
         $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
         $tar  = new Tar($path);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar.bzip2')->useCompression('bzip2');
 
-        $this->assertEquals($path . '/tar -jcf \'/tmp/foo.tar.bzip2\' -C \'' . $dir .  '\' \'.\'', $tar->getCommandLine());
+        $this->assertEquals($path . '/tar -jcf \'/tmp/foo.tar.bzip2\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommandLine());
     }
 
     /**
@@ -60,12 +66,14 @@ class TarTest extends \PHPUnit_Framework_TestCase
     {
         $path = realpath(__DIR__ . '/../../../_files/bin');
         $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
         $tar  = new Tar($path);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->removeSourceDirectory(true);
 
         $this->assertEquals(
-            '(' . $path . '/tar -cf \'/tmp/foo.tar\' -C \'' . $dir .  '\' \'.\''
-          . ' && rm -rf \'' . $dir . '\')',
+            '(' . $path . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\''
+            . ' && rm -rf \'' . $dir . '\')',
             $tar->getCommandLine()
         );
     }
@@ -81,6 +89,18 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $dir  = __DIR__ . '/foo';
         $tar  = new Tar($path);
         $tar->archiveDirectory($dir);
+    }
+
+    /**
+     * Tests Tar::archiveDirectory
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testSourceNotCWD()
+    {
+        $path = realpath(__DIR__ . '/../../../_files/bin');
+        $tar  = new Tar($path);
+        $tar->archiveDirectory('.');
     }
 
     /**

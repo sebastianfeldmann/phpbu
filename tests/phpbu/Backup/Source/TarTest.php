@@ -65,7 +65,7 @@ class TarTest extends CliTest
         $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
         $exec = $this->tar->getExecutable($target);
 
-        $this->assertEquals($path . '/tar -cf \'/tmp/backup.tar\' -C \'' . __DIR__ . '\' \'.\'', $exec->getCommandLine());
+        $this->assertEquals($path . '/tar -cf \'/tmp/backup.tar\' -C \'' . dirname(__DIR__) . '\' \'' . basename(__DIR__) . '\'', $exec->getCommandLine());
     }
 
     /**
@@ -83,7 +83,7 @@ class TarTest extends CliTest
         $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
         $exec = $this->tar->getExecutable($target);
 
-        $this->assertEquals($path . '/tar -zcf \'/tmp/backup.tar.gz\' -C \'' . __DIR__ . '\' \'.\'', $exec->getCommandLine());
+        $this->assertEquals($path . '/tar -zcf \'/tmp/backup.tar.gz\' -C \'' . dirname(__DIR__) . '\' \'' . basename(__DIR__) . '\'', $exec->getCommandLine());
     }
 
     /**
@@ -102,7 +102,7 @@ class TarTest extends CliTest
         $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
         $exec = $this->tar->getExecutable($target);
 
-        $this->assertEquals($path . '/tar -cf \'/tmp/backup.tar\' -C \'' . __DIR__ . '\' \'.\'', $exec->getCommandLine());
+        $this->assertEquals($path . '/tar -cf \'/tmp/backup.tar\' -C \'' . dirname(__DIR__) . '\' \'' . basename(__DIR__) . '\'', $exec->getCommandLine());
     }
 
     /**
@@ -115,8 +115,8 @@ class TarTest extends CliTest
         $cliResult = $this->getCliResultMock(0, 'tar');
         $appResult = $this->getAppResultMock();
         $tar       = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Tar')
-                          ->disableOriginalConstructor()
-                          ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $appResult->expects($this->once())->method('debug');
         $tar->expects($this->once())->method('run')->willReturn($cliResult);
@@ -140,8 +140,8 @@ class TarTest extends CliTest
         $cliResult = $this->getCliResultMock(0, 'tar');
         $appResult = $this->getAppResultMock();
         $tar       = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Tar')
-                          ->disableOriginalConstructor()
-                          ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $appResult->expects($this->once())->method('debug');
         $tar->expects($this->once())->method('run')->willReturn($cliResult);
@@ -167,8 +167,8 @@ class TarTest extends CliTest
         $cliResult = $this->getCliResultMock(1, 'tar');
         $appResult = $this->getAppResultMock();
         $tar       = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Tar')
-                          ->disableOriginalConstructor()
-                          ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $appResult->expects($this->once())->method('debug');
         $tar->expects($this->once())->method('run')->willReturn($cliResult);
