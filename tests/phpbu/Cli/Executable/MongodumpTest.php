@@ -83,7 +83,7 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
         $mongo = new Mongodump($path);
         $mongo->dumpToDirectory('./dump')->dumpDatabases(array('db1', 'db2'));
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --database \'db1\' --database \'db2\'', $mongo->getCommandLine());
+        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --db \'db1\' --db \'db2\'', $mongo->getCommandLine());
     }
 
     /**
