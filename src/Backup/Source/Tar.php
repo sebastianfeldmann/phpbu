@@ -145,7 +145,7 @@ class Tar extends SimulatorExecutable implements Simulator
     private function validatePath()
     {
         if (!is_dir($this->path)) {
-            throw new Exception('patch to compress has to be a directory');
+            throw new Exception('path to compress has to be a directory');
         }
     }
 
