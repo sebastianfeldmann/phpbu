@@ -223,6 +223,6 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      */
     protected function createStatus(Target $target)
     {
-        return Status::create()->uncompressed($target->getPathnamePlain());
+        return Status::create()->uncompressedFile($target->getPathnamePlain());
     }
 }

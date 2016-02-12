@@ -75,25 +75,25 @@ class Source extends Abstraction
     protected function compress(Status $status, Target $target, Result $result)
     {
         if ($target->shouldBeCompressed() && !$status->handledCompression()) {
-            $this->handleCompression($target, $result, $status->getDataPath());
+            $this->handleCompression($target, $result, $status);
         }
     }
 
     /**
      * Handle directory compression for sources which can't handle compression by them self.
      *
-     * @param  \phpbu\App\Backup\Target $target
-     * @param  \phpbu\App\Result        $result
-     * @param  string                   $dataToCompress
+     * @param  \phpbu\App\Backup\Target        $target
+     * @param  \phpbu\App\Result               $result
+     * @param  \phpbu\App\Backup\Source\Status $status
      * @throws \phpbu\App\Exception
      */
-    private function handleCompression(Target $target, Result $result, $dataToCompress)
+    private function handleCompression(Target $target, Result $result, Status $status)
     {
         // is backup data a directory or a file
-        if (is_dir($dataToCompress)) {
-            $this->compressDirectory($target, $result, $dataToCompress);
+        if ($status->isDirectory()) {
+            $this->compressDirectory($target, $result, $status->getDataPath());
         } else {
-            $this->compressFile($target, $result, $dataToCompress);
+            $this->compressFile($target, $result, $status->getDataPath());
         }
     }
 

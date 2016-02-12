@@ -83,19 +83,6 @@ class TarTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \phpbu\App\Exception
      */
-    public function testSourceNoDirectory()
-    {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $dir  = __DIR__ . '/foo';
-        $tar  = new Tar($path);
-        $tar->archiveDirectory($dir);
-    }
-
-    /**
-     * Tests Tar::archiveDirectory
-     *
-     * @expectedException \phpbu\App\Exception
-     */
     public function testSourceNotCWD()
     {
         $path = realpath(__DIR__ . '/../../../_files/bin');

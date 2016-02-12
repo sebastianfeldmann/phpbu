@@ -70,7 +70,7 @@ class Tar extends SimulatorExecutable implements Simulator
      * @param  array $conf
      * @throws \phpbu\App\Exception
      */
-    public function setup(array $conf = array())
+    public function setup(array $conf = [])
     {
         $this->pathToTar = Util\Arr::getValue($conf, 'pathToTar');
         $this->path      = Util\Arr::getValue($conf, 'path');
@@ -92,9 +92,11 @@ class Tar extends SimulatorExecutable implements Simulator
      */
     public function backup(Target $target, Result $result)
     {
+        // make sure source path is a directory
+        $this->validatePath();
         // set uncompressed default MIME type
         $target->setMimeType('application/x-tar');
-        $tar    = $this->execute($target);
+        $tar = $this->execute($target);
 
         $result->debug($tar->getCmd());
 
@@ -136,6 +138,18 @@ class Tar extends SimulatorExecutable implements Simulator
     }
 
     /**
+     * Check the source to compress.
+     *
+     * @throws \phpbu\App\Exception
+     */
+    private function validatePath()
+    {
+        if (!is_dir($this->path)) {
+            throw new Exception('patch to compress has to be a directory');
+        }
+    }
+
+    /**
      * Create backup status.
      *
      * @param  \phpbu\App\Backup\Target
@@ -146,7 +160,7 @@ class Tar extends SimulatorExecutable implements Simulator
         $status = Status::create();
         // if tar doesn't handle the compression mark status uncompressed so the app can take care of compression
         if (!$this->getExecutable($target)->handlesCompression()) {
-            $status->uncompressed($target->getPathnamePlain());
+            $status->uncompressedFile($target->getPathnamePlain());
         }
         return $status;
     }

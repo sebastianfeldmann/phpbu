@@ -197,7 +197,7 @@ class Mongodump extends SimulatorExecutable implements Simulator
      */
     protected function createStatus(Target $target)
     {
-        return Status::create()->uncompressed($this->getDumpDir($target));
+        return Status::create()->uncompressedDirectory($this->getDumpDir($target));
     }
 
     /**

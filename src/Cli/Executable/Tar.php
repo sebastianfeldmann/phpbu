@@ -186,9 +186,6 @@ class Tar extends Abstraction implements Executable
      */
     private function validateDirectory($path)
     {
-        if (!is_dir($path)) {
-            throw new Exception('patch to archive has to be a directory');
-        }
         if ($path === '.') {
             throw new Exception('unable to tar current working directory');
         }

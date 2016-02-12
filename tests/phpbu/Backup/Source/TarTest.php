@@ -70,6 +70,23 @@ class TarTest extends CliTest
 
     /**
      * Tests Tar::getExec
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testInvalidDir()
+    {
+        $path      = realpath(__DIR__ . '/../../../_files/bin');
+        $target    = $this->getTargetMock('/tmp/backup.tar');
+        $appResult = $this->getAppResultMock();
+        $target->method('shouldBeCompressed')->willReturn(false);
+        $target->method('getPathname')->willReturn('/tmp/backup.tar');
+
+        $this->tar->setup(['path' => __DIR__ . '/foo', 'pathToTar' => $path]);
+        $this->tar->backup($target, $appResult);
+    }
+
+    /**
+     * Tests Tar::getExec
      */
     public function testCompressedTarget()
     {

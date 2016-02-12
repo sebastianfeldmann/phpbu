@@ -44,7 +44,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
 
     /**
      * Port to connect to
-     * --port=<portnumber>
+     * --port=<PortNumber>
      *
      * @var int
      */
@@ -289,6 +289,6 @@ class Pgdump extends SimulatorExecutable implements Simulator
      */
     protected function createStatus(Target $target)
     {
-        return Status::create()->uncompressed($target->getPathnamePlain());
+        return Status::create()->uncompressedFile($target->getPathnamePlain());
     }
 }
