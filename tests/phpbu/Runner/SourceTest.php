@@ -87,6 +87,9 @@ class SourceTest extends \PHPUnit_Framework_TestCase
         $status->expects($this->once())
                ->method('getDataPath')
                ->willReturn($targetPath);
+        $status->expects($this->once())
+               ->method('isDirectory')
+               ->willReturn(true);
 
         $source = $this->getMockBuilder('\\phpbu\\App\\Backup\\Source\\Mysqldump')
                        ->disableOriginalConstructor()
