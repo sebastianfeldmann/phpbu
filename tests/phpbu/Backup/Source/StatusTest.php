@@ -22,6 +22,7 @@ class StatusTest extends \PHPUnit_Framework_TestCase
         $status = Status::create();
 
         $this->assertTrue($status->handledCompression());
+        $this->assertFalse($status->isDirectory());
     }
 
     /**
@@ -35,14 +36,40 @@ class StatusTest extends \PHPUnit_Framework_TestCase
         $status->getDataPath();
     }
 
+
+    /**
+     * Tests Status::getDataPath
+     *
+     * @deprecated test deprecated method
+     */
+    public function testUncompressedFileDeprecated()
+    {
+        $status = Status::create()->uncompressed('/foo.dump');
+
+        $this->assertFalse($status->handledCompression());
+        $this->assertEquals('/foo.dump', $status->getDataPath());
+    }
+
     /**
      * Tests Status::getDataPath
      */
-    public function testUncompressedDataPath()
+    public function testUncompressedFile()
     {
-        $status = Status::create()->uncompressed('/foo');
+        $status = Status::create()->uncompressedFile('/foo.dump');
+
+        $this->assertFalse($status->handledCompression());
+        $this->assertEquals('/foo.dump', $status->getDataPath());
+    }
+
+    /**
+     * Tests Status::getDataPath
+     */
+    public function testUncompressedDirectory()
+    {
+        $status = Status::create()->uncompressedDirectory('/foo');
 
         $this->assertFalse($status->handledCompression());
         $this->assertEquals('/foo', $status->getDataPath());
+        $this->assertTrue($status->isDirectory());
     }
 }

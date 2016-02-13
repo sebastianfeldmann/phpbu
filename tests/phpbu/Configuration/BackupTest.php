@@ -82,4 +82,30 @@ class BackupTest extends \PHPUnit_Framework_TestCase
         $backup->addSync($sync);
         $this->assertEquals(1, count($backup->getSyncs()));
     }
+
+    /**
+     * Tests Backup::hasCrypt()
+     */
+    public function testHasCrypt()
+    {
+        $backup = new Backup('name', false);
+        $crypt  = new Backup\Crypt('openssl', true);
+
+        $backup->setCrypt($crypt);
+        $this->assertEquals($crypt, $backup->getCrypt());
+        $this->assertTrue($backup->hasCrypt());
+    }
+
+    /**
+     * Tests Backup::hasCleanup()
+     */
+    public function testHasCleanup()
+    {
+        $backup  = new Backup('name', false);
+        $cleanup = new Backup\Cleanup('capacity', true, []);
+
+        $backup->setCleanup($cleanup);
+        $this->assertEquals($cleanup, $backup->getCleanup());
+        $this->assertTrue($backup->hasCleanup());
+    }
 }

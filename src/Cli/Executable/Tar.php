@@ -112,9 +112,7 @@ class Tar extends Abstraction implements Executable
      */
     public function archiveDirectory($path)
     {
-        if (!is_dir($path)) {
-            throw new Exception('patch to archive has to be a directory');
-        }
+        $this->validateDirectory($path);
         $this->path = $path;
         return $this;
     }
@@ -148,21 +146,15 @@ class Tar extends Abstraction implements Executable
      */
     protected function createProcess()
     {
-        // check source and target settings
-        if (empty($this->path)) {
-            throw new Exception('no directory to compress');
-        }
-        if (empty($this->tarPathname)) {
-            throw new Exception('no target filename set');
-        }
+        $this->validateSetup();
 
         $process = new Process();
         $tar     = new Cmd($this->binary);
 
         $tar->addOption('-' . $this->compression . 'cf');
         $tar->addArgument($this->tarPathname);
-        $tar->addOption('-C', $this->path, ' ');
-        $tar->addArgument('.');
+        $tar->addOption('-C', dirname($this->path), ' ');
+        $tar->addArgument(basename(($this->path)));
 
         $process->addCommand($tar);
 
@@ -184,6 +176,34 @@ class Tar extends Abstraction implements Executable
         $rm = new Cmd('rm');
         $rm->addOption('-rf', $this->path, ' ');
         return $rm;
+    }
+
+    /**
+     * Check directory to compress.
+     *
+     * @param  string $path
+     * @throws \phpbu\App\Exception
+     */
+    private function validateDirectory($path)
+    {
+        if ($path === '.') {
+            throw new Exception('unable to tar current working directory');
+        }
+    }
+
+    /**
+     * Check if source and target values are set.
+     *
+     * @throws \phpbu\App\Exception
+     */
+    private function validateSetup()
+    {
+        if (empty($this->path)) {
+            throw new Exception('no directory to compress');
+        }
+        if (empty($this->tarPathname)) {
+            throw new Exception('no target filename set');
+        }
     }
 
     /**

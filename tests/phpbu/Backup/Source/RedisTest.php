@@ -116,6 +116,40 @@ class RedisTest extends CliTest
      *
      * @expectedException \phpbu\App\Exception
      */
+    public function testBackupInvalidLastBackupTime()
+    {
+        $filePath = realpath(__DIR__ . '/../../../_files');
+        $binPath  = $filePath . '/bin';
+        $rdbPath  = $filePath . '/misc/dump.rdb';
+        $target   = $this->getTargetMock('/tmp/dump.rdb');
+        $target->method('shouldBeCompressed')->willReturn(false);
+        $target->method('getPathname')->willReturn('/tmp/dump.rdb');
+
+        $this->redis->setup(['pathToRedisData' => $rdbPath, 'pathToRedisCli' => $binPath]);
+
+        $cliResult1 = $this->getCliResultMock(0, 'redis', 'invalid');
+        $cliResult2 = $this->getCliResultMock(0, 'redis', 'invalid');
+        $cliResult3 = $this->getCliResultMock(0, 'redis', 'invalid');
+
+        $appResult = $this->getAppResultMock();
+
+        $redis = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\RedisCli')
+                      ->disableOriginalConstructor()
+                      ->getMock();
+        $redis->expects($this->any())
+              ->method('run')
+              ->will($this->onConsecutiveCalls($cliResult1, $cliResult2, $cliResult3));
+
+        $this->redis->setExecutable($redis);
+
+        $this->redis->backup($target, $appResult);
+    }
+
+    /**
+     * Tests Redis::backup
+     *
+     * @expectedException \phpbu\App\Exception
+     */
     public function testBackupTimeoutFail()
     {
         $filePath = realpath(__DIR__ . '/../../../_files');
@@ -140,6 +174,41 @@ class RedisTest extends CliTest
               ->willReturn($cliResult);
 
         $this->redis->setExecutable($redis);
+        $this->redis->backup($target, $appResult);
+    }
+
+    /**
+     * Tests Redis::backup
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testBackupInvalidRDB()
+    {
+        $filePath = realpath(__DIR__ . '/../../../_files');
+        $binPath  = $filePath . '/bin';
+        $rdbPath  = $filePath . '/misc/dump.rdb.invalid';
+        $target   = $this->getTargetMock('/tmp/dump.rdb');
+        $target->method('shouldBeCompressed')->willReturn(false);
+        $target->method('getPathname')->willReturn('/tmp/dump.rdb');
+
+        $this->redis->setup(['pathToRedisData' => $rdbPath, 'pathToRedisCli' => $binPath]);
+
+        $cliResult1 = $this->getCliResultMock(0, 'redis', '(integer) 100000000');
+        $cliResult2 = $this->getCliResultMock(0, 'redis', '(integer) 100000000');
+        $cliResult3 = $this->getCliResultMock(0, 'redis', '(integer) 100000002');
+
+        $appResult = $this->getAppResultMock();
+        $appResult->expects($this->once())->method('debug');
+
+        $redis = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\RedisCli')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $redis->expects($this->any())
+            ->method('run')
+            ->will($this->onConsecutiveCalls($cliResult1, $cliResult2, $cliResult3));
+
+        $this->redis->setExecutable($redis);
+
         $this->redis->backup($target, $appResult);
     }
 

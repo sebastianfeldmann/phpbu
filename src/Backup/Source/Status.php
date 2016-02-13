@@ -21,7 +21,14 @@ class Status
      *
      * @var boolean
      */
-    private $handledCompression;
+    private $handledCompression = true;
+
+    /**
+     * Is created backup a directory
+     *
+     * @var bool
+     */
+    private $dataPathIsDir = false;
 
     /**
      * Path to generated source data.
@@ -30,25 +37,40 @@ class Status
      */
     private $dataPath;
 
+
     /**
-     * Constructor
+     * Source does not handle compression.
+     *
+     * @deprecated use uncompressedFile instead
+     * @param      string $path
+     * @return     \phpbu\App\Backup\Source\Status
      */
-    public function __construct()
+    public function uncompressed($path)
     {
-        $this->handledCompression = true;
+        return $this->uncompressedFile($path);
     }
 
     /**
-     * Source doesn't handle compression.
+     * Source does not handle compression.
      *
      * @param  string $path
      * @return \phpbu\App\Backup\Source\Status
      */
-    public function uncompressed($path)
+    public function uncompressedFile($path)
     {
         $this->handledCompression = false;
         $this->dataPath           = $path;
         return $this;
+    }
+
+    /**
+     * @param $path
+     * @return \phpbu\App\Backup\Source\Status
+     */
+    public function uncompressedDirectory($path)
+    {
+        $this->dataPathIsDir = true;
+        return $this->uncompressedFile($path);
     }
 
     /**
@@ -59,6 +81,16 @@ class Status
     public function handledCompression()
     {
         return $this->handledCompression;
+    }
+
+    /**
+     * Is created backup data a directory.
+     *
+     * @return bool
+     */
+    public function isDirectory()
+    {
+        return $this->dataPathIsDir;
     }
 
     /**

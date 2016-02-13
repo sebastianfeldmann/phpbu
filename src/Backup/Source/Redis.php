@@ -106,9 +106,11 @@ class Redis extends SimulatorExecutable implements Simulator
         $saveResult = $redisSave->run();
         $result->debug($saveResult->getCmd());
         if (!$saveResult->wasSuccessful()) {
-            throw new Exception('redis-cli BGSAVE failed');
+            throw new Exception('redis-cli BGSAVE failed:' . $saveResult->getStdErr());
         }
+        // check if the save process is finished
         $this->isDumpCreatedYet($lastBackupTimestamp, $redisLast);
+        $this->copyDumpToTarget($target);
 
         return $this->createStatus($target);
     }
@@ -165,7 +167,7 @@ class Redis extends SimulatorExecutable implements Simulator
     /**
      * Check the dump date and return true if BGSAVE is finished.
      *
-     * @param  int $lastTimestamp
+     * @param  int                                $lastTimestamp
      * @param  \phpbu\App\Cli\Executable\RedisCli $redis
      * @return bool
      * @throws \phpbu\App\Exception
@@ -190,7 +192,7 @@ class Redis extends SimulatorExecutable implements Simulator
      * @return string
      * @throws \phpbu\App\Exception
      */
-    private function copyDumpToTargetDir(Target $target)
+    private function copyDumpToTarget(Target $target)
     {
         if (!file_exists($this->pathToRedisData)) {
             throw new Exception('Redis data not found at: \'' . $this->pathToRedisCli . '\'');
@@ -208,8 +210,6 @@ class Redis extends SimulatorExecutable implements Simulator
      */
     protected function createStatus(Target $target)
     {
-        $pathToDump = $this->copyDumpToTargetDir($target);
-
-        return Status::create()->uncompressed($pathToDump);
+        return Status::create()->uncompressedFile($target->getPathnamePlain());
     }
 }

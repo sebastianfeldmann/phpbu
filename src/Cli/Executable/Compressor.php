@@ -50,13 +50,9 @@ class Compressor extends Abstraction implements Executable
      *
      * @param  string $path
      * @return \phpbu\App\Cli\Executable\Compressor
-     * @throws \phpbu\App\Exception
      */
     public function compressFile($path)
     {
-        if (!file_exists($path)) {
-            throw new Exception('file does not exist: ' . $path);
-        }
         $this->fileToCompress = $path;
         return $this;
     }

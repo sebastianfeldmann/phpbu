@@ -246,6 +246,21 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Factory::createRunner
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testCreateRunnerThatIsNone()
+    {
+        Factory::register('runner', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+
+        $factory = new Factory();
+        $factory->createRunner('nothing', false);
+
+        $this->assertFalse(true, 'Exception should be thrown');
+    }
+
+    /**
      * Tests Factory::register
      *
      * @expectedException \phpbu\App\Exception
@@ -383,6 +398,35 @@ class phpbuAppFactoryTestLoggerButNoListener implements Logger
  * Class phpbuAppFactoryTestObject
  */
 class phpbuAppFactoryTestSource implements Source
+{
+    /**
+     * Setup the source.
+     *
+     * @param array $conf
+     */
+    public function setup(array $conf = [])
+    {
+        // do something fooish
+    }
+
+    /**
+     * Runner the backup
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Result $result
+     * @return \phpbu\App\Backup\Source\Status
+     */
+    public function backup(Target $target, Result $result)
+    {
+        // do something fooish
+        return new Source\Status();
+    }
+}
+
+/**
+ * Class phpbuAppFactoryTestObject
+ */
+class phpbuAppFactoryTestRunner
 {
     /**
      * Setup the source.

@@ -43,18 +43,6 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \phpbu\App\Exception
      */
-    public function testCompressNonExistingFile()
-    {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $gzip = new Compressor('gzip', $path);
-        $gzip->compressFile(__FILE__ . '.fail');
-    }
-
-    /**
-     * Tests Compressor::compressFile
-     *
-     * @expectedException \phpbu\App\Exception
-     */
     public function testFailEarlyCompress()
     {
         $path = realpath(__DIR__ . '/../../../_files/bin');

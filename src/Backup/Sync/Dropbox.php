@@ -53,7 +53,7 @@ class Dropbox implements Simulator
     public function setup(array $config)
     {
         if (!class_exists('\\Dropbox\\Client')) {
-            throw new Exception('Dropbox sdk not loaded: use composer "dropbox/dropbox-sdk": "1.1.*" to install');
+            throw new Exception('Dropbox sdk not loaded: use composer to install "dropbox/dropbox-sdk"');
         }
         if (!Arr::isSetAndNotEmptyString($config, 'token')) {
             throw new Exception('API access token is mandatory');

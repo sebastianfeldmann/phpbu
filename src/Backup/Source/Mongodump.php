@@ -160,7 +160,7 @@ class Mongodump extends SimulatorExecutable implements Simulator
         $result->debug($mongodump->getCmd());
 
         if (!$mongodump->wasSuccessful()) {
-            throw new Exception('Mongodump failed');
+            throw new Exception('mongodump failed: ' . $mongodump->getStdErr());
         }
 
         return $this->createStatus($target);
@@ -197,7 +197,7 @@ class Mongodump extends SimulatorExecutable implements Simulator
      */
     protected function createStatus(Target $target)
     {
-        return Status::create()->uncompressed($this->getDumpDir($target));
+        return Status::create()->uncompressedDirectory($this->getDumpDir($target));
     }
 
     /**
