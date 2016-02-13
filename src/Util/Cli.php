@@ -108,7 +108,7 @@ abstract class Cli
     }
 
     /**
-     * Detect a given commands location.
+     * Detect a given command's location.
      *
      * @param  string $cmd               The command to locate
      * @param  string $path              Directory where the command should be
@@ -118,49 +118,78 @@ abstract class Cli
      */
     public static function detectCmdLocation($cmd, $path = null, $optionalLocations = [])
     {
-        // explicit path given
-        if (null !== $path) {
-            $command = $path . DIRECTORY_SEPARATOR . $cmd;
-            $bin     = self::isExecutable($command);
-            if (null === $bin) {
-                throw new RuntimeException(sprintf('wrong path specified for \'%s\': %s', $cmd, $path));
+        $detectionSteps = [
+            function($cmd) use ($path) {
+                if (null !== $path) {
+                    return self::detectCmdLocationInPath($cmd, $path);
+                }
+                return null;
+            },
+            function($cmd) {
+                return self::detectCmdLocationWithWhich($cmd);
+            },
+            function($cmd) {
+                $paths = explode(PATH_SEPARATOR, self::getEnvPath());
+                return self::detectCmdLocationInPaths($cmd, $paths);
+            },
+            function($cmd) use ($optionalLocations) {
+                return self::detectCmdLocationInPaths($cmd, $optionalLocations);
             }
-            return $bin;
-        }
+        ];
 
-        // on nx systems use 'which' command.
-        if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
-            $command = `which $cmd`;
-            $bin     = self::isExecutable($command);
+        foreach ($detectionSteps as $step) {
+            $bin = $step($cmd);
             if (null !== $bin) {
                 return $bin;
             }
-        }
-
-        // checking environment variable.
-        $paths = explode(PATH_SEPARATOR, self::getEnvPath());
-        $bin   = self::detectCmdLocationInPaths($paths, $cmd);
-        if (null !== $bin) {
-            return $bin;
-        }
-
-        // check optional locations
-        $bin = self::detectCmdLocationInPaths($optionalLocations, $cmd);
-        if (null !== $bin) {
-            return $bin;
         }
 
         throw new RuntimeException(sprintf('\'%s\' was nowhere to be found please specify the correct path', $cmd));
     }
 
     /**
-     * Check path list for executable command.
+     * Detect a command in a given path.
      *
-     * @param array $paths
-     * @param       $cmd
+     * @param  string $cmd
+     * @param  string $path
+     * @return string
+     */
+    public static function detectCmdLocationInPath($cmd, $path)
+    {
+        $command = $path . DIRECTORY_SEPARATOR . $cmd;
+        $bin     = self::isExecutable($command);
+        if (null === $bin) {
+            throw new RuntimeException(sprintf('wrong path specified for \'%s\': %s', $cmd, $path));
+        }
+        return $bin;
+    }
+
+    /**
+     * Detect command location using which cli command.
+     *
+     * @param  string $cmd
      * @return null|string
      */
-    public static function detectCmdLocationInPaths(array $paths, $cmd)
+    public static function detectCmdLocationWithWhich($cmd)
+    {
+        $bin = null;
+        // on nx systems use 'which' command.
+        if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $command = `which $cmd`;
+            $bin     = self::isExecutable($command);
+        }
+        return $bin;
+
+    }
+
+    /**
+     * Check path list for executable command.
+     *
+     * @param string $cmd
+     * @param array  $paths
+     * @return null|string
+     */
+    public static function detectCmdLocationInPaths($cmd, array $paths)
     {
         foreach ($paths as $path) {
             $command = $path . DIRECTORY_SEPARATOR . $cmd;
