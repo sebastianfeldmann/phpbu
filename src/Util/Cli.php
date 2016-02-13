@@ -110,15 +110,15 @@ abstract class Cli
     /**
      * Detect a given commands location.
      *
-     * @param  string $cmd               The command to be located
-     * @param  string $path              Directory where the command should be located
-     * @param  array  $optionalLocations Some fallback locations where to investigate
+     * @param  string $cmd               The command to locate
+     * @param  string $path              Directory where the command should be
+     * @param  array  $optionalLocations Some fallback locations where to search for the command
      * @return string                    Absolute path to detected command including command itself
      * @throws \RuntimeException
      */
     public static function detectCmdLocation($cmd, $path = null, $optionalLocations = [])
     {
-        // explicit path given, so check it out
+        // explicit path given
         if (null !== $path) {
             $command = $path . DIRECTORY_SEPARATOR . $cmd;
             $bin     = self::isExecutable($command);
@@ -138,24 +138,38 @@ abstract class Cli
         }
 
         // checking environment variable.
-        $pathList = explode(PATH_SEPARATOR, self::getEnvPath());
-        foreach ($pathList as $path) {
-            $command = $path . DIRECTORY_SEPARATOR . $cmd;
-            $bin     = self::isExecutable($command);
-            if (null !== $bin) {
-                return $bin;
-            }
+        $paths = explode(PATH_SEPARATOR, self::getEnvPath());
+        $bin   = self::detectCmdLocationInPaths($paths, $cmd);
+        if (null !== $bin) {
+            return $bin;
         }
 
-        // some more paths we came across that where added manually
-        foreach ($optionalLocations as $path) {
+        // check optional locations
+        $bin = self::detectCmdLocationInPaths($optionalLocations, $cmd);
+        if (null !== $bin) {
+            return $bin;
+        }
+
+        throw new RuntimeException(sprintf('\'%s\' was nowhere to be found please specify the correct path', $cmd));
+    }
+
+    /**
+     * Check path list for executable command.
+     *
+     * @param array $paths
+     * @param       $cmd
+     * @return null|string
+     */
+    public static function detectCmdLocationInPaths(array $paths, $cmd)
+    {
+        foreach ($paths as $path) {
             $command = $path . DIRECTORY_SEPARATOR . $cmd;
             $bin     = self::isExecutable($command);
             if (null !== $bin) {
                 return $bin;
             }
         }
-        throw new RuntimeException(sprintf('\'%s\' was nowhere to be found please specify the correct path', $cmd));
+        return null;
     }
 
     /**

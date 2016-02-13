@@ -74,7 +74,7 @@ abstract class AmazonS3 implements Simulator
     public function setup(array $config)
     {
         if (!class_exists('\\Aws\\S3\\S3Client')) {
-            throw new Exception('Amazon SDK not loaded: use composer "aws/aws-sdk-php": "2.7.*" to install');
+            throw new Exception('Amazon SDK not loaded: use composer to install "aws/aws-sdk-php"');
         }
         if (!Arr::isSetAndNotEmptyString($config, 'key')) {
             throw new Exception('AWS key is mandatory');

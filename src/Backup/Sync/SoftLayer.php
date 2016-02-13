@@ -68,7 +68,7 @@ class SoftLayer implements Simulator
     public function setup(array $config)
     {
         if (!class_exists('\\ObjectStorage')) {
-            throw new Exception('SoftLayer SDK not loaded: use composer "softlayer/objectstorage": "dev-master" to install');
+            throw new Exception('SoftLayer SDK not loaded: use composer to install "softlayer/objectstorage"');
         }
         if (!Arr::isSetAndNotEmptyString($config, 'user')) {
             throw new Exception('SoftLayer user is mandatory');
