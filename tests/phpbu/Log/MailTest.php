@@ -35,7 +35,7 @@ class MailTest extends \PHPUnit_Framework_TestCase
     public function testSetupNoRecipients()
     {
         $mail = new Mail();
-        $mail->setup(array());
+        $mail->setup([]);
     }
 
     /**
@@ -46,7 +46,7 @@ class MailTest extends \PHPUnit_Framework_TestCase
     public function testSetupInvalidTransport()
     {
         $mail = new Mail();
-        $mail->setup(array('recipients' => 'test@example.com', 'transport' => 'foo'));
+        $mail->setup(['recipients' => 'test@example.com', 'transport' => 'foo']);
     }
 
     /**
@@ -57,7 +57,7 @@ class MailTest extends \PHPUnit_Framework_TestCase
     public function testSetupSmtpNoHost()
     {
         $mail = new Mail();
-        $mail->setup(array('recipients' => 'test@example.com', 'transport' => 'smtp'));
+        $mail->setup(['recipients' => 'test@example.com', 'transport' => 'smtp']);
     }
 
     /**
@@ -67,14 +67,14 @@ class MailTest extends \PHPUnit_Framework_TestCase
     {
         $mail = new Mail();
         $mail->setup(
-            array(
+            [
                 'recipients'      => 'test@example.com',
                 'transport'       => 'smtp',
                 'smtp.host'       => 'smtp.example.com',
                 'smtp.username'   => 'user.name',
                 'smtp.password'   => 'secret',
                 'smtp.encryption' => 'ssl',
-            )
+            ]
         );
         $this->assertTrue(true, 'should work');
     }
@@ -88,10 +88,10 @@ class MailTest extends \PHPUnit_Framework_TestCase
     {
         $mail = new Mail();
         $mail->setup(
-            array(
+            [
                 'recipients' => 'test@example.com',
                 'transport'  => 'sendmail'
-            )
+            ]
         );
     }
 
@@ -102,11 +102,25 @@ class MailTest extends \PHPUnit_Framework_TestCase
     {
         $mail = new Mail();
         $mail->setup(
-            array(
+            [
                 'recipients'    => 'test@example.com',
                 'transport'     => 'sendmail',
                 'sendmail.path' => '/bin/sendmail',
-            )
+            ]
+        );
+        $this->assertTrue(true, 'should work');
+    }
+
+    /**
+     * Test Mail::setup
+     */
+    public function testSetupDefaultMailOk()
+    {
+        $mail = new Mail();
+        $mail->setup(
+            [
+                'recipients' => 'test@example.com',
+            ]
         );
         $this->assertTrue(true, 'should work');
     }
