@@ -108,9 +108,12 @@
   <!-- DROPBOX SDK -->
   <copy file="${basedir}/vendor/dropbox/dropbox-sdk/License.txt" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
   <copy todir="${basedir}/build/phar/lib/dropbox">
-   <fileset dir="${basedir}/vendor/dropbox/dropbox-sdk/lib/Dropbox">
-    <include name="**/*.php" />
-   </fileset>
+    <fileset dir="${basedir}/vendor/dropbox/dropbox-sdk/lib/Dropbox">
+      <include name="**/*.php" />
+      <include name="**/*.crt" />
+      <exclude name="**/autoload.php" />
+      <exclude name="**/strict.php" />
+    </fileset>
   </copy>
 
   <!-- AMAZON AWS -->
