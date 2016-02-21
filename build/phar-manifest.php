@@ -13,9 +13,10 @@ if (strpos($tag, '-') === false && strpos($tag, 'No names found') === false) {
 }
 echo PHP_EOL;
 
-$lock = json_decode(file_get_contents(__DIR__ . '/../composer.lock'));
+$lock     = json_decode(file_get_contents(__DIR__ . '/../composer.lock'));
+$packages = array_merge($lock->packages, $lock->{"packages-dev"});
 
-foreach ($lock->packages as $package) {
+foreach ($packages as $package) {
     echo $package->name . ': ' . $package->version;
     if (!preg_match('/^[v= ]*(([0-9]+)(\\.([0-9]+)(\\.([0-9]+)(-([0-9]+))?(-?([a-zA-Z-+][a-zA-Z0-9\\.\\-:]*)?)?)?)?)$/', $package->version)) {
         echo '@' . $package->source->reference;
