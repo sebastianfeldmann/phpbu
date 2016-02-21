@@ -177,7 +177,6 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      */
     public function backup(Target $target, Result $result)
     {
-        //echo $this->getExecutable($target)->getCommandLinePrintable(); die();
         $mysqldump = $this->execute($target);
 
         $result->debug($mysqldump->getCmd());
