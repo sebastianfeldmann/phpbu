@@ -29,7 +29,7 @@ class Redis extends SimulatorExecutable implements Simulator
     private $pathToRedisCli;
 
     /**
-     * Time to wait for the dump to finish
+     * Time to wait for the dump to finish, 45 seconds by default
      *
      * @var integer
      */
@@ -104,7 +104,7 @@ class Redis extends SimulatorExecutable implements Simulator
         $lastBackupTimestamp = $this->getLastBackupTime($redisLast);
 
         $saveResult = $redisSave->run();
-        $result->debug($saveResult->getCmd());
+        $result->debug($this->getExecutable($target)->getCommandLinePrintable());
         if (!$saveResult->wasSuccessful()) {
             throw new Exception('redis-cli BGSAVE failed:' . $saveResult->getStdErr());
         }

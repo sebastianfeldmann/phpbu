@@ -27,7 +27,7 @@ abstract class SimulatorExecutable extends Cli
      */
     public function simulate(Target $target, Result $result)
     {
-        $result->debug('backup data:' . PHP_EOL . $this->getExecutable($target)->getCommandLine());
+        $result->debug('backup data:' . PHP_EOL . $this->getExecutable($target)->getCommandLinePrintable());
 
         return $this->createStatus($target);
     }

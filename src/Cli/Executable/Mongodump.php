@@ -19,6 +19,8 @@ use phpbu\App\Exception;
  */
 class Mongodump extends Abstraction implements Executable
 {
+    use OptionMasker;
+
     /**
      * Dump Directory
      *
@@ -105,8 +107,8 @@ class Mongodump extends Abstraction implements Executable
      */
     public function __construct($path = null)
     {
-        $this->cmd = 'mongodump';
-        parent::__construct($path);
+        $this->setup('mongodump', $path);
+        $this->setMaskCandidates(['password']);
     }
 
     /**

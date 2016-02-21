@@ -167,7 +167,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * (non-PHPDoc)
+     * Execute the backup.
      *
      * @see    \phpbu\App\Backup\Source
      * @param  \phpbu\App\Backup\Target $target
@@ -177,6 +177,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      */
     public function backup(Target $target, Result $result)
     {
+        //echo $this->getExecutable($target)->getCommandLinePrintable(); die();
         $mysqldump = $this->execute($target);
 
         $result->debug($mysqldump->getCmd());

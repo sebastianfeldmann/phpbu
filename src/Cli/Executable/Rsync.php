@@ -82,8 +82,7 @@ class Rsync extends Abstraction implements Executable
      */
     public function __construct($path = null)
     {
-        $this->cmd = 'rsync';
-        parent::__construct($path);
+        $this->setup('rsync', $path);
     }
 
     /**

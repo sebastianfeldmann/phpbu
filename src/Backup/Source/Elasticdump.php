@@ -96,7 +96,7 @@ class Elasticdump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * (non-PHPDoc)
+     * Execute the backup.
      *
      * @see    \phpbu\App\Backup\Source
      * @param  \phpbu\App\Backup\Target $target
@@ -108,7 +108,7 @@ class Elasticdump extends SimulatorExecutable implements Simulator
     {
         $elasticdump = $this->execute($target);
 
-        $result->debug($elasticdump->getCmd());
+        $result->debug($this->getExecutable($target)->getCommandLinePrintable());
 
         if (!$elasticdump->wasSuccessful()) {
             throw new Exception('elasticdump failed: ' . $elasticdump->getStdErr());

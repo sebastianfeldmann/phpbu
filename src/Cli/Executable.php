@@ -28,4 +28,11 @@ interface Executable
      * @return string
      */
     public function getCommandLine();
+
+    /**
+     * Return the command with masked passwords or keys.
+     *
+     * @return string
+     */
+    public function getCommandLinePrintable();
 }

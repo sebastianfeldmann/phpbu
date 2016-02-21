@@ -41,8 +41,7 @@ class Compressor extends Abstraction implements Executable
      */
     public function __construct($cmd, $path = null)
     {
-        $this->cmd = $cmd;
-        parent::__construct($path);
+        $this->setup($cmd, $path);
     }
 
     /**

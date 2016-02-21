@@ -126,7 +126,7 @@ class Arangodump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * (non-PHPDoc)
+     * Execute the backup.
      *
      * @see    \phpbu\App\Backup\Source
      * @param  \phpbu\App\Backup\Target $target
@@ -138,7 +138,7 @@ class Arangodump extends SimulatorExecutable implements Simulator
     {
         $arangodump = $this->execute($target);
 
-        $result->debug($arangodump->getCmd());
+        $result->debug($this->getExecutable($target)->getCommandLinePrintable());
 
         if (!$arangodump->wasSuccessful()) {
             throw new Exception('arangodump failed: ' . $arangodump->getStdErr());

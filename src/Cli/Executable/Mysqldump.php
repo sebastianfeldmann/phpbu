@@ -18,6 +18,8 @@ use phpbu\App\Cli\Process;
  */
 class Mysqldump extends Abstraction implements Executable
 {
+    use OptionMasker;
+
     /**
      * Host to connect to
      * --host <hostname>
@@ -48,7 +50,7 @@ class Mysqldump extends Abstraction implements Executable
      *
      * @var array
      */
-    private $tablesToDump = array();
+    private $tablesToDump = [];
 
     /**
      * List of databases to backup
@@ -56,21 +58,21 @@ class Mysqldump extends Abstraction implements Executable
      *
      * @var array
      */
-    private $databasesToDump = array();
+    private $databasesToDump = [];
 
     /**
      * List of tables to ignore
      *
      * @var array
      */
-    private $tablesToIgnore = array();
+    private $tablesToIgnore = [];
 
     /**
      * List of tables where only the table structure is stored
      *
      * @var array
      */
-    private $structureOnly = array();
+    private $structureOnly = [];
 
     /**
      * Use mysqldump quick mode
@@ -135,8 +137,8 @@ class Mysqldump extends Abstraction implements Executable
      */
     public function __construct($path = null)
     {
-        $this->cmd = 'mysqldump';
-        parent::__construct($path);
+        $this->setup('mysqldump', $path);
+        $this->setMaskCandidates(['password']);
     }
 
     /**

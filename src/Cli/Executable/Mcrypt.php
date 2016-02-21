@@ -19,6 +19,8 @@ use phpbu\App\Exception;
  */
 class Mcrypt extends Abstraction implements Executable
 {
+    use OptionMasker;
+
     /**
      * Key to pass via cli
      *
@@ -75,8 +77,8 @@ class Mcrypt extends Abstraction implements Executable
      */
     public function __construct($path = null)
     {
-        $this->cmd = 'mcrypt';
-        parent::__construct($path);
+        $this->setup('mcrypt', $path);
+        $this->setMaskCandidates(['key']);
     }
 
     /**

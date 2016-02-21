@@ -19,8 +19,12 @@ use phpbu\App\Exception;
  */
 class OpenSSL extends Abstraction implements Executable
 {
-    const MODE_CERT = 'smime';
+    use OptionMasker;
 
+    /**
+     * Encryption modes
+     */
+    const MODE_CERT = 'smime';
     const MODE_PASS = 'enc';
 
     /**
@@ -159,8 +163,8 @@ class OpenSSL extends Abstraction implements Executable
      */
     public function __construct($path = null)
     {
-        $this->cmd = 'openssl';
-        parent::__construct($path);
+        $this->setup('openssl', $path);
+        $this->setMaskCandidates(['password']);
     }
 
     /**

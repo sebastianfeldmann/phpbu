@@ -39,12 +39,14 @@ abstract class Abstraction
     protected $process;
 
     /**
-     * Constructor.
+     * Setup binary.
      *
+     * @param string $cmd
      * @param string $path
      */
-    public function __construct($path = null) {
-        $this->binary = Cli::detectCmdLocation($this->cmd, $path, Cli::getCommandLocations($this->cmd));
+    protected function setup($cmd, $path = null) {
+        $this->cmd    = $cmd;
+        $this->binary = Cli::detectCmdLocation($cmd, $path, Cli::getCommandLocations($this->cmd));
     }
 
     /**
@@ -105,6 +107,16 @@ abstract class Abstraction
     public function getCommandLine()
     {
         return $this->getProcess()->getCommandLine();
+    }
+
+    /**
+     * Return the command with masked passwords or keys.
+     *
+     * @return string
+     */
+    public function getCommandLinePrintable()
+    {
+        return $this->getCommandLine();
     }
 
     /**

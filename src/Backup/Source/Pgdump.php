@@ -243,7 +243,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
     {
 
         $pgDump = $this->execute($target);
-        $result->debug($pgDump->getCmd());
+        $result->debug($this->getExecutable($target)->getCommandLinePrintable());
 
         if (!$pgDump->wasSuccessful()) {
             throw new Exception('mysqldump failed:' . $pgDump->getStdErr());

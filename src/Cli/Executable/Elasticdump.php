@@ -21,6 +21,8 @@ use phpbu\App\Util\Str;
  */
 class Elasticdump extends Abstraction implements Executable
 {
+    use OptionMasker;
+
     /**
      * Host to connect to
      *
@@ -71,8 +73,8 @@ class Elasticdump extends Abstraction implements Executable
      */
     public function __construct($path = null)
     {
-        $this->cmd = 'elasticdump';
-        parent::__construct($path);
+        $this->setup('elasticdump', $path);
+        $this->setMaskCandidates(['password']);
     }
 
     /**

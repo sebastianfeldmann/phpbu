@@ -64,8 +64,7 @@ class Tar extends Abstraction implements Executable
      */
     public function __construct($path = null)
     {
-        $this->cmd = 'tar';
-        parent::__construct($path);
+        $this->setup('tar', $path);
     }
 
     /**

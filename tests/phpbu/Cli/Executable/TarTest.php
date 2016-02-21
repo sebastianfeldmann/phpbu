@@ -30,6 +30,21 @@ class TarTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Tar::getCommandLinePrintable
+     */
+    public function testDefaultPrintable()
+    {
+        $path = realpath(__DIR__ . '/../../../_files/bin');
+        $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
+        $tar  = new Tar($path);
+        $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar');
+
+        $this->assertEquals($path . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommandLinePrintable());
+    }
+
+    /**
      * Tests Tar::getCommandLine
      */
     public function testCompressionGzip()

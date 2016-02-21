@@ -108,7 +108,7 @@ class XtraBackup extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * (non-PHPDoc)
+     * Execute the backup.
      *
      * @see    \phpbu\App\Backup\Source
      * @param  \phpbu\App\Backup\Target $target
@@ -120,7 +120,7 @@ class XtraBackup extends SimulatorExecutable implements Simulator
     {
         $innobackupex = $this->execute($target);
 
-        $result->debug($innobackupex->getCmd());
+        $result->debug($this->getExecutable($target)->getCommandLinePrintable());
 
         if (!$innobackupex->wasSuccessful()) {
             throw new Exception('XtraBackup failed: ' . $innobackupex->getStdErr());

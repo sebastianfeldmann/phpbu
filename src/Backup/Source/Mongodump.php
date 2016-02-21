@@ -144,7 +144,7 @@ class Mongodump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * (non-PHPDoc)
+     * Execute the backup.
      *
      * @see    \phpbu\App\Backup\Source
      * @param  \phpbu\App\Backup\Target $target
@@ -157,7 +157,7 @@ class Mongodump extends SimulatorExecutable implements Simulator
         // setup dump location and execute the dump
         $mongodump = $this->execute($target);
 
-        $result->debug($mongodump->getCmd());
+        $result->debug($this->getExecutable($target)->getCommandLinePrintable());
 
         if (!$mongodump->wasSuccessful()) {
             throw new Exception('mongodump failed: ' . $mongodump->getStdErr());

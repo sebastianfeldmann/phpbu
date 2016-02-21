@@ -20,6 +20,8 @@ use phpbu\App\Exception;
  */
 class Innobackupex extends Abstraction implements Executable
 {
+    use OptionMasker;
+
     /**
      * MySQL data directory
      *
@@ -83,8 +85,8 @@ class Innobackupex extends Abstraction implements Executable
      */
     public function __construct($path = null)
     {
-        $this->cmd = 'innobackupex';
-        parent::__construct($path);
+        $this->setup('innobackupex', $path);
+        $this->setMaskCandidates(['password']);
     }
 
     /**

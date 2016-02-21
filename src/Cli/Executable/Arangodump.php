@@ -20,6 +20,8 @@ use phpbu\App\Exception;
  */
 class Arangodump extends Abstraction implements Executable
 {
+    use OptionMasker;
+
     /**
      * Endpoint to connect to
      * --server.endpoint <endpoint>
@@ -99,8 +101,8 @@ class Arangodump extends Abstraction implements Executable
      */
     public function __construct($path = null)
     {
-        $this->cmd = 'arangodump';
-        parent::__construct($path);
+        $this->setup('arangodump', $path);
+        $this->setMaskCandidates(['password']);
     }
 
     /**

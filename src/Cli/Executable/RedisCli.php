@@ -19,6 +19,8 @@ use phpbu\App\Exception;
  */
 class RedisCli extends Abstraction implements Executable
 {
+    use OptionMasker;
+
     /**
      * List of implemented redis commands
      *
@@ -65,8 +67,8 @@ class RedisCli extends Abstraction implements Executable
      */
     public function __construct($path = null)
     {
-        $this->cmd = 'redis-cli';
-        parent::__construct($path);
+        $this->setup('redis-cli', $path);
+        $this->setMaskCandidates(['password']);
     }
 
     /**

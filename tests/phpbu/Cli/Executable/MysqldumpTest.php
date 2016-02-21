@@ -27,6 +27,18 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Mysqldump::getCommandLinePrintable
+     */
+    public function testDefaultPrintable()
+    {
+        $path      = realpath(__DIR__ . '/../../../_files/bin');
+        $mysqldump = new Mysqldump($path);
+        $cmd       = $mysqldump->getCommandLinePrintable();
+
+        $this->assertEquals($path . '/mysqldump --all-databases', $cmd);
+    }
+
+    /**
      * Tests Mysqldump::dumpBlobsHexadecimal
      */
     public function testHexBlob()
@@ -37,6 +49,32 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
         $cmd       = $mysqldump->getCommandLine();
 
         $this->assertEquals($path . '/mysqldump --hex-blob --all-databases', $cmd);
+    }
+
+    /**
+     * Tests Mysqldump::getCommandLine
+     */
+    public function testPassword()
+    {
+        $path      = realpath(__DIR__ . '/../../../_files/bin');
+        $mysqldump = new Mysqldump($path);
+        $mysqldump->credentials('foo', 'bar');
+        $cmd       = $mysqldump->getCommandLine();
+
+        $this->assertEquals($path . '/mysqldump --user=\'foo\' --password=\'bar\' --all-databases', $cmd);
+    }
+
+    /**
+     * Tests Mysqldump::getCommandLine
+     */
+    public function testPasswordPrintable()
+    {
+        $path      = realpath(__DIR__ . '/../../../_files/bin');
+        $mysqldump = new Mysqldump($path);
+        $mysqldump->credentials('foo', 'bar');
+        $cmd       = $mysqldump->getCommandLinePrintable();
+
+        $this->assertEquals($path . '/mysqldump --user=\'foo\' --password=\'******\' --all-databases', $cmd);
     }
 
     /**
