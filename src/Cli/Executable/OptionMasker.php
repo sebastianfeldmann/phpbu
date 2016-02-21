@@ -25,14 +25,11 @@ trait OptionMasker
     protected $maskCandidates = [];
 
     /**
-     * Set potentially insecure properties.
+     * Return the command line to execute.
      *
-     * @param array $candidates
+     * @return string
      */
-    protected function setMaskCandidates(array $candidates)
-    {
-        $this->maskCandidates = $candidates;
-    }
+    public abstract function getCommandLine();
 
     /**
      * Return the command with masked passwords or keys.
@@ -52,6 +49,16 @@ trait OptionMasker
         $this->restore($masked);
 
         return $cmd;
+    }
+
+    /**
+     * Set potentially insecure properties.
+     *
+     * @param array $candidates
+     */
+    protected function setMaskCandidates(array $candidates)
+    {
+        $this->maskCandidates = $candidates;
     }
 
     /**
