@@ -179,7 +179,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     {
         $mysqldump = $this->execute($target);
 
-        $result->debug($mysqldump->getCmd());
+        $result->debug($this->getExecutable($target)->getCommandLinePrintable());
 
         if (!$mysqldump->wasSuccessful()) {
             throw new Exception('mysqldump failed:' . $mysqldump->getStdErr());
