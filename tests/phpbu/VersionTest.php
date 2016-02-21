@@ -20,10 +20,10 @@ class VersionTest extends \PHPUnit_Framework_TestCase
     public function testId()
     {
         $version = Version::id();
-        $this->assertTrue(strpos($version, '3.0') !== false, 'version should match');
+        $this->assertTrue(strpos($version, '3.1') !== false, 'version should match');
 
         $cachedVersion = Version::id();
-        $this->assertTrue(strpos($cachedVersion, '3.0') !== false, 'version should match');
+        $this->assertTrue(strpos($cachedVersion, '3.1') !== false, 'version should match');
     }
 
     /**
@@ -33,6 +33,6 @@ class VersionTest extends \PHPUnit_Framework_TestCase
     {
         $version = Version::getVersionString();
 
-        $this->assertEquals('phpbu 3.0', substr($version, 0, 9), 'version should match');
+        $this->assertEquals('phpbu 3.1', substr($version, 0, 9), 'version should match');
     }
 }
