@@ -2,7 +2,7 @@
 namespace phpbu\App\Cli;
 
 /**
- * Runner result
+ * Executable result
  *
  * @package    phpbu
  * @subpackage Backup
