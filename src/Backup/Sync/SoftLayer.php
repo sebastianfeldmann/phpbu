@@ -140,7 +140,7 @@ class SoftLayer implements Simulator
             . '  host:      ' . $this->host . PHP_EOL
             . '  user:      ' . $this->user . PHP_EOL
             . '  secret:     ********' . PHP_EOL
-            . '  conatiner: ' . $this->container . PHP_EOL
+            . '  container: ' . $this->container . PHP_EOL
             . '  location:  ' . $this->path
         );
     }
