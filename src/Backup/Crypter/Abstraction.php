@@ -33,7 +33,7 @@ abstract class Abstraction extends Cli
         $crypt = $this->execute($target);
         $name  = strtolower(get_class($this));
 
-        $result->debug($name . ':' . $crypt->getCmd());
+        $result->debug($name . ':' . $this->getExecutable($target)->getCommandLinePrintable());
 
         if (!$crypt->wasSuccessful()) {
             throw new Exception($name . ' failed:' . PHP_EOL . $crypt->getStdErr());
@@ -50,7 +50,7 @@ abstract class Abstraction extends Cli
     {
         $result->debug(
             'execute encryption:' . PHP_EOL .
-            $this->getExecutable($target)->getCommandLine()
+            $this->getExecutable($target)->getCommandLinePrintable()
         );
     }
 
