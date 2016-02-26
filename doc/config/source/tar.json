@@ -1,6 +1,7 @@
 {
   "type": "tar",
   "option": {
-    "path": "src"
+    "path": "src",
+    "removeSourceDir": false
   }
 }
