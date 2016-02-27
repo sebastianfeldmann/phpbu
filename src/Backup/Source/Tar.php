@@ -47,7 +47,7 @@ class Tar extends SimulatorExecutable implements Simulator
      *
      * @var boolean
      */
-    private $removeDir;
+    private $removeSourceDir;
 
     /**
      * Compression to use.
@@ -72,9 +72,9 @@ class Tar extends SimulatorExecutable implements Simulator
      */
     public function setup(array $conf = [])
     {
-        $this->pathToTar = Util\Arr::getValue($conf, 'pathToTar');
-        $this->path      = Util\Arr::getValue($conf, 'path');
-        $this->removeDir = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeDir', ''), false);
+        $this->pathToTar       = Util\Arr::getValue($conf, 'pathToTar');
+        $this->path            = Util\Arr::getValue($conf, 'path');
+        $this->removeSourceDir = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeSourceDir', ''), false);
 
         if (empty($this->path)) {
             throw new Exception('path option is mandatory');
@@ -129,9 +129,11 @@ class Tar extends SimulatorExecutable implements Simulator
                 // no compression at all
                 $this->pathToArchive = $target->getPathname();
             }
+
             $this->executable = new Executable\Tar($this->pathToTar);
             $this->executable->archiveDirectory($this->path)
                              ->useCompression($this->compression)
+                             ->removeSourceDirectory($this->removeSourceDir)
                              ->archiveTo($this->pathToArchive);
         }
         return $this->executable;

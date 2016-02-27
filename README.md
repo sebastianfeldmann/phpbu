@@ -31,7 +31,7 @@ Get detailed information about all the features and a 'getting started' tutorial
     + mcrypt
     + openssl
 * Sync backups to other locations
-    + Amazon s3 (using sdk version 2 or 3)
+    + Amazon s3
     + Dropbox
     + rsync
     + SFTP
@@ -82,7 +82,7 @@ phpbu [option]
   --configuration=<file> A phpbu xml config file.
   --colors               Use colors in output.
   --debug                Display debugging information during backup generation.
-  --simulate             Show what phpbu would do without actually executing anything.
+  --simulate             Perform a trial run with no changes made.
   -h, --help             Print this usage information.
   -v, --verbose          Output more verbose information.
   -V, --version          Output version information and exit.
