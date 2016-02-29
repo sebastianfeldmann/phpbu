@@ -48,8 +48,8 @@ abstract class Cli
     private static $optionalCommandLocations = [
         'mongodump' => [],
         'mysqldump' => [
-            '/usr/local/mysql/bin/mysqldump', // Mac OS X
-            '/usr/mysql/bin/mysqldump',       // Linux
+            '/usr/local/mysql/bin', // Mac OS X
+            '/usr/mysql/bin',       // Linux
         ],
         'tar'       => [],
     ];
