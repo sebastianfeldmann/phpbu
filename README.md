@@ -5,7 +5,7 @@
 *PHPBU* is a php framework that creates and encrypts backups, syncs your backups to other servers or cloud services
 and assists you monitor your backup creation.
 
-Get detailed information about all the features and a 'getting started' tutorial at the [PHPBU Website](http://phpbu.de).
+Get detailed information about all the features and a 'getting started' tutorial at the [PHPBU Website](https://phpbu.de).
 
 [![Latest Stable Version](https://poser.pugx.org/phpbu/phpbu/v/stable.svg)](https://packagist.org/packages/phpbu/phpbu)
 [![License](https://poser.pugx.org/phpbu/phpbu/license.svg)](https://packagist.org/packages/phpbu/phpbu)
@@ -55,9 +55,9 @@ Get detailed information about all the features and a 'getting started' tutorial
 
 ## Installation
 
-You can [download](http://phar.phpbu.de/phpbu.phar) a PHP Archive [(PHAR)](http://php.net/phar) that bundles everything you need to run *PHPBU* in a single file.
+You can [download](https://phar.phpbu.de/phpbu.phar) a PHP Archive [(PHAR)](http://php.net/phar) that bundles everything you need to run *PHPBU* in a single file.
 
-    wget http://phar.phpbu.de/phpbu.phar
+    wget https://phar.phpbu.de/phpbu.phar
     chmod +x phpbu.phar
     php phpbu.phar --version
 
