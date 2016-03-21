@@ -10,7 +10,7 @@
   <option name="sender.mail" value="no-replay@example.com" />
 
   <!-- mandatory -->
-  <option name="transport" value="sendmail" />
+  <option name="transport" value="smtp" />
 
   <!-- optional default=587 -->
   <option name="smtp.port" value="587" />
