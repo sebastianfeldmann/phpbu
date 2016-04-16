@@ -186,7 +186,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($dir . '/backup/src', $backup->getTarget()->dirname);
         $this->assertEquals('tarball-%Y%m%d-%H%i.tar', $backup->getTarget()->filename);
         $this->assertEquals('bzip2', $backup->getTarget()->compression);
-        $this->assertEquals('MinSize', $checks[0]->type);
+        $this->assertEquals('SizeMin', $checks[0]->type);
         $this->assertEquals('10M', $checks[0]->value);
         $this->assertEquals('mcrypt', $crypt->type);
         $this->assertEquals('sftp', $syncs[0]->type);
