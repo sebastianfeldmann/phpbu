@@ -54,6 +54,24 @@ class MysqldumpTest extends CliTest
     }
 
     /**
+     * Tests Mysqldump:setup
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testSetupFail()
+    {
+        $path = realpath(__DIR__ . '/../../../_files/bin');
+        $this->mysqldump->setup(
+            [
+                'pathToMysqldump' => $path,
+                'databases'       => 'foo',
+                'filePerTable'    => 'true',
+                'structureOnly'   => 'foo,bar,baz'
+            ]
+        );
+    }
+
+    /**
      * Tests Mysqldump::getExecutable
      */
     public function testLockTables()
