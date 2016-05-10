@@ -119,7 +119,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \phpbu\App\Exception
      */
-    public function testUninkFail()
+    public function testUnlinkFail()
     {
         $spl  = $this->getDeletableFileInfo();
         $file = new File($spl);
