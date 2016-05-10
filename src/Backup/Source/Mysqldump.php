@@ -82,6 +82,14 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     private $structureOnly;
 
     /**
+     * Table separated data files
+     * --tab
+     *
+     * @var boolean
+     */
+    private $filePerTable;
+
+    /**
      * Use mysqldump quick mode
      * -q
      *
@@ -151,6 +159,12 @@ class Mysqldump extends SimulatorExecutable implements Simulator
         $this->compress        = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
         $this->extendedInsert  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'extendedInsert', ''), false);
         $this->noData          = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
+        $this->filePerTable    = Util\Str::toBoolean(Util\Arr::getValue($conf, 'filePerTable', ''), false);
+
+        // this doesn't fail, but it doesn't work, so throw an exception so the user understands
+        if ($this->filePerTable && count($this->structureOnly)) {
+            throw new Exception('\'structureOnly\' can not be used with the \'filePerTable\' option');
+        }
     }
 
     /**
@@ -177,6 +191,13 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      */
     public function backup(Target $target, Result $result)
     {
+        // create the writable dump directory for tables files
+        if ($this->filePerTable && !is_dir($this->getDumpTarget($target))) {
+            $old = umask(0);
+            mkdir($this->getDumpTarget($target), 0777, true);
+            umask($old);
+        }
+
         $mysqldump = $this->execute($target);
 
         $result->debug($this->getExecutable($target)->getCommandLinePrintable());
@@ -208,9 +229,10 @@ class Mysqldump extends SimulatorExecutable implements Simulator
                              ->dumpTables($this->tables)
                              ->dumpDatabases($this->databases)
                              ->ignoreTables($this->ignoreTables)
+                             ->produceFilePerTable($this->filePerTable)
                              ->dumpNoData($this->noData)
                              ->dumpStructureOnly($this->structureOnly)
-                             ->dumpTo($target->getPathnamePlain());
+                             ->dumpTo($this->getDumpTarget($target));
         }
         return $this->executable;
     }
@@ -223,6 +245,19 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      */
     protected function createStatus(Target $target)
     {
-        return Status::create()->uncompressedFile($target->getPathnamePlain());
+        return $this->filePerTable
+            ? Status::create()->uncompressedDirectory($this->getDumpTarget($target))
+            : Status::create()->uncompressedFile($this->getDumpTarget($target));
+    }
+
+    /**
+     * Return dump target path.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return string
+     */
+    private function getDumpTarget(Target $target)
+    {
+        return $target->getPathnamePlain() . ($this->filePerTable ? '.dump' : '');
     }
 }

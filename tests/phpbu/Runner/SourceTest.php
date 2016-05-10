@@ -171,8 +171,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
                        ->getMock();
 
         if ($compress) {
-            $target->expects($this->exactly(($simulate ? 1 : 2)))
-                   ->method('shouldBeCompressed')
+            $target->method('shouldBeCompressed')
                    ->willReturn(true);
 
             if (!$handledCompression) {

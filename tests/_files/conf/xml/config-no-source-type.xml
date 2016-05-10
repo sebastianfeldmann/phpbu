@@ -28,7 +28,7 @@
 
       <target dirname="backup/src" filename="tarball-%Y%m%d-%H%i.tar" compress="bzip2"/>
 
-      <check type="MinSize" value="10M" />
+      <check type="SizeMin" value="10M" />
 
       <sync type="sftp" skipOnFailure="true">
         <option name="host" value="example.com"/>

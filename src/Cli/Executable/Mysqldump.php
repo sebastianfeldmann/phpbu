@@ -4,6 +4,7 @@ namespace phpbu\App\Cli\Executable;
 use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Cli\Process;
+use phpbu\App\Exception;
 
 /**
  * Mysqldump Executable class.
@@ -106,6 +107,14 @@ class Mysqldump extends Abstraction implements Executable
      * @var boolean
      */
     private $noData = false;
+
+    /**
+     * Table separated data files
+     * --tab
+     *
+     * @var bool
+     */
+    private $filePerTable;
 
     /**
      * Use mysqldump extended insert mode
@@ -288,6 +297,18 @@ class Mysqldump extends Abstraction implements Executable
     }
 
     /**
+     * Produce table separated data files.
+     *
+     * @param  bool $bool
+     * @return \phpbu\App\Cli\Executable\Mysqldump
+     */
+    public function produceFilePerTable($bool)
+    {
+        $this->filePerTable = $bool;
+        return $this;
+    }
+
+    /**
      * Set the dump target path.
      *
      * @param  string $path
@@ -317,21 +338,13 @@ class Mysqldump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('-e', $this->extendedInsert, false);
         $cmd->addOptionIfNotEmpty('--hex-blob', $this->hexBlob, false);
 
-        if (count($this->tablesToDump)) {
-            $cmd->addOption('--tables', $this->tablesToDump);
-        } else {
-            if (count($this->databasesToDump)) {
-                $cmd->addOption('--databases', $this->databasesToDump);
-            } else {
-                $cmd->addOption('--all-databases');
-            }
+        $this->configureSourceData($cmd);
+        $this->configureIgnoredTables($cmd);
+
+        if ($this->filePerTable) {
+            $cmd->addOption('--tab', $this->dumpPathname);
         }
 
-        if (count($this->tablesToIgnore)) {
-            foreach ($this->tablesToIgnore as $table) {
-                $cmd->addOption('--ignore-table', $table);
-            }
-        }
         if ($this->noData) {
             $cmd->addOption('--no-data');
         } else {
@@ -347,7 +360,85 @@ class Mysqldump extends Abstraction implements Executable
                 $process->addCommand($cmd2);
             }
         }
-        $process->redirectOutputTo($this->dumpPathname);
+        $this->configureOutput($process);
         return $process;
+    }
+
+    /**
+     * Configure source data (tables, databases).
+     *
+     * @param  \phpbu\App\Cli\Cmd $cmd
+     * @throws \phpbu\App\Exception
+     */
+    private function configureSourceData(Cmd $cmd)
+    {
+        if (count($this->tablesToDump)) {
+            $this->configureSourceTables($cmd);
+        } else {
+            $this->configureSourceDatabases($cmd);
+        }
+    }
+
+    /**
+     * Configure source tables.
+     *
+     * @param  \phpbu\App\Cli\Cmd $cmd
+     * @throws \phpbu\App\Exception
+     */
+    private function configureSourceTables(Cmd $cmd)
+    {
+        if (count($this->databasesToDump) !== 1) {
+            throw new Exception('mysqldump --tables needs exactly one database');
+        }
+        $cmd->addArgument($this->databasesToDump[0]);
+        $cmd->addOption('--tables', $this->tablesToDump);
+    }
+
+    /**
+     * Configure source databases.
+     *
+     * @param  \phpbu\App\Cli\Cmd $cmd
+     */
+    private function configureSourceDatabases(Cmd $cmd)
+    {
+        $databasesToDump = count($this->databasesToDump);
+
+        // different handling for different ammounts of databases
+        if ($databasesToDump == 1) {
+            // single database use argument
+            $cmd->addArgument($this->databasesToDump[0]);
+        } elseif ($databasesToDump > 1) {
+            // multiple databases add list with --databases
+            $cmd->addOption('--databases', $this->databasesToDump);
+        } else {
+            // no databases set dump all databases
+            $cmd->addOption('--all-databases');
+        }
+    }
+
+    /**
+     * Add --ignore-table options
+     *
+     * @param \phpbu\App\Cli\Cmd $cmd
+     */
+    private function configureIgnoredTables(Cmd $cmd)
+    {
+        if (count($this->tablesToIgnore)) {
+            foreach ($this->tablesToIgnore as $table) {
+                $cmd->addOption('--ignore-table', $table);
+            }
+        }
+    }
+
+    /**
+     * Configure output redirect.
+     *
+     * @param \phpbu\App\Cli\Process $process
+     */
+    private function configureOutput(Process $process)
+    {
+        if (!$this->filePerTable) {
+            $process->redirectOutputTo($this->dumpPathname);
+        }
     }
 }

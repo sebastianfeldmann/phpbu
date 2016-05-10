@@ -110,10 +110,37 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     {
         $path      = realpath(__DIR__ . '/../../../_files/bin');
         $mysqldump = new Mysqldump($path);
-        $mysqldump->dumpTables(array('foo', 'bar'));
+        $mysqldump->dumpDatabases(['fiz']);
+        $mysqldump->dumpTables(['foo', 'bar']);
         $cmd       = $mysqldump->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump --tables \'foo\' \'bar\'', $cmd);
+        $this->assertEquals($path . '/mysqldump \'fiz\' --tables \'foo\' \'bar\'', $cmd);
+    }
+
+    /**
+     * Tests Mysqldump::getCommandLine
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testTablesNoDatabase()
+    {
+        $path      = realpath(__DIR__ . '/../../../_files/bin');
+        $mysqldump = new Mysqldump($path);
+        $mysqldump->dumpTables(['foo', 'bar']);
+        $cmd       = $mysqldump->getCommandLine();
+    }
+
+    /**
+     * Tests Mysqldump::getCommandLine
+     */
+    public function testSingleDatabase()
+    {
+        $path      = realpath(__DIR__ . '/../../../_files/bin');
+        $mysqldump = new Mysqldump($path);
+        $mysqldump->dumpDatabases(['foo']);
+        $cmd       = $mysqldump->getCommandLine();
+
+        $this->assertEquals($path . '/mysqldump \'foo\'', $cmd);
     }
 
     /**
@@ -123,7 +150,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     {
         $path      = realpath(__DIR__ . '/../../../_files/bin');
         $mysqldump = new Mysqldump($path);
-        $mysqldump->dumpDatabases(array('foo', 'bar'));
+        $mysqldump->dumpDatabases(['foo', 'bar']);
         $cmd       = $mysqldump->getCommandLine();
 
         $this->assertEquals($path . '/mysqldump --databases \'foo\' \'bar\'', $cmd);
@@ -136,7 +163,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     {
         $path      = realpath(__DIR__ . '/../../../_files/bin');
         $mysqldump = new Mysqldump($path);
-        $mysqldump->ignoreTables(array('foo', 'bar'));
+        $mysqldump->ignoreTables(['foo', 'bar']);
         $cmd       = $mysqldump->getCommandLine();
 
         $this->assertEquals($path . '/mysqldump --all-databases --ignore-table=\'foo\' --ignore-table=\'bar\'', $cmd);
@@ -162,7 +189,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     {
         $path      = realpath(__DIR__ . '/../../../_files/bin');
         $mysqldump = new Mysqldump($path);
-        $mysqldump->dumpStructureOnly(array('foo', 'bar'));
+        $mysqldump->dumpStructureOnly(['foo', 'bar']);
         $cmd       = $mysqldump->getCommandLine();
 
         $this->assertEquals(

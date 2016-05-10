@@ -179,6 +179,16 @@ class Target
     }
 
     /**
+     * Append another suffix to the filename.
+     * 
+     * @param string $suffix
+     */
+    public function appendFileSuffix($suffix)
+    {
+        $this->filename .= '.' . $suffix;
+    }
+
+    /**
      * Checks if the backup target directory is writable.
      * Creates the Directory if it doesn't exist.
      *
