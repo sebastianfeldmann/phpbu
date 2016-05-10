@@ -59,9 +59,6 @@ abstract class Abstraction extends Cli implements Executable
      */
     public function compress(Target $target, Result $result)
     {
-        if (!$target->shouldBeCompressed()) {
-            throw new Exception('target should not be compressed');
-        }
         if (!$this->isPathValid($this->path)) {
             throw new Exception('path to compress should be valid');
         }

@@ -1,10 +1,11 @@
 <?php
 namespace phpbu\App\Backup\Compressor;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\Compressor;
+use phpbu\App\Cli\Result;
 
 /**
- * Directory compressor test.
+ * Compressor test
  *
  * @package    phpbu
  * @subpackage tests
@@ -12,110 +13,176 @@ use phpbu\App\Backup\CliTest;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://www.phpbu.de/
- * @since      Class available since Release 2.1.0
+ * @since      Class available since Release 1.0.0
  */
-class DirectoryTest extends CliTest
+class DirectoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Tests Directory::getExecutable
-     */
-    public function testDefault()
-    {
-        $path   = $this->getBinDir();
-        $dir    = new Directory(__DIR__, $path);
-        $target = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
-        $target->method('getCompressor')->willReturn($this->getCompressorMock('gzip', 'gz'));
-
-        $executable = $dir->getExecutable($target);
-        $cmd        = $executable->getCommandLine();
-
-        $this->assertEquals(
-            '(' . $path . '/tar -zcf \'' . __FILE__ . '.gz\' -C \'' . dirname(__DIR__) . '\' \'' . basename(__DIR__) . '\''
-            . ' && rm -rf \'' . __DIR__ . '\')',
-            $cmd
-        );
-    }
-
-    /**
-     * Tests Directory::__construct
+     * Tests Directory:__construct
      *
      * @expectedException \phpbu\App\Exception
      */
-    public function testNoPath()
+    public function testNoPathToCompress()
     {
-        $dir = new Directory('');
+        $compressor = new Directory('');
     }
 
     /**
-     * Tests Directory::__construct
+     * Tests Directory:isPathValid
+     */
+    public function testIsPathValid()
+    {
+        $compressor = new Directory('foo/bar/baz');
+
+        $this->assertFalse($compressor->isPathValid('foo/bar/baz'));
+        $this->assertTrue($compressor->isPathValid(__DIR__));
+    }
+
+    /**
+     * Tests Directory::canCompress
      *
      * @expectedException \phpbu\App\Exception
      */
-    public function testNoDir()
+    public function testCanCompressUncompressedTarget()
     {
-        $dir    = new Directory(__FILE__);
-        $result = $this->getAppResultMock();
-        $target = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
-        $target->method('getCompressor')->willReturn($this->getCompressorMock('gzip', 'gz'));
+        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                       ->disableOriginalConstructor()
+                       ->getMock();
 
-        $dir->compress($target, $result);
+        $target->method('shouldBeCompressed')
+               ->willReturn(false);
+
+        $compressor = new Directory('/foo/bar');
+        $compressor->canCompress($target);
     }
 
     /**
-     * Tests Directory::compress
+     * Tests Directory:getArchiveFile
      */
-    public function testCompressOk()
+    public function testGetArchiveFile()
     {
-        $dir       = new Directory(__DIR__);
-        $cliResult = $this->getCliResultMock(0, 'tar');
-        $target    = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
-        $target->method('getCompressor')->willReturn($this->getCompressorMock('gzip', 'gz'));
+        $cmp    = Compressor::create('bzip2');
+        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                       ->disableOriginalConstructor()
+                       ->getMock();
 
-        $appResult = $this->getAppResultMock();
-        $tar       = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Tar')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $tar->method('run')->willReturn($cliResult);
+        $target->method('shouldBeCompressed')
+               ->willReturn(true);
+        $target->method('getPathname')
+               ->willReturn('foo.txt.bz2');
+        $target->method('getPathnamePlain')
+               ->willReturn('foo.txt');
+        $target->method('getCompressor')
+               ->willReturn($cmp);
 
-
-        $dir->setExecutable($tar);
-        $dir->compress($target, $appResult);
+        $compressor = new Directory(__DIR__);
+        $this->assertEquals('foo.txt.bz2', $compressor->getArchiveFile($target));
     }
 
     /**
-     * Tests Directory::compress
+     * Tests Directory:compress
+     */
+    public function testCompress()
+    {
+        $result     = new Result('foo', 0);
+        $cmp        = Compressor::create('bzip2');
+        $executable = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable')
+                           ->disableOriginalConstructor()
+                           ->getMock();
+        $executable->method('run')->willReturn($result);
+
+        $result = $this->getMockBuilder('\\phpbu\\App\\Result')
+                       ->disableOriginalConstructor()
+                       ->getMock();
+
+        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                       ->disableOriginalConstructor()
+                       ->getMock();
+
+        $target->method('shouldBeCompressed')
+               ->willReturn(true);
+        $target->method('getPathname')
+               ->willReturn('foo.txt.bz2');
+        $target->method('getPathnamePlain')
+               ->willReturn('foo.txt');
+        $target->method('getCompressor')
+               ->willReturn($cmp);
+
+        $compressor = new Directory(__DIR__);
+        $compressor->setExecutable($executable);
+        $this->assertEquals('foo.txt.bz2', $compressor->compress($target, $result));
+    }
+
+
+    /**
+     * Tests Directory:compress
      *
      * @expectedException \phpbu\App\Exception
      */
-    public function testCompressFailTargetUncompressed()
+    public function testCompressFails()
     {
-        $dir       = new Directory(__DIR__);
-        $target    = $this->getTargetMock(__FILE__);
-        $appResult = $this->getAppResultMock();
+        $result     = new Result('foo', 1);
+        $cmp        = Compressor::create('bzip2');
+        $executable = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable')
+                           ->disableOriginalConstructor()
+                           ->getMock();
+        $executable->method('run')->willReturn($result);
 
-        $dir->compress($target, $appResult);
+        $result = $this->getMockBuilder('\\phpbu\\App\\Result')
+                       ->disableOriginalConstructor()
+                       ->getMock();
+
+        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                       ->disableOriginalConstructor()
+                       ->getMock();
+
+        $target->method('shouldBeCompressed')
+               ->willReturn(true);
+        $target->method('getPathname')
+               ->willReturn('foo.txt.bz2');
+        $target->method('getPathnamePlain')
+               ->willReturn('foo.txt');
+        $target->method('getCompressor')
+               ->willReturn($cmp);
+
+        $compressor = new Directory(__DIR__);
+        $compressor->setExecutable($executable);
+        $compressor->compress($target, $result);
     }
 
     /**
-     * Tests Directory::compress
+     * Tests Directory:compress
      *
      * @expectedException \phpbu\App\Exception
      */
-    public function testCompressFail()
+    public function testCompressInvalidPath()
     {
-        $dir       = new Directory(__DIR__);
-        $cliResult = $this->getCliResultMock(1, 'tar');
-        $target    = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
-        $target->method('getCompressor')->willReturn($this->getCompressorMock('gzip', 'gz'));
+        $result     = new Result('foo', 1);
+        $cmp        = Compressor::create('bzip2');
+        $executable = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable')
+                           ->disableOriginalConstructor()
+                           ->getMock();
+        $executable->method('run')->willReturn($result);
 
-        $appResult = $this->getAppResultMock();
-        $tar       = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Tar')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $tar->method('run')->willReturn($cliResult);
+        $result = $this->getMockBuilder('\\phpbu\\App\\Result')
+                       ->disableOriginalConstructor()
+                       ->getMock();
 
+        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                       ->disableOriginalConstructor()
+                       ->getMock();
 
-        $dir->setExecutable($tar);
-        $dir->compress($target, $appResult);
+        $target->method('shouldBeCompressed')
+               ->willReturn(true);
+        $target->method('getPathname')
+               ->willReturn('foo.txt.bz2');
+        $target->method('getPathnamePlain')
+               ->willReturn('foo.txt');
+        $target->method('getCompressor')
+               ->willReturn($cmp);
+
+        $compressor = new Directory('foo/bar/baz');
+        $compressor->setExecutable($executable);
+        $compressor->compress($target, $result);
     }
 }

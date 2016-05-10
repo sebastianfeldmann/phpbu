@@ -3,6 +3,7 @@ namespace phpbu\App\Backup\Compressor;
 
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable\Compressor;
+use phpbu\App\Exception;
 use phpbu\App\Result;
 
 /**
@@ -34,9 +35,13 @@ class File extends Abstraction
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
+     * @throws \phpbu\App\Exception
      */
     public function getExecutable(Target $target) {
         if (null === $this->executable) {
+            if (!$target->shouldBeCompressed()) {
+                throw new Exception('target should not be compressed at all');
+            }
             $this->executable = new Compressor($target->getCompressor()->getCommand(), $this->pathToCommand);
             $this->executable->force(true)->compressFile($this->path);
         }

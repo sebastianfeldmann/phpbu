@@ -74,7 +74,9 @@ class Source extends Abstraction
      */
     protected function compress(Status $status, Target $target, Result $result)
     {
-        if ($target->shouldBeCompressed() && !$status->handledCompression()) {
+        // if the target is not compressed yet
+        // and should be compressed or at least archived (tar)
+        if (!$status->handledCompression() && ($target->shouldBeCompressed() || $status->isDirectory())) {
             $this->handleCompression($target, $result, $status);
         }
     }
@@ -111,8 +113,9 @@ class Source extends Abstraction
         $dirCompressor = new Compressor\Directory($dataToCompress);
         $archiveFile   = $this->executeCompressor($dirCompressor, $target, $result);
 
-        // directory is archived but not compressed because tar couldn't handle the compression
-        if (!$dirCompressor->canCompress($target)) {
+        // if target should be compressed but tar couldn't handle the compression
+        // run extra file compression to compress the tar file
+        if ($target->shouldBeCompressed() && !$dirCompressor->canCompress($target)) {
             $this->compressFile($target, $result, $archiveFile);
         }
     }
