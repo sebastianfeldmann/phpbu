@@ -44,7 +44,7 @@ Get detailed information about all the features and a 'getting started' tutorial
 
 ## Requirements
 
-* PHP 5.4+
+* PHP 5.4+ (5.5+ for using the PHAR file)
     + ext/curl
     + ext/dom
     + ext/json
