@@ -159,6 +159,19 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test date placeholder replacement in filename.
+     */
+    public function testGetFilenameAfterAppendingSuffix()
+    {
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->appendFileSuffix('tar');
+
+        $this->assertEquals('2014-test-01.txt.tar', $target->getFilename());
+    }
+
+    /**
      * Tests Target::getChangingPathElements
      */
     public function testGetChangingPathElements()
@@ -188,7 +201,7 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Target::disableCompressor
      */
-    public function testDisbaleCompressor()
+    public function testDisableCompressor()
     {
         $compressor = $this->getCompressorMockForCmd('zip', 'zip', 'application/zip');
 
@@ -292,6 +305,20 @@ class TargetTest extends \PHPUnit_Framework_TestCase
         $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip', 'application/zip'));
 
         $this->assertEquals('2014-test-01.txt.zip', $target->getFilename());
+    }
+
+    /**
+     * Tests Target::getFilename
+     */
+    public function testGetFilenameWithAppendedSuffixCompressed()
+    {
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->appendFileSuffix('tar');
+        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip', 'application/zip'));
+
+        $this->assertEquals('2014-test-01.txt.tar.zip', $target->getFilename());
     }
 
     /**
