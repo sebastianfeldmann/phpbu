@@ -42,11 +42,11 @@ class Tar extends Abstraction implements Executable
 
     /**
      * Ignore failed reads
-     * --ignore-failed-reads
+     * --ignore-failed-read
      *
      * @var bool
      */
-    private $ignoreFailedReads;
+    private $ignoreFailedRead;
 
     /**
      * Should the source directory be removed.
@@ -106,9 +106,9 @@ class Tar extends Abstraction implements Executable
      * @param  bool $bool
      * @return \phpbu\App\Cli\Executable\Tar
      */
-    public function ignoreFailedReads($bool)
+    public function ignoreFailedRead($bool)
     {
-        $this->ignoreFailedReads = $bool;
+        $this->ignoreFailedRead = $bool;
         return $this;
     }
 
@@ -170,7 +170,7 @@ class Tar extends Abstraction implements Executable
         $process = new Process();
         $tar     = new Cmd($this->binary);
 
-        $tar->addOptionIfNotEmpty('--ignore-failed-reads', $this->ignoreFailedReads, false);
+        $tar->addOptionIfNotEmpty('--ignore-failed-read', $this->ignoreFailedRead, false);
         $tar->addOption('-' . $this->compression . 'cf');
         $tar->addArgument($this->tarPathname);
         $tar->addOption('-C', dirname($this->path), ' ');

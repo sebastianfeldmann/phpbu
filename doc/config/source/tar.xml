@@ -4,7 +4,7 @@
   <option name="path" value="src" />
 
   <!-- optional, default false -->
-  <option name="ignoreFailedReads" value="false" />
+  <option name="ignoreFailedRead" value="false" />
 
   <!-- optional, default false -->
   <option name="removeSourceDir" value="false" />
