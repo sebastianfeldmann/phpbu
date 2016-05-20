@@ -71,6 +71,22 @@ class TarTest extends CliTest
     /**
      * Tests Tar::getExec
      */
+    public function testignoreFailedRead()
+    {
+        $path   = realpath(__DIR__ . '/../../../_files/bin');
+        $target = $this->getTargetMock('/tmp/backup.tar');
+        $target->method('shouldBeCompressed')->willReturn(false);
+        $target->method('getPathname')->willReturn('/tmp/backup.tar');
+
+        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path, 'ignoreFailedRead' => 'true']);
+        $exec = $this->tar->getExecutable($target);
+
+        $this->assertEquals($path . '/tar --ignore-failed-read -cf \'/tmp/backup.tar\' -C \'' . dirname(__DIR__) . '\' \'' . basename(__DIR__) . '\'', $exec->getCommandLine());
+    }
+
+    /**
+     * Tests Tar::getExec
+     */
     public function testRemoveDir()
     {
         $path   = realpath(__DIR__ . '/../../../_files/bin');

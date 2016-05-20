@@ -2,6 +2,7 @@
   "type": "tar",
   "option": {
     "path": "src",
+    "ignoreFailedRead": false,
     "removeSourceDir": false
   }
 }

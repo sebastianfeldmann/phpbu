@@ -30,6 +30,21 @@ class TarTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Tar::getCommandLine
+     */
+    public function testignoreFailedRead()
+    {
+        $path = realpath(__DIR__ . '/../../../_files/bin');
+        $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
+        $tar  = new Tar($path);
+        $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->ignoreFailedRead(true);
+
+        $this->assertEquals($path . '/tar --ignore-failed-read -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommandLine());
+    }
+
+    /**
      * Tests Tar::getCommandLinePrintable
      */
     public function testDefaultPrintable()
