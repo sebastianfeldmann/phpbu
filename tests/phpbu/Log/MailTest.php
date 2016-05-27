@@ -303,7 +303,7 @@ class MailTest extends \PHPUnit_Framework_TestCase
                 $e->method('getMessage')->willReturn($arg);
                 break;
             default:
-                $e->method('getConfig')->willReturn($arg);
+                $e->method('getConfiguration')->willReturn($arg);
                 break;
         }
         return $e;
