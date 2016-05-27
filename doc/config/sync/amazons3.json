@@ -5,6 +5,7 @@
     "secret": "my+amazon-aws+secret",
     "bucket": "some-s3-bucket",
     "region": "aws-region",
-    "path": "backup"
+    "path": "backup",
+    "useMultiPartUpload": "false"
   }
 }

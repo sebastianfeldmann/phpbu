@@ -65,6 +65,27 @@ abstract class AmazonS3 implements Simulator
     protected $acl;
 
     /**
+     * Use multi part config
+     *
+     * @var boolean
+     */
+    protected $multiPartUpload;
+
+    /**
+     * Min multi part upload size
+     *
+     * @var int
+     */
+    protected $minMultiPartUploadSize = 5242880;
+
+    /**
+     * Max stream upload size
+     *
+     * @var int
+     */
+    protected $maxStreamUploadSize = 104857600;
+
+    /**
      * Configure the sync.
      *
      * @see    \phpbu\App\Backup\Sync::setup()
@@ -91,12 +112,13 @@ abstract class AmazonS3 implements Simulator
         if (!Arr::isSetAndNotEmptyString($config, 'path')) {
             throw new Exception('AWS S3 path / object-key is mandatory');
         }
-        $this->key    = $config['key'];
-        $this->secret = $config['secret'];
-        $this->bucket = $config['bucket'];
-        $this->region = $config['region'];
-        $this->path   = Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path']));
-        $this->acl    = Arr::getValue($config, 'acl', 'private');
+        $this->key             = $config['key'];
+        $this->secret          = $config['secret'];
+        $this->bucket          = $config['bucket'];
+        $this->region          = $config['region'];
+        $this->path            = Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path']));
+        $this->acl             = Arr::getValue($config, 'acl', 'private');
+        $this->multiPartUpload = Str::toBoolean(Arr::getValue($config, 'useMultiPartUpload'), false);
     }
 
     /**
@@ -124,5 +146,20 @@ abstract class AmazonS3 implements Simulator
             . '  secret:    ********' . PHP_EOL
             . '  location: ' . $this->bucket
         );
+    }
+
+    /**
+     * Should multi part upload be used.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return bool
+     */
+    protected function useMultiPartUpload(Target $target)
+    {
+        // files bigger 5GB have to be uploaded via multi part
+        // files uploaded with multi part upload has to be at least 5MB
+        return (
+            $target->getSize() > $this->maxStreamUploadSize || $this->multiPartUpload
+        ) && $target->getSize() > $this->minMultiPartUploadSize;
     }
 }
