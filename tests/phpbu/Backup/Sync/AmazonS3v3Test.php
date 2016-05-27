@@ -50,7 +50,7 @@ class AmazonS3v3Test extends \PHPUnit_Framework_TestCase
                            ->getMock();
         $targetStub->expects($this->once())->method('getFilename')->willReturn('foo.zip');
 
-        $this->assertEquals('s3://dummy-bucket/foo.zip', $amazonS3->getUploadPath($targetStub));
+        $this->assertEquals('/foo.zip', $amazonS3->getUploadPath($targetStub));
     }
 
     /**
@@ -72,7 +72,7 @@ class AmazonS3v3Test extends \PHPUnit_Framework_TestCase
             ->getMock();
         $targetStub->expects($this->once())->method('getFilename')->willReturn('foo.zip');
 
-        $this->assertEquals('s3://dummy-bucket/fiz/foo.zip', $amazonS3->getUploadPath($targetStub));
+        $this->assertEquals('/fiz/foo.zip', $amazonS3->getUploadPath($targetStub));
     }
 
     /**

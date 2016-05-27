@@ -14,4 +14,7 @@
 
   <!-- optional, default / -->
   <option name="path" value="backup" />
+
+  <!-- optional, default false -->
+  <option name="useMultiPartUpload" value="true" />
 </sync>

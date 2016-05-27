@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Sync;
 
 use Aws\S3\S3Client;
+use Aws\S3\MultipartUploader;
 use phpbu\App\Result;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
@@ -38,20 +39,50 @@ class AmazonS3v3 extends AmazonS3
             ]
         ]);
 
-        $s3->registerStreamWrapper();
-        $source = $this->getFileHandle($target->getPathname(), 'r');
-        $stream = $this->getFileHandle($this->getUploadPath($target), 'w');
-
         try {
-            while(!feof($source)) {
-                fwrite($stream, fread($source, 4096));
+            if ($this->useMultiPartUpload($target)) {
+                $this->uploadMultiPart($target, $s3);
+            } else {
+                $this->uploadStream($target, $s3);
             }
-            fclose($stream);
-
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }
         $result->debug('upload: done');
+    }
+
+    /**
+     * Upload via stream wrapper.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  \Aws\S3\S3Client         $s3
+     * @throws \phpbu\App\Backup\Sync\Exception
+     */
+    private function uploadStream(Target $target, S3Client $s3)
+    {
+        $s3->registerStreamWrapper();
+        $source = $this->getFileHandle($target->getPathname(), 'r');
+        $stream = $this->getFileHandle('s3://' . $this->bucket . '/' . $this->getUploadPath($target), 'w');
+        while(!feof($source)) {
+            fwrite($stream, fread($source, 4096));
+        }
+        fclose($stream);
+    }
+
+    /**
+     * Upload via multi part.
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \Aws\S3\S3Client         $s3
+     * @param \Aws\Exception\MultipartUploadException
+     */
+    private function uploadMultiPart(Target $target, S3Client $s3)
+    {
+        $uploader = new MultipartUploader($s3, $target->getPathname(), [
+            'bucket' => $this->bucket,
+            'key'    => $this->getUploadPath($target),
+        ]);
+        $uploader->upload();
     }
 
     /**
@@ -79,9 +110,8 @@ class AmazonS3v3 extends AmazonS3
      */
     public function getUploadPath(Target $target)
     {
-        return 's3://' . $this->bucket
-               . (substr($this->path, 0, 1) == '/' ? '' : '/')
-               . $this->path
+        // remove leading slash
+        return (substr($this->path, 0, 1) == '/' ? substr($this->path, 1) : $this->path)
                . (substr($this->path, -1, 1) == '/' ? '' : '/')
                . $target->getFilename();
     }
