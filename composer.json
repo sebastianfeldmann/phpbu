@@ -36,7 +36,7 @@
     "sebastian/environment": "~1.1",
     "sebastian/version": "~1.0",
     "swiftmailer/swiftmailer": "~5.3",
-    "symfony/event-dispatcher": "~2.6"
+    "symfony/event-dispatcher": "~2.6|~3.0"
   },
   "require-dev": {
     "aws/aws-sdk-php": "~3.10",
