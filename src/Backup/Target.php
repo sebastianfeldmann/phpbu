@@ -527,16 +527,6 @@ class Target
     }
 
     /**
-     * Is the target already compressed.
-     *
-     * @return boolean
-     */
-    public function isCompressed()
-    {
-        return $this->shouldBeCompressed() ? file_exists($this->getPathname()) : false;
-    }
-
-    /**
      * Crypter setter.
      *
      * @param \phpbu\App\Backup\Crypter $crypter
