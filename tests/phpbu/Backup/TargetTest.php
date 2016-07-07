@@ -110,6 +110,20 @@ class TargetTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test detecting date placeholder in path.
+     */
+    public function testHasChangingAndFixedMixedPath()
+    {
+        $path     = '/tmp/%Y/foo/%m';
+        $filename = 'foo-%d.txt';
+        $target   = new Target($path, $filename);
+
+        $this->assertTrue($target->hasChangingPath(), 'path should be recognized as changing');
+        $this->assertEquals(3, $target->countChangingPathElements(), '2 changing path elements should be found');
+        $this->assertEquals(['%Y', 'foo', '%m'],$target->getChangingPathElements());
+    }
+
+    /**
      * Test recognizing that there are no date placeholder in path.
      */
     public function testHasNoChangingPath()

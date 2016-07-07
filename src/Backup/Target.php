@@ -67,6 +67,13 @@ class Target
     private $filenameRaw;
 
     /**
+     * List of custom file suffixes f.e. 'tar'
+     *
+     * @var array
+     */
+    private $fileSuffixes = [];
+
+    /**
      * Indicates if the filename changes over time.
      *
      * @var boolean
@@ -139,7 +146,7 @@ class Target
     public function setPath($path, $time = null)
     {
         $this->pathRaw = $path;
-        if (false !== strpos($path, '%')) {
+        if ($this->isContainingPlaceholder($path)) {
             $this->pathIsChanging = true;
             // path should be absolute so we remove the root slash
             $dirs = explode('/', substr($this->pathRaw, 1));
@@ -147,7 +154,7 @@ class Target
             $this->pathNotChanging = '';
             $foundChangingElement  = false;
             foreach ($dirs as $d) {
-                if ($foundChangingElement || false !== strpos($d, '%')) {
+                if ($foundChangingElement || $this->isContainingPlaceholder($d)) {
                     $this->pathElementsChanging[] = $d;
                     $foundChangingElement         = true;
                 } else {
@@ -163,6 +170,17 @@ class Target
     }
 
     /**
+     * Does the path contain a date placeholder.
+     *
+     * @param  string $path
+     * @return bool
+     */
+    public function isContainingPlaceholder($path)
+    {
+        return false !== strpos($path, '%');
+    }
+
+    /**
      * Filename setter.
      *
      * @param string  $file
@@ -171,7 +189,7 @@ class Target
     public function setFile($file, $time = null)
     {
         $this->filenameRaw = $file;
-        if (false !== strpos($file, '%')) {
+        if ($this->isContainingPlaceholder($file)) {
             $this->filenameIsChanging = true;
             $file                     = Str::replaceDatePlaceholders($file, $time);
         }
@@ -185,7 +203,7 @@ class Target
      */
     public function appendFileSuffix($suffix)
     {
-        $this->filename .= '.' . $suffix;
+        $this->fileSuffixes[] = $suffix;
     }
 
     /**
@@ -244,17 +262,14 @@ class Target
     /**
      * Return the name to the backup file.
      *
-     * @param  boolean $plain
      * @return string
      */
-    public function getFilename($plain = false)
+    public function getFilename()
     {
-        $suffix = '';
-        if (!$plain) {
-            $suffix .= $this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '';
-            $suffix .= $this->shouldBeEncrypted() ? '.' . $this->crypter->getSuffix() : '';
-        }
-        return $this->filename . $suffix;
+        return $this->filename
+            . $this->getFilenameSuffix()
+            . $this->getCompressorSuffix()
+            . $this->getCrypterSuffix();;
     }
 
     /**
@@ -264,7 +279,7 @@ class Target
      */
     public function getFilenamePlain()
     {
-        return $this->getFilename(true);
+        return $this->filename . $this->getFilenameSuffix();
     }
 
     /**
@@ -274,7 +289,40 @@ class Target
      */
     public function getFilenameRaw()
     {
-        return $this->filenameRaw;
+        return $this->filenameRaw
+            . $this->getFilenameSuffix()
+            . $this->getCompressorSuffix()
+            . $this->getCrypterSuffix();
+    }
+
+    /**
+     * Return custom file suffix like '.tar'.
+     *
+     * @return string
+     */
+    public function getFilenameSuffix()
+    {
+        return count($this->fileSuffixes) ? '.' . implode('.', $this->fileSuffixes) : '';
+    }
+
+    /**
+     * Return the compressor suffix.
+     *
+     * @return string
+     */
+    public function getCompressorSuffix()
+    {
+        return $this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '';
+    }
+
+    /**
+     * Return the crypter suffix.
+     *
+     * @return string
+     */
+    public function getCrypterSuffix()
+    {
+        return $this->shouldBeEncrypted() ? '.' . $this->crypter->getSuffix() : '';
     }
 
     /**
@@ -302,7 +350,7 @@ class Target
     }
 
     /**
-     * Return the actual filesize in bytes.
+     * Return the actual file size in bytes.
      *
      * @throws Exception
      * @return integer
@@ -359,14 +407,11 @@ class Target
     /**
      * Return path and filename of the backup file.
      *
-     * @param  boolean $plain
      * @return string
      */
-    public function getPathname($plain = false)
+    public function getPathname()
     {
-        return $this->path
-        . DIRECTORY_SEPARATOR
-        . $this->getFilename($plain);
+        return $this->path . DIRECTORY_SEPARATOR . $this->getFilename();
     }
 
     /**
@@ -376,7 +421,7 @@ class Target
      */
     public function getPathnamePlain()
     {
-        return $this->getPathname(true);
+        return $this->path . DIRECTORY_SEPARATOR . $this->getFilenamePlain();
     }
 
     /**
