@@ -2,6 +2,8 @@
 namespace phpbu\App\Backup;
 
 use DirectoryIterator;
+use SplFileInfo;
+use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
 
 /**
@@ -48,7 +50,7 @@ class Collector
     public function getBackupFiles()
     {
         if (null === $this->files) {
-            $this->files = array();
+            $this->files = [];
             // collect all matching backup files
             $this->collect($this->target->getPathThatIsNotChanging(), 0);
         }
@@ -63,10 +65,10 @@ class Collector
      */
     protected function collect($path, $depth)
     {
-        $dItter = new DirectoryIterator($path);
-        // collect all matching subdirs and get all the backup files
+        $dirIterator = new DirectoryIterator($path);
+        // collect all matching sub directories and get all the backup files
         if ($depth < $this->target->countChangingPathElements()) {
-            foreach ($dItter as $i => $file) {
+            foreach ($dirIterator as $file) {
                 if ($file->isDot()) {
                     continue;
                 }
@@ -78,11 +80,8 @@ class Collector
         } else {
             // create regex to match only created backup files
             $fileRegex = Str::datePlaceholdersToRegex($this->target->getFilenameRaw());
-            if ($this->target->shouldBeCompressed()) {
-                $fileRegex .= '.' . $this->target->getCompressor()->getSuffix();
-            }
             /** @var \SplFileInfo $file */
-            foreach ($dItter as $i => $file) {
+            foreach ($dirIterator as $i => $file) {
                 if ($file->isDir()) {
                     continue;
                 }
@@ -96,5 +95,31 @@ class Collector
                 }
             }
         }
+    }
+
+    /**
+     * Check if the iterated file is part of a valid target path.
+     *
+     * @param \SplFileInfo $file
+     * @param  int         $depth
+     * @return bool
+     */
+    protected function isValidDirectory(SplFileInfo $file, $depth)
+    {
+        return $file->isDir() && $this->isMatchingDirectory($file->getBasename(), $depth);
+    }
+
+    /**
+     * Does a directory match the respective target path.
+     *
+     * @param  string $dir
+     * @param  int    $depth
+     * @return bool
+     */
+    protected function isMatchingDirectory($dir, $depth)
+    {
+        $dirTarget = Arr::getValue($this->target->getChangingPathElements(), $depth);
+        $dirRegex  = Str::datePlaceholdersToRegex($dirTarget);
+        return preg_match('#' . $dirRegex . '#i', $dir);
     }
 }

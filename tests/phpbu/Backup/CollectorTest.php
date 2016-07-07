@@ -46,6 +46,23 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test the Backup collector with no dynamic directory
+     * Files not matching foo-%d.txt.zip should be ignored.
+     */
+    public function testMatchFilesCustomCompressed()
+    {
+        $path      = $this->getTestDataDir() . '/collector/static-dir-custom';
+        $filename  = 'foo-%d.txt';
+        $target    = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->appendFileSuffix('tar');
+        $target->setCompressor($this->getCompressorMockForCmd('tar', 'gz'));
+        $collector = new Collector($target);
+        $files     = $collector->getBackupFiles();
+
+        $this->assertEquals(3, count($files), '3 files should be found');
+    }
+
+    /**
      * Test the Backup collector with one dynamic directory
      */
     public function testSingleDynamicDirectory()
