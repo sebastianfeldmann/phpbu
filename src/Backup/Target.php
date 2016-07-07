@@ -262,14 +262,13 @@ class Target
     /**
      * Return the name to the backup file.
      *
+     * @param  bool $plain
      * @return string
      */
-    public function getFilename()
+    public function getFilename($plain = false)
     {
         return $this->filename
-            . $this->getFilenameSuffix()
-            . $this->getCompressorSuffix()
-            . $this->getCrypterSuffix();;
+            . $this->getFilenameSuffix($plain);
     }
 
     /**
@@ -279,30 +278,31 @@ class Target
      */
     public function getFilenamePlain()
     {
-        return $this->filename . $this->getFilenameSuffix();
+        return $this->getFilename(true);
     }
 
     /**
      * Return the raw name of the backup file incl. date placeholder.
      *
+     * @param  bool $plain
      * @return string
      */
-    public function getFilenameRaw()
+    public function getFilenameRaw($plain = false)
     {
         return $this->filenameRaw
-            . $this->getFilenameSuffix()
-            . $this->getCompressorSuffix()
-            . $this->getCrypterSuffix();
+            . $this->getFilenameSuffix($plain);
     }
 
     /**
      * Return custom file suffix like '.tar'.
      *
+     * @param bool $plain
      * @return string
      */
-    public function getFilenameSuffix()
+    public function getFilenameSuffix($plain = false)
     {
-        return count($this->fileSuffixes) ? '.' . implode('.', $this->fileSuffixes) : '';
+        return (count($this->fileSuffixes) ? '.' . implode('.', $this->fileSuffixes) : '')
+             . ($plain ? '' : $this->getCompressorSuffix() . $this->getCrypterSuffix());
     }
 
     /**
@@ -407,11 +407,12 @@ class Target
     /**
      * Return path and filename of the backup file.
      *
+     * @param  bool $plain
      * @return string
      */
-    public function getPathname()
+    public function getPathname($plain = false)
     {
-        return $this->path . DIRECTORY_SEPARATOR . $this->getFilename();
+        return $this->path . DIRECTORY_SEPARATOR . $this->getFilename($plain);
     }
 
     /**
@@ -421,7 +422,7 @@ class Target
      */
     public function getPathnamePlain()
     {
-        return $this->path . DIRECTORY_SEPARATOR . $this->getFilenamePlain();
+        return $this->getPathname(true);
     }
 
     /**
