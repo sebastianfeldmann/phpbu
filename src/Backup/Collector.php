@@ -25,10 +25,11 @@ class Collector
      * @var \phpbu\App\Backup\Target
      */
     protected $target;
+
     /**
      * Collection cache
      *
-     * @var array<\phpbu\App\Backup\File>
+     * @var \phpbu\App\Backup\File[]
      */
     protected $files;
 
@@ -60,8 +61,8 @@ class Collector
     /**
      * Recursive backup collecting.
      *
-     * @param string  $path
-     * @param integer $depth
+     * @param string $path
+     * @param int    $depth
      */
     protected function collect($path, $depth)
     {
@@ -72,8 +73,7 @@ class Collector
                 if ($file->isDot()) {
                     continue;
                 }
-                // TODO: match directory against dir-regex Target::getChangingPathElements
-                if ($file->isDir()) {
+                if ($this->isValidDirectory($file, $depth)) {
                     $this->collect($file->getPathname(), $depth + 1);
                 }
             }
@@ -100,8 +100,8 @@ class Collector
     /**
      * Check if the iterated file is part of a valid target path.
      *
-     * @param \SplFileInfo $file
-     * @param  int         $depth
+     * @param  \SplFileInfo $file
+     * @param  int          $depth
      * @return bool
      */
     protected function isValidDirectory(SplFileInfo $file, $depth)
