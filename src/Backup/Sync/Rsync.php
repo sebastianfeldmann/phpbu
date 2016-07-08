@@ -161,10 +161,10 @@ class Rsync extends Cli implements Simulator
             if (!empty($this->args)) {
                 $this->executable->useArgs(Util\Str::replaceTargetPlaceholders($this->args, $target->getPathname()));
             } else {
-                $this->executable->syncFrom($this->getSyncSource($target))
+                $this->executable->fromPath($this->getSyncSource($target))
                      ->toHost($this->host)
                      ->toPath($this->path)
-                     ->asUser($this->user)
+                     ->toUser($this->user)
                      ->compressed(!$target->shouldBeCompressed())
                      ->removeDeleted($this->delete)
                      ->exclude($this->excludes);

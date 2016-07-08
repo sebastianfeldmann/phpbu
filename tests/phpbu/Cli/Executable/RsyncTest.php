@@ -15,45 +15,6 @@ namespace phpbu\App\Cli\Executable;
 class RsyncTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Tests Rsync::getRsyncHostString
-     */
-    public function testRsyncHostStringEmptyWithoutSetup()
-    {
-        $rsync = new Rsync();
-        $this->assertEquals('', $rsync->getRsyncHostString(), 'should be empty on init');
-    }
-
-    /**
-     * Tests Rsync::getRsyncHostString
-     */
-    public function testRsyncHostStringHostOnly()
-    {
-        $rsync = new Rsync();
-        $rsync->toHost('example.com')->toPath('/tmp');
-        $this->assertEquals('example.com:', $rsync->getRsyncHostString(), 'should be \'host:\'');
-    }
-
-    /**
-     * Tests Rsync::getRsyncHostString
-     */
-    public function testRsyncHostStringHostAndUser()
-    {
-        $rsync = new Rsync();
-        $rsync->toHost('example.com')->toPath('/tmp')->asUser('user.name');
-        $this->assertEquals('user.name@example.com:', $rsync->getRsyncHostString(), 'should have \'user@host:\'');
-    }
-
-    /**
-     * Tests Rsync::getRsyncHostString
-     */
-    public function testRsyncHostStringEmptyOnUserOnly()
-    {
-        $rsync = new Rsync();
-        $rsync->toPath('/tmp')->asUser('user.name');
-        $this->assertEquals('', $rsync->getRsyncHostString(), 'should still be empty');
-    }
-
-    /**
      * Tests Rsync::createProcess
      */
     public function testGetExecWithCustomArgs()
@@ -74,7 +35,7 @@ class RsyncTest extends \PHPUnit_Framework_TestCase
         $expected = 'rsync -av \'./foo\' \'/tmp\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $rsync    = new Rsync($path);
-        $rsync->syncFrom('./foo')->toPath('/tmp');
+        $rsync->fromPath('./foo')->toPath('/tmp');
 
         $this->assertEquals($path . '/' . $expected, $rsync->getCommandLine());
     }
@@ -87,7 +48,7 @@ class RsyncTest extends \PHPUnit_Framework_TestCase
         $expected = 'rsync -avz \'./foo\' \'/tmp\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $rsync    = new Rsync($path);
-        $rsync->syncFrom('./foo')->toPath('/tmp')->compressed(true);
+        $rsync->fromPath('./foo')->toPath('/tmp')->compressed(true);
 
         $this->assertEquals($path . '/' . $expected, $rsync->getCommandLine());
     }
@@ -100,7 +61,7 @@ class RsyncTest extends \PHPUnit_Framework_TestCase
         $expected = 'rsync -av --delete \'./foo\' \'/tmp\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $rsync    = new Rsync($path);
-        $rsync->syncFrom('./foo')->toPath('/tmp')->removeDeleted(true);
+        $rsync->fromPath('./foo')->toPath('/tmp')->removeDeleted(true);
 
         $this->assertEquals($path . '/' . $expected, $rsync->getCommandLine());
     }
@@ -113,7 +74,7 @@ class RsyncTest extends \PHPUnit_Framework_TestCase
         $expected = 'rsync -av --exclude=\'fiz\' --exclude=\'buz\' \'./foo\' \'/tmp\'';
         $path     = realpath(__DIR__ . '/../../../_files/bin');
         $rsync    = new Rsync($path);
-        $rsync->syncFrom('./foo')->toPath('/tmp')->exclude(array('fiz', 'buz'));
+        $rsync->fromPath('./foo')->toPath('/tmp')->exclude(array('fiz', 'buz'));
 
         $this->assertEquals($path . '/' . $expected, $rsync->getCommandLine());
     }
@@ -140,7 +101,7 @@ class RsyncTest extends \PHPUnit_Framework_TestCase
     {
         $path  = realpath(__DIR__ . '/../../../_files/bin');
         $rsync = new Rsync($path);
-        $rsync->syncFrom('./foo');
+        $rsync->fromPath('./foo');
         $rsync->getCommandLine();
     }
 }

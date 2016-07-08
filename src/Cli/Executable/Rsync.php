@@ -20,11 +20,18 @@ use phpbu\App\Exception;
 class Rsync extends Abstraction implements Executable
 {
     /**
-     * Path to sync.
+     * Source
      *
-     * @var string
+     * @var \phpbu\App\Cli\Executable\Rsync\Location
      */
-    private $syncSource;
+    private $source;
+
+    /**
+     * Target
+     *
+     * @var \phpbu\App\Cli\Executable\Rsync\Location
+     */
+    private $target;
 
     /**
      * Raw args
@@ -32,27 +39,6 @@ class Rsync extends Abstraction implements Executable
      * @var string
      */
     protected $args;
-
-    /**
-     * Remote username
-     *
-     * @var string
-     */
-    protected $user;
-
-    /**
-     * Target host
-     *
-     * @var string
-     */
-    protected $host;
-
-    /**
-     * Target path
-     *
-     * @var string
-     */
-    protected $path;
 
     /**
      * Files to ignore, extracted from config string separated by ":"
@@ -83,6 +69,8 @@ class Rsync extends Abstraction implements Executable
     public function __construct($path = null)
     {
         $this->setup('rsync', $path);
+        $this->source = new Rsync\Location();
+        $this->target = new Rsync\Location();
     }
 
     /**
@@ -98,14 +86,38 @@ class Rsync extends Abstraction implements Executable
     }
 
     /**
-     * Set path to dump to.
+     * Set source user.
+     *
+     * @param  string $user
+     * @return \phpbu\App\Cli\Executable\Rsync
+     */
+    public function fromUser($user)
+    {
+        $this->source->setUser($user);
+        return $this;
+    }
+
+    /**
+     * Set source host.
+     *
+     * @param  string $host
+     * @return \phpbu\App\Cli\Executable\Rsync
+     */
+    public function fromHost($host)
+    {
+        $this->source->setHost($host);
+        return $this;
+    }
+
+    /**
+     * Set source path.
      *
      * @param  string $path
      * @return \phpbu\App\Cli\Executable\Rsync
      */
-    public function syncFrom($path)
+    public function fromPath($path)
     {
-        $this->syncSource = $path;
+        $this->source->setPath($path);
         return $this;
     }
 
@@ -129,7 +141,7 @@ class Rsync extends Abstraction implements Executable
      */
     public function toHost($host)
     {
-        $this->host = $host;
+        $this->target->setHost($host);
         return $this;
     }
 
@@ -141,7 +153,7 @@ class Rsync extends Abstraction implements Executable
      */
     public function toPath($path)
     {
-        $this->path = $path;
+        $this->target->setPath($path);
         return $this;
     }
 
@@ -151,9 +163,9 @@ class Rsync extends Abstraction implements Executable
      * @param  string $user
      * @return \phpbu\App\Cli\Executable\Rsync
      */
-    public function asUser($user)
+    public function toUser($user)
     {
-        $this->user = $user;
+        $this->target->setUser($user);
         return $this;
     }
 
@@ -196,10 +208,10 @@ class Rsync extends Abstraction implements Executable
         if (!empty($this->args)) {
             $cmd->addOption($this->args);
         } else {
-            if (empty($this->syncSource)) {
-                throw new Exception('source to sync is missing');
+            if (!$this->source->isValid()) {
+                throw new Exception('source path is missing');
             }
-            if (empty($this->path)) {
+            if (!$this->target->isValid()) {
                 throw new Exception('target path is missing');
             }
 
@@ -214,36 +226,11 @@ class Rsync extends Abstraction implements Executable
             }
 
             $cmd->addOptionIfNotEmpty('--delete', $this->delete, false);
-            $cmd->addArgument($this->syncSource);
 
-            // target handling
-            // get rsync host string
-            $syncTarget = $this->getRsyncHostString();
-            // remote path
-            $syncTarget .= $this->path;
-
-            $cmd->addArgument($syncTarget);
+            $cmd->addArgument($this->source->toString());
+            $cmd->addArgument($this->target->toString());
         }
 
         return $process;
-    }
-
-    /**
-     * Return rsync host string.
-     *
-     * @return string
-     */
-    public function getRsyncHostString()
-    {
-        $host = '';
-        // remote host
-        if (null !== $this->host) {
-            // remote user
-            if (null !== $this->user) {
-                $host .= $this->user . '@';
-            }
-            $host .= $this->host . ':';
-        }
-        return $host;
     }
 }
