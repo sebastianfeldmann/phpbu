@@ -14,7 +14,7 @@ use phpbu\App\Util;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
- * @since      Class available since Release 3.1.4
+ * @since      Class available since Release 3.2.0
  */
 trait Rsync
 {

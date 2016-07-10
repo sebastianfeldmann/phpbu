@@ -70,7 +70,7 @@ Installing *PHPBU* via Composer is also supported.
 
 ```json
   "require": {
-    "phpbu/phpbu": "3.1.*"
+    "phpbu/phpbu": "3.2.*"
   }
 ```
 
@@ -104,7 +104,7 @@ Simple configuration example:
 ```xml
   <?xml version="1.0" encoding="UTF-8"?>
   <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/3.1/phpbu.xsd"
+         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/3.2/phpbu.xsd"
          verbose="true">
     <backups>
       <backup>

@@ -13,7 +13,7 @@ use phpbu\App\Backup\Compressor;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://www.phpbu.de/
- * @since      Class available since Release 1.1.5
+ * @since      Class available since Release 3.2.0
  */
 class RsyncTest extends CliTest
 {
