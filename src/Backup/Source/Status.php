@@ -37,7 +37,6 @@ class Status
      */
     private $dataPath;
 
-
     /**
      * Source does not handle compression.
      *
