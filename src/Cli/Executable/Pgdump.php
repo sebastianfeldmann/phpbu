@@ -33,7 +33,7 @@ class Pgdump extends Abstraction implements Executable
      * Port to connect to
      * --port=<portnumber>
      *
-     * @var string
+     * @var int
      */
     private $port;
 
