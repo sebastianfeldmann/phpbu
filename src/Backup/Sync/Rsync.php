@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Backup\Cli;
+use phpbu\App\Backup\Rsync as RsyncTrait;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
@@ -21,64 +22,10 @@ use phpbu\App\Util;
  */
 class Rsync extends Cli implements Simulator
 {
-    /**
-     * Path to rsync binary.
-     *
-     * @var string
-     */
-    protected $pathToRsync;
+    use RsyncTrait;
 
     /**
-     * Raw args
-     *
-     * @var string
-     */
-    protected $args;
-
-    /**
-     * Remote username
-     *
-     * @var string
-     */
-    protected $user;
-
-    /**
-     * Target host
-     *
-     * @var string
-     */
-    protected $host;
-
-    /**
-     * Target path
-     *
-     * @var string
-     */
-    protected $path;
-
-    /**
-     * Files to ignore, extracted from config string separated by ":"
-     *
-     * @var array
-     */
-    protected $excludes;
-
-    /**
-     * Should only the created backup be synced or the complete directory
-     *
-     * @var boolean
-     */
-    protected $isDirSync;
-
-    /**
-     * Remove deleted files remotely as well
-     *
-     * @var boolean
-     */
-    protected $delete;
-
-    /**
-     * (non-PHPDoc)
+     * Setup the rsync sync.
      *
      * @see    \phpbu\App\Backup\Sync::setup()
      * @param  array $options
@@ -86,31 +33,15 @@ class Rsync extends Cli implements Simulator
      */
     public function setup(array $options)
     {
-        $this->pathToRsync = Util\Arr::getValue($options, 'pathToRsync');
-
-        if (Util\Arr::isSetAndNotEmptyString($options, 'args')) {
-            $this->args = $options['args'];
-        } else {
-            if (!Util\Arr::isSetAndNotEmptyString($options, 'path')) {
-                throw new Exception('option \'path\' is missing');
-            }
-            $this->path = Util\Str::replaceDatePlaceholders($options['path']);
-
-            if (Util\Arr::isSetAndNotEmptyString($options, 'user')) {
-                $this->user = $options['user'];
-            }
-            if (Util\Arr::isSetAndNotEmptyString($options, 'host')) {
-                $this->host = $options['host'];
-            }
-
-            $this->excludes  = Util\Str::toList(Util\Arr::getValue($options, 'exclude', ''), ':');
-            $this->delete    = Util\Str::toBoolean(Util\Arr::getValue($options, 'delete', ''), false);
-            $this->isDirSync = Util\Str::toBoolean(Util\Arr::getValue($options, 'dirsync', ''), false);
+        try {
+            $this->setupRsync($options);
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage());
         }
     }
 
     /**
-     * (non-PHPDoc)
+     * Execute the sync.
      *
      * @see    \phpbu\App\Backup\Sync::sync()
      * @param  \phpbu\App\Backup\Target $target
@@ -133,7 +64,6 @@ class Rsync extends Cli implements Simulator
         }
     }
 
-
     /**
      * Simulate the sync execution.
      *
@@ -149,38 +79,19 @@ class Rsync extends Cli implements Simulator
     }
 
     /**
-     * Create the Exec to run the 'rsync' command.
+     * Configure the Executable to run the 'rsync' command.
      *
-     * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Cli\Executable
+     * @param \phpbu\App\Cli\Executable\Rsync $exec
+     * @param \phpbu\App\Backup\Target        $target
      */
-    public function getExecutable(Target $target)
+    protected function configureExecutable(Executable\Rsync $exec, Target $target)
     {
-        if (null == $this->executable) {
-            $this->executable = new Executable\Rsync($this->pathToRsync);
-            if (!empty($this->args)) {
-                $this->executable->useArgs(Util\Str::replaceTargetPlaceholders($this->args, $target->getPathname()));
-            } else {
-                $this->executable->fromPath($this->getSyncSource($target))
-                     ->toHost($this->host)
-                     ->toPath($this->path)
-                     ->toUser($this->user)
-                     ->compressed(!$target->shouldBeCompressed())
-                     ->removeDeleted($this->delete)
-                     ->exclude($this->excludes);
-            }
-        }
-        return $this->executable;
-    }
-
-    /**
-     * Return sync source.
-     *
-     * @param  \phpbu\App\Backup\Target
-     * @return string
-     */
-    public function getSyncSource(Target $target)
-    {
-        return $this->isDirSync ? $target->getPath() : $target->getPathname();
+        $exec->fromPath($this->getRsyncLocation($target))
+             ->toHost($this->host)
+             ->toPath($this->path)
+             ->toUser($this->user)
+             ->compressed(!$target->shouldBeCompressed())
+             ->removeDeleted($this->delete)
+             ->exclude($this->excludes);
     }
 }

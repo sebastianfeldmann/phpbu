@@ -7,7 +7,6 @@
     "dirsync": "false",
     "delete": "false",
     "exclude": "*.cvs:*.jpg",
-    "args": "-avz '%TARGET_FILE%' root@example.com:/tmp/"
+    "args": "-avz root@example.com:/tmp/ '%TARGET_FILE%'"
   }
 }
-

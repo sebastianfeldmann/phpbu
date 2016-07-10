@@ -49,6 +49,7 @@ class Factory
             'mysqldump'   => '\\phpbu\\App\\Backup\\Source\\Mysqldump',
             'pgdump'      => '\\phpbu\\App\\Backup\\Source\\Pgdump',
             'redis'       => '\\phpbu\\App\\Backup\\Source\\Redis',
+            'rsync'       => '\\phpbu\\App\\Backup\\Source\\Rsync',
             'tar'         => '\\phpbu\\App\\Backup\\Source\\Tar',
             'xtrabackup'  => '\\phpbu\\App\\Backup\\Source\\XtraBackup',
         ],
