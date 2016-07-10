@@ -1,6 +1,6 @@
 {
   "type": "redis",
-  "option": {
+  "options": {
     "pathToRedisCli": "/usr/local/bin",
     "pathToRedisData": "/var/lib/redis/6379/dump.rdb",
     "timeout": "90",
