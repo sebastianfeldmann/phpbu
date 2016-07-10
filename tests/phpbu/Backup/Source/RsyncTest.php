@@ -112,6 +112,28 @@ class RsyncTest extends CliTest
     }
 
     /**
+     * Tests Rsync::getExec
+     */
+    public function testCustomArgs()
+    {
+        $path   = realpath(__DIR__ . '/../../../_files/bin');
+        $target = $this->getTargetMock('/tmp/backup.rsync');
+        $target->method('shouldBeCompressed')->willReturn(false);
+        $target->method('getPathname')->willReturn('/tmp/backup.rsync');
+
+        $this->rsync->setup([
+            'args'        => '-av /foo %TARGET_FILE%',
+            'pathToRsync' => $path
+        ]);
+        $exec = $this->rsync->getExecutable($target);
+
+        $this->assertEquals(
+            $path . '/rsync -av /foo /tmp/backup.rsync',
+            $exec->getCommandLine()
+        );
+    }
+
+    /**
      * Tests Rsync::backup
      */
     public function testBackupOk()
