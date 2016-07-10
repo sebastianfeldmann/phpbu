@@ -156,6 +156,29 @@ class MysqldumpTest extends CliTest
 
     /**
      * Tests Mysqldump::backup
+     */
+    public function testBackupFilePerTable()
+    {
+        $target    = $this->getTargetMock('/tmp/foo');
+        $cliResult = $this->getCliResultMock(0, 'mysqldump');
+        $appResult = $this->getAppResultMock();
+        $mysqldump = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Mysqldump')
+                          ->disableOriginalConstructor()
+                          ->getMock();
+
+        $appResult->expects($this->once())->method('debug');
+        $mysqldump->expects($this->once())->method('run')->willReturn($cliResult);
+
+        $path = realpath(__DIR__ . '/../../../_files/bin');
+        $this->mysqldump->setup(array('pathToMysqldump' => $path, 'filePerTable' => 'true'));
+        $this->mysqldump->setExecutable($mysqldump);
+        $status = $this->mysqldump->backup($target, $appResult);
+
+        $this->assertFalse($status->handledCompression());
+    }
+
+    /**
+     * Tests Mysqldump::backup
      *
      * @expectedException \phpbu\App\Exception
      */
