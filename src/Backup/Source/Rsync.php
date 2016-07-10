@@ -7,6 +7,7 @@ use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
 use phpbu\App\Result;
+use phpbu\App\Util;
 
 /**
  * Rsync source class.
@@ -57,19 +58,32 @@ class Rsync extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * Configure the Executable to run the 'rsync' command.
+     * Setup the Executable to run the 'rsync' command.
      *
-     * @param \phpbu\App\Cli\Executable\Rsync $exec
-     * @param \phpbu\App\Backup\Target        $target
+     * @param  \phpbu\App\Backup\Target
+     * @return \phpbu\App\Cli\Executable
      */
-    protected function configureExecutable(Executable\Rsync $exec, Target $target)
+    public function getExecutable(Target $target)
     {
-        $exec->fromHost($this->host)
-             ->fromUser($this->user)
-             ->fromPath($this->path)
-             ->toPath($this->getRsyncLocation($target))
-             ->removeDeleted($this->delete)
-             ->exclude($this->excludes);
+        if (null == $this->executable) {
+            $this->executable = new Executable\Rsync($this->pathToRsync);
+            if (!empty($this->args)) {
+                $this->executable->useArgs(
+                    Util\Str::replaceTargetPlaceholders(
+                        $this->args,
+                        $target->getPathnamePlain()
+                    )
+                );
+            } else {
+                $this->executable->fromHost($this->host)
+                                 ->fromUser($this->user)
+                                 ->fromPath($this->path)
+                                 ->toPath($this->getRsyncLocation($target))
+                                 ->removeDeleted($this->delete)
+                                 ->exclude($this->excludes);
+            }
+        }
+        return $this->executable;
     }
 
     /**

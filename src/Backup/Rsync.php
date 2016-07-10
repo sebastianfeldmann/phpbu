@@ -19,13 +19,6 @@ use phpbu\App\Util;
 trait Rsync
 {
     /**
-     * Tar Executable
-     *
-     * @var \phpbu\App\Cli\Executable\Tar
-     */
-    protected $executable;
-
-    /**
      * Path to executable.
      *
      * @var string
@@ -81,6 +74,12 @@ trait Rsync
      */
     protected $delete;
 
+    /**
+     * Setup the rsync.
+     *
+     * @param  array $conf
+     * @throws \phpbu\App\Exception
+     */
     protected function setupRsync(array $conf)
     {
         $this->pathToRsync = Util\Arr::getValue($conf, 'pathToRsync');
@@ -99,38 +98,6 @@ trait Rsync
             $this->isDirSync = Util\Str::toBoolean(Util\Arr::getValue($conf, 'dirsync', ''), false);
         }
     }
-
-    /**
-     * Setup the Executable to run the 'rsync' command.
-     *
-     * @param  \phpbu\App\Backup\Target
-     * @return \phpbu\App\Cli\Executable
-     */
-    public function getExecutable(Target $target)
-    {
-        if (null == $this->executable) {
-            $this->executable = new Executable\Rsync($this->pathToRsync);
-            if (!empty($this->args)) {
-                $this->executable->useArgs(
-                    Util\Str::replaceTargetPlaceholders(
-                        $this->args,
-                        $target->getPathnamePlain()
-                    )
-                );
-            } else {
-                $this->configureExecutable($this->executable, $target);
-            }
-        }
-        return $this->executable;
-    }
-
-    /**
-     * Configure the executable if no costim args are used.
-     *
-     * @param \phpbu\App\Cli\Executable\Rsync $exec
-     * @param \phpbu\App\Backup\Target        $target
-     */
-    abstract protected function configureExecutable(Executable\Rsync $exec, Target $target);
 
     /**
      * Return rsync location.
