@@ -89,6 +89,21 @@ class MysqldumpTest extends CliTest
     /**
      * Tests Mysqldump::getExecutable
      */
+    public function testFilePerTable()
+    {
+        $target = $this->getTargetMock('/tmp/foo');
+        $path   = realpath(__DIR__ . '/../../../_files/bin');
+        $this->mysqldump->setup(array('pathToMysqldump' => $path, 'filePerTable' => 'true'));
+
+        $executable = $this->mysqldump->getExecutable($target);
+        $cmd        = $executable->getCommandLine();
+
+        $this->assertEquals($path . '/mysqldump --all-databases --tab=\'/tmp/foo.dump\'', $cmd);
+    }
+
+    /**
+     * Tests Mysqldump::getExecutable
+     */
     public function testHexBlob()
     {
         $target = $this->getTargetMock();
