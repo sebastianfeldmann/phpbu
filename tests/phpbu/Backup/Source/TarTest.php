@@ -71,7 +71,7 @@ class TarTest extends CliTest
     /**
      * Tests Tar::getExec
      */
-    public function testignoreFailedRead()
+    public function testIgnoreFailedRead()
     {
         $path   = realpath(__DIR__ . '/../../../_files/bin');
         $target = $this->getTargetMock('/tmp/backup.tar');
