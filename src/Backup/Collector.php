@@ -27,6 +27,13 @@ class Collector
     protected $target;
 
     /**
+     * Target filename regex
+     *
+     * @var string
+     */
+    protected $fileRegex;
+
+    /**
      * Collection cache
      *
      * @var \phpbu\App\Backup\File[]
@@ -51,7 +58,9 @@ class Collector
     public function getBackupFiles()
     {
         if (null === $this->files) {
-            $this->files = [];
+            // create regex to match only created backup files
+            $this->fileRegex = Str::datePlaceholdersToRegex($this->target->getFilenameRaw());
+            $this->files     = [];
             // collect all matching backup files
             $this->collect($this->target->getPathThatIsNotChanging(), 0);
         }
@@ -78,21 +87,29 @@ class Collector
                 }
             }
         } else {
-            // create regex to match only created backup files
-            $fileRegex = Str::datePlaceholdersToRegex($this->target->getFilenameRaw());
-            /** @var \SplFileInfo $file */
-            foreach ($dirIterator as $i => $file) {
-                if ($file->isDir()) {
-                    continue;
-                }
-                // skip currently created backup
-                if ($file->getPathname() == $this->target->getPathname()) {
-                    continue;
-                }
-                if (preg_match('#' . $fileRegex . '#i', $file->getFilename())) {
-                    $index = date('YmdHis', $file->getMTime()) . '-' . $i . '-' . $file->getPathname();
-                    $this->files[$index] = new File($file->getFileInfo());
-                }
+            /** @var \phpbu\App\Backup\File $file */
+            $this->collectFiles($dirIterator);
+        }
+    }
+
+    /**
+     * Collect backup files in directory.
+     *
+     * @param \DirectoryIterator $dirIterator
+     */
+    protected function collectFiles(DirectoryIterator $dirIterator)
+    {
+        foreach ($dirIterator as $i => $file) {
+            if ($file->isDir()) {
+                continue;
+            }
+            // skip currently created backup
+            if ($file->getPathname() == $this->target->getPathname()) {
+                continue;
+            }
+            if (preg_match('#' . $this->fileRegex . '#i', $file->getFilename())) {
+                $index               = date('YmdHis', $file->getMTime()) . '-' . $i . '-' . $file->getPathname();
+                $this->files[$index] = new File($file->getFileInfo());
             }
         }
     }

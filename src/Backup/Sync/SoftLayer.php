@@ -70,21 +70,13 @@ class SoftLayer implements Simulator
         if (!class_exists('\\ObjectStorage')) {
             throw new Exception('SoftLayer SDK not loaded: use composer to install "softlayer/objectstorage"');
         }
-        if (!Arr::isSetAndNotEmptyString($config, 'user')) {
-            throw new Exception('SoftLayer user is mandatory');
+        // check for mandatory options
+        foreach (['user', 'secret', 'container', 'host', 'path'] as $option) {
+            if (!Arr::isSetAndNotEmptyString($config, $option)) {
+                throw new Exception('SoftLayer ' . $option . ' is mandatory');
+            }
         }
-        if (!Arr::isSetAndNotEmptyString($config, 'secret')) {
-            throw new Exception('SoftLayer password is mandatory');
-        }
-        if (!Arr::isSetAndNotEmptyString($config, 'container')) {
-            throw new Exception('SoftLayer container name is mandatory');
-        }
-        if (!Arr::isSetAndNotEmptyString($config, 'host')) {
-            throw new Exception('SoftLayer host is mandatory');
-        }
-        if (!Arr::isSetAndNotEmptyString($config, 'path')) {
-            throw new Exception('SoftLayer path is mandatory');
-        }
+
         $this->user      = $config['user'];
         $this->secret    = $config['secret'];
         $this->container = $config['container'];
@@ -107,7 +99,7 @@ class SoftLayer implements Simulator
         $sourcePath = $target->getPathname();
         $targetPath = $this->path . $target->getFilename();
 
-        $options       = array('adapter' => ObjectStorage_Http_Client::SOCKET, 'timeout' => 20);
+        $options       = ['adapter' => ObjectStorage_Http_Client::SOCKET, 'timeout' => 20];
         $objectStorage = new ObjectStorage($this->host, $this->user, $this->secret, $options);
 
         $result->debug('softlayer source: ' . $sourcePath);

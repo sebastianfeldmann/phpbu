@@ -45,7 +45,7 @@ class Rsync extends Abstraction implements Executable
      *
      * @var array
      */
-    protected $excludes;
+    protected $excludes = [];
 
     /**
      * Remove deleted files remotely as well
@@ -218,19 +218,25 @@ class Rsync extends Abstraction implements Executable
             // use archive mode, verbose and compress if not already done
             $options = '-av' . ($this->compressed ? 'z' : '');
             $cmd->addOption($options);
-
-            if (count($this->excludes)) {
-                foreach ($this->excludes as $ex) {
-                    $cmd->addOption('--exclude', $ex);
-                }
-            }
-
+            $this->configureExcludes($cmd, $this->excludes);
             $cmd->addOptionIfNotEmpty('--delete', $this->delete, false);
-
             $cmd->addArgument($this->source->toString());
             $cmd->addArgument($this->target->toString());
         }
 
         return $process;
+    }
+
+    /**
+     * Configure excludes.
+     *
+     * @param \phpbu\App\Cli\Cmd $cmd
+     * @param array              $excludes
+     */
+    protected function configureExcludes(Cmd $cmd, array $excludes)
+    {
+        foreach ($excludes as $ex) {
+            $cmd->addOption('--exclude', $ex);
+        }
     }
 }
