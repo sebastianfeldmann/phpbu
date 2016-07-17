@@ -27,7 +27,7 @@ abstract class Abstraction extends Cli implements Executable
     protected $pathToCommand;
 
     /**
-     * File to dir to compress.
+     * File or directory to compress.
      *
      * @var string
      */
