@@ -146,7 +146,7 @@ class Target
     public function setPath($path, $time = null)
     {
         $this->pathRaw = $path;
-        if ($this->isContainingPlaceholder($path)) {
+        if (Str::isContainingPlaceholder($path)) {
             $this->pathIsChanging = true;
             // path should be absolute so we remove the root slash
             $dirs = explode('/', substr($this->pathRaw, 1));
@@ -154,7 +154,7 @@ class Target
             $this->pathNotChanging = '';
             $foundChangingElement  = false;
             foreach ($dirs as $d) {
-                if ($foundChangingElement || $this->isContainingPlaceholder($d)) {
+                if ($foundChangingElement || Str::isContainingPlaceholder($d)) {
                     $this->pathElementsChanging[] = $d;
                     $foundChangingElement         = true;
                 } else {
@@ -170,17 +170,6 @@ class Target
     }
 
     /**
-     * Does the path contain a date placeholder.
-     *
-     * @param  string $path
-     * @return bool
-     */
-    public function isContainingPlaceholder($path)
-    {
-        return false !== strpos($path, '%');
-    }
-
-    /**
      * Filename setter.
      *
      * @param string  $file
@@ -189,7 +178,7 @@ class Target
     public function setFile($file, $time = null)
     {
         $this->filenameRaw = $file;
-        if ($this->isContainingPlaceholder($file)) {
+        if (Str::isContainingPlaceholder($file)) {
             $this->filenameIsChanging = true;
             $file                     = Str::replaceDatePlaceholders($file, $time);
         }
@@ -198,7 +187,7 @@ class Target
 
     /**
      * Append another suffix to the filename.
-     * 
+     *
      * @param string $suffix
      */
     public function appendFileSuffix($suffix)

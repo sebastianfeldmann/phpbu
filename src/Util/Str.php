@@ -37,6 +37,17 @@ class Str
     }
 
     /**
+     * Does a given string contain a date placeholder.
+     *
+     * @param  string $string
+     * @return bool
+     */
+    public static function isContainingPlaceholder($string)
+    {
+        return false !== strpos($string, '%');
+    }
+
+    /**
      * Replaces %TARGET_DIR% and %TARGET_FILE% in given string.
      *
      * @param  string $string
