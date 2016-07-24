@@ -42,7 +42,7 @@ class Directory extends Abstraction
         if (!$target->shouldBeCompressed()) {
             throw new Exception('target should not be compressed at all');
         }
-        return Tar::isCompressorValid($target->getCompressor()->getCommand());
+        return Tar::isCompressionValid($target->getCompression()->getCommand());
     }
 
     /**
@@ -72,7 +72,7 @@ class Directory extends Abstraction
             $this->executable->archiveDirectory($this->path);
             $this->executable->archiveTo($this->getArchiveFile($target))
                              ->useCompression(
-                                 $target->shouldBeCompressed() ? $target->getCompressor()->getCommand() : ''
+                                 $target->shouldBeCompressed() ? $target->getCompression()->getCommand() : ''
                              )
                              ->removeSourceDirectory(true);
         }

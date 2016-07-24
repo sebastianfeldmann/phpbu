@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\App\Backup;
+namespace phpbu\App\Backup\Target;
 
 /**
  * Compressor test
@@ -12,16 +12,16 @@ namespace phpbu\App\Backup;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class CompressorTest extends \PHPUnit_Framework_TestCase
+class CompressionTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Tests Compressor::create
+     * Tests Compression::create
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testCreateInvalid()
     {
-        Compressor::create('/foo/bar');
+        Compression::create('/foo/bar');
         $this->assertFalse(true, 'Exception should be thrown');
     }
 
@@ -30,7 +30,7 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGzip()
     {
-        $gzip = Compressor::create('gzip');
+        $gzip = Compression::create('gzip');
         $this->assertEquals('gz', $gzip->getSuffix());
         $this->assertEquals('gzip', $gzip->getCommand());
         $this->assertEquals('application/x-gzip', $gzip->getMimeType());
@@ -41,7 +41,7 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
      */
     public function testBzip2()
     {
-        $gzip = Compressor::create('bzip2');
+        $gzip = Compression::create('bzip2');
         $this->assertEquals('bz2', $gzip->getSuffix());
         $this->assertEquals('bzip2', $gzip->getCommand());
         $this->assertEquals('application/x-bzip2', $gzip->getMimeType());
@@ -52,7 +52,7 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
      */
     public function testZip()
     {
-        $gzip = Compressor::create('zip');
+        $gzip = Compression::create('zip');
         $this->assertEquals('zip', $gzip->getSuffix());
         $this->assertEquals('zip', $gzip->getCommand());
         $this->assertEquals('application/zip', $gzip->getMimeType());
@@ -63,7 +63,7 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCommand()
     {
-        $gzip = Compressor::create('/usr/local/bin/gzip');
+        $gzip = Compression::create('/usr/local/bin/gzip');
         $this->assertEquals('gz', $gzip->getSuffix());
         $this->assertEquals('gzip', $gzip->getCommand());
     }

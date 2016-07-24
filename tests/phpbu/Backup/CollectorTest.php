@@ -38,7 +38,7 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
         $path      = $this->getTestDataDir() . '/collector/static-dir-compressed';
         $filename  = 'foo-%d.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $target->setCompressor($this->getCompressorMockForCmd('zip', 'zip'));
+        $target->setCompression($this->getCompressionMockForCmd('zip', 'zip'));
         $collector = new Collector($target);
         $files     = $collector->getBackupFiles();
 
@@ -55,7 +55,7 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
         $filename  = 'foo-%d.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
         $target->appendFileSuffix('tar');
-        $target->setCompressor($this->getCompressorMockForCmd('tar', 'gz'));
+        $target->setCompression($this->getCompressionMockForCmd('tar', 'gz'));
         $collector = new Collector($target);
         $files     = $collector->getBackupFiles();
 
@@ -134,11 +134,11 @@ class CollectorTest extends \PHPUnit_Framework_TestCase
      *
      * @param  string $cmd
      * @param  string $suffix
-     * @return \phpbu\App\Backup\Compressor
+     * @return \phpbu\App\Backup\Target\Compression
      */
-    protected function getCompressorMockForCmd($cmd, $suffix)
+    protected function getCompressionMockForCmd($cmd, $suffix)
     {
-        $compressorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Compressor')
+        $compressorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target\\Compression')
                                ->disableOriginalConstructor()
                                ->getMock();
         $compressorStub->method('getCommand')->willReturn($cmd);

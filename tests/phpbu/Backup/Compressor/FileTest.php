@@ -24,7 +24,7 @@ class FileTest extends CliTest
         $path   = $this->getBinDir();
         $dir    = new File(__FILE__, $path);
         $target = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
-        $target->method('getCompressor')->willReturn($this->getCompressorMock('gzip', 'gz'));
+        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
 
         $executable = $dir->getExecutable($target);
         $cmd        = $executable->getCommandLine();
@@ -52,7 +52,7 @@ class FileTest extends CliTest
         $file   = new File(__DIR__);
         $result = $this->getAppResultMock();
         $target = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
-        $target->method('getCompressor')->willReturn($this->getCompressorMock('gzip', 'gz'));
+        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
 
         $file->compress($target, $result);
     }
@@ -65,7 +65,7 @@ class FileTest extends CliTest
         $dir       = new File(__FILE__);
         $cliResult = $this->getCliResultMock(0, 'gzip');
         $target    = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
-        $target->method('getCompressor')->willReturn($this->getCompressorMock('gzip', 'gz'));
+        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
 
         $appResult = $this->getAppResultMock();
         $gzip      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Compressor')
@@ -102,7 +102,7 @@ class FileTest extends CliTest
         $dir       = new File(__FILE__);
         $cliResult = $this->getCliResultMock(1, 'gzip');
         $target    = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
-        $target->method('getCompressor')->willReturn($this->getCompressorMock('gzip', 'gz'));
+        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
 
         $appResult = $this->getAppResultMock();
         $gzip      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Compressor')

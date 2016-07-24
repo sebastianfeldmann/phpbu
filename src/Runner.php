@@ -184,8 +184,8 @@ class Runner
         $target->setupPath();
         // add possible compressor
         if (!empty($conf->compression)) {
-            $compressor = Compressor::create($conf->compression);
-            $target->setCompressor($compressor);
+            $compression = Target\Compression::create($conf->compression);
+            $target->setCompression($compression);
         }
         return $target;
     }

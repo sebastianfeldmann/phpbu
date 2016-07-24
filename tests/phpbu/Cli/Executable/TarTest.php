@@ -147,13 +147,13 @@ class TarTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests Tar::isCompressorValid
+     * Tests Tar::isCompressionValid
      */
-    public function testIsCompressorValid()
+    public function testIsCompressionValid()
     {
-        $this->assertTrue(Tar::isCompressorValid('gzip'));
-        $this->assertTrue(Tar::isCompressorValid('bzip2'));
-        $this->assertFalse(Tar::isCompressorValid('zip'));
+        $this->assertTrue(Tar::isCompressionValid('gzip'));
+        $this->assertTrue(Tar::isCompressionValid('bzip2'));
+        $this->assertFalse(Tar::isCompressionValid('zip'));
     }
 
     /**

@@ -60,10 +60,10 @@ class Tar extends Abstraction implements Executable
      *
      * @var array
      */
-    private static $availableCompressors = array(
+    private static $availableCompressions = [
         'bzip2' => 'j',
         'gzip'  => 'z',
-    );
+    ];
 
     /**
      * Constructor.
@@ -81,21 +81,21 @@ class Tar extends Abstraction implements Executable
      * @param  $compressor
      * @return string
      */
-    protected function getCompressorOption($compressor)
+    protected function getCompressionOption($compressor)
     {
-        return $this->isCompressorValid($compressor) ? self::$availableCompressors[$compressor] : null;
+        return $this->isCompressionValid($compressor) ? self::$availableCompressions[$compressor] : null;
     }
 
     /**
      * Compress tar.
      *
-     * @param  string $compressor
+     * @param  string $compression
      * @return \phpbu\App\Cli\Executable\Tar
      */
-    public function useCompression($compressor)
+    public function useCompression($compression)
     {
-        if ($this->isCompressorValid($compressor)) {
-            $this->compression = $this->getCompressorOption($compressor);
+        if ($this->isCompressionValid($compression)) {
+            $this->compression = $this->getCompressionOption($compression);
         }
         return $this;
     }
@@ -227,13 +227,13 @@ class Tar extends Abstraction implements Executable
     }
 
     /**
-     * Return true if a given compressor is valid false otherwise.
+     * Return true if a given compression is valid false otherwise.
      *
-     * @param  string $compressor
+     * @param  string $compression
      * @return boolean
      */
-    public static function isCompressorValid($compressor)
+    public static function isCompressionValid($compression)
     {
-        return isset(self::$availableCompressors[$compressor]);
+        return isset(self::$availableCompressions[$compression]);
     }
 }

@@ -106,7 +106,7 @@ class Target
      *
      * @var \phpbu\App\Backup\Compressor
      */
-    private $compressor;
+    private $compression;
 
     /**
      * Should the file be encrypted.
@@ -291,7 +291,7 @@ class Target
     public function getFilenameSuffix($plain = false)
     {
         return (count($this->fileSuffixes) ? '.' . implode('.', $this->fileSuffixes) : '')
-             . ($plain ? '' : $this->getCompressorSuffix() . $this->getCrypterSuffix());
+             . ($plain ? '' : $this->getCompressionSuffix() . $this->getCrypterSuffix());
     }
 
     /**
@@ -299,9 +299,9 @@ class Target
      *
      * @return string
      */
-    public function getCompressorSuffix()
+    public function getCompressionSuffix()
     {
-        return $this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '';
+        return $this->shouldBeCompressed() ? '.' . $this->compression->getSuffix() : '';
     }
 
     /**
@@ -323,7 +323,7 @@ class Target
     {
         $mimeType = $this->mimeType;
         if ($this->shouldBeCompressed()) {
-            $mimeType = $this->compressor->getMimeType();
+            $mimeType = $this->compression->getMimeType();
         }
         return $mimeType;
     }
@@ -479,7 +479,7 @@ class Target
      */
     public function enableCompression()
     {
-        if (null == $this->compressor) {
+        if (null == $this->compression) {
             throw new Exception('can\'t enable compression without a compressor');
         }
         $this->compress = true;
@@ -488,12 +488,12 @@ class Target
     /**
      * Compressor setter.
      *
-     * @param \phpbu\App\Backup\Compressor $compressor
+     * @param \phpbu\App\Backup\Target\Compression $compression
      */
-    public function setCompressor(Compressor $compressor)
+    public function setCompression(Target\Compression $compression)
     {
-        $this->compressor = $compressor;
-        $this->compress   = true;
+        $this->compression = $compression;
+        $this->compress    = true;
     }
 
     /**
@@ -501,9 +501,9 @@ class Target
      *
      * @return \phpbu\App\Backup\Compressor
      */
-    public function getCompressor()
+    public function getCompression()
     {
-        return $this->compressor;
+        return $this->compression;
     }
 
     /**

@@ -91,15 +91,15 @@ abstract class CliTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Create Compressor Mock.
+     * Create Compression Mock.
      *
      * @param  string $cmd
      * @param  string $suffix
-     * @return \phpbu\App\Backup\Compressor
+     * @return \phpbu\App\Backup\Target\Compression
      */
-    protected function getCompressorMock($cmd, $suffix)
+    protected function getCompressionMock($cmd, $suffix)
     {
-        $compressor = $this->getMockBuilder('\\phpbu\\App\\Backup\\Compressor')
+        $compressor = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target\\Compression')
                            ->disableOriginalConstructor()
                            ->getMock();
         $compressor->method('getCommand')->willReturn($cmd);

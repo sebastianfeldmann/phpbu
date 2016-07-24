@@ -139,12 +139,12 @@ class Tar extends SimulatorExecutable implements Simulator
         if (null == $this->executable) {
             // check if tar supports requested compression
             if ($target->shouldBeCompressed()) {
-                if (!Executable\Tar::isCompressorValid($target->getCompressor()->getCommand())) {
+                if (!Executable\Tar::isCompressionValid($target->getCompression()->getCommand())) {
                     $this->pathToArchive = $target->getPathnamePlain();
                 } else {
                     // compression could be handled by the tar command
                     $this->pathToArchive = $target->getPathname();
-                    $this->compression   = $target->getCompressor()->getCommand();
+                    $this->compression   = $target->getCompression()->getCommand();
                 }
             } else {
                 // no compression at all

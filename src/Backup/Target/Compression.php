@@ -1,10 +1,10 @@
 <?php
-namespace phpbu\App\Backup;
+namespace phpbu\App\Backup\Target;
 
 use phpbu\App\Exception;
 
 /**
- * Compressor
+ * Compression
  *
  * @package    phpbu
  * @subpackage Backup
@@ -14,7 +14,7 @@ use phpbu\App\Exception;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Compressor
+class Compression
 {
     /**
      * Path to command binary
