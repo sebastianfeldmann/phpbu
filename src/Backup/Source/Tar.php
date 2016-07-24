@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
@@ -132,7 +131,7 @@ class Tar extends SimulatorExecutable implements Simulator
      * Setup the Executable to run the 'tar' command.
      *
      * @param  \phpbu\App\Backup\Target
-     * @return \phpbu\App\Cli\Executable
+     * @return \phpbu\App\Cli\Executable\Tar
      */
     public function getExecutable(Target $target)
     {
