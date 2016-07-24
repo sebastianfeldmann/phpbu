@@ -78,7 +78,7 @@ class Rsync extends SimulatorExecutable implements Simulator
                 $this->executable->fromHost($this->host)
                                  ->fromUser($this->user)
                                  ->fromPath($this->path)
-                                 ->toPath($this->getRsyncLocation($target))
+                                 ->toPath($this->getRsyncLocation($target, true))
                                  ->removeDeleted($this->delete)
                                  ->exclude($this->excludes);
             }
