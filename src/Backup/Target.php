@@ -104,7 +104,7 @@ class Target
     /**
      * File compression.
      *
-     * @var \phpbu\App\Backup\Compressor
+     * @var \phpbu\App\Backup\Target\Compression
      */
     private $compression;
 
@@ -499,7 +499,7 @@ class Target
     /**
      * Compressor getter.
      *
-     * @return \phpbu\App\Backup\Compressor
+     * @return \phpbu\App\Backup\Target\Compression
      */
     public function getCompression()
     {
