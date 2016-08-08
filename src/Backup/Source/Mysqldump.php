@@ -90,6 +90,13 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     private $filePerTable;
 
     /**
+     * The compressor cmd
+     *
+     * @var boolean
+     */
+    private $compressor;
+
+    /**
      * Use mysqldump quick mode
      * -q
      *
@@ -160,6 +167,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
         $this->extendedInsert  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'extendedInsert', ''), false);
         $this->noData          = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
         $this->filePerTable    = Util\Str::toBoolean(Util\Arr::getValue($conf, 'filePerTable', ''), false);
+        $this->compressor      = Util\Arr::getValue($conf, 'compressor', '');
 
         // this doesn't fail, but it doesn't work, so throw an exception so the user understands
         if ($this->filePerTable && count($this->structureOnly)) {
@@ -233,6 +241,10 @@ class Mysqldump extends SimulatorExecutable implements Simulator
                              ->dumpNoData($this->noData)
                              ->dumpStructureOnly($this->structureOnly)
                              ->dumpTo($this->getDumpTarget($target));
+
+            if (!empty($this->compressor)) {
+                $this->executable->getProcess()->setCompression($this->compressor);
+            }
         }
         return $this->executable;
     }
