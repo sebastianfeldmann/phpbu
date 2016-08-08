@@ -30,6 +30,8 @@ class Process
      */
     private $redirectOutput;
 
+    private $sCmdCompressor;
+
     /**
      * Redirect the stdOut.
      *
@@ -38,6 +40,16 @@ class Process
     public function redirectOutputTo($path)
     {
         $this->redirectOutput = $path;
+    }
+
+    /**
+     * Set the compressor cmd
+     *
+     * @param string $cmd
+     */
+    public function setCompression($sCmdCompressor)
+    {
+        $this->sCmdCompressor = $sCmdCompressor;
     }
 
     /**
@@ -83,6 +95,7 @@ class Process
             throw new Exception('no command to execute');
         }
         $cmd = ($amount > 1 ? '(' . implode(' && ', $this->commands) . ')' : $this->commands[0])
+             . (!empty($this->sCmdCompressor) ? ' | ' . $this->sCmdCompressor : '')
              . (!empty($this->redirectOutput) ? ' > ' . $this->redirectOutput : '');
 
         return $cmd;
