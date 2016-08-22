@@ -72,7 +72,7 @@ class Compression
      */
     public function __construct($cmd, $pathToCmd = null)
     {
-        $this->path     = $pathToCmd . (!empty($pathToCmd) ? DIRECTORY_SEPARATOR : '');
+        $this->path     = $pathToCmd;
         $this->cmd      = $cmd;
         $this->suffix   = self::$availableCompressors[$cmd]['suffix'];
         $this->mimeType = self::$availableCompressors[$cmd]['mime'];
@@ -86,6 +86,16 @@ class Compression
     public function getCommand()
     {
         return $this->cmd;
+    }
+
+    /**
+     * Path getter.
+     *
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
     }
 
     /**

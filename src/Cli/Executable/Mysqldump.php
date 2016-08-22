@@ -1,10 +1,12 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
+use phpbu\App\Backup\Target\Compression;
 use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Cli\Process;
 use phpbu\App\Exception;
+use phpbu\App\Util\Cli;
 
 /**
  * Mysqldump Executable class.
@@ -138,6 +140,13 @@ class Mysqldump extends Abstraction implements Executable
      * @var string
      */
     private $dumpPathname;
+
+    /**
+     * Compression command to pipe output to
+     *
+     * @var \phpbu\App\Backup\Target\Compression
+     */
+    private $compression;
 
     /**
      * Constructor.
@@ -309,6 +318,18 @@ class Mysqldump extends Abstraction implements Executable
     }
 
     /**
+     * Pipe compressor.
+     *
+     * @param  \phpbu\App\Backup\Target\Compression $compression
+     * @return \phpbu\App\Cli\Executable\Mysqldump
+     */
+    public function compressOutput(Compression $compression)
+    {
+        $this->compression = $compression;
+        return $this;
+    }
+
+    /**
      * Set the dump target path.
      *
      * @param  string $path
@@ -360,6 +381,7 @@ class Mysqldump extends Abstraction implements Executable
                 $process->addCommand($cmd2);
             }
         }
+        $this->configureCompression($process);
         $this->configureOutput($process);
         return $process;
     }
@@ -431,14 +453,32 @@ class Mysqldump extends Abstraction implements Executable
     }
 
     /**
+     * Add compressor pipe if set.
+     *
+     * @param \phpbu\App\Cli\Process $process
+     */
+    private function configureCompression(Process $process)
+    {
+        // if file per table isn't active and a compressor is set
+        if (!$this->filePerTable && !empty($this->compression)) {
+            $binary = Cli::detectCmdLocation($this->compression->getCommand(), $this->compression->getPath());
+            $cmd    = new Cmd($binary);
+            $process->pipeOutputTo($cmd);
+        }
+    }
+
+    /**
      * Configure output redirect.
      *
      * @param \phpbu\App\Cli\Process $process
      */
     private function configureOutput(Process $process)
     {
+        // disable output redirection if files per table is active
         if (!$this->filePerTable) {
-            $process->redirectOutputTo($this->dumpPathname);
+            $process->redirectOutputTo(
+                $this->dumpPathname . (!empty($this->compression) ? '.' . $this->compression->getSuffix() : '')
+            );
         }
     }
 }

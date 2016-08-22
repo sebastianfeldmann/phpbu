@@ -350,6 +350,16 @@ abstract class Cli
     }
 
     /**
+     * Can command pipe operator be used.
+     *
+     * @return bool
+     */
+    public static function canPipe()
+    {
+        return !defined('PHP_WINDOWS_VERSION_BUILD');
+    }
+
+    /**
      * Removes a directory that is not empty.
      *
      * @param $dir

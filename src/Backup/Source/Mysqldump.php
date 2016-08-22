@@ -233,6 +233,10 @@ class Mysqldump extends SimulatorExecutable implements Simulator
                              ->dumpNoData($this->noData)
                              ->dumpStructureOnly($this->structureOnly)
                              ->dumpTo($this->getDumpTarget($target));
+            // if compression is active and commands can be piped
+            if ($target->shouldBeCompressed() && Util\Cli::canPipe()) {
+                $this->executable->compressOutput($target->getCompression());
+            }
         }
         return $this->executable;
     }
@@ -245,9 +249,19 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      */
     protected function createStatus(Target $target)
     {
-        return $this->filePerTable
-            ? Status::create()->uncompressedDirectory($this->getDumpTarget($target))
-            : Status::create()->uncompressedFile($this->getDumpTarget($target));
+        // file_per_table creates a directory with all the files
+        if ($this->filePerTable) {
+            return Status::create()->uncompressedDirectory($this->getDumpTarget($target));
+        }
+
+        // if compression is active and commands can be piped
+        // compression is handled via pipe
+        if ($target->shouldBeCompressed() && Util\Cli::canPipe()) {
+            return Status::create();
+        }
+
+        // default create uncompressed dump file
+        return Status::create()->uncompressedFile($this->getDumpTarget($target));
     }
 
     /**
