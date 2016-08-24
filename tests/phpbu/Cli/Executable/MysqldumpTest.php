@@ -189,7 +189,7 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     public function testCompressor()
     {
         $path        = realpath(__DIR__ . '/../../../_files/bin');
-        $compression = Compression::create($path . '/gzip');
+        $compression = Compression\Factory::create($path . '/gzip');
         $mysqldump   = new Mysqldump($path);
         $mysqldump->compressOutput($compression)->dumpTo('/tmp/foo.mysql');
 

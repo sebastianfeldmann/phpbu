@@ -21,7 +21,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateInvalid()
     {
-        Compression::create('/foo/bar');
+        Compression\Factory::create('/foo/bar');
         $this->assertFalse(true, 'Exception should be thrown');
     }
 
@@ -30,7 +30,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
      */
     public function testGzip()
     {
-        $gzip = Compression::create('gzip');
+        $gzip = Compression\Factory::create('gzip');
         $this->assertEquals('gz', $gzip->getSuffix());
         $this->assertEquals('gzip', $gzip->getCommand());
         $this->assertEquals('application/x-gzip', $gzip->getMimeType());
@@ -41,7 +41,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
      */
     public function testBzip2()
     {
-        $gzip = Compression::create('bzip2');
+        $gzip = Compression\Factory::create('bzip2');
         $this->assertEquals('bz2', $gzip->getSuffix());
         $this->assertEquals('bzip2', $gzip->getCommand());
         $this->assertEquals('application/x-bzip2', $gzip->getMimeType());
@@ -52,13 +52,13 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsPipeable()
     {
-        $gzip = Compression::create('gzip');
+        $gzip = Compression\Factory::create('gzip');
         $this->assertTrue($gzip->isPipeable());
 
-        $bzip = Compression::create('bzip2');
+        $bzip = Compression\Factory::create('bzip2');
         $this->assertTrue($bzip->isPipeable());
 
-        $zip = Compression::create('zip');
+        $zip = Compression\Factory::create('zip');
         $this->assertFalse($zip->isPipeable());
     }
 
@@ -67,7 +67,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
      */
     public function testZip()
     {
-        $gzip = Compression::create('zip');
+        $gzip = Compression\Factory::create('zip');
         $this->assertEquals('zip', $gzip->getSuffix());
         $this->assertEquals('zip', $gzip->getCommand());
         $this->assertEquals('application/zip', $gzip->getMimeType());
@@ -78,7 +78,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetCommand()
     {
-        $gzip = Compression::create('/usr/local/bin/gzip');
+        $gzip = Compression\Factory::create('/usr/local/bin/gzip');
         $this->assertEquals('gz', $gzip->getSuffix());
         $this->assertEquals('gzip', $gzip->getCommand());
     }

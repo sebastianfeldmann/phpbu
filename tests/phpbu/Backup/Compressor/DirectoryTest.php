@@ -61,7 +61,7 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetArchiveFile()
     {
-        $cmp    = Compression::create('bzip2');
+        $cmp    = Compression\Factory::create('bzip2');
         $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                        ->disableOriginalConstructor()
                        ->getMock();
@@ -85,7 +85,7 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
     public function testCompress()
     {
         $result     = new Result('foo', 0);
-        $cmp        = Compression::create('bzip2');
+        $cmp        = Compression\Factory::create('bzip2');
         $executable = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable')
                            ->disableOriginalConstructor()
                            ->getMock();
@@ -122,7 +122,7 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
     public function testCompressFails()
     {
         $result     = new Result('foo', 1);
-        $cmp        = Compression::create('bzip2');
+        $cmp        = Compression\Factory::create('bzip2');
         $executable = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable')
                            ->disableOriginalConstructor()
                            ->getMock();
@@ -158,7 +158,7 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
     public function testCompressInvalidPath()
     {
         $result     = new Result('foo', 1);
-        $cmp        = Compression::create('bzip2');
+        $cmp        = Compression\Factory::create('bzip2');
         $executable = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable')
                            ->disableOriginalConstructor()
                            ->getMock();

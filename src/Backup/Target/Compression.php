@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Target;
 
-use phpbu\App\Exception;
-
 /**
  * Compression
  *
@@ -14,142 +12,40 @@ use phpbu\App\Exception;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Compression
+interface Compression
 {
-    /**
-     * Path to command binary
-     *
-     * @var string
-     */
-    protected $path;
-
-    /**
-     * Command name
-     *
-     * @var string
-     */
-    protected $cmd;
-
-    /**
-     * Suffix for compressed files
-     *
-     * @var string
-     */
-    protected $suffix;
-
-    /**
-     * MIME type for compressed files
-     *
-     * @var string
-     */
-    protected $mimeType;
-
-    /**
-     * List of available compressors
-     *
-     * @var array
-     */
-    protected static $availableCompressors = [
-        'gzip' => [
-            'pipeable' => true,
-            'suffix'   => 'gz',
-            'mime'     => 'application/x-gzip'
-        ],
-        'bzip2' => [
-            'pipeable' => true,
-            'suffix'   => 'bz2',
-            'mime'     => 'application/x-bzip2'
-        ],
-        'zip' => [
-            'pipeable' => false,
-            'suffix'   => 'zip',
-            'mime'     => 'application/zip'
-        ]
-    ];
-
-    /**
-     * Constructor.
-     *
-     * @param string $cmd
-     * @param string $pathToCmd without trailing slash
-     */
-    public function __construct($cmd, $pathToCmd = null)
-    {
-        $this->path     = $pathToCmd;
-        $this->cmd      = $cmd;
-        $this->suffix   = self::$availableCompressors[$cmd]['suffix'];
-        $this->mimeType = self::$availableCompressors[$cmd]['mime'];
-    }
-
     /**
      * Return the cli command.
      *
      * @return string
      */
-    public function getCommand()
-    {
-        return $this->cmd;
-    }
+    public function getCommand();
 
     /**
      * Path getter.
      *
      * @return string
      */
-    public function getPath()
-    {
-        return $this->path;
-    }
+    public function getPath();
 
     /**
-     * Returns the compressor suffix e.g. 'bzip2'
+     * Returns the compressor suffix e.g. 'bz2'
      *
      * @return string
      */
-    public function getSuffix()
-    {
-        return $this->suffix;
-    }
-
-    /**
-     * Is the compression app pipeable.
-     *
-     * @return bool
-     */
-    public function isPipeable()
-    {
-        return self::$availableCompressors[$this->cmd]['pipeable'];
-    }
+    public function getSuffix();
 
     /**
      * Returns the compressor mime type.
      *
      * @return string
      */
-    public function getMimeType()
-    {
-        return $this->mimeType;
-    }
+    public function getMimeType();
 
     /**
-     * Factory method.
+     * Is the compression app pipeable.
      *
-     * @param  string $name
-     * @return \phpbu\App\Backup\Target\Compression
-     * @throws \phpbu\App\Exception
+     * @return bool
      */
-    public static function create($name)
-    {
-        $path = null;
-        // check if a path is given for the compressor
-        if (basename($name) !== $name) {
-            $path = dirname($name);
-            $name = basename($name);
-        }
-
-        if (!isset(self::$availableCompressors[$name])) {
-            throw new Exception('invalid compressor:' . $name);
-        }
-        return new static($name, $path);
-    }
+    public function isPipeable();
 }

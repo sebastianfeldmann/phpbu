@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup;
 
+use phpbu\App\Backup\Target\Compression;
 use phpbu\App\Exception;
 use phpbu\App\Util\Str;
 
@@ -256,8 +257,7 @@ class Target
      */
     public function getFilename($plain = false)
     {
-        return $this->filename
-            . $this->getFilenameSuffix($plain);
+        return $this->filename . $this->getFilenameSuffix($plain);
     }
 
     /**
@@ -278,8 +278,7 @@ class Target
      */
     public function getFilenameRaw($plain = false)
     {
-        return $this->filenameRaw
-            . $this->getFilenameSuffix($plain);
+        return $this->filenameRaw . $this->getFilenameSuffix($plain);
     }
 
     /**
@@ -290,8 +289,17 @@ class Target
      */
     public function getFilenameSuffix($plain = false)
     {
-        return (count($this->fileSuffixes) ? '.' . implode('.', $this->fileSuffixes) : '')
-             . ($plain ? '' : $this->getCompressionSuffix() . $this->getCrypterSuffix());
+        return $this->getSuffixToAppend() . ($plain ? '' : $this->getCompressionSuffix() . $this->getCrypterSuffix());
+    }
+
+    /**
+     * Return added suffixes.
+     *
+     * @return string
+     */
+    public function getSuffixToAppend()
+    {
+        return count($this->fileSuffixes) ? '.' . implode('.', $this->fileSuffixes) : '';
     }
 
     /**
@@ -486,7 +494,7 @@ class Target
     }
 
     /**
-     * Compressor setter.
+     * Compression setter.
      *
      * @param \phpbu\App\Backup\Target\Compression $compression
      */
