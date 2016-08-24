@@ -15,16 +15,30 @@ namespace phpbu\App\Backup\Target\Compression;
 class Zip extends Abstraction
 {
     /**
-     * Zip constructor.
+     * Command name
      *
-     * @param string $path
+     * @var string
      */
-    public function __construct($path = null)
-    {
-        parent::__construct($path);
-        $this->cmd      = 'zip';
-        $this->suffix   = 'zip';
-        $this->mimeType = 'application/zip';
-        $this->pipeable = false;
-    }
+    protected $cmd = 'zip';
+
+    /**
+     * Suffix for compressed files
+     *
+     * @var string
+     */
+    protected $suffix = 'zip';
+
+    /**
+     * MIME type for compressed files
+     *
+     * @var string
+     */
+    protected $mimeType = 'application/zip';
+
+    /**
+     * Can this compression compress piped output
+     *
+     * @var bool
+     */
+    protected $pipeable = false;
 }

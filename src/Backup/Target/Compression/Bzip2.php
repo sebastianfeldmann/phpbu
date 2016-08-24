@@ -15,16 +15,30 @@ namespace phpbu\App\Backup\Target\Compression;
 class Bzip2 extends Abstraction
 {
     /**
-     * Bzip2 constructor.
+     * Command name
      *
-     * @param string $path
+     * @var string
      */
-    public function __construct($path = null)
-    {
-        parent::__construct($path);
-        $this->cmd      = 'bzip2';
-        $this->suffix   = 'bz2';
-        $this->mimeType = 'application/x-bzip2';
-        $this->pipeable = true;
-    }
+    protected $cmd = 'bzip2';
+
+    /**
+     * Suffix for compressed files
+     *
+     * @var string
+     */
+    protected $suffix = 'bz2';
+
+    /**
+     * MIME type for compressed files
+     *
+     * @var string
+     */
+    protected $mimeType = 'application/x-bzip2';
+
+    /**
+     * Can this compression compress piped output
+     *
+     * @var bool
+     */
+    protected $pipeable = true;
 }

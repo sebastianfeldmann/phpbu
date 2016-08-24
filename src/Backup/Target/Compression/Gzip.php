@@ -15,16 +15,30 @@ namespace phpbu\App\Backup\Target\Compression;
 class Gzip extends Abstraction
 {
     /**
-     * Gzip constructor.
+     * Command name
      *
-     * @param string $path
+     * @var string
      */
-    public function __construct($path = null)
-    {
-        parent::__construct($path);
-        $this->cmd      = 'gzip';
-        $this->suffix   = 'gz';
-        $this->mimeType = 'application/x-gzip';
-        $this->pipeable = true;
-    }
+    protected $cmd = 'gzip';
+
+    /**
+     * Suffix for compressed files
+     *
+     * @var string
+     */
+    protected $suffix = 'gz';
+
+    /**
+     * MIME type for compressed files
+     *
+     * @var string
+     */
+    protected $mimeType = 'application/x-gzip';
+
+    /**
+     * Can this compression compress piped output
+     *
+     * @var bool
+     */
+    protected $pipeable = true;
 }
