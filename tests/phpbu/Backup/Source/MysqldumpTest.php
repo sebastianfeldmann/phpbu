@@ -45,7 +45,7 @@ class MysqldumpTest extends CliTest
     {
         $target = $this->getTargetMock();
         $path   = realpath(__DIR__ . '/../../../_files/bin');
-        $this->mysqldump->setup(array('pathToMysqldump' => $path));
+        $this->mysqldump->setup(['pathToMysqldump' => $path]);
 
         $executable = $this->mysqldump->getExecutable($target);
         $cmd        = $executable->getCommandLine();
@@ -68,6 +68,26 @@ class MysqldumpTest extends CliTest
                 'filePerTable'    => 'true',
                 'structureOnly'   => 'foo,bar,baz'
             ]
+        );
+    }
+
+    /**
+     * Tests Mysqldump::getExecutable
+     */
+    public function testPipeCompression()
+    {
+        $target = $this->getTargetMock('/tmp/foo.sql', '/tmp/foo.sql.gz');
+        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+
+        $path = realpath(__DIR__ . '/../../../_files/bin');
+        $this->mysqldump->setup(['pathToMysqldump' => $path]);
+
+        $executable = $this->mysqldump->getExecutable($target);
+        $cmd        = $executable->getCommandLine();
+
+        $this->assertEquals(
+            $path . '/mysqldump --all-databases | ' . $path . '/gzip > /tmp/foo.sql.gz',
+            $cmd
         );
     }
 
@@ -152,6 +172,31 @@ class MysqldumpTest extends CliTest
         $status = $this->mysqldump->backup($target, $appResult);
 
         $this->assertFalse($status->handledCompression());
+    }
+
+    /**
+     * Tests Mysqldump::backup
+     */
+    public function testBackupOkCompressed()
+    {
+        $target = $this->getTargetMock('/tmp/foo.sql', '/tmp/foo.sql.gz');
+        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+
+        $cliResult = $this->getCliResultMock(0, 'mysqldump');
+        $appResult = $this->getAppResultMock();
+        $mysqldump = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Mysqldump')
+                          ->disableOriginalConstructor()
+                          ->getMock();
+
+        $appResult->expects($this->once())->method('debug');
+        $mysqldump->expects($this->once())->method('run')->willReturn($cliResult);
+
+        $path = realpath(__DIR__ . '/../../../_files/bin');
+        $this->mysqldump->setup(array('pathToMysqldump' => $path));
+        $this->mysqldump->setExecutable($mysqldump);
+        $status = $this->mysqldump->backup($target, $appResult);
+
+        $this->assertTrue($status->handledCompression());
     }
 
     /**

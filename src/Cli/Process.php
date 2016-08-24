@@ -2,6 +2,7 @@
 namespace phpbu\App\Cli;
 
 use phpbu\App\Exception;
+use phpbu\App\Util\Cli;
 
 /**
  * Cli Process Runner
@@ -19,7 +20,7 @@ class Process
     /**
      * List of system commands to execute.
      *
-     * @var array<\phpbu\Backup\Cli\Cmd>
+     * @var \phpbu\App\Cli\Cmd[]
      */
     private $commands = [];
 
@@ -29,6 +30,13 @@ class Process
      * @var string
      */
     private $redirectOutput;
+
+    /**
+     * Output pipeline
+     *
+     * @var \phpbu\App\Cli\Cmd[]
+     */
+    private $pipeline = [];
 
     /**
      * Redirect the stdOut.
@@ -61,6 +69,40 @@ class Process
     }
 
     /**
+     * Pipe the command into given command.
+     *
+     * @param  \phpbu\App\Cli\Cmd $cmd
+     * @throws \phpbu\App\Exception
+     */
+    public function pipeOutputTo(Cmd $cmd)
+    {
+        if (!Cli::canPipe()) {
+            throw new Exception('Can\'t pipe output');
+        }
+        $this->pipeline[] = $cmd;
+    }
+
+    /**
+     * Is there a command pipeline.
+     *
+     * @return bool
+     */
+    public function isPiped()
+    {
+        return !empty($this->pipeline);
+    }
+
+    /**
+     * Return command pipeline.
+     *
+     * @return string
+     */
+    public function getPipeline()
+    {
+        return $this->isPiped() ? ' | ' . implode(' | ', $this->pipeline) : '';
+    }
+
+    /**
      * Adds a cli command to the command list.
      *
      * @param \phpbu\App\Cli\Cmd $cmd
@@ -83,6 +125,7 @@ class Process
             throw new Exception('no command to execute');
         }
         $cmd = ($amount > 1 ? '(' . implode(' && ', $this->commands) . ')' : $this->commands[0])
+             . $this->getPipeline()
              . (!empty($this->redirectOutput) ? ' > ' . $this->redirectOutput : '');
 
         return $cmd;

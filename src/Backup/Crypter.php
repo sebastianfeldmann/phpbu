@@ -21,7 +21,7 @@ interface Crypter
      *
      * @param array $options
      */
-    public function setup(array $options = array());
+    public function setup(array $options = []);
 
     /**
      * Checks the created backup.

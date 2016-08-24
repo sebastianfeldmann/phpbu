@@ -127,11 +127,11 @@ class TarTest extends CliTest
      */
     public function testCompressedTarget()
     {
-        $path       = realpath(__DIR__ . '/../../../_files/bin');
-        $compressor = $this->getCompressorMock('gzip', 'gz');
-        $target     = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
+        $path        = realpath(__DIR__ . '/../../../_files/bin');
+        $compression = $this->getCompressionMock('gzip', 'gz');
+        $target      = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
         $target->method('shouldBeCompressed')->willReturn(true);
-        $target->method('getCompressor')->willReturn($compressor);
+        $target->method('getCompression')->willReturn($compression);
         $target->method('getPathname')->willReturn('/tmp/backup.tar.gz');
 
         $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
@@ -143,13 +143,13 @@ class TarTest extends CliTest
     /**
      * Tests Tar::getExec
      */
-    public function testInvalidCompressor()
+    public function testInvalidCompression()
     {
-        $path       = realpath(__DIR__ . '/../../../_files/bin');
-        $compressor = $this->getCompressorMock('zip', 'zip');
-        $target     = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.zip');
+        $path        = realpath(__DIR__ . '/../../../_files/bin');
+        $compression = $this->getCompressionMock('zip', 'zip');
+        $target      = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.zip');
         $target->method('shouldBeCompressed')->willReturn(true);
-        $target->method('getCompressor')->willReturn($compressor);
+        $target->method('getCompression')->willReturn($compression);
         $target->method('getPathname')->willReturn('/tmp/backup.tar.zip');
         $target->method('getPathnamePlain')->willReturn('/tmp/backup.tar');
 
@@ -221,8 +221,8 @@ class TarTest extends CliTest
         $cliResult = $this->getCliResultMock(1, 'tar');
         $appResult = $this->getAppResultMock();
         $tar       = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Tar')
-            ->disableOriginalConstructor()
-            ->getMock();
+                          ->disableOriginalConstructor()
+                          ->getMock();
 
         $appResult->expects($this->once())->method('debug');
         $tar->expects($this->once())->method('run')->willReturn($cliResult);

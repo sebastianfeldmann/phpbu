@@ -97,21 +97,14 @@ abstract class AmazonS3 implements Simulator
         if (!class_exists('\\Aws\\S3\\S3Client')) {
             throw new Exception('Amazon SDK not loaded: use composer to install "aws/aws-sdk-php"');
         }
-        if (!Arr::isSetAndNotEmptyString($config, 'key')) {
-            throw new Exception('AWS key is mandatory');
+
+        // check for mandatory options
+        foreach (['key', 'secret', 'bucket', 'region', 'path'] as $option) {
+            if (!Arr::isSetAndNotEmptyString($config, $option)) {
+                throw new Exception('AWS S3 ' . $option . ' is mandatory');
+            }
         }
-        if (!Arr::isSetAndNotEmptyString($config, 'secret')) {
-            throw new Exception('AWS secret is mandatory');
-        }
-        if (!Arr::isSetAndNotEmptyString($config, 'bucket')) {
-            throw new Exception('AWS S3 bucket name is mandatory');
-        }
-        if (!Arr::isSetAndNotEmptyString($config, 'region')) {
-            throw new Exception('AWS S3 region is mandatory');
-        }
-        if (!Arr::isSetAndNotEmptyString($config, 'path')) {
-            throw new Exception('AWS S3 path / object-key is mandatory');
-        }
+
         $this->key             = $config['key'];
         $this->secret          = $config['secret'];
         $this->bucket          = $config['bucket'];

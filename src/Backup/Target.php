@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup;
 
+use phpbu\App\Backup\Target\Compression;
 use phpbu\App\Exception;
 use phpbu\App\Util\Str;
 
@@ -104,9 +105,9 @@ class Target
     /**
      * File compression.
      *
-     * @var \phpbu\App\Backup\Compressor
+     * @var \phpbu\App\Backup\Target\Compression
      */
-    private $compressor;
+    private $compression;
 
     /**
      * Should the file be encrypted.
@@ -146,7 +147,7 @@ class Target
     public function setPath($path, $time = null)
     {
         $this->pathRaw = $path;
-        if ($this->isContainingPlaceholder($path)) {
+        if (Str::isContainingPlaceholder($path)) {
             $this->pathIsChanging = true;
             // path should be absolute so we remove the root slash
             $dirs = explode('/', substr($this->pathRaw, 1));
@@ -154,7 +155,7 @@ class Target
             $this->pathNotChanging = '';
             $foundChangingElement  = false;
             foreach ($dirs as $d) {
-                if ($foundChangingElement || $this->isContainingPlaceholder($d)) {
+                if ($foundChangingElement || Str::isContainingPlaceholder($d)) {
                     $this->pathElementsChanging[] = $d;
                     $foundChangingElement         = true;
                 } else {
@@ -170,17 +171,6 @@ class Target
     }
 
     /**
-     * Does the path contain a date placeholder.
-     *
-     * @param  string $path
-     * @return bool
-     */
-    public function isContainingPlaceholder($path)
-    {
-        return false !== strpos($path, '%');
-    }
-
-    /**
      * Filename setter.
      *
      * @param string  $file
@@ -189,7 +179,7 @@ class Target
     public function setFile($file, $time = null)
     {
         $this->filenameRaw = $file;
-        if ($this->isContainingPlaceholder($file)) {
+        if (Str::isContainingPlaceholder($file)) {
             $this->filenameIsChanging = true;
             $file                     = Str::replaceDatePlaceholders($file, $time);
         }
@@ -198,7 +188,7 @@ class Target
 
     /**
      * Append another suffix to the filename.
-     * 
+     *
      * @param string $suffix
      */
     public function appendFileSuffix($suffix)
@@ -267,8 +257,7 @@ class Target
      */
     public function getFilename($plain = false)
     {
-        return $this->filename
-            . $this->getFilenameSuffix($plain);
+        return $this->filename . $this->getFilenameSuffix($plain);
     }
 
     /**
@@ -289,8 +278,7 @@ class Target
      */
     public function getFilenameRaw($plain = false)
     {
-        return $this->filenameRaw
-            . $this->getFilenameSuffix($plain);
+        return $this->filenameRaw . $this->getFilenameSuffix($plain);
     }
 
     /**
@@ -301,8 +289,17 @@ class Target
      */
     public function getFilenameSuffix($plain = false)
     {
-        return (count($this->fileSuffixes) ? '.' . implode('.', $this->fileSuffixes) : '')
-             . ($plain ? '' : $this->getCompressorSuffix() . $this->getCrypterSuffix());
+        return $this->getSuffixToAppend() . ($plain ? '' : $this->getCompressionSuffix() . $this->getCrypterSuffix());
+    }
+
+    /**
+     * Return added suffixes.
+     *
+     * @return string
+     */
+    public function getSuffixToAppend()
+    {
+        return count($this->fileSuffixes) ? '.' . implode('.', $this->fileSuffixes) : '';
     }
 
     /**
@@ -310,9 +307,9 @@ class Target
      *
      * @return string
      */
-    public function getCompressorSuffix()
+    public function getCompressionSuffix()
     {
-        return $this->shouldBeCompressed() ? '.' . $this->compressor->getSuffix() : '';
+        return $this->shouldBeCompressed() ? '.' . $this->compression->getSuffix() : '';
     }
 
     /**
@@ -334,7 +331,7 @@ class Target
     {
         $mimeType = $this->mimeType;
         if ($this->shouldBeCompressed()) {
-            $mimeType = $this->compressor->getMimeType();
+            $mimeType = $this->compression->getMimeType();
         }
         return $mimeType;
     }
@@ -490,31 +487,31 @@ class Target
      */
     public function enableCompression()
     {
-        if (null == $this->compressor) {
+        if (null == $this->compression) {
             throw new Exception('can\'t enable compression without a compressor');
         }
         $this->compress = true;
     }
 
     /**
-     * Compressor setter.
+     * Compression setter.
      *
-     * @param \phpbu\App\Backup\Compressor $compressor
+     * @param \phpbu\App\Backup\Target\Compression $compression
      */
-    public function setCompressor(Compressor $compressor)
+    public function setCompression(Target\Compression $compression)
     {
-        $this->compressor = $compressor;
-        $this->compress   = true;
+        $this->compression = $compression;
+        $this->compress    = true;
     }
 
     /**
      * Compressor getter.
      *
-     * @return \phpbu\App\Backup\Compressor
+     * @return \phpbu\App\Backup\Target\Compression
      */
-    public function getCompressor()
+    public function getCompression()
     {
-        return $this->compressor;
+        return $this->compression;
     }
 
     /**

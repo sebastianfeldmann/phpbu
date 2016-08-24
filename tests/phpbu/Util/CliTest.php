@@ -262,6 +262,14 @@ class CliTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Cli::canPipe
+     */
+    public function testCanPipe()
+    {
+        $this->assertEquals(!defined('PHP_WINDOWS_VERSION_BUILD'), Cli::canPipe());
+    }
+
+    /**
      * Tests Cli::removeDir
      */
     public function testRemoveDir()

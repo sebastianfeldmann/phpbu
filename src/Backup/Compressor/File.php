@@ -42,7 +42,7 @@ class File extends Abstraction
             if (!$target->shouldBeCompressed()) {
                 throw new Exception('target should not be compressed at all');
             }
-            $this->executable = new Compressor($target->getCompressor()->getCommand(), $this->pathToCommand);
+            $this->executable = new Compressor($target->getCompression()->getCommand(), $this->pathToCommand);
             $this->executable->force(true)->compressFile($this->path);
         }
         return $this->executable;

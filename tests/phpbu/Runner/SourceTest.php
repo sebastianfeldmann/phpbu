@@ -175,16 +175,16 @@ class SourceTest extends \PHPUnit_Framework_TestCase
                    ->willReturn(true);
 
             if (!$handledCompression) {
-                $compressor = $this->getMockBuilder('\\phpbu\\App\\Backup\\Compressor')
-                                   ->disableOriginalConstructor()
-                                   ->getMock();
-                $compressor->method('getCommand')
-                           ->willReturn($cmd);
+                $compression = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target\\Compression')
+                                    ->disableOriginalConstructor()
+                                    ->getMock();
+                $compression->method('getCommand')
+                            ->willReturn($cmd);
 
 
                 $target->expects($this->exactly($runs))
-                       ->method('getCompressor')
-                       ->willReturn($compressor);
+                       ->method('getCompression')
+                       ->willReturn($compression);
             }
         }
 

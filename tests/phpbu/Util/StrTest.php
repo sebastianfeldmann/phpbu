@@ -20,7 +20,21 @@ class StrTest extends \PHPUnit_Framework_TestCase
     static protected $time;
 
     /**
-     * Test multiple date replacements in one string.
+     * Tests Str::isContainingPlaceholders
+     */
+    public function testIsContainingPlaceholders()
+    {
+        $string = 'my.name-%Y%m%d.suf';
+        $bool   = Str::isContainingPlaceholder($string);
+        $this->assertTrue($bool, 'should contain placeholder');
+
+        $string = 'my.name.suf';
+        $bool   = Str::isContainingPlaceholder($string);
+        $this->assertFalse($bool, 'should not contain placeholder');
+    }
+
+    /**
+     * Tests multiple date replacements in one string.
      */
     public function testReplaceMultipleDatePlaceholder()
     {
@@ -48,22 +62,22 @@ class StrTest extends \PHPUnit_Framework_TestCase
     /**
      * Data provider date placeholder
      *
-     * @return return array
+     * @return array
      */
     public function providerDatePlaceholder()
     {
         $time = self::getTime();
-        return array(
-            array('Y', date('Y', $time)),
-            array('y', date('y', $time)),
-            array('d', date('d', $time)),
-            array('m', date('m', $time)),
-            array('H', date('H', $time)),
-            array('i', date('i', $time)),
-            array('s', date('s', $time)),
-            array('w', date('w', $time)),
-            array('W', date('W', $time)),
-        );
+        return [
+            ['Y', date('Y', $time)],
+            ['y', date('y', $time)],
+            ['d', date('d', $time)],
+            ['m', date('m', $time)],
+            ['H', date('H', $time)],
+            ['i', date('i', $time)],
+            ['s', date('s', $time)],
+            ['w', date('w', $time)],
+            ['W', date('W', $time)],
+        ];
     }
 
     /**
@@ -154,7 +168,7 @@ class StrTest extends \PHPUnit_Framework_TestCase
      */
     public function testPadAll()
     {
-        $padded = Str::padAll(array('foo' => 'bar', 'fiz' => 'baz'), 8);
+        $padded = Str::padAll(['foo' => 'bar', 'fiz' => 'baz'], 8);
         $this->assertEquals(8, strlen($padded['foo']), 'bar should be padded to a length of 8');
         $this->assertEquals(8, strlen($padded['fiz']), 'baz should be padded to a length of 8');
 

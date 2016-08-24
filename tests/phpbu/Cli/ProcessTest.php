@@ -124,4 +124,18 @@ class ProcessTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue((strpos($res->getStdErr(), 'is on stderr') !== false), 'stderr should be found');
     }
+
+    /**
+     * Tests Process::pipe
+     */
+    public function testPipeline()
+    {
+        $cmd        = new Cmd('echo \'foo\'');
+        $compressor = new Cmd('bzip2 \'foo.bz2\'');
+        $process    = new Process();
+        $process->addCommand($cmd);
+        $process->pipeOutputTo($compressor);
+
+        $this->assertEquals('echo \'foo\' | bzip2 \'foo.bz2\'', $process->getCommandLine());
+    }
 }

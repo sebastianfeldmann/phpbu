@@ -102,11 +102,12 @@ trait Rsync
     /**
      * Return rsync location.
      *
-     * @param  \phpbu\App\Backup\Target
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  bool                     $plain
      * @return string
      */
-    protected function getRsyncLocation(Target $target)
+    protected function getRsyncLocation(Target $target, $plain = false)
     {
-        return $this->isDirSync ? $target->getPath() : $target->getPathname();
+        return $this->isDirSync ? $target->getPath() : $target->getPathname($plain);
     }
 }

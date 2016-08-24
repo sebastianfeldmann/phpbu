@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Cli\Executable;
+use phpbu\App\Backup\Target\Compression;
 
 /**
  * Mysqldump Test
@@ -180,6 +181,22 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
         $cmd       = $mysqldump->getCommandLine();
 
         $this->assertEquals($path . '/mysqldump --all-databases --no-data', $cmd);
+    }
+
+    /**
+     * Tests Mysqldump::getCommandLine
+     */
+    public function testCompressor()
+    {
+        $path        = realpath(__DIR__ . '/../../../_files/bin');
+        $compression = Compression\Factory::create($path . '/gzip');
+        $mysqldump   = new Mysqldump($path);
+        $mysqldump->compressOutput($compression)->dumpTo('/tmp/foo.mysql');
+
+        $this->assertEquals(
+            $path . '/mysqldump --all-databases | ' . $path . '/gzip > /tmp/foo.mysql.gz',
+            $mysqldump->getCommandLine()
+        );
     }
 
     /**

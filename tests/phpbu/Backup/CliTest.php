@@ -78,33 +78,36 @@ abstract class CliTest extends \PHPUnit_Framework_TestCase
     {
         $compress = !empty($fileCompressed);
         $pathName = $compress ? $fileCompressed : $file;
-        $target   = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                         ->disableOriginalConstructor()
-                         ->getMock();
+        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
+                       ->disableOriginalConstructor()
+                       ->getMock();
         $target->method('getPathnamePlain')->willReturn($file);
         $target->method('getPathname')->willReturn($pathName);
         $target->method('getPath')->willReturn(dirname($pathName));
         $target->method('fileExists')->willReturn(true);
         $target->method('shouldBeCompressed')->willReturn($compress);
 
+
         return $target;
     }
 
     /**
-     * Create Compressor Mock.
+     * Create Compression Mock.
      *
      * @param  string $cmd
      * @param  string $suffix
-     * @return \phpbu\App\Backup\Compressor
+     * @return \phpbu\App\Backup\Target\Compression
      */
-    protected function getCompressorMock($cmd, $suffix)
+    protected function getCompressionMock($cmd, $suffix)
     {
-        $compressor = $this->getMockBuilder('\\phpbu\\App\\Backup\\Compressor')
-                           ->disableOriginalConstructor()
-                           ->getMock();
-        $compressor->method('getCommand')->willReturn($cmd);
-        $compressor->method('getSuffix')->willReturn($suffix);
+        $compression = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target\\Compression')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        $compression->method('isPipeable')->willReturn(in_array($cmd, ['gzip', 'bzip2']));
+        $compression->method('getCommand')->willReturn($cmd);
+        $compression->method('getSuffix')->willReturn($suffix);
+        $compression->method('getPath')->willReturn(realpath(__DIR__ . '/../../_files/bin'));
 
-        return $compressor;
+        return $compression;
     }
 }
