@@ -234,7 +234,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
                              ->dumpStructureOnly($this->structureOnly)
                              ->dumpTo($this->getDumpTarget($target));
             // if compression is active and commands can be piped
-            if ($target->shouldBeCompressed() && Util\Cli::canPipe()) {
+            if ($this->isHandlingCompression($target)) {
                 $this->executable->compressOutput($target->getCompression());
             }
         }
@@ -256,12 +256,23 @@ class Mysqldump extends SimulatorExecutable implements Simulator
 
         // if compression is active and commands can be piped
         // compression is handled via pipe
-        if ($target->shouldBeCompressed() && Util\Cli::canPipe()) {
+        if ($this->isHandlingCompression($target)) {
             return Status::create();
         }
 
         // default create uncompressed dump file
         return Status::create()->uncompressedFile($this->getDumpTarget($target));
+    }
+
+    /**
+     * Cann compression be handled via pipe operator.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return bool
+     */
+    private function isHandlingCompression(Target $target)
+    {
+        return $target->shouldBeCompressed() && Util\Cli::canPipe() && $target->getCompression()->isPipeable();
     }
 
     /**

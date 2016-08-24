@@ -51,16 +51,19 @@ class Compression
      */
     protected static $availableCompressors = [
         'gzip' => [
-            'suffix' => 'gz',
-            'mime'   => 'application/x-gzip'
+            'pipeable' => true,
+            'suffix'   => 'gz',
+            'mime'     => 'application/x-gzip'
         ],
         'bzip2' => [
-            'suffix' => 'bz2',
-            'mime'   => 'application/x-bzip2'
+            'pipeable' => true,
+            'suffix'   => 'bz2',
+            'mime'     => 'application/x-bzip2'
         ],
         'zip' => [
-            'suffix' => 'zip',
-            'mime'   => 'application/zip'
+            'pipeable' => false,
+            'suffix'   => 'zip',
+            'mime'     => 'application/zip'
         ]
     ];
 
@@ -109,6 +112,16 @@ class Compression
     }
 
     /**
+     * Is the compression app pipeable.
+     *
+     * @return bool
+     */
+    public function isPipeable()
+    {
+        return self::$availableCompressors[$this->cmd]['pipeable'];
+    }
+
+    /**
      * Returns the compressor mime type.
      *
      * @return string
@@ -122,7 +135,7 @@ class Compression
      * Factory method.
      *
      * @param  string $name
-     * @return \phpbu\App\Backup\Compressor
+     * @return \phpbu\App\Backup\Target\Compression
      * @throws \phpbu\App\Exception
      */
     public static function create($name)

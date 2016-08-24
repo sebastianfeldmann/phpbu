@@ -103,6 +103,7 @@ abstract class CliTest extends \PHPUnit_Framework_TestCase
         $compression = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target\\Compression')
                             ->disableOriginalConstructor()
                             ->getMock();
+        $compression->method('isPipeable')->willReturn(in_array($cmd, ['gzip', 'bzip2']));
         $compression->method('getCommand')->willReturn($cmd);
         $compression->method('getSuffix')->willReturn($suffix);
         $compression->method('getPath')->willReturn(realpath(__DIR__ . '/../../_files/bin'));

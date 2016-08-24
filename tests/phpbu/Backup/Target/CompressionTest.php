@@ -48,6 +48,21 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test Compression::isPipeable
+     */
+    public function testIsPipeable()
+    {
+        $gzip = Compression::create('gzip');
+        $this->assertTrue($gzip->isPipeable());
+
+        $bzip = Compression::create('bzip2');
+        $this->assertTrue($bzip->isPipeable());
+
+        $zip = Compression::create('zip');
+        $this->assertFalse($zip->isPipeable());
+    }
+
+    /**
      * Test zip compressor
      */
     public function testZip()
