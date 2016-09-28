@@ -28,6 +28,9 @@
   <option name="lockTables" value="true" />
 
   <!-- optional, default=false -->
+  <option name="singleTransaction" value="true" />
+
+  <!-- optional, default=false -->
   <option name="compress" value="true" />
 
   <!-- optional, default=false -->

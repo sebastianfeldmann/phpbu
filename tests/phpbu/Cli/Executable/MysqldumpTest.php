@@ -92,6 +92,20 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Mysqldump::getCommandLine
+     */
+    public function testSingleTransaction()
+    {
+        $path      = realpath(__DIR__ . '/../../../_files/bin');
+        $mysqldump = new Mysqldump($path);
+        $mysqldump->singleTransaction(true);
+
+        $cmd = $mysqldump->getCommandLine();
+
+        $this->assertEquals($path . '/mysqldump --single-transaction --all-databases', $cmd);
+    }
+
+    /**
      * Tests Mysqldump::useExtendedInsert
      */
     public function testUseExtendedInsert()
