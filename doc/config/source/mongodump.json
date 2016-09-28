@@ -9,6 +9,6 @@
     "collections": "myCollection1,myCollection2,myCollection3",
     "excludeCollections": "myCollectionToExclude1,myCollectionToExclude2",
     "excludeCollectionsWithPrefix": "myExcludePrefix1,myExcludePrefix2",
-    "ipv6": "true"
+    "ipv6": true
   }
 }

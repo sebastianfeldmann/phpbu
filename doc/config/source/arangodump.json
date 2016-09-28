@@ -4,10 +4,10 @@
     "endpoint": "tcp://host:8529",
     "username": "myUserName",
     "password": "mySecretPassword",
-    "disableAuthentication": "true",
+    "disableAuthentication": true,
     "database": "myDatabase",
-    "dumpData": "true",
-    "includeSystemCollections": "true",
+    "dumpData": true,
+    "includeSystemCollections": true,
     "collections": "myCollection1,myCollection2"
   }
 }

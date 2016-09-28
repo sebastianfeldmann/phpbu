@@ -6,6 +6,6 @@
     "bucket": "some-s3-bucket",
     "region": "aws-region",
     "path": "backup",
-    "useMultiPartUpload": "false"
+    "useMultiPartUpload": false
   }
 }

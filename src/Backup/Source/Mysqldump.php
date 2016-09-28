@@ -98,13 +98,20 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     private $quick;
 
     /**
-     *
      * Lock tables option
      * --lock-tables
      *
      * @var bool
      */
     private $lockTables;
+
+    /**
+     * Single Transaction option
+     * --single-transaction
+     *
+     * @var bool
+     */
+    private $singleTransaction;
 
     /**
      * Use mysqldump with compression
@@ -149,17 +156,18 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     {
         $this->setupSourceData($conf);
 
-        $this->pathToMysqldump = Util\Arr::getValue($conf, 'pathToMysqldump');
-        $this->host            = Util\Arr::getValue($conf, 'host');
-        $this->user            = Util\Arr::getValue($conf, 'user');
-        $this->password        = Util\Arr::getValue($conf, 'password');
-        $this->hexBlob         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'hexBlob', ''), false);
-        $this->quick           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
-        $this->lockTables      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'lockTables', ''), false);
-        $this->compress        = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
-        $this->extendedInsert  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'extendedInsert', ''), false);
-        $this->noData          = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
-        $this->filePerTable    = Util\Str::toBoolean(Util\Arr::getValue($conf, 'filePerTable', ''), false);
+        $this->pathToMysqldump   = Util\Arr::getValue($conf, 'pathToMysqldump');
+        $this->host              = Util\Arr::getValue($conf, 'host');
+        $this->user              = Util\Arr::getValue($conf, 'user');
+        $this->password          = Util\Arr::getValue($conf, 'password');
+        $this->hexBlob           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'hexBlob', ''), false);
+        $this->quick             = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
+        $this->lockTables        = Util\Str::toBoolean(Util\Arr::getValue($conf, 'lockTables', ''), false);
+        $this->singleTransaction = Util\Str::toBoolean(Util\Arr::getValue($conf, 'singleTransaction', ''), false);
+        $this->compress          = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
+        $this->extendedInsert    = Util\Str::toBoolean(Util\Arr::getValue($conf, 'extendedInsert', ''), false);
+        $this->noData            = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
+        $this->filePerTable      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'filePerTable', ''), false);
 
         // this doesn't fail, but it doesn't work, so throw an exception so the user understands
         if ($this->filePerTable && count($this->structureOnly)) {
@@ -227,6 +235,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
                              ->useCompression($this->compress)
                              ->useExtendedInsert($this->extendedInsert)
                              ->dumpTables($this->tables)
+                             ->singleTransaction($this->singleTransaction)
                              ->dumpDatabases($this->databases)
                              ->ignoreTables($this->ignoreTables)
                              ->produceFilePerTable($this->filePerTable)

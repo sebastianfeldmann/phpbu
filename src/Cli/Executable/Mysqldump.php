@@ -86,13 +86,20 @@ class Mysqldump extends Abstraction implements Executable
     private $quick = false;
 
     /**
-     *
      * Lock tables option
      * --lock-tables
      *
      * @var bool
      */
     private $lockTables;
+
+    /**
+     * Issue a BEGIN SQL statement before dumping data from server
+     * --single-transaction
+     *
+     * @var bool
+     */
+    private $singleTransaction;
 
     /**
      * Use mysqldump with compression
@@ -206,6 +213,18 @@ class Mysqldump extends Abstraction implements Executable
     public function lockTables($bool)
     {
         $this->lockTables = $bool;
+        return $this;
+    }
+
+    /**
+     * Use '--single-transaction' option.
+     *
+     * @param  boolean $bool
+     * @return \phpbu\App\Cli\Executable\Mysqldump
+     */
+    public function singleTransaction($bool)
+    {
+        $this->singleTransaction = $bool;
         return $this;
     }
 
@@ -354,6 +373,7 @@ class Mysqldump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('--password', $this->password);
         $cmd->addOptionIfNotEmpty('--host', $this->host);
         $cmd->addOptionIfNotEmpty('--lock-tables', $this->lockTables, false);
+        $cmd->addOptionIfNotEmpty('--single-transaction', $this->singleTransaction, false);
         $cmd->addOptionIfNotEmpty('-q', $this->quick, false);
         $cmd->addOptionIfNotEmpty('-C', $this->compress, false);
         $cmd->addOptionIfNotEmpty('-e', $this->extendedInsert, false);

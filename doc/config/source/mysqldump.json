@@ -8,10 +8,11 @@
     "tables": "myTable1,myTable2,myTable3",
     "ignoreTables": "myTableToIgnore1,myTableToIgnore2",
     "structureOnly": "myTableWithoutData1,myTableWithoutData2",
-    "quick": "true",
-    "lockTables": "true",
-    "compress": "true",
-    "extendedInsert": "true",
-    "hexBlob": "true"
+    "quick": true,
+    "lockTables": true,
+    "singleTransaction": true,
+    "compress": true,
+    "extendedInsert": true,
+    "hexBlob": true
   }
 }
