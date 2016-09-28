@@ -98,8 +98,10 @@ class StrTest extends \PHPUnit_Framework_TestCase
     public function testToBooleanMatch()
     {
         $this->assertTrue(Str::toBoolean('true', false));
+        $this->assertTrue(Str::toBoolean(true, false));
         $this->assertTrue(Str::toBoolean('tRuE', false));
         $this->assertTrue(Str::toBoolean('TRUE', false));
+        $this->assertFalse(Str::toBoolean(false, true));
         $this->assertFalse(Str::toBoolean('false', true));
         $this->assertFalse(Str::toBoolean('fAlSe', true));
         $this->assertFalse(Str::toBoolean('FALSE', true));

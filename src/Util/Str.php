@@ -77,12 +77,15 @@ class Str
     /**
      * Converts a given value to boolean.
      *
-     * @param  string  $value
-     * @param  boolean $default
-     * @return boolean
+     * @param  string $value
+     * @param  bool   $default
+     * @return bool
      */
     public static function toBoolean($value, $default)
     {
+        if (is_bool($value)) {
+            return $value;
+        }
         if (strtolower($value) == 'false') {
             return false;
         } elseif (strtolower($value) == 'true') {
@@ -108,7 +111,7 @@ class Str
      *
      * @param  string $value
      * @throws \RuntimeException
-     * @return integer
+     * @return int
      */
     public static function toBytes($value)
     {
@@ -235,8 +238,8 @@ class Str
     /**
      * Appends a plural "s" or "'s".
      *
-     * @param  string  $subject
-     * @param  integer $amount
+     * @param  string $subject
+     * @param  int    $amount
      * @return string
      */
     public static function appendPluralS($subject, $amount)
