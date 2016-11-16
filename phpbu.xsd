@@ -2,12 +2,26 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:annotation>
     <xs:documentation source="http://www.phpbu.de/">
-    This schema file defines the rules by which the XML configuration file of phpbu 3.2 may be structured.
+    This schema file defines the rules by which the XML configuration file of phpbu 4.0 may be structured.
     </xs:documentation>
   </xs:annotation>
 
   <xs:element name="phpbu" type="phpbuType">
   </xs:element>
+
+  <xs:complexType name="adaptersType">
+    <xs:sequence>
+      <xs:element name="adapter" type="adapterType" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="adapterType">
+    <xs:sequence>
+      <xs:element name="option" type="nameValueType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="type" type="xs:string"/>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
 
   <xs:complexType name="phpType">
     <xs:sequence>
@@ -118,6 +132,7 @@
 
   <xs:group name="configGroup">
     <xs:all>
+      <xs:element name="adapters" type="adaptersType" minOccurs="0" maxOccurs="1"/>
       <xs:element name="php" type="phpType" minOccurs="0" maxOccurs="1"/>
       <xs:element name="logging" type="loggersType" minOccurs="0" maxOccurs="1"/>
       <xs:element name="backups" type="backupsType" minOccurs="0" maxOccurs="1"/>
