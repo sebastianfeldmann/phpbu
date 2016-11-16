@@ -40,18 +40,6 @@ class Status
     /**
      * Source does not handle compression.
      *
-     * @deprecated use uncompressedFile instead
-     * @param      string $path
-     * @return     \phpbu\App\Backup\Source\Status
-     */
-    public function uncompressed($path)
-    {
-        return $this->uncompressedFile($path);
-    }
-
-    /**
-     * Source does not handle compression.
-     *
      * @param  string $path
      * @return \phpbu\App\Backup\Source\Status
      */
