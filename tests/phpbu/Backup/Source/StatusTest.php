@@ -36,20 +36,6 @@ class StatusTest extends \PHPUnit_Framework_TestCase
         $status->getDataPath();
     }
 
-
-    /**
-     * Tests Status::getDataPath
-     *
-     * @deprecated test deprecated method
-     */
-    public function testUncompressedFileDeprecated()
-    {
-        $status = Status::create()->uncompressed('/foo.dump');
-
-        $this->assertFalse($status->handledCompression());
-        $this->assertEquals('/foo.dump', $status->getDataPath());
-    }
-
     /**
      * Tests Status::getDataPath
      */
