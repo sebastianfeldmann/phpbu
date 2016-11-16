@@ -105,6 +105,14 @@
 
   <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
 
+   <!-- DOTENV -->
+   <copy file="${basedir}/vendor/vlucas/phpdotenv/LICENSE.txt" tofile="${basedir}/build/phar/lib/phpdotenv/LICENSE"/>
+   <copy todir="${basedir}/build/phar/lib/phpdotenv">
+     <fileset dir="${basedir}/vendor/vlucas/phpdotenv/src">
+       <include name="**/*.php" />
+     </fileset>
+   </copy>
+
   <!-- DROPBOX SDK -->
   <copy file="${basedir}/vendor/dropbox/dropbox-sdk/License.txt" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
   <copy todir="${basedir}/build/phar/lib/dropbox">
