@@ -27,7 +27,7 @@ class Logger extends Optionized
      * @param string $type
      * @param array  $options
      */
-    public function __construct($type, $options = array())
+    public function __construct($type, $options = [])
     {
         $this->type = $type;
         $this->setOptions($options);
