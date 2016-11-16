@@ -33,6 +33,17 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Factory::createAdapter
+     */
+    public function testCreateAdapter()
+    {
+        $factory = new Factory();
+        $adapter = $factory->createAdapter('env', []);
+
+        $this->assertEquals('phpbu\\App\\Adapter\\Env', get_class($adapter), 'adapter classes should match');
+    }
+
+    /**
      * Tests Factory::createSource
      */
     public function testCreateSource()
@@ -136,6 +147,21 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     public function testRegisterInvalidType()
     {
         Factory::register('invalid', 'dummy', '\\phpbu\\App\\phpbuAppFactoryTestCheck');
+
+        $this->assertFalse(true, 'Exception should be thrown');
+    }
+
+    /**
+     * Tests Factory::createAdapter
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testCreateAdapterThatIsNone()
+    {
+        Factory::register('adapter', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+
+        $factory = new Factory();
+        $factory->createAdapter('nothing');
 
         $this->assertFalse(true, 'Exception should be thrown');
     }

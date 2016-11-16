@@ -30,6 +30,10 @@ class Factory
     private static $classMap = [
         // type
         //   alias => fqcn
+        'adapter'  => [
+            'env'    => '\\phpbu\\App\\Adapter\\Env',
+            'dotenv' => '\\phpbu\\App\\Adapter\\DotEnv',
+        ],
         'runner' => [
             'bootstrap' => '\\phpbu\\App\\Runner\\Bootstrap',
             'check'     => '\\phpbu\\App\\Runner\\Check',
@@ -119,12 +123,31 @@ class Factory
     }
 
     /**
+     * Adapter Factory.
+     *
+     * @param  string $alias
+     * @param  array  $conf
+     * @throws \phpbu\App\Exception
+     * @return \phpbu\App\Adapter
+     */
+    public function createAdapter($alias, $conf = [])
+    {
+        /** @var \phpbu\App\Adapter $adapter */
+        $adapter = $this->create('adapter', $alias);
+        if (!($adapter instanceof Adapter)) {
+            throw new Exception(sprintf('adapter \'%s\' has to implement the \'Adapter\' interfaces', $alias));
+        }
+        $adapter->setup($conf);
+        return $adapter;
+    }
+
+    /**
      * Logger Factory.
      *
      * @param  string $alias
      * @param  array  $conf
      * @throws \phpbu\App\Exception
-     * @return \phpbu\App\Backup\Source
+     * @return \phpbu\App\Log\Logger
      */
     public function createLogger($alias, $conf = [])
     {
@@ -236,7 +259,7 @@ class Factory
     /**
      * Extend the backup factory.
      *
-     * @param  string  $type        Type to create 'source', 'check', 'sync' or 'cleaner'
+     * @param  string  $type        Type to create 'adapter', 'source', 'check', 'sync' or 'cleaner'
      * @param  string  $alias       Name the class is registered at
      * @param  string  $fqcn        Full Qualified Class Name
      * @param  boolean $force       Overwrite already registered class
@@ -263,7 +286,7 @@ class Factory
     {
         if (!isset(self::$classMap[$type])) {
             throw new Exception(
-                'invalid type, use \'runner\' \'source\', \'check\', \'sync\', \'cleaner\' or \'logger\''
+                'invalid type, please use only \'' . implode('\', \'', array_keys(self::$classMap)) . '\''
             );
         }
     }
