@@ -87,6 +87,29 @@ class Json extends File implements Loader
     }
 
     /**
+     * Return list of adapter configs.
+     *
+     * @return array
+     * @throws \phpbu\App\Exception
+     */
+    protected function getAdapterConfigs()
+    {
+        $adapters = [];
+        if (isset($this->json['adapters'])) {
+            foreach ($this->json['adapters'] as $a) {
+                if (!isset($a['type'])) {
+                    throw new Exception('invalid adapter configuration: type missing');
+                }
+                if (!isset($a['name'])) {
+                    throw new Exception('invalid adapter configuration: name missing');
+                }
+                $adapters[] = new Configuration\Adapter($a['type'], $a['name'], $this->getOptions($a));
+            }
+        }
+        return $adapters;
+    }
+
+    /**
      * Set the phpbu application settings.
      *
      * @param \phpbu\App\Configuration $configuration
@@ -326,7 +349,13 @@ class Json extends File implements Loader
      */
     protected function getOptions(array $json)
     {
-        return isset($json['options']) ? $json['options'] : array();
+        $options = isset($json['options']) ? $json['options'] : [];
+
+        foreach ($options as $name => $value) {
+            $options[$name] = $this->getOptionValue($value);
+        }
+
+        return $options;
     }
 
     /**

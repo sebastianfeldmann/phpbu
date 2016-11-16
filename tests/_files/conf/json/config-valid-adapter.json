@@ -1,0 +1,79 @@
+{
+  "verbose": false,
+  "colors": true,
+  "bootstrap": "backup/bootstrap.php",
+  "adapters": [
+    {
+      "type": "fake",
+      "name": "foo"
+    }
+  ],
+  "php": {
+    "includePath": ["."],
+    "ini": {
+      "max_execution_time": 0
+    }
+  },
+  "logging": [
+    {
+      "type": "json",
+      "target": "backup/json.log"
+    },
+    {
+      "type": "mail",
+      "options": {
+        "recipients": "forename.lastname@example.com",
+        "sendOnlyOnError": true,
+        "sender.mail": "no-replay@example.com",
+        "transport": "sendmail",
+        "sendmail.path": "/usr/sbin/sendmail",
+        "sendmail.options": "-bs"
+      }
+    }
+  ],
+  "backups": [
+    {
+      "name": "tarball",
+      "source": {
+        "type": "tar",
+        "options": {
+          "path": "src"
+        }
+      },
+      "target": {
+        "dirname": "backup/src",
+        "filename": "tarball-%Y%m%d-%H%i.tar",
+        "compress": "bzip2"
+      },
+      "checks": [
+        {
+          "type": "SizeMin",
+          "value": "10M"
+        }
+      ],
+      "crypt": {
+        "type": "openssl",
+        "options": {
+          "certFile": "myCertificate.pem",
+          "algorithm": "aes256",
+          "keepUncryptedFile": "false"
+        }
+      },
+      "syncs": [
+        {
+          "type": "dropbox",
+          "options": {
+            "token": "adapter:foo:some.path",
+            "path": "/phpbu-backup/%Y"
+          }
+        }
+      ],
+      "cleanup": {
+        "type": "Capacity",
+        "options": {
+          "size": "5M"
+        }
+      }
+    }
+  ]
+}

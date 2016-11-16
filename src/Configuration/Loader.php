@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Configuration;
 
+use phpbu\App\Factory;
+
 /**
  * Configuration loader interface.
  *
@@ -17,7 +19,8 @@ interface Loader
     /**
      * Returns the phpbu Configuration.
      *
+     * @param  \phpbu\App\Factory $factory
      * @return \phpbu\App\Configuration
      */
-    public function getConfiguration();
+    public function getConfiguration(Factory $factory);
 }

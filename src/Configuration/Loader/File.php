@@ -3,6 +3,7 @@ namespace phpbu\App\Configuration\Loader;
 
 use phpbu\App\Configuration;
 use phpbu\App\Exception;
+use phpbu\App\Factory as AppFactory;
 use phpbu\App\Util\Cli;
 
 /**
@@ -27,12 +28,22 @@ abstract class File
     protected $filename;
 
     /**
+     * Path to config file.
+     *
+     * @var array
+     */
+    protected $adapters;
+
+    /**
      * Returns the phpbu Configuration.
      *
+     * @param  \phpbu\App\Factory $factory
      * @return \phpbu\App\Configuration
      */
-    public function getConfiguration()
+    public function getConfiguration(AppFactory $factory)
     {
+        $this->setupAdapters($factory);
+
         $configuration = new Configuration();
         $configuration->setFilename($this->filename);
 
@@ -43,6 +54,40 @@ abstract class File
 
         return $configuration;
     }
+
+    /**
+     * Load all available config adapters.
+     *
+     * @param \phpbu\App\Factory $factory
+     */
+    protected function setupAdapters(AppFactory $factory)
+    {
+        foreach ($this->getAdapterConfigs() as $config) {
+            $this->adapters[$config->name] = $factory->createAdapter($config->type, $config->options);
+        }
+    }
+
+    /**
+     * Return a registered adapter.
+     *
+     * @param  string $name
+     * @return \phpbu\App\Adapter
+     * @throws \phpbu\App\Exception
+     */
+    protected function getAdapter($name)
+    {
+        if (!isset($this->adapters[$name])) {
+            throw new Exception('no adapter registered with name: ' . $name);
+        }
+        return $this->adapters[$name];
+    }
+
+    /**
+     * Return list of adapter configs.
+     *
+     * @return array
+     */
+    abstract protected function getAdapterConfigs();
 
     /**
      * Set the phpbu application settings.
@@ -85,6 +130,24 @@ abstract class File
     protected function toAbsolutePath($path, $useIncludePath = false)
     {
         return Cli::toAbsolutePath($path, dirname($this->filename), $useIncludePath);
+    }
+
+    /**
+     * Return option value.
+     * Checks if the value should be fetched from an Adapter, if not it just returns the value.
+     *
+     * @param  string $value
+     * @return string
+     */
+    protected function getOptionValue($value)
+    {
+        $match = [];
+        if (preg_match('#^adapter:([a-z0-9_\-]+):(.+)#i', $value, $match)) {
+            $adapter = $match[1];
+            $path    = $match[2];
+            $value   = $this->getAdapter($adapter)->getValue($path);
+        }
+        return $value;
     }
 
     /**

@@ -96,11 +96,12 @@ class Cmd
         $this->handleOpt($args);
         $this->findConfiguration();
 
-        $ret    = self::EXIT_FAILURE;
-        $runner = new Runner(new Factory());
+        $ret     = self::EXIT_FAILURE;
+        $factory = new Factory();
+        $runner  = new Runner($factory);
 
         try {
-            $result = $runner->run($this->createConfiguration());
+            $result = $runner->run($this->createConfiguration($factory));
 
             if ($result->wasSuccessful()) {
                 $ret = self::EXIT_SUCCESS;
@@ -237,12 +238,13 @@ class Cmd
     /**
      * Create a application configuration.
      *
+     * @param  \phpbu\App\Factory $factory
      * @return \phpbu\App\Configuration
      */
-    protected function createConfiguration()
+    protected function createConfiguration(Factory $factory)
     {
         $configLoader  = Configuration\Loader\Factory::createLoader($this->arguments['configuration']);
-        $configuration = $configLoader->getConfiguration();
+        $configuration = $configLoader->getConfiguration($factory);
 
         // command line arguments overrule the config file settings
         $this->overrideConfigWithArgument($configuration, 'verbose');

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpbu bootstrap="backup/bootstrap.php"
+       verbose="false"
+       colors="true">
+
+  <adapters>
+    <adapter type="fake">
+      <option name="foo" value="bar" />
+    </adapter>
+  </adapters>
+
+  <php>
+    <includePath>.</includePath>
+    <ini name="max_execution_time" value="0"/>
+  </php>
+
+  <logging>
+    <log type="json" target="backup/json.log"/>
+    <log type="mail">
+      <option name="recipients" value="forename.lastname@example.com" />
+      <option name="sendOnlyOnError" value="true" />
+      <option name="sender.mail" value="no-replay@example.com" />
+      <option name="transport" value="mail" />
+    </log>
+  </logging>
+
+  <backups>
+    <backup name="tarball">
+      <source type="tar">
+        <option name="path" value="src"/>
+      </source>
+
+      <target dirname="backup/src" filename="tarball-%Y%m%d-%H%i.tar" compress="bzip2"/>
+
+      <check type="SizeMin" value="10M" />
+
+      <crypt type="mcrypt">
+        <option name="key" value="mySecretKey"/>
+      </crypt>
+
+      <sync type="sftp" skipOnFailure="true">
+        <option name="host" value="example.com"/>
+        <option name="user" value="nobody"/>
+        <option name="password" value="adapter:foo:some.path"/>
+        <option name="path" value="phpbu-backup/%Y"/>
+      </sync>
+
+      <cleanup type="Capacity" skipOnFailure="true">
+        <option name="size" value="50k"/>
+      </cleanup>
+    </backup>
+  </backups>
+</phpbu>

@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Configuration\Loader;
+use phpbu\App\Factory;
 
 /**
  * Xml Configuration Loader test
@@ -14,6 +15,19 @@ namespace phpbu\App\Configuration\Loader;
  */
 class XmlTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \phpbu\App\Factory
+     */
+    protected static $factory;
+
+    /**
+     * Create the AppFactory
+     */
+    public static function setUpBeforeClass()
+    {
+        self::$factory = new Factory();
+    }
+
     /**
      * Tests Xml::loadXmlFile
      *
@@ -46,7 +60,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
     {
         $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-target.xml');
         $loader = new Xml($file);
-        $config = $loader->getConfiguration();
+        $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
     }
 
@@ -59,7 +73,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
     {
         $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-source.xml');
         $loader = new Xml($file);
-        $config = $loader->getConfiguration();
+        $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
     }
 
@@ -72,7 +86,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
     {
         $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-source-type.xml');
         $loader = new Xml($file);
-        $config = $loader->getConfiguration();
+        $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
     }
 
@@ -85,7 +99,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
     {
         $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-logger-type.xml');
         $loader = new Xml($file);
-        $config = $loader->getConfiguration();
+        $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
     }
 
@@ -98,7 +112,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
     {
         $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-cleanup-type.xml');
         $loader = new Xml($file);
-        $config = $loader->getConfiguration();
+        $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
     }
 
@@ -111,7 +125,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
     {
         $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-crypt-type.xml');
         $loader = new Xml($file);
-        $config = $loader->getConfiguration();
+        $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
     }
 
@@ -124,7 +138,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
     {
         $file   = realpath(__DIR__ . '/../../../_files/conf/xml/config-no-sync-type.xml');
         $loader = new Xml($file);
-        $config = $loader->getConfiguration();
+        $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
     }
 
@@ -136,7 +150,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
         $dir    = realpath(__DIR__ . '/../../../_files/conf/xml');
         $file   = 'config-valid.xml';
         $loader = new Xml($dir . '/' . $file);
-        $config = $loader->getConfiguration();
+        $config = $loader->getConfiguration(self::$factory);
 
         $this->assertEquals($dir . '/backup/bootstrap.php', $config->getBootstrap());
         $this->assertEquals(true, $config->getColors());
@@ -151,7 +165,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
         $dir    = realpath(__DIR__ . '/../../../_files/conf/xml');
         $file   = 'config-valid.xml';
         $loader = new Xml($dir . '/' . $file);
-        $conf   = $loader->getConfiguration();
+        $conf   = $loader->getConfiguration(self::$factory);
         $ini    = $conf->getIniSettings();
         $path   = $conf->getIncludePaths();
 
@@ -168,7 +182,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
         $dir      = realpath(__DIR__ . '/../../../_files/conf/xml');
         $file     = 'config-valid.xml';
         $loader   = new Xml($dir . '/' . $file);
-        $conf     = $loader->getConfiguration();
+        $conf     = $loader->getConfiguration(self::$factory);
         $settings = $conf->getIniSettings();
         $backups  = $conf->getBackups();
         $backup   = $backups[0];
@@ -200,7 +214,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
     {
         $xml     = realpath(__DIR__ . '/../../../_files/conf/xml/config-invalid-checks.xml');
         $loader  = new Xml($xml);
-        $conf    = $loader->getConfiguration();
+        $conf    = $loader->getConfiguration(self::$factory);
         $backups = $conf->getBackups();
         $backup  = $backups[0];
 
@@ -218,7 +232,7 @@ class XmlTest extends \PHPUnit_Framework_TestCase
         $dir     = realpath(__DIR__ . '/../../../_files/conf/xml');
         $file    = 'config-valid.xml';
         $loader  = new Xml($dir . '/' . $file);
-        $conf    = $loader->getConfiguration();
+        $conf    = $loader->getConfiguration(self::$factory);
         $loggers = $conf->getLoggers();
         $log1    = $loggers[0];
 
@@ -234,10 +248,69 @@ class XmlTest extends \PHPUnit_Framework_TestCase
     {
         $xml     = realpath(__DIR__ . '/../../../_files/conf/xml/config-logging.xml');
         $loader  = new Xml($xml);
-        $conf    = $loader->getConfiguration();
+        $conf    = $loader->getConfiguration(self::$factory);
         $loggers = $conf->getLoggers();
 
         $this->assertTrue(is_array($loggers));
         $this->assertEquals(1, count($loggers), 'should be exactly one logger');
+    }
+
+    /**
+     * Tests Xml::getConfiguration
+     */
+    public function testGetAdapterConfigs()
+    {
+        Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
+        $dir     = realpath(__DIR__ . '/../../../_files/conf/xml');
+        $file    = 'config-valid-adapter.xml';
+        $loader  = new Xml($dir . '/' . $file);
+        $conf    = $loader->getConfiguration(self::$factory);
+        $backups = $conf->getBackups();
+        $backup  = $backups[0];
+        $syncs   = $backup->getSyncs();
+        $sync    = $syncs[0];
+        $this->assertEquals('secret', $sync->options['password']);
+    }
+
+    /**
+     * Tests Xml::getConfiguration
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testInvalidAdapterRef()
+    {
+        Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
+        $dir     = realpath(__DIR__ . '/../../../_files/conf/xml');
+        $file    = 'config-no-adapter.xml';
+        $loader  = new Xml($dir . '/' . $file);
+        $loader->getConfiguration(self::$factory);
+    }
+
+    /**
+     * Tests Xml::getConfiguration
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testInvalidAdapterNoType()
+    {
+        Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
+        $dir     = realpath(__DIR__ . '/../../../_files/conf/xml');
+        $file    = 'config-no-adapter-type.xml';
+        $loader  = new Xml($dir . '/' . $file);
+        $loader->getConfiguration(self::$factory);
+    }
+
+    /**
+     * Tests Xml::getConfiguration
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testInvalidAdapterNoName()
+    {
+        Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
+        $dir     = realpath(__DIR__ . '/../../../_files/conf/xml');
+        $file    = 'config-no-adapter-name.xml';
+        $loader  = new Xml($dir . '/' . $file);
+        $loader->getConfiguration(self::$factory);
     }
 }

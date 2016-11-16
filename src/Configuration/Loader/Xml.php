@@ -100,6 +100,31 @@ class Xml extends File implements Loader
     }
 
     /**
+     * Return list of adapter configs.
+     *
+     * @return array
+     * @throws \phpbu\App\Exception
+     */
+    protected function getAdapterConfigs()
+    {
+        $adapters = [];
+        /** @var \DOMElement $adapterNode */
+        foreach ($this->xpath->query('adapters/adapter') as $adapterNode) {
+            $type    = $adapterNode->getAttribute('type');
+            $name    = $adapterNode->getAttribute('name');
+            $options = $this->getOptions($adapterNode);
+            if (!$type) {
+                throw new Exception('invalid adapter configuration: attribute type missing');
+            }
+            if (!$name) {
+                throw new Exception('invalid adapter configuration: attribute name missing');
+            }
+            $adapters[] = new Configuration\Adapter($type, $name, $options);
+        }
+        return $adapters;
+    }
+
+    /**
      * Set the phpbu application settings.
      *
      * @param  \phpbu\App\Configuration $configuration
@@ -352,11 +377,11 @@ class Xml extends File implements Loader
      */
     protected function getOptions(DOMElement $node)
     {
-        $options = array();
+        $options = [];
         /** @var \DOMElement $optionNode */
         foreach ($node->getElementsByTagName('option') as $optionNode) {
             $name           = $optionNode->getAttribute('name');
-            $value          = $optionNode->getAttribute('value');
+            $value          = $this->getOptionValue($optionNode->getAttribute('value'));
             $options[$name] = $value;
         }
         return $options;
