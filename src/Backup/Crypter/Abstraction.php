@@ -2,8 +2,8 @@
 namespace phpbu\App\Backup\Crypter;
 
 use phpbu\App\Backup\Cli;
-use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Target;
+use phpbu\App\Configuration;
 use phpbu\App\Result;
 use phpbu\App\Util;
 
@@ -63,6 +63,6 @@ abstract class Abstraction extends Cli
      */
     protected function toAbsolutePath($path, $default = null)
     {
-        return !empty($path) ? Util\Cli::toAbsolutePath($path, Util\Cli::getBase('configuration')) : $default;
+        return !empty($path) ? Util\Cli::toAbsolutePath($path, Configuration::getWorkingDirectory()) : $default;
     }
 }
