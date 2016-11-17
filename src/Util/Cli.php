@@ -17,13 +17,6 @@ use RuntimeException;
 abstract class Cli
 {
     /**
-     * List of paths
-     *
-     * @var array
-     */
-    private static $basePaths = [];
-
-    /**
      * List of console color codes.
      *
      * @var array
