@@ -1,6 +1,7 @@
 *.phar
 .buildpath
 .idea
+.env
 .project
 .settings
 /backup/*
