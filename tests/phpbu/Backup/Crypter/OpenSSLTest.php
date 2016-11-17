@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Crypter;
 
 use phpbu\App\Backup\CliTest;
+use phpbu\App\Configuration;
 use phpbu\App\Util\Cli;
 
 /**
@@ -90,7 +91,7 @@ class OpenSSLTest extends CliTest
      */
     public function testCertFile()
     {
-        Cli::registerBase('configuration', '/foo');
+        Configuration::setWorkingDirectory('/foo');
 
         $expected = 'openssl smime -encrypt -aes256 -binary -in \'/foo/bar.txt\' '
                   . '-out \'/foo/bar.txt.enc\' -outform DER \'/foo/my.pem\' '

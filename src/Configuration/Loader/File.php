@@ -35,6 +35,16 @@ abstract class File
     protected $adapters;
 
     /**
+     * File constructor.
+     *
+     * @param string $file
+     */
+    public function __construct($file)
+    {
+        $this->filename = $file;
+    }
+
+    /**
      * Returns the phpbu Configuration.
      *
      * @param  \phpbu\App\Factory $factory
@@ -42,10 +52,11 @@ abstract class File
      */
     public function getConfiguration(AppFactory $factory)
     {
-        $this->setupAdapters($factory);
-
+        // create configuration first so the working directory is available for all adapters
         $configuration = new Configuration();
         $configuration->setFilename($this->filename);
+
+        $this->setupAdapters($factory);
 
         $this->setAppSettings($configuration);
         $this->setPhpSettings($configuration);

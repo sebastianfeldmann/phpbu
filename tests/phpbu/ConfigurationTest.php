@@ -15,6 +15,24 @@ namespace phpbu\App;
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * Tests Configuration::getWorkingDirectory
+     */
+    public function testGetWorkingDirectoryEmpty()
+    {
+        Configuration::setWorkingDirectory('');
+        $this->assertEquals(getcwd(), Configuration::getWorkingDirectory());
+    }
+
+    /**
+     * Tests Configuration::getWorkingDirectory
+     */
+    public function testGetWorkingDirectory()
+    {
+        Configuration::setWorkingDirectory('/foo');
+        $this->assertEquals('/foo', Configuration::getWorkingDirectory());
+    }
+
+    /**
      * Tests Configuration::setVerbose
      */
     public function testVerbose()
@@ -101,12 +119,12 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Configuration::getWorkingDirectory
      */
-    public function testGetWorkingDirectory()
+    public function testGetWorkingDirectoryFromFilename()
     {
         $conf = new Configuration();
         $conf->setFilename('/tmp/foo.xml');
         $this->assertEquals('/tmp/foo.xml', $conf->getFilename());
-        $this->assertEquals('/tmp', $conf->getWorkingDirectory());
+        $this->assertEquals('/tmp', Configuration::getWorkingDirectory());
     }
 
     /**

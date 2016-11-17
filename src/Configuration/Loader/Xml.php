@@ -94,7 +94,7 @@ class Xml extends File implements Loader
      */
     public function __construct($file)
     {
-        $this->filename = $file;
+        parent::__construct($file);
         $this->document = $this->loadXmlFile($file);
         $this->xpath    = new DOMXPath($this->document);
     }

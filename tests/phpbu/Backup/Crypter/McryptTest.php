@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Crypter;
 
 use phpbu\App\Backup\CliTest;
+use phpbu\App\Configuration;
 use phpbu\App\Util\Cli;
 
 /**
@@ -88,7 +89,7 @@ class McryptTest extends CliTest
      */
     public function testKeyFile()
     {
-        Cli::registerBase('configuration', '/foo');
+        Configuration::setWorkingDirectory('/foo');
 
         $expected = 'mcrypt -u -f \'/foo/my.key\' -a \'blowfish\' \'/foo/bar.txt\'';
         $target   = $this->getTargetMock('/foo/bar.txt');

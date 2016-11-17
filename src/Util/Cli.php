@@ -55,22 +55,6 @@ abstract class Cli
     ];
 
     /**
-     * Register a base path.
-     *
-     * @param  string $name
-     * @param  string $path
-     * @throws \RuntimeException
-     */
-    public static function registerBase($name, $path)
-    {
-        if (!self::isAbsolutePath($path)) {
-            throw new RuntimeException(sprintf('path has to be absolute: %s', $path));
-        }
-        self::$basePaths[$name] = $path;
-    }
-
-
-    /**
      * Adds a new 'path' to the list of optional command locations.
      *
      * @param string $command
@@ -90,21 +74,6 @@ abstract class Cli
     public static function getCommandLocations($command)
     {
         return isset(self::$optionalCommandLocations[$command]) ? self::$optionalCommandLocations[$command] : [];
-    }
-
-    /**
-     * Retrieve a registered path.
-     *
-     * @param  string $name
-     * @return string array
-     * @throws \RuntimeException
-     */
-    public static function getBase($name)
-    {
-        if (!isset(self::$basePaths[$name])) {
-            throw new RuntimeException(sprintf('base not registered: %s', $name));
-        }
-        return self::$basePaths[$name];
     }
 
     /**

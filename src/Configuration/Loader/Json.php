@@ -82,8 +82,8 @@ class Json extends File implements Loader
      */
     public function __construct($file)
     {
-        $this->filename = $file;
-        $this->json     = $this->loadJsonFile($file);
+        parent::__construct($file);
+        $this->json = $this->loadJsonFile($file);
     }
 
     /**

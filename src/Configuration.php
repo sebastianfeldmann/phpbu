@@ -22,13 +22,6 @@ class Configuration
     private $filename;
 
     /**
-     * Working directory
-     *
-     * @var string
-     */
-    private $workingDirectory;
-
-    /**
      * Path to bootstrap file.
      *
      * @var string
@@ -92,14 +85,11 @@ class Configuration
     private $backups = [];
 
     /**
-     * Constructor
+     * Working directory
      *
-     * @param string $wd
+     * @var string
      */
-    public function __construct($wd = null)
-    {
-        $this->workingDirectory = $wd === null ? getcwd() : $wd;
-    }
+    private static $workingDirectory;
 
     /**
      * Filename setter.
@@ -108,8 +98,8 @@ class Configuration
      */
     public function setFilename($file)
     {
-        $this->filename         = $file;
-        $this->workingDirectory = dirname($file);
+        $this->filename = $file;
+        self::setWorkingDirectory(dirname($file));
     }
 
     /**
@@ -120,26 +110,6 @@ class Configuration
     public function getFilename()
     {
         return $this->filename;
-    }
-
-    /**
-     * Working directory setter.
-     *
-     * @param string $wd
-     */
-    public function setWorkingDirectory($wd)
-    {
-        $this->workingDirectory = $wd;
-    }
-
-    /**
-     * Working directory getter.
-     *
-     * @return string
-     */
-    public function getWorkingDirectory()
-    {
-        return $this->workingDirectory;
     }
 
     /**
@@ -326,5 +296,25 @@ class Configuration
     public function getBackups()
     {
         return $this->backups;
+    }
+
+    /**
+     * Working directory setter.
+     *
+     * @param string $wd
+     */
+    public static function setWorkingDirectory($wd)
+    {
+        self::$workingDirectory = $wd;
+    }
+
+    /**
+     * Working directory getter.
+     *
+     * @return string
+     */
+    public static function getWorkingDirectory()
+    {
+        return !empty(self::$workingDirectory) ? self::$workingDirectory : getcwd();
     }
 }

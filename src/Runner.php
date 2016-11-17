@@ -66,9 +66,6 @@ class Runner
      */
     public function run(Configuration $configuration)
     {
-        // TODO: don't rely on static/global settings this is ugly
-        Util\Cli::registerBase('configuration', $configuration->getWorkingDirectory());
-
         $stop                = false;
         $this->result        = new Result();
         $this->configuration = $configuration;

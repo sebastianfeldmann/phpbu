@@ -208,26 +208,6 @@ class CliTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests Cli::registerBase
-     *
-     * @expectedException \RuntimeException
-     */
-    public function testRegisterBaseNotAbsolute()
-    {
-        Cli::registerBase('name', './foo');
-    }
-
-    /**
-     * Tests Cli::registerBase
-     *
-     * @expectedException \RuntimeException
-     */
-    public function testGetBaseNotRegistered()
-    {
-        Cli::getBase('fooish');
-    }
-
-    /**
      * Tests Cli::formatWithColor
      */
     public function testFormatWithColor()
