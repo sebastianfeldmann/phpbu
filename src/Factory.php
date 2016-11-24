@@ -31,8 +31,9 @@ class Factory
         // type
         //   alias => fqcn
         'adapter'  => [
-            'env'    => '\\phpbu\\App\\Adapter\\Env',
+            'array'  => '\\phpbu\\App\\Adapter\\PHPArray',
             'dotenv' => '\\phpbu\\App\\Adapter\\DotEnv',
+            'env'    => '\\phpbu\\App\\Adapter\\Env',
         ],
         'runner' => [
             'bootstrap' => '\\phpbu\\App\\Runner\\Bootstrap',
