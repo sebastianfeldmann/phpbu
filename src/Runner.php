@@ -58,6 +58,16 @@ class Runner
     }
 
     /**
+     * Factory getter
+     *
+     * @return \phpbu\App\Factory
+     */
+    public function getFactory()
+    {
+        return $this->factory;
+    }
+
+    /**
      * Run phpbu
      *
      * @param  \phpbu\App\Configuration $configuration

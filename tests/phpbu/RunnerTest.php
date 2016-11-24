@@ -19,11 +19,13 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
      */
     public function testRunAllGood()
     {
-        $factory       = $this->createFactoryMock(true);
-        $configuration = $this->createConfigurationMock();
-
-        $runner = new Runner($factory);
+        $factory        = $this->createFactoryMock(true);
+        $configuration  = $this->createConfigurationMock();
+        $runner         = new Runner($factory);
+        $factoryPointer = $runner->getFactory();
         $runner->run($configuration);
+
+        $this->assertEquals($factory, $factoryPointer);
     }
 
     /**
