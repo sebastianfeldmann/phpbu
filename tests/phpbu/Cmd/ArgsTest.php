@@ -135,6 +135,20 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test log option --limit
+     */
+    public function testGetOptionsLongLimit()
+    {
+        $args    = new Args();
+        $options = $args->getOptions(['foo', '--limit=foo,bar,baz', 'bar']);
+        $this->assertEquals(
+            'foo,bar,baz',
+            $options['--limit'],
+            'long option --limit must be set correctly'
+        );
+    }
+
+    /**
      * Test log option --configuration
      */
     public function testGetOptionsLongConfiguration()
