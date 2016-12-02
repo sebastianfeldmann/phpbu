@@ -533,8 +533,8 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
     protected function createConfigurationMock($amountOfBackups = 1)
     {
         $check = new Configuration\Backup\Check('SizeMin', '10m');
-        $crypt = new COnfiguration\Backup\Crypt('openssl', true, []);
-        $sync  = new COnfiguration\Backup\Sync('rsync', true, []);
+        $crypt = new Configuration\Backup\Crypt('openssl', true, []);
+        $sync  = new Configuration\Backup\Sync('rsync', true, []);
         $clean = new Configuration\Backup\Cleanup('outdated', true, []);
         $log   = new Configuration\Logger('json', []);
 
@@ -550,6 +550,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
                               ->disableOriginalConstructor()
                               ->getMock();
         $configuration->method('getLoggers')->willReturn([$log, $this->createLoggerMock()]);
+        $configuration->method('isBackupActive')->willReturn(true);
 
         $backups = [];
         for ($i = 0; $i < $amountOfBackups; $i++) {
