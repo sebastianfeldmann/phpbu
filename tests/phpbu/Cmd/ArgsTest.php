@@ -20,7 +20,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsShortH()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('-h'));
+        $options = $args->getOptions(['-h']);
         $this->assertTrue($options['-h'], 'short option -h must be set');
     }
 
@@ -30,7 +30,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetSelfUpdate()
     {
         $args    = new Args(true);
-        $options = $args->getOptions(array('--self-update'));
+        $options = $args->getOptions(['--self-update']);
         $this->assertTrue($options['--self-update'], 'long option --self-update must be set');
     }
 
@@ -42,7 +42,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsFail()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('-x'));
+        $options = $args->getOptions(['-x']);
         $this->assertFalse(true, 'short option x is invalid');
     }
 
@@ -52,7 +52,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsShortUpperV()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('-V', 'foo', 'bar'));
+        $options = $args->getOptions(['-V', 'foo', 'bar']);
         $this->assertTrue($options['-V'], 'short option -V must be set');
     }
 
@@ -62,7 +62,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsShortLowerV()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('-v', 'foo', 'bar'));
+        $options = $args->getOptions(['-v', 'foo', 'bar']);
         $this->assertTrue($options['-v'], 'short option -v must be set');
     }
 
@@ -72,7 +72,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsLongVersion()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('foo', 'bar', '--version'));
+        $options = $args->getOptions(['foo', 'bar', '--version']);
         $this->assertTrue($options['--version'], 'long option --version must be set');
     }
 
@@ -82,7 +82,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsLongHelp()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('--help', 'foo', 'bar'));
+        $options = $args->getOptions(['--help', 'foo', 'bar']);
         $this->assertTrue($options['--help'], 'long option --help must be set');
     }
 
@@ -92,7 +92,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsLongSimulate()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('foo', '--simulate', 'bar'));
+        $options = $args->getOptions(['foo', '--simulate', 'bar']);
         $this->assertTrue($options['--simulate'], 'long option --simulate must be set');
     }
 
@@ -102,7 +102,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsLongVerbose()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('foo', '--verbose', 'bar'));
+        $options = $args->getOptions(['foo', '--verbose', 'bar']);
         $this->assertTrue($options['--verbose'], 'long option --verbose must be set');
     }
 
@@ -112,7 +112,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsLongIncludePath()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('foo', '--include-path=/foo/bar', 'bar'));
+        $options = $args->getOptions(['foo', '--include-path=/foo/bar', 'bar']);
         $this->assertEquals(
             '/foo/bar',
             $options['--include-path'],
@@ -126,7 +126,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsLongBootstrap()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('foo', '--bootstrap=backup/bootstrap.php', 'bar'));
+        $options = $args->getOptions(['foo', '--bootstrap=backup/bootstrap.php', 'bar']);
         $this->assertEquals(
             'backup/bootstrap.php',
             $options['--bootstrap'],
@@ -140,7 +140,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsLongConfiguration()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('foo', '--configuration=conf/my.xml.dist', 'bar'));
+        $options = $args->getOptions(['foo', '--configuration=conf/my.xml.dist', 'bar']);
         $this->assertEquals(
             'conf/my.xml.dist',
             $options['--configuration'],
@@ -154,7 +154,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsLongMissingArgument()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('--bootstrap'));
+        $options = $args->getOptions(['--bootstrap']);
         $this->assertTrue(false, 'should not be called');
     }
 
@@ -164,7 +164,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsLongUnneccesaryArgument()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('--version=foo'));
+        $options = $args->getOptions(['--version=foo']);
         $this->assertTrue(false, 'should not be called');
     }
 
@@ -174,7 +174,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsLongInvalidArgument()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('--bootstrap=foo=bar'));
+        $options = $args->getOptions(['--bootstrap=foo=bar']);
         $this->assertTrue(false, 'should not be called');
     }
 
@@ -184,7 +184,7 @@ class ArgsTest extends \PHPUnit_Framework_TestCase
     public function testGetOptionsLongUnknownOption()
     {
         $args    = new Args();
-        $options = $args->getOptions(array('--foo'));
+        $options = $args->getOptions(['--foo']);
         $this->assertTrue(false, 'should not be called');
     }
 }
