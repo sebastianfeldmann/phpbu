@@ -88,6 +88,7 @@ phpbu [option]
   --configuration=<file> A phpbu xml config file.
   --colors               Use colors in output.
   --debug                Display debugging information during backup generation.
+  --limit=<subset>       Limit backup execution to a subset.
   --simulate             Perform a trial run with no changes made.
   -h, --help             Print this usage information.
   -v, --verbose          Output more verbose information.
