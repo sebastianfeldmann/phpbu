@@ -22,28 +22,29 @@ class Args
      *
      * @var array
      */
-    private $shortOptions = array(
+    private $shortOptions = [
         'h' => true,
         'v' => true,
         'V' => true,
-    );
+    ];
 
     /**
      * List of available -- options.
      *
      * @var array
      */
-    private $longOptions = array(
+    private $longOptions = [
         'bootstrap='     => true,
         'colors'         => true,
         'configuration=' => true,
         'debug'          => true,
         'help'           => true,
         'include-path='  => true,
+        'limit='         => true,
         'simulate'       => true,
         'verbose'        => true,
         'version'        => true
-    );
+    ];
 
     /**
      * Constructor.
@@ -71,7 +72,7 @@ class Args
             array_shift($args);
         }
 
-        $options = array();
+        $options = [];
 
         reset($args);
         array_map('trim', $args);

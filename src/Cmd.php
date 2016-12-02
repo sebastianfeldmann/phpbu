@@ -161,6 +161,9 @@ class Cmd
                 case 'include-path':
                     $this->arguments['include-path'] = $argument;
                     break;
+                case '--limit':
+                    $this->arguments['limit'] = $argument;
+                    break;
                 case '--selfupdate':
                 case '--self-update':
                     $this->handleSelfUpdate();
@@ -251,11 +254,12 @@ class Cmd
         $this->overrideConfigWithArgument($configuration, 'colors');
         $this->overrideConfigWithArgument($configuration, 'debug');
         $this->overrideConfigWithArgument($configuration, 'simulate');
+        $this->overrideConfigWithArgument($configuration, 'bootstrap');
 
-        // check for command line bootstrap option
-        $bootstrap = Arr::getValue($this->arguments, 'bootstrap');
-        if (!empty($bootstrap)) {
-            $configuration->setBootstrap($bootstrap);
+        // check for command line limit option
+        $limit = explode(',', Arr::getValue($this->arguments, 'limit', ''));
+        if (!empty($limit)) {
+            $configuration->setLimit($limit);
         }
 
         // add a cli printer for some output
@@ -273,13 +277,14 @@ class Cmd
      * Override configuration settings with command line arguments.
      *
      * @param \phpbu\App\Configuration $configuration
-     * @param string                   $value
+     * @param string                   $arg
      */
-    protected function overrideConfigWithArgument(Configuration $configuration, $value)
+    protected function overrideConfigWithArgument(Configuration $configuration, $arg)
     {
-        if (Arr::getValue($this->arguments, $value) === true) {
-            $setter = 'set' . ucfirst($value);
-            $configuration->{$setter}(true);
+        $value = Arr::getValue($this->arguments, $arg);
+        if (!empty($value)) {
+            $setter = 'set' . ucfirst($arg);
+            $configuration->{$setter}($value);
         }
     }
 
@@ -359,6 +364,7 @@ Usage: phpbu [option]
   --configuration=<file> A phpbu xml config file.
   --colors               Use colors in output.
   --debug                Display debugging information during backup generation.
+  --limit=<subset>       Limit backup execution to a subset.
   --simulate             Perform a trial run with no changes made.
   -h, --help             Print this usage information.
   -v, --verbose          Output more verbose information.

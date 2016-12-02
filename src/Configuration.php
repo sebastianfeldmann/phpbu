@@ -85,6 +85,13 @@ class Configuration
     private $backups = [];
 
     /**
+     * List of backus to execute
+     *
+     * @var array
+     */
+    private $limit = [];
+
+    /**
      * Working directory
      *
      * @var string
@@ -130,6 +137,16 @@ class Configuration
     public function getBootstrap()
     {
         return $this->bootstrap;
+    }
+
+    /**
+     * Limit setter.
+     *
+     * @param array $limit
+     */
+    public function setLimit(array $limit)
+    {
+        $this->limit = $limit;
     }
 
     /**
@@ -296,6 +313,21 @@ class Configuration
     public function getBackups()
     {
         return $this->backups;
+    }
+
+    /**
+     * Is given backup active.
+     * Backups could be skipped by using the --limit option.
+     *
+     * @param  string $backupName
+     * @return bool
+     */
+    public function isBackupActive($backupName)
+    {
+        if (empty($this->limit) || in_array($backupName, $this->limit)) {
+            return true;
+        }
+        return false;
     }
 
     /**

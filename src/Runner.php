@@ -3,7 +3,6 @@ namespace phpbu\App;
 
 use phpbu\App\Backup;
 use phpbu\App\Backup\Collector;
-use phpbu\App\Backup\Compressor;
 use phpbu\App\Backup\Target;
 
 /**
@@ -89,6 +88,11 @@ class Runner
         foreach ($configuration->getBackups() as $backup) {
             if ($stop) {
                 break;
+            }
+            // make sure the backup should be executed and is not excluded via the --limit option
+            if (!$configuration->isBackupActive($backup->getName())) {
+                $this->result->debug('skipping backup: ' . $backup->getName() . PHP_EOL);
+                continue;
             }
             // setup target and collector, reset failure state
             $target        = $this->createTarget($backup->getTarget());
@@ -225,7 +229,6 @@ class Runner
     protected function executeChecks(Configuration\Backup $backup, Target $target, Collector $collector)
     {
         /* @var \phpbu\App\Runner\Check $runner */
-        /* @var \phpbu\App\Configuration\Backup\Check $check */
         $runner = $this->factory->createRunner('check', $this->configuration->isSimulation());
         foreach ($backup->getChecks() as $config) {
             try {
