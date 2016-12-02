@@ -93,6 +93,19 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Configuration::setLimit, Configuration::isBackupActive
+     */
+    public function testLimit()
+    {
+        $conf = new Configuration();
+        $conf->setLimit(['foo', 'bar']);
+
+        $this->assertEquals(true, $conf->isBackupActive('foo'));
+        $this->assertEquals(true, $conf->isBackupActive('bar'));
+        $this->assertEquals(false, $conf->isBackupActive('baz'));
+    }
+
+    /**
      * Tests Configuration::addIncludePath
      */
     public function testIncludePath()
