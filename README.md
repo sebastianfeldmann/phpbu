@@ -104,7 +104,7 @@ Alternatively, you can specify the path to your configuration file.
 
     $ phpbu --configuration=backup/config.xml
 
-## Configuration
+## Configuration Example
 
 Simple configuration example:
 
@@ -114,7 +114,7 @@ Simple configuration example:
          xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/4.0/phpbu.xsd"
          verbose="true">
     <backups>
-      <backup>
+      <backup name="myAppDB">
         <!-- source -->
         <source type="mysqldump">
           <option name="databases" value="mydbname"/>
