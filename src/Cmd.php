@@ -257,8 +257,8 @@ class Cmd
         $this->overrideConfigWithArgument($configuration, 'bootstrap');
 
         // check for command line limit option
-        $limitOption = Arr::getValue($this->arguments, 'limit', '');
-        $configuration->setLimit(!empty($limitOption) ? explode(',', $limitOption) : array());
+        $limitOption = Arr::getValue($this->arguments, 'limit');
+        $configuration->setLimit(!empty($limitOption) ? explode(',', $limitOption) : []);
 
         // add a cli printer for some output
         $configuration->addLogger(
