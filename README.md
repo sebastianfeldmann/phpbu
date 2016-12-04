@@ -104,6 +104,14 @@ Alternatively, you can specify the path to your configuration file.
 
     $ phpbu --configuration=backup/config.xml
 
+Use the *--limit* option to execute only a subset of your configured backups.
+
+    $ phpbu --limit=myAppDB
+
+Use the *--simulate* option to perform a trial run without actually executing the configured backups.
+
+    $ phpbu --simulate
+    
 ## Configuration Example
 
 Simple configuration example:
