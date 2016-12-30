@@ -1,6 +1,7 @@
 {
   "type": "mysqldump",
   "option": {
+    "pathToMysqldump": "/path/to/your/mysql/bin",
     "host": "myHost",
     "user": "myUserName",
     "password": "mySecretPassword",
