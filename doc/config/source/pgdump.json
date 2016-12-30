@@ -17,6 +17,7 @@
     "noOwner": true,
     "clean": true,
     "format": "custom",
-    "encoding": "utf-8"
+    "encoding": "utf-8",
+    "pathToPgdump": "/path/to/custom/bin"
   }
 }

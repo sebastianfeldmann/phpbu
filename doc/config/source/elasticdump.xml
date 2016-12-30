@@ -14,4 +14,7 @@
 
   <!-- optional, default=data -->
   <option name="type" value="data" />
+
+  <!-- define your custom elasticdump executable location -->
+  <option name="pathToElasticdump" value="/path/to/custom/bin" />
 </source>

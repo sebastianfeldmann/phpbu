@@ -3,6 +3,7 @@
   "option": {
     "path": "src",
     "ignoreFailedRead": false,
-    "removeSourceDir": false
+    "removeSourceDir": false,
+    "pathToTar": "/path/to/custom/bin"
   }
 }

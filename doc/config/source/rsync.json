@@ -7,6 +7,7 @@
     "dirsync": false,
     "delete": false,
     "exclude": "*.cvs:*.jpg",
-    "args": "-avz root@example.com:/tmp/ '%TARGET_FILE%'"
+    "args": "-avz root@example.com:/tmp/ '%TARGET_FILE%'",
+    "pathToRsync": "/path/to/custom/bin"
   }
 }

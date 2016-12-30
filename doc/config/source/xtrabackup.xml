@@ -17,4 +17,7 @@
 
   <!-- optional, default=all -->
   <option name="include" value="^mydatabase[.]mytable" />
+
+  <!-- define your custom xtrabackup executable location -->
+  <option name="pathToXtrabackup" value="/path/to/custom/bin" />
 </source>

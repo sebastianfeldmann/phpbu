@@ -14,4 +14,7 @@
 
   <!-- optional, default=null -->
   <option name="password" value="TopSecret" />
+
+  <!-- define your custom redis-cli executable location -->
+  <option name="pathToRedisCli" value="/path/to/custom/bin" />
 </source>

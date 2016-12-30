@@ -6,6 +6,7 @@
     "user": "myUserName",
     "password": "mySecretPassword",
     "databases": "myDB1,myDB2,myDB3.table1",
-    "include": "^myDatabase[.]myTable"
+    "include": "^myDatabase[.]myTable",
+    "pathToXtrabackup": "/path/to/custom/bin"
   }
 }

@@ -21,4 +21,7 @@
   <!-- !!!WARNING!!! advanced mode without escaping -->
   <!-- use %TARGET_DIR% and %TARGET_FILE% as reference to the created backup -->
   <option name="args" value="-avz user@example.com:/tmp/foo %TARGET_FILE%" />
+
+  <!-- define your custom rsync executable location -->
+  <option name="pathToRsync" value="/path/to/custom/bin" />
 </source>

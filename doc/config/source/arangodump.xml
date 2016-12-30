@@ -23,4 +23,7 @@
 
   <!-- optional, default=all -->
   <option name="collections" value="mycollection1,mycollection2" />
+
+  <!-- define your custom arangodump executable location -->
+  <option name="pathToArangodump" value="/path/to/custom/bin" />
 </source>

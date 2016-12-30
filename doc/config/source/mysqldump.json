@@ -1,7 +1,6 @@
 {
   "type": "mysqldump",
   "option": {
-    "pathToMysqldump": "/path/to/your/mysql/bin",
     "host": "myHost",
     "user": "myUserName",
     "password": "mySecretPassword",
@@ -14,6 +13,7 @@
     "singleTransaction": true,
     "compress": true,
     "extendedInsert": true,
-    "hexBlob": true
+    "hexBlob": true,
+    "pathToMysqldump": "/path/to/custom/bin"
   }
 }

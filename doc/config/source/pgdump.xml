@@ -50,4 +50,7 @@
 
   <!-- optional, default db encoding -->
   <option name="encoding" value="utf-8" />
+
+  <!-- define your custom pgdump executable location -->
+  <option name="pathToPgdump" value="/path/to/custom/bin" />
 </source>

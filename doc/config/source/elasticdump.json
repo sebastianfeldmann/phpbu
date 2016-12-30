@@ -5,6 +5,7 @@
     "user": "myUserName",
     "password": "mySecretPassword",
     "index": "myindex",
-    "type": "data"
+    "type": "data",
+    "pathToElasticdump": "/path/to/custom/bin"
   }
 }

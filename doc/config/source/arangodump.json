@@ -8,6 +8,7 @@
     "database": "myDatabase",
     "dumpData": true,
     "includeSystemCollections": true,
-    "collections": "myCollection1,myCollection2"
+    "collections": "myCollection1,myCollection2",
+    "pathToArangodump": "/path/to/custom/bin"
   }
 }
