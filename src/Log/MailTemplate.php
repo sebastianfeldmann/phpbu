@@ -46,7 +46,7 @@ class MailTemplate
      */
     public static function setDefaultSnippets()
     {
-        self::setSnippets(array(
+        self::setSnippets([
             'sBody'                    => 'style="font-family: Arial, Helvetica, sans-serif; ' .
                                                  'background-color:#343b43; ' .
                                                  'font-size: 15px; margin:0; ' .
@@ -91,7 +91,7 @@ class MailTemplate
             'cStatusOK'                => '91ff94',
             'cStatusWARN'              => 'ffcc6a',
             'cStatusFAIL'              => 'ff7b7b',
-        ));
+        ]);
     }
 
     /**

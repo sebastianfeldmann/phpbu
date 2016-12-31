@@ -21,7 +21,7 @@ interface Source
      *
      * @param array  $conf
      */
-    public function setup(array $conf = array());
+    public function setup(array $conf = []);
 
     /**
      * Execute the backup.

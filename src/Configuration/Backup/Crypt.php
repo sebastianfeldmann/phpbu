@@ -37,7 +37,7 @@ class Crypt extends Optionized
      * @param boolean $skipOnFailure
      * @param array   $options
      */
-    public function __construct($type, $skipOnFailure, $options = array())
+    public function __construct($type, $skipOnFailure, $options = [])
     {
         $this->type          = $type;
         $this->skipOnFailure = $skipOnFailure;

@@ -65,7 +65,7 @@ class Mail implements Listener, Logger
      *
      * @var array<string>
      */
-    protected $recipients = array();
+    protected $recipients = [];
 
     /**
      * Amount of executed backups
@@ -123,20 +123,20 @@ class Mail implements Listener, Logger
      */
     public static function getSubscribedEvents()
     {
-        return array(
+        return [
             'phpbu.backup_start'  => 'onBackupStart',
             'phpbu.check_start'   => 'onCheckStart',
             'phpbu.crypt_start'   => 'onCryptStart',
             'phpbu.sync_start'    => 'onSyncStart',
             'phpbu.cleanup_start' => 'onCleanupStart',
             'phpbu.app_end'       => 'onPhpbuEnd',
-        );
+        ];
     }
 
     /**
      * Setup the Logger.
      *
-     * @see    \phpbu\Log\Logger::setup
+     * @see    \phpbu\App\Log\Logger::setup
      * @param  array $options
      * @throws \phpbu\App\Exception
      */

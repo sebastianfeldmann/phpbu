@@ -81,8 +81,8 @@ class OpenSSL extends Abstraction implements Executable
      *
      * @var array
      */
-    private $availableAlgorithms = array(
-        'enc'   => array(
+    private $availableAlgorithms = [
+        'enc'   => [
             'aes-128-cbc'  => true,
             'aes-128-ecb'  => true,
             'aes-192-cbc'  => true,
@@ -135,8 +135,8 @@ class OpenSSL extends Abstraction implements Executable
             'seed-cfb'     => true,
             'seed-ecb'     => true,
             'seed-ofb'     => true,
-        ),
-        'smime' => array(
+        ],
+        'smime' => [
             'des3'    => true,
             'des'     => true,
             'seed'    => true,
@@ -146,8 +146,8 @@ class OpenSSL extends Abstraction implements Executable
             'aes128'  => true,
             'aes192'  => true,
             'aes256'  => true,
-        )
-    );
+        ]
+    ];
 
     /**
      * Keep the not encrypted file

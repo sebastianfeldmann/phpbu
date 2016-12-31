@@ -75,7 +75,7 @@ class Mcrypt extends Abstraction implements Simulator
      * @param  array $options
      * @throws Exception
      */
-    public function setup(array $options = array())
+    public function setup(array $options = [])
     {
         if (!Util\Arr::isSetAndNotEmptyString($options, 'algorithm')) {
             throw new Exception('mcrypt \'algorithm\' is mandatory');

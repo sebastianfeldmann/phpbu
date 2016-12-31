@@ -35,77 +35,77 @@ class Backup
      *
      * @var array
      */
-    protected $checks = array();
+    protected $checks = [];
 
     /**
      * List of failed checks
      *
      * @var array
      */
-    protected $checksFailed = array();
+    protected $checksFailed = [];
 
     /**
      * List of executed crypts
      *
      * @var array
      */
-    protected $crypts = array();
+    protected $crypts = [];
 
     /**
      * List of skipped crypts
      *
      * @var array
      */
-    protected $cryptsSkipped = array();
+    protected $cryptsSkipped = [];
 
     /**
      * List of failed crypts
      *
      * @var array
      */
-    protected $cryptsFailed = array();
+    protected $cryptsFailed = [];
 
     /**
      * List of executed syncs
      *
      * @var array
      */
-    protected $syncs = array();
+    protected $syncs = [];
 
     /**
      * List of skipped syncs
      *
      * @var array
      */
-    protected $syncsSkipped = array();
+    protected $syncsSkipped = [];
 
     /**
      * List of failed syncs
      *
      * @var array
      */
-    protected $syncsFailed = array();
+    protected $syncsFailed = [];
 
     /**
      * List of executed cleanups
      *
      * @var array
      */
-    protected $cleanups = array();
+    protected $cleanups = [];
 
     /**
      * List of skipped cleanups
      *
      * @var array
      */
-    protected $cleanupsSkipped = array();
+    protected $cleanupsSkipped = [];
 
     /**
      * List of failed cleanups
      *
      * @var array
      */
-    protected $cleanupsFailed = array();
+    protected $cleanupsFailed = [];
 
     /**
      * Constructor

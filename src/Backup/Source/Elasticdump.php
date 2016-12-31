@@ -72,7 +72,7 @@ class Elasticdump extends SimulatorExecutable implements Simulator
      * @param  array $conf
      * @throws \phpbu\App\Exception
      */
-    public function setup(array $conf = array())
+    public function setup(array $conf = [])
     {
         $this->setupSourceData($conf);
 
