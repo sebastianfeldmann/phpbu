@@ -84,14 +84,13 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
         $configuration = $this->getMockBuilder('\\phpbu\\App\\Configuration')
                               ->disableOriginalConstructor()
                               ->getMock();
-        $configuration->expects($this->once())->method('getFilename')->willReturn('/tmp/TestConfig.xml');
+        $configuration->method('getFilename')->willReturn('/tmp/TestConfig.xml');
 
         ob_start();
         $printer->onPhpbuStart($this->getEventMock('App\\Start', $configuration));
         $printer->onPhpbuEnd($this->getEventMock('App\\End', $result));
         $output = ob_get_clean();
         $this->assertTrue(strpos($output, 'phpbu') !== false);
-        $this->assertTrue(strpos($output, 'TestConfig.xml') !== false);
     }
 
     /**

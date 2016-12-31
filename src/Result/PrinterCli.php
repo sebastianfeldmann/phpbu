@@ -170,13 +170,14 @@ class PrinterCli implements Listener
     public function onPhpbuStart(Event\App\Start $event)
     {
         $configuration = $event->getConfiguration();
-        $this->write(
-            Version::getVersionString() . PHP_EOL .
-            PHP_EOL .
-            'Runtime:       ' . $this->runtime->getNameWithVersion() . PHP_EOL .
-            'Configuration: ' . $configuration->getFilename() . PHP_EOL .
-            PHP_EOL
-        );
+        $this->write(Version::getVersionString() . ' by Sebastian Feldmann and contributors.' . PHP_EOL . PHP_EOL);
+        if ($this->verbose) {
+            $this->write(
+                'Runtime:       ' . $this->runtime->getNameWithVersion() . PHP_EOL .
+                'Configuration: ' . $configuration->getFilename() . PHP_EOL .
+                PHP_EOL
+            );
+        }
     }
 
     /**
