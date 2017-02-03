@@ -3,7 +3,6 @@ namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Rsync as RsyncTrait;
-use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Result;
@@ -74,7 +73,7 @@ class Rsync extends Cli implements Simulator
     {
         $result->debug(
             'sync backup with rsync' . PHP_EOL
-            . $this->getExecutable($target)->getCommandLine()
+            . $this->getExecutable($target)->getCommandPrintable()
         );
     }
 
