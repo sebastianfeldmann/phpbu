@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup\Compressor;
 
 use phpbu\App\Backup\Target;
-use phpbu\App\Cli\Executable;
+use phpbu\App\Cli\Executable as CliExecutable;
 use phpbu\App\Cli\Executable\Tar;
 use phpbu\App\Exception;
 use phpbu\App\Result;
@@ -67,7 +67,7 @@ class Directory extends Abstraction
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
      */
-    protected function createExecutable(Target $target) : Executable
+    protected function createExecutable(Target $target) : CliExecutable
     {
         $executable = new Tar($this->pathToCommand);
         $executable->archiveDirectory($this->path);

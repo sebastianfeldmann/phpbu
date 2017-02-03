@@ -2,10 +2,9 @@
 namespace phpbu\App\Backup\Compressor;
 
 use phpbu\App\Backup\Target;
-use phpbu\App\Cli\Executable;
+use phpbu\App\Cli\Executable as CliExecutable;
 use phpbu\App\Cli\Executable\Compressor;
 use phpbu\App\Exception;
-use phpbu\App\Result;
 
 /**
  * File
@@ -38,7 +37,7 @@ class File extends Abstraction
      * @return \phpbu\App\Cli\Executable
      * @throws \phpbu\App\Exception
      */
-    protected function createExecutable(Target $target) : Executable
+    protected function createExecutable(Target $target) : CliExecutable
     {
         if (!$target->shouldBeCompressed()) {
             throw new Exception('target should not be compressed at all');
