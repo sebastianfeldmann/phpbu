@@ -7,9 +7,10 @@ php:
 before_script:
   - composer self-update
   - composer install --no-interaction --prefer-source
+  - wget https://phar.phpunit.de/phpunit.phar
 
 script:
-  - phpunit --configuration ./build/travis-ci.phpunit.xml
+  - php phpunit.phar --configuration ./build/travis-ci.phpunit.xml
 
 after_success:
   - wget https://scrutinizer-ci.com/ocular.phar
