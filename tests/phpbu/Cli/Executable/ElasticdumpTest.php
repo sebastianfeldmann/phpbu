@@ -13,107 +13,99 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class ElasticdumpTest extends \PHPUnit_Framework_TestCase
+class ElasticdumpTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests Elasticdump::createProcess
+     * Tests Elasticdump::createCommandLine
      */
     public function testDefault()
     {
         $expected = 'elasticdump --input=\'http://localhost:9200/\' --output=\'./foo.json\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $elastic  = new Elasticdump($path);
+        $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200')->dumpTo('./foo.json');
 
-        $this->assertEquals($path . '/' . $expected, $elastic->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
     }
 
     /**
-     * Tests Elasticdump::createProcess
+     * Tests Elasticdump::createCommandLine
      */
     public function testUser()
     {
         $expected = 'elasticdump --input=\'http://root@localhost:9200/\' --output=\'./foo.json\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $elastic  = new Elasticdump($path);
+        $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200')->dumpTo('./foo.json')->credentials('root');
 
-        $this->assertEquals($path . '/' . $expected, $elastic->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
     }
 
     /**
-     * Tests Elasticdump::createProcess
+     * Tests Elasticdump::createCommandLine
      */
     public function testUserPassword()
     {
         $expected = 'elasticdump --input=\'http://root:secret@localhost:9200/\' --output=\'./foo.json\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $elastic  = new Elasticdump($path);
+        $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200')->dumpTo('./foo.json')->credentials('root', 'secret');
 
-        $this->assertEquals($path . '/' . $expected, $elastic->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
     }
 
     /**
-     * Tests Elasticdump::createProcess
+     * Tests Elasticdump::createCommandLine
      */
     public function testIndex()
     {
         $expected = 'elasticdump --input=\'http://localhost:9200/myIndex\' --output=\'./foo.json\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $elastic  = new Elasticdump($path);
+        $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200')->dumpIndex('myIndex')->dumpTo('./foo.json');
 
-        $this->assertEquals($path . '/' . $expected, $elastic->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
     }
 
     /**
-     * Tests Elasticdump::createProcess
+     * Tests Elasticdump::createCommand
      */
     public function testType()
     {
         $expected = 'elasticdump --input=\'http://localhost:9200/\' --type=\'mapping\' --output=\'./foo.json\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $elastic  = new Elasticdump($path);
+        $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200')->dumpType('mapping')->dumpTo('./foo.json');
 
-        $this->assertEquals($path . '/' . $expected, $elastic->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
     }
 
     /**
-     * Tests Elasticdump::createProcess
+     * Tests Elasticdump::createCommandLine
      */
     public function testHostWithPath()
     {
         $expected = 'elasticdump --input=\'http://localhost:9200/foo/\' --output=\'./foo.json\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $elastic  = new Elasticdump($path);
+        $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200/foo')->dumpTo('./foo.json');
 
-        $this->assertEquals($path . '/' . $expected, $elastic->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
     }
 
     /**
-     * Tests Elasticdump::createProcess
+     * Tests Elasticdump::createCommandLine
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testNoHost()
     {
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $elastic  = new Elasticdump($path);
-        $elastic->getCommandLine();
+        $elastic  = new Elasticdump(PHPBU_TEST_BIN);
+        $elastic->getCommand();
     }
 
     /**
-     * Tests Elasticdump::createProcess
+     * Tests Elasticdump::createCommandLine
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testNoTarget()
     {
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $elastic  = new Elasticdump($path);
-        $elastic->useHost('localhost:9200')->getCommandLine();
+        $elastic  = new Elasticdump(PHPBU_TEST_BIN);
+        $elastic->useHost('localhost:9200')->getCommand();
     }
 }

@@ -15,7 +15,7 @@ use phpbu\App\Backup\Check\Exception;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class CheckTest extends \PHPUnit_Framework_TestCase
+class CheckTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Check::run

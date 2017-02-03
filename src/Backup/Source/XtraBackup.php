@@ -89,11 +89,11 @@ class XtraBackup extends SimulatorExecutable implements Simulator
     {
         $this->setupSourceData($conf);
 
-        $this->pathToXtraBackup = Util\Arr::getValue($conf, 'pathToXtraBackup');
-        $this->dataDir          = Util\Arr::getValue($conf, 'dataDir');
-        $this->host             = Util\Arr::getValue($conf, 'host');
-        $this->user             = Util\Arr::getValue($conf, 'user');
-        $this->password         = Util\Arr::getValue($conf, 'password');
+        $this->pathToXtraBackup = Util\Arr::getValue($conf, 'pathToXtraBackup', '');
+        $this->dataDir          = Util\Arr::getValue($conf, 'dataDir', '');
+        $this->host             = Util\Arr::getValue($conf, 'host', '');
+        $this->user             = Util\Arr::getValue($conf, 'user', '');
+        $this->password         = Util\Arr::getValue($conf, 'password', '');
     }
 
     /**
@@ -103,8 +103,8 @@ class XtraBackup extends SimulatorExecutable implements Simulator
      */
     protected function setupSourceData(array $conf)
     {
-        $this->include   = Util\Arr::getValue($conf, 'include');
-        $this->databases = Util\Str::toList(Util\Arr::getValue($conf, 'databases'));
+        $this->include   = Util\Arr::getValue($conf, 'include', '');
+        $this->databases = Util\Str::toList(Util\Arr::getValue($conf, 'databases', ''));
     }
 
     /**
@@ -116,13 +116,13 @@ class XtraBackup extends SimulatorExecutable implements Simulator
      * @return \phpbu\App\Backup\Source\Status
      * @throws \phpbu\App\Exception
      */
-    public function backup(Target $target, Result $result)
+    public function backup(Target $target, Result $result) : Status
     {
         $innobackupex = $this->execute($target);
 
-        $result->debug($this->getExecutable($target)->getCommandLinePrintable());
+        $result->debug($this->getExecutable($target)->getCommandPrintable());
 
-        if (!$innobackupex->wasSuccessful()) {
+        if (!$innobackupex->isSuccessful()) {
             throw new Exception('XtraBackup failed: ' . $innobackupex->getStdErr());
         }
 
@@ -130,25 +130,22 @@ class XtraBackup extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * Create the Exec to run the innobackupex backup and apply-log commands.
+     * Create the Executable to run the innobackupex backup and apply-log commands.
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
      * @throws \phpbu\App\Exception
      */
-    public function getExecutable(Target $target)
+    protected function createExecutable(Target $target) : Executable
     {
-        if (null == $this->executable) {
-            $this->executable = new Executable\Innobackupex($this->pathToXtraBackup);
-            $this->executable->useHost($this->host)
-                             ->credentials($this->user, $this->password)
-                             ->dumpDatabases($this->databases)
-                             ->including($this->include)
-                             ->dumpFrom($this->dataDir)
-                             ->dumpTo($this->getDumpDir($target));
-        }
-
-        return $this->executable;
+        $executable = new Executable\Innobackupex($this->pathToXtraBackup);
+        $executable->useHost($this->host)
+                   ->credentials($this->user, $this->password)
+                   ->dumpDatabases($this->databases)
+                   ->including($this->include)
+                   ->dumpFrom($this->dataDir)
+                   ->dumpTo($this->getDumpDir($target));
+        return $executable;
     }
 
     /**
@@ -157,7 +154,7 @@ class XtraBackup extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target
      * @return \phpbu\App\Backup\Source\Status
      */
-    protected function createStatus(Target $target)
+    protected function createStatus(Target $target) : Status
     {
         return Status::create()->uncompressedDirectory($this->getDumpDir($target));
     }
@@ -168,7 +165,7 @@ class XtraBackup extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @return string
      */
-    public function getDumpDir(Target $target)
+    public function getDumpDir(Target $target) : string
     {
         return $target->getPath() . '/dump';
     }

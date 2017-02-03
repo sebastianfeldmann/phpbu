@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
@@ -112,8 +111,7 @@ class Mongodump extends SimulatorExecutable implements Simulator
         $this->setupSourceData($conf);
         $this->setupCredentials($conf);
 
-        // environment settings, config & validation
-        $this->pathToMongodump = Util\Arr::getValue($conf, 'pathToMongodump');
+        $this->pathToMongodump = Util\Arr::getValue($conf, 'pathToMongodump', '');
         $this->useIPv6         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ipv6', ''), false);
     }
 
@@ -124,10 +122,12 @@ class Mongodump extends SimulatorExecutable implements Simulator
      */
     protected function setupSourceData(array $conf)
     {
-        $this->databases                    = Util\Str::toList(Util\Arr::getValue($conf, 'databases'));
-        $this->collections                  = Util\Str::toList(Util\Arr::getValue($conf, 'collections'));
-        $this->excludeCollections           = Util\Str::toList(Util\Arr::getValue($conf, 'excludeCollections'));
-        $this->excludeCollectionsWithPrefix = Util\Str::toList(Util\Arr::getValue($conf, 'excludeCollectionsWithPrefix'));
+        $this->databases                    = Util\Str::toList(Util\Arr::getValue($conf, 'databases', ''));
+        $this->collections                  = Util\Str::toList(Util\Arr::getValue($conf, 'collections', ''));
+        $this->excludeCollections           = Util\Str::toList(Util\Arr::getValue($conf, 'excludeCollections', ''));
+        $this->excludeCollectionsWithPrefix = Util\Str::toList(
+            Util\Arr::getValue($conf, 'excludeCollectionsWithPrefix', '')
+        );
     }
 
     /**
@@ -137,10 +137,10 @@ class Mongodump extends SimulatorExecutable implements Simulator
      */
     protected function setupCredentials(array $conf)
     {
-        $this->host                   = Util\Arr::getValue($conf, 'host');
-        $this->user                   = Util\Arr::getValue($conf, 'user');
-        $this->password               = Util\Arr::getValue($conf, 'password');
-        $this->authenticationDatabase = Util\Arr::getValue($conf, 'authenticationDatabase');
+        $this->host                   = Util\Arr::getValue($conf, 'host', '');
+        $this->user                   = Util\Arr::getValue($conf, 'user', '');
+        $this->password               = Util\Arr::getValue($conf, 'password', '');
+        $this->authenticationDatabase = Util\Arr::getValue($conf, 'authenticationDatabase', '');
     }
 
     /**
@@ -152,14 +152,14 @@ class Mongodump extends SimulatorExecutable implements Simulator
      * @return \phpbu\App\Backup\Source\Status
      * @throws \phpbu\App\Exception
      */
-    public function backup(Target $target, Result $result)
+    public function backup(Target $target, Result $result) : Status
     {
         // setup dump location and execute the dump
         $mongodump = $this->execute($target);
 
-        $result->debug($this->getExecutable($target)->getCommandLinePrintable());
+        $result->debug($mongodump->getCmdPrintable());
 
-        if (!$mongodump->wasSuccessful()) {
+        if (!$mongodump->isSuccessful()) {
             throw new Exception('mongodump failed: ' . $mongodump->getStdErr());
         }
 
@@ -172,21 +172,18 @@ class Mongodump extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
      */
-    public function getExecutable(Target $target)
+    protected function createExecutable(Target $target) : Executable
     {
-        if (null == $this->executable) {
-            $this->executable = new Executable\Mongodump($this->pathToMongodump);
-            $this->executable->dumpToDirectory($this->getDumpDir($target))
-                             ->useIpv6($this->useIPv6)
-                             ->useHost($this->host)
-                             ->credentials($this->user, $this->password, $this->authenticationDatabase)
-                             ->dumpDatabases($this->databases)
-                             ->dumpCollections($this->collections)
-                             ->excludeCollections($this->excludeCollections)
-                             ->excludeCollectionsWithPrefix($this->excludeCollectionsWithPrefix);
-        }
-
-        return $this->executable;
+        $executable = new Executable\Mongodump($this->pathToMongodump);
+        $executable->dumpToDirectory($this->getDumpDir($target))
+                   ->useIpv6($this->useIPv6)
+                   ->useHost($this->host)
+                   ->credentials($this->user, $this->password, $this->authenticationDatabase)
+                   ->dumpDatabases($this->databases)
+                   ->dumpCollections($this->collections)
+                   ->excludeCollections($this->excludeCollections)
+                   ->excludeCollectionsWithPrefix($this->excludeCollectionsWithPrefix);
+        return $executable;
     }
 
     /**
@@ -195,7 +192,7 @@ class Mongodump extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target
      * @return \phpbu\App\Backup\Source\Status
      */
-    protected function createStatus(Target $target)
+    protected function createStatus(Target $target) : Status
     {
         return Status::create()->uncompressedDirectory($this->getDumpDir($target));
     }
@@ -206,7 +203,7 @@ class Mongodump extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @return string
      */
-    public function getDumpDir(Target $target)
+    public function getDumpDir(Target $target) : string
     {
         return $target->getPath() . '/dump';
     }

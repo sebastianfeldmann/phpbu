@@ -12,7 +12,7 @@ namespace phpbu\App\Log;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class MailTest extends \PHPUnit_Framework_TestCase
+class MailTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Mail::getSubscribedEvents

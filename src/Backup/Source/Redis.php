@@ -72,12 +72,12 @@ class Redis extends SimulatorExecutable implements Simulator
      */
     public function setup(array $conf = [])
     {
-        $this->pathToRedisCli  = Util\Arr::getValue($conf, 'pathToRedisCli');
-        $this->pathToRedisData = Util\Arr::getValue($conf, 'pathToRedisData');
+        $this->pathToRedisCli  = Util\Arr::getValue($conf, 'pathToRedisCli', '');
+        $this->pathToRedisData = Util\Arr::getValue($conf, 'pathToRedisData', '');
         $this->timeout         = Util\Arr::getValue($conf, 'timeout', 45);
-        $this->host            = Util\Arr::getValue($conf, 'host');
-        $this->port            = Util\Arr::getValue($conf, 'port');
-        $this->password        = Util\Arr::getValue($conf, 'password');
+        $this->host            = Util\Arr::getValue($conf, 'host', '');
+        $this->port            = Util\Arr::getValue($conf, 'port', 0);
+        $this->password        = Util\Arr::getValue($conf, 'password', '');
 
         if (empty($this->pathToRedisData)) {
             throw new Exception('pathToRedisData option is mandatory');
@@ -93,7 +93,7 @@ class Redis extends SimulatorExecutable implements Simulator
      * @return \phpbu\App\Backup\Source\Status
      * @throws \phpbu\App\Exception
      */
-    public function backup(Target $target, Result $result)
+    public function backup(Target $target, Result $result) : Status
     {
         // set uncompressed default MIME type
         $target->setMimeType('application/octet-stream');
@@ -102,10 +102,9 @@ class Redis extends SimulatorExecutable implements Simulator
         $redisLast = $this->getRedisLastSave($redisSave);
 
         $lastBackupTimestamp = $this->getLastBackupTime($redisLast);
-
-        $saveResult = $redisSave->run();
-        $result->debug($this->getExecutable($target)->getCommandLinePrintable());
-        if (!$saveResult->wasSuccessful()) {
+        $saveResult          = $this->runCommand($redisSave);
+        $result->debug($this->getExecutable($target)->getCommandPrintable());
+        if (!$saveResult->isSuccessful()) {
             throw new Exception('redis-cli BGSAVE failed:' . $saveResult->getStdErr());
         }
         // check if the save process is finished
@@ -119,18 +118,16 @@ class Redis extends SimulatorExecutable implements Simulator
      * Setup the Executable to run the 'tar' command.
      *
      * @param  \phpbu\App\Backup\Target
-     * @return \phpbu\App\Cli\Executable\RedisCli
+     * @return \phpbu\App\Cli\Executable
      */
-    public function getExecutable(Target $target)
+    protected function createExecutable(Target $target) : Executable
     {
-        if (null == $this->executable) {
-            $this->executable = new Executable\RedisCli($this->pathToRedisCli);
-            $this->executable->backup()
-                             ->useHost($this->host)
-                             ->usePort($this->port)
-                             ->usePassword($this->password);
-        }
-        return $this->executable;
+        $executable = new Executable\RedisCli($this->pathToRedisCli);
+        $executable->backup()
+                   ->useHost($this->host)
+                   ->usePort($this->port)
+                   ->usePassword($this->password);
+        return $executable;
     }
 
     /**
@@ -139,7 +136,7 @@ class Redis extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Cli\Executable\RedisCli $redis
      * @return \phpbu\App\Cli\Executable\RedisCli
      */
-    public function getRedisLastSave(Executable\RedisCli $redis)
+    public function getRedisLastSave(Executable\RedisCli $redis) : Executable\RedisCli
     {
         $redisLast = clone($redis);
         $redisLast->lastBackupTime();
@@ -153,9 +150,9 @@ class Redis extends SimulatorExecutable implements Simulator
      * @return int
      * @throws \phpbu\App\Exception
      */
-    private function getLastBackupTime(Executable\RedisCli $redis)
+    private function getLastBackupTime(Executable\RedisCli $redis) : int
     {
-        $result  = $redis->run();
+        $result  = $this->runCommand($redis);
         $output  = $result->getStdOut();
         $matches = [];
         if (!preg_match('#(\(integer\) )?([0-9]+)#i', $output, $matches)) {
@@ -172,7 +169,7 @@ class Redis extends SimulatorExecutable implements Simulator
      * @return bool
      * @throws \phpbu\App\Exception
      */
-    private function isDumpCreatedYet($lastTimestamp, $redis)
+    private function isDumpCreatedYet($lastTimestamp, $redis) : bool
     {
         $i = 0;
         while ($this->getLastBackupTime($redis) <= $lastTimestamp) {
@@ -192,7 +189,7 @@ class Redis extends SimulatorExecutable implements Simulator
      * @return string
      * @throws \phpbu\App\Exception
      */
-    private function copyDumpToTarget(Target $target)
+    private function copyDumpToTarget(Target $target) : string
     {
         if (!file_exists($this->pathToRedisData)) {
             throw new Exception('Redis data not found at: \'' . $this->pathToRedisCli . '\'');
@@ -208,7 +205,7 @@ class Redis extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target
      * @return \phpbu\App\Backup\Source\Status
      */
-    protected function createStatus(Target $target)
+    protected function createStatus(Target $target) : Status
     {
         return Status::create()->uncompressedFile($target->getPathnamePlain());
     }

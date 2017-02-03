@@ -22,7 +22,7 @@ class OutdatedTest extends TestCase
     public function testSetUpNoOlder()
     {
         $cleaner = new Outdated();
-        $cleaner->setup(array('foo' => 'bar'));
+        $cleaner->setup(['foo' => 'bar']);
     }
 
     /**
@@ -33,7 +33,7 @@ class OutdatedTest extends TestCase
     public function testSetUpInvalidValue()
     {
         $cleaner = new Outdated();
-        $cleaner->setup(array('older' => 'false'));
+        $cleaner->setup(['older' => 'false']);
     }
 
     /**
@@ -44,7 +44,7 @@ class OutdatedTest extends TestCase
     public function testSetUpAmountToLow()
     {
         $cleaner = new Outdated();
-        $cleaner->setup(array('older' => '0S'));
+        $cleaner->setup(['older' => '0S']);
     }
 
     /**
@@ -55,7 +55,7 @@ class OutdatedTest extends TestCase
     public function testSetUpOlderToLow()
     {
         $cleaner = new Outdated();
-        $cleaner->setup(array('older' => '0S'));
+        $cleaner->setup(['older' => '0S']);
     }
 
     /**
@@ -64,28 +64,28 @@ class OutdatedTest extends TestCase
     public function testCleanupDeleteFiles()
     {
         $fileList      = $this->getFileMockList(
-            array(
-                array(
+            [
+                [
                     'size'            => 100,
                     'shouldBeDeleted' => true,
                     'mTime'           => $this->getMTime('4d'),
-                ),
-                array(
+                ],
+                [
                     'size'            => 100,
                     'shouldBeDeleted' => false,
                     'mTime'           => $this->getMTime('3d'),
-                ),
-                array(
+                ],
+                [
                     'size'            => 100,
                     'shouldBeDeleted' => false,
                     'mTime'           => $this->getMTime('2d'),
-                ),
-                array(
+                ],
+                [
                     'size'            => 100,
                     'shouldBeDeleted' => false,
                     'mTime'           => $this->getMTime('1d'),
-                ),
-            )
+                ],
+            ]
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
@@ -110,28 +110,28 @@ class OutdatedTest extends TestCase
     public function testCleanupDeleteNoFile()
     {
         $fileList      = $this->getFileMockList(
-            array(
-                array(
+            [
+                [
                     'size'            => 100,
                     'shouldBeDeleted' => false,
                     'mTime'           => $this->getMTime('4d'),
-                ),
-                array(
+                ],
+                [
                     'size'            => 100,
                     'shouldBeDeleted' => false,
                     'mTime'           => $this->getMTime('3d'),
-                ),
-                array(
+                ],
+                [
                     'size'            => 100,
                     'shouldBeDeleted' => false,
                     'mTime'           => $this->getMTime('2d'),
-                ),
-                array(
+                ],
+                [
                     'size'            => 100,
                     'shouldBeDeleted' => false,
                     'mTime'           => $this->getMTime('1d'),
-                ),
-            )
+                ],
+            ]
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();
@@ -142,10 +142,10 @@ class OutdatedTest extends TestCase
                               ->disableOriginalConstructor()
                               ->getMock();
 
-        $collectorStub->method('getBackupFiles')->willReturn($fileList);
+        $collectorStub->expects($this->once())->method('getBackupFiles')->willReturn($fileList);
 
         $cleaner = new Outdated();
-        $cleaner->setup(array('older' => '5d'));
+        $cleaner->setup(['older' => '5d']);
 
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }
@@ -158,19 +158,19 @@ class OutdatedTest extends TestCase
     public function testCleanupNotWritable()
     {
         $fileList      = $this->getFileMockList(
-            array(
-                array(
+            [
+                [
                     'size'            => 100,
                     'shouldBeDeleted' => false,
                     'mTime'           => $this->getMTime('4d'),
                     'writable'        => false,
-                ),
-                array(
+                ],
+                [
                     'size'            => 100,
                     'shouldBeDeleted' => false,
                     'mTime'           => $this->getMTime('3d'),
-                ),
-            )
+                ],
+            ]
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
                               ->getMock();

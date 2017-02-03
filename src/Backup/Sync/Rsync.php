@@ -59,7 +59,7 @@ class Rsync extends Cli implements Simulator
 
         $result->debug($rsync->getCmd());
 
-        if (!$rsync->wasSuccessful()) {
+        if (!$rsync->isSuccessful()) {
             throw new Exception('rsync failed: ' . $rsync->getStdErr());
         }
     }
@@ -84,27 +84,25 @@ class Rsync extends Cli implements Simulator
      * @param  \phpbu\App\Backup\Target
      * @return \phpbu\App\Cli\Executable
      */
-    public function getExecutable(Target $target)
+    protected function createExecutable(Target $target) : Executable
     {
-        if (null == $this->executable) {
-            $this->executable = new Executable\Rsync($this->pathToRsync);
-            if (!empty($this->args)) {
-                $this->executable->useArgs(
-                    Util\Str::replaceTargetPlaceholders(
-                        $this->args,
-                        $target->getPathname()
-                    )
-                );
-            } else {
-                $this->executable->fromPath($this->getRsyncLocation($target))
-                                 ->toHost($this->host)
-                                 ->toPath($this->path)
-                                 ->toUser($this->user)
-                                 ->compressed(!$target->shouldBeCompressed())
-                                 ->removeDeleted($this->delete)
-                                 ->exclude($this->excludes);
-            }
+        $executable = new Executable\Rsync($this->pathToRsync);
+        if (!empty($this->args)) {
+            $executable->useArgs(
+                Util\Str::replaceTargetPlaceholders(
+                    $this->args,
+                    $target->getPathname()
+                )
+            );
+        } else {
+            $executable->fromPath($this->getRsyncLocation($target))
+                       ->toHost($this->host)
+                       ->toPath($this->path)
+                       ->toUser($this->user)
+                       ->compressed(!$target->shouldBeCompressed())
+                       ->removeDeleted($this->delete)
+                       ->exclude($this->excludes);
         }
-        return $this->executable;
+        return $executable;
     }
 }

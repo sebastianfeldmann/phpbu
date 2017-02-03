@@ -64,7 +64,7 @@ abstract class Cli
      * @param  string $command
      * @return array
      */
-    public static function getCommandLocations($command)
+    public static function getCommandLocations($command) : array
     {
         return isset(self::$optionalCommandLocations[$command]) ? self::$optionalCommandLocations[$command] : [];
     }
@@ -78,14 +78,14 @@ abstract class Cli
      * @return string                    Absolute path to detected command including command itself
      * @throws \RuntimeException
      */
-    public static function detectCmdLocation($cmd, $path = null, $optionalLocations = [])
+    public static function detectCmdLocation(string $cmd, string $path = '', array $optionalLocations = []) : string
     {
         $detectionSteps = [
             function($cmd) use ($path) {
-                if (null !== $path) {
+                if (!empty($path)) {
                     return self::detectCmdLocationInPath($cmd, $path);
                 }
-                return null;
+                return '';
             },
             function($cmd) {
                 return self::detectCmdLocationWithWhich($cmd);
@@ -101,7 +101,7 @@ abstract class Cli
 
         foreach ($detectionSteps as $step) {
             $bin = $step($cmd);
-            if (null !== $bin) {
+            if (!empty($bin)) {
                 return $bin;
             }
         }
@@ -115,12 +115,13 @@ abstract class Cli
      * @param  string $cmd
      * @param  string $path
      * @return string
+     * @throws \RuntimeException
      */
-    public static function detectCmdLocationInPath($cmd, $path)
+    public static function detectCmdLocationInPath(string $cmd, string $path) : string
     {
         $command = $path . DIRECTORY_SEPARATOR . $cmd;
         $bin     = self::isExecutable($command);
-        if (null === $bin) {
+        if (empty($bin)) {
             throw new RuntimeException(sprintf('wrong path specified for \'%s\': %s', $cmd, $path));
         }
         return $bin;
@@ -130,14 +131,14 @@ abstract class Cli
      * Detect command location using which cli command.
      *
      * @param  string $cmd
-     * @return null|string
+     * @return string
      */
-    public static function detectCmdLocationWithWhich($cmd)
+    public static function detectCmdLocationWithWhich($cmd) : string
     {
-        $bin = null;
+        $bin = '';
         // on nx systems use 'which' command.
         if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
-            $command = `which $cmd`;
+            $command = trim(`which $cmd`);
             $bin     = self::isExecutable($command);
         }
         return $bin;
@@ -147,11 +148,11 @@ abstract class Cli
     /**
      * Check path list for executable command.
      *
-     * @param string $cmd
-     * @param array  $paths
-     * @return null|string
+     * @param  string $cmd
+     * @param  array  $paths
+     * @return string
      */
-    public static function detectCmdLocationInPaths($cmd, array $paths)
+    public static function detectCmdLocationInPaths($cmd, array $paths) : string
     {
         foreach ($paths as $path) {
             $command = $path . DIRECTORY_SEPARATOR . $cmd;
@@ -160,7 +161,7 @@ abstract class Cli
                 return $bin;
             }
         }
-        return null;
+        return '';
     }
 
     /**
@@ -169,7 +170,7 @@ abstract class Cli
      * @return string
      * @throws \RuntimeException
      */
-    public static function getEnvPath()
+    public static function getEnvPath() : string
     {
         // check for unix and windows case $_SERVER index
         foreach (['PATH', 'Path', 'path'] as $index) {
@@ -187,7 +188,7 @@ abstract class Cli
      * @param  string $command
      * @return string
      */
-    public static function isExecutable($command)
+    public static function isExecutable($command) : string
     {
         if (is_executable($command)) {
             return $command;
@@ -199,16 +200,16 @@ abstract class Cli
                 return $command;
             }
         }
-        return null;
+        return '';
     }
 
     /**
      * Is given path absolute.
      *
      * @param  string $path
-     * @return boolean
+     * @return bool
      */
-    public static function isAbsolutePath($path)
+    public static function isAbsolutePath($path) : bool
     {
         // path already absolute?
         if ($path[0] === '/') {
@@ -241,7 +242,7 @@ abstract class Cli
      * @param  string $path
      * @return bool
      */
-    public static function isAbsoluteWindowsPath($path)
+    public static function isAbsoluteWindowsPath($path) : bool
     {
         return ($path[0] === '\\' || (strlen($path) >= 3 && preg_match('#^[A-Z]\:[/\\\]#i', substr($path, 0, 3))));
     }
@@ -254,7 +255,7 @@ abstract class Cli
      * @param  boolean $useIncludePath
      * @return string
      */
-    public static function toAbsolutePath($path, $base, $useIncludePath = false)
+    public static function toAbsolutePath(string $path, string $base, bool $useIncludePath = false) : string
     {
         if (self::isAbsolutePath($path)) {
             return $path;
@@ -279,7 +280,7 @@ abstract class Cli
      * @param  string $buffer
      * @return string
      */
-    public static function formatWithColor($color, $buffer)
+    public static function formatWithColor(string $color, string $buffer) : string
     {
         $codes   = array_map('trim', explode(',', $color));
         $lines   = explode("\n", $buffer);
@@ -306,7 +307,7 @@ abstract class Cli
      * @param  int    $length
      * @return string
      */
-    public static function formatWithAsterisk($buffer, $length = 75)
+    public static function formatWithAsterisk(string $buffer, int $length = 75) : string
     {
         return $buffer . str_repeat('*', $length - strlen($buffer)) . PHP_EOL;
     }
@@ -316,7 +317,7 @@ abstract class Cli
      *
      * @return bool
      */
-    public static function canPipe()
+    public static function canPipe() : bool
     {
         return !defined('PHP_WINDOWS_VERSION_BUILD');
     }
@@ -324,9 +325,9 @@ abstract class Cli
     /**
      * Removes a directory that is not empty.
      *
-     * @param $dir
+     * @param string $dir
      */
-    public static function removeDir($dir)
+    public static function removeDir(string $dir)
     {
         foreach (scandir($dir) as $file) {
             if ('.' === $file || '..' === $file) {

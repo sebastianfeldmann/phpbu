@@ -12,7 +12,7 @@ namespace phpbu\App\Backup\Check;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class SizeDiffPreviousPercentTest extends \PHPUnit_Framework_TestCase
+class SizeDiffPreviousPercentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests SizeDiffPreviousPercent::pass

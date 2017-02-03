@@ -12,7 +12,7 @@ namespace phpbu\App;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class VersionTest extends \PHPUnit_Framework_TestCase
+class VersionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Version::createSource

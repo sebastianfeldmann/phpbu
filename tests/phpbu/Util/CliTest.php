@@ -12,7 +12,7 @@ namespace phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class CliTest extends \PHPUnit_Framework_TestCase
+class CliTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Fake global state
@@ -102,7 +102,7 @@ class CliTest extends \PHPUnit_Framework_TestCase
     {
         $cmd     = 'bar';
         $cmdPath = $this->createTempCommand($cmd);
-        $result  = Cli::detectCmdLocation($cmd, null, array(dirname($cmdPath)));
+        $result  = Cli::detectCmdLocation($cmd, '', [dirname($cmdPath)]);
         // cleanup tmp executable
         $this->removeTempCommand($cmdPath);
 
@@ -199,10 +199,9 @@ class CliTest extends \PHPUnit_Framework_TestCase
      */
     public function testToAbsolutePathWIthIncludePath()
     {
-        $filesDir = realpath(__DIR__ . '/../../_files/conf/xml');
+        $filesDir = PHPBU_TEST_FILES . '/conf/xml';
         set_include_path(get_include_path() . PATH_SEPARATOR . $filesDir);
         $res = Cli::toAbsolutePath('config-valid.xml', '', true);
-
 
         $this->assertEquals($filesDir . '/config-valid.xml', $res);
     }

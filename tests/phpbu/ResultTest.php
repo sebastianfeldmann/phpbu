@@ -15,7 +15,7 @@ use phpbu\App\Configuration;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class ResultTest extends \PHPUnit_Framework_TestCase
+class ResultTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Result::wasSuccessFul
@@ -227,5 +227,8 @@ class ResultTest extends \PHPUnit_Framework_TestCase
         $result->backupStart($backup);
         $result->backupEnd($backup);
         $result->phpbuEnd();
+
+        // no exception party
+        $this->assertTrue(true);
     }
 }

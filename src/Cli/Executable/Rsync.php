@@ -1,10 +1,11 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Cli\Process;
 use phpbu\App\Exception;
+use SebastianFeldmann\Cli\CommandLine;
+use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
 /**
  * Rsync executable class.
@@ -66,7 +67,7 @@ class Rsync extends Abstraction implements Executable
      *
      * @param string $path
      */
-    public function __construct($path = null)
+    public function __construct(string $path = '')
     {
         $this->setup('rsync', $path);
         $this->source = new Rsync\Location();
@@ -79,7 +80,7 @@ class Rsync extends Abstraction implements Executable
      * @param  string $args
      * @return \phpbu\App\Cli\Executable\Rsync
      */
-    public function useArgs($args)
+    public function useArgs(string $args) : Rsync
     {
         $this->args = $args;
         return $this;
@@ -91,7 +92,7 @@ class Rsync extends Abstraction implements Executable
      * @param  string $user
      * @return \phpbu\App\Cli\Executable\Rsync
      */
-    public function fromUser($user)
+    public function fromUser(string $user) : Rsync
     {
         $this->source->setUser($user);
         return $this;
@@ -103,7 +104,7 @@ class Rsync extends Abstraction implements Executable
      * @param  string $host
      * @return \phpbu\App\Cli\Executable\Rsync
      */
-    public function fromHost($host)
+    public function fromHost(string $host) : Rsync
     {
         $this->source->setHost($host);
         return $this;
@@ -115,7 +116,7 @@ class Rsync extends Abstraction implements Executable
      * @param  string $path
      * @return \phpbu\App\Cli\Executable\Rsync
      */
-    public function fromPath($path)
+    public function fromPath(string $path) : Rsync
     {
         $this->source->setPath($path);
         return $this;
@@ -127,7 +128,7 @@ class Rsync extends Abstraction implements Executable
      * @param  bool $bool
      * @return \phpbu\App\Cli\Executable\Rsync
      */
-    public function compressed($bool)
+    public function compressed(bool $bool) : Rsync
     {
         $this->compressed = $bool;
         return $this;
@@ -139,7 +140,7 @@ class Rsync extends Abstraction implements Executable
      * @param  string $host
      * @return \phpbu\App\Cli\Executable\Rsync
      */
-    public function toHost($host)
+    public function toHost(string $host) : Rsync
     {
         $this->target->setHost($host);
         return $this;
@@ -151,7 +152,7 @@ class Rsync extends Abstraction implements Executable
      * @param  string $path
      * @return \phpbu\App\Cli\Executable\Rsync
      */
-    public function toPath($path)
+    public function toPath(string $path) : Rsync
     {
         $this->target->setPath($path);
         return $this;
@@ -163,7 +164,7 @@ class Rsync extends Abstraction implements Executable
      * @param  string $user
      * @return \phpbu\App\Cli\Executable\Rsync
      */
-    public function toUser($user)
+    public function toUser(string $user) : Rsync
     {
         $this->target->setUser($user);
         return $this;
@@ -175,7 +176,7 @@ class Rsync extends Abstraction implements Executable
      * @param  array $excludes
      * @return \phpbu\App\Cli\Executable\Rsync
      */
-    public function exclude(array $excludes)
+    public function exclude(array $excludes) : Rsync
     {
         $this->excludes = $excludes;
         return $this;
@@ -184,24 +185,24 @@ class Rsync extends Abstraction implements Executable
     /**
      * Use --delete option.
      *
-     * @param  boolean $bool
+     * @param  bool $bool
      * @return \phpbu\App\Cli\Executable\Rsync
      */
-    public function removeDeleted($bool)
+    public function removeDeleted(bool $bool) : Rsync
     {
         $this->delete = $bool;
         return $this;
     }
 
     /**
-     * Subclass Process generator.
+     * Rsync CommandLine generator.
      *
-     * @return \phpbu\App\Cli\Process
+     * @return \SebastianFeldmann\Cli\CommandLine
      * @throws \phpbu\App\Exception
      */
-    protected function createProcess()
+    protected function createCommandLine() : CommandLine
     {
-        $process = new Process();
+        $process = new CommandLine();
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 
@@ -230,8 +231,8 @@ class Rsync extends Abstraction implements Executable
     /**
      * Configure excludes.
      *
-     * @param \phpbu\App\Cli\Cmd $cmd
-     * @param array              $excludes
+     * @param \SebastianFeldmann\Cli\Command\Executable $cmd
+     * @param array                                     $excludes
      */
     protected function configureExcludes(Cmd $cmd, array $excludes)
     {

@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Cli;
 
+use SebastianFeldmann\Cli\Command;
+
 /**
  * Executable
  *
@@ -12,27 +14,12 @@ namespace phpbu\App\Cli;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-interface Executable
+interface Executable extends Command
 {
-    /**
-     * Executes the cli commands.
-     *
-     * @return \phpbu\App\Cli\Result
-     * @throws \phpbu\App\Exception
-     */
-    public function run();
-
-    /**
-     * Return the command line to execute.
-     *
-     * @return string
-     */
-    public function getCommandLine();
-
     /**
      * Return the command with masked passwords or keys.
      *
      * @return string
      */
-    public function getCommandLinePrintable();
+    public function getCommandPrintable();
 }

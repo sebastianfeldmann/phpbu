@@ -12,7 +12,7 @@ namespace phpbu\App\Configuration\Backup;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class TargetTest extends \PHPUnit_Framework_TestCase
+class TargetTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Target::__construct()

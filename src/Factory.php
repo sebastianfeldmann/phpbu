@@ -10,7 +10,7 @@ use phpbu\App\Log\Logger;
 use phpbu\App\Runner\Task;
 
 /**
- * Source Factory
+ * Factory
  *
  * @package    phpbu
  * @subpackage App
@@ -73,6 +73,7 @@ class Factory
             'amazons3-v2' => '\\phpbu\\App\\Backup\\Sync\\AmazonS3v2',
             'dropbox'     => '\\phpbu\\App\\Backup\\Sync\\Dropbox',
             'ftp'         => '\\phpbu\\App\\Backup\\Sync\\Ftp',
+            'googledrive' => '\\phpbu\\App\\Backup\\Sync\\GoogleDrive',
             'rsync'       => '\\phpbu\\App\\Backup\\Sync\\Rsync',
             'sftp'        => '\\phpbu\\App\\Backup\\Sync\\Sftp',
             'softlayer'   => '\\phpbu\\App\\Backup\\Sync\\SoftLayer',

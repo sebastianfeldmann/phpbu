@@ -15,7 +15,7 @@ use phpbu\App\Backup\Source\Exception;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class SourceTest extends \PHPUnit_Framework_TestCase
+class SourceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Source::run
@@ -56,7 +56,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
                ->willReturn(false);
         $status->expects($this->once())
                ->method('getDataPath')
-               ->willReturn(realpath(__DIR__ . '/../../_files/misc/backup.txt'));
+               ->willReturn(realpath(PHPBU_TEST_FILES . '/misc/backup.txt'));
 
         $source = $this->getMockBuilder('\\phpbu\\App\\Backup\\Source\\Mysqldump')
                        ->disableOriginalConstructor()
@@ -66,6 +66,9 @@ class SourceTest extends \PHPUnit_Framework_TestCase
                ->willReturn($status);
 
         $target = $this->getTargetMock(true, false);
+        $target->method('getPathname')->willReturn('/foo/bar.txt.zip');
+        $target->method('getPathnamePlain')->willReturn('/foo/bar.txt');
+
         $result = $this->getResultMock();
         $runner = new Source();
         $runner->setSimulation(true);
@@ -77,7 +80,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
      */
     public function testSimulateWithDirectoryToCompress()
     {
-        $targetPath = realpath(__DIR__ . '/../../_files/misc');
+        $targetPath = PHPBU_TEST_FILES . '/misc';
         $status     = $this->getMockBuilder('\\phpbu\\App\\Backup\\Source\\Status')
                            ->disableOriginalConstructor()
                            ->getMock();

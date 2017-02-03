@@ -15,7 +15,7 @@ use phpbu\App\Backup\Cleaner\Exception;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class CleanerTest extends \PHPUnit_Framework_TestCase
+class CleanerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Cleaner::run

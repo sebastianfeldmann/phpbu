@@ -99,9 +99,9 @@ class Location
             throw new Exception('invalid rsync path');
         }
         $return = '';
-        if (null !== $this->host) {
+        if (!empty($this->host)) {
             // remote user
-            if (null !== $this->user) {
+            if (!empty($this->user)) {
                 $return .= $this->user . '@';
             }
             $return .= $this->host . ':';

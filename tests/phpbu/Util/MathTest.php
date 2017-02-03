@@ -12,7 +12,7 @@ namespace phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class MathTest extends \PHPUnit_Framework_TestCase
+class MathTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider providerPercentValues

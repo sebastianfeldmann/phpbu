@@ -25,9 +25,9 @@ abstract class SimulatorExecutable extends Cli
      * @param  \phpbu\App\Result        $result
      * @return \phpbu\App\Backup\Source\Status
      */
-    public function simulate(Target $target, Result $result)
+    public function simulate(Target $target, Result $result) : Status
     {
-        $result->debug('backup data:' . PHP_EOL . $this->getExecutable($target)->getCommandLinePrintable());
+        $result->debug('backup data:' . PHP_EOL . $this->getExecutable($target)->getCommandPrintable());
 
         return $this->createStatus($target);
     }
@@ -38,5 +38,5 @@ abstract class SimulatorExecutable extends Cli
      * @param  \phpbu\App\Backup\Target
      * @return \phpbu\App\Backup\Source\Status
      */
-    abstract protected function createStatus(Target $target);
+    abstract protected function createStatus(Target $target) : Status;
 }

@@ -12,112 +12,106 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.6
  */
-class OpenSLLTest extends \PHPUnit_Framework_TestCase
+class OpenSLLTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests OpenSSL::createProcess
+     * Tests OpenSSL::createCommandLine
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testNoAlgorithm()
     {
-        $openSSL  = new OpenSSL();
+        $openSSL  = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->encryptFile('/foo/bar.txt')
                 ->usePassword('fooBarBaz');
 
-        $openSSL->getCommandLine();
+        $openSSL->getCommand();
     }
 
     /**
-     * Tests OpenSSL::createProcess
+     * Tests OpenSSL::createCommandLine
      */
     public function testPasswordBase64Encode()
     {
         $expected = 'openssl enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' '
             . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
             . '&& rm \'/foo/bar.txt\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $openSSL  = new OpenSSL($path);
+        $openSSL = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->encryptFile('/foo/bar.txt')
                 ->encodeBase64(true)
                 ->usePassword('fooBarBaz')
                 ->useAlgorithm('aes-256-cbc');
 
-        $this->assertEquals('(' . $path . '/' . $expected . ')', $openSSL->getCommandLine());
+        $this->assertEquals('(' . PHPBU_TEST_BIN . '/' . $expected . ')', $openSSL->getCommand());
     }
 
     /**
-     * Tests OpenSSL::createProcess
+     * Tests OpenSSL::createCommandLine
      */
     public function testPassword()
     {
         $expected = 'openssl enc -e -aes-256-cbc -pass \'pass:fooBarBaz\' '
                   . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
                   . '&& rm \'/foo/bar.txt\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $openSSL  = new OpenSSL($path);
+        $openSSL  = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->encryptFile('/foo/bar.txt')
                 ->usePassword('fooBarBaz')
                 ->useAlgorithm('aes-256-cbc');
 
-        $this->assertEquals('(' . $path . '/' . $expected . ')', $openSSL->getCommandLine());
+        $this->assertEquals('(' . PHPBU_TEST_BIN . '/' . $expected . ')', $openSSL->getCommand());
     }
 
     /**
-     * Tests OpenSSL::createProcess
+     * Tests OpenSSL::createCommandLine
      */
     public function testDoNotDeleteUncrypted()
     {
         $expected = 'openssl enc -e -aes-256-cbc -pass \'pass:fooBarBaz\' '
                   . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $openSSL  = new OpenSSL($path);
+        $openSSL  = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->encryptFile('/foo/bar.txt')
                 ->usePassword('fooBarBaz')
                 ->useAlgorithm('aes-256-cbc')
                 ->deleteUncrypted(false);
 
-        $this->assertEquals($path . '/' . $expected, $openSSL->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $openSSL->getCommand());
     }
 
     /**
-     * Tests OpenSSL::createProcess
+     * Tests OpenSSL::createCommandLine
      */
     public function testCert()
     {
         $expected = 'openssl smime -encrypt -aes256 -binary -in \'/foo/bar.txt\' '
                   . '-out \'/foo/bar.txt.enc\' -outform DER \'/foo/my.pem\' '
                   . '&& rm \'/foo/bar.txt\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $openSSL  = new OpenSSL($path);
+        $openSSL  = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->encryptFile('/foo/bar.txt')
                 ->useSSLCert('/foo/my.pem')
                 ->useAlgorithm('aes256');
 
-        $this->assertEquals('(' . $path . '/' . $expected . ')', $openSSL->getCommandLine());
+        $this->assertEquals('(' . PHPBU_TEST_BIN . '/' . $expected . ')', $openSSL->getCommand());
     }
 
     /**
-     * Tests OpenSSL::createProcess
+     * Tests OpenSSL::createCommandLine
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testPasswordAlreadySet()
     {
-        $path    = realpath(__DIR__ . '/../../../_files/bin');
-        $openSSL = new OpenSSL($path);
+        $openSSL = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->usePassword('foo')->useSSLCert('/foo/my.pem');
     }
 
     /**
-     * Tests OpenSSL::createProcess
+     * Tests OpenSSL::createCommandLine
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testCertAlreadySet()
     {
-        $path    = realpath(__DIR__ . '/../../../_files/bin');
-        $openSSL = new OpenSSL($path);
+        $openSSL = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->useSSLCert('/foo/my.pub')->usePassword('foo');
     }
 
@@ -128,8 +122,7 @@ class OpenSLLTest extends \PHPUnit_Framework_TestCase
      */
     public function testUseInvalidAlgorithm()
     {
-        $path    = realpath(__DIR__ . '/../../../_files/bin');
-        $openSSL = new OpenSSL($path);
+        $openSSL = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->usePassword('foo')->useAlgorithm('invalid');
     }
 
@@ -140,33 +133,30 @@ class OpenSLLTest extends \PHPUnit_Framework_TestCase
      */
     public function testChooseAlgorithmAfterMode()
     {
-        $path    = realpath(__DIR__ . '/../../../_files/bin');
-        $openSSL = new OpenSSL($path);
+        $openSSL = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->useAlgorithm('invalid');
     }
 
     /**
-     * Tests OpenSSL::createProcess
+     * Tests OpenSSL::createCommandLine
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testNoSource()
     {
-        $path    = realpath(__DIR__ . '/../../../_files/bin');
-        $openSSL = new OpenSSL($path);
-        $openSSL->getCommandLine();
+        $openSSL = new OpenSSL(PHPBU_TEST_BIN);
+        $openSSL->getCommand();
     }
 
     /**
-     * Tests OpenSSL::createProcess
+     * Tests OpenSSL::createCommandLine
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testNoMode()
     {
-        $path    = realpath(__DIR__ . '/../../../_files/bin');
-        $openSSL = new OpenSSL($path);
+        $openSSL = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->encryptFile('/foo/bar.txt');
-        $openSSL->getCommandLine();
+        $openSSL->getCommand();
     }
 }

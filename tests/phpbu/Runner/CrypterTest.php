@@ -15,7 +15,7 @@ use phpbu\App\Backup\Crypter\Exception;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class CrypterTest extends \PHPUnit_Framework_TestCase
+class CrypterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Crypter::run

@@ -12,7 +12,7 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.12
  */
-class RedisCliTest extends \PHPUnit_Framework_TestCase
+class RedisCliTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests RedisCli::getProcess
@@ -21,8 +21,7 @@ class RedisCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testNoCommand()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $redis = new RedisCli($path);
+        $redis = new RedisCli(PHPBU_TEST_BIN);
         $redis->getCommandLine();
     }
 
@@ -33,8 +32,7 @@ class RedisCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidCommand()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $redis = new RedisCli($path);
+        $redis = new RedisCli(PHPBU_TEST_BIN);
         $redis->runCommand('foo');
     }
 
@@ -43,11 +41,10 @@ class RedisCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackup()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $redis = new RedisCli($path);
+        $redis = new RedisCli(PHPBU_TEST_BIN);
         $redis->backup();
 
-        $this->assertEquals($path . '/redis-cli BGSAVE', $redis->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/redis-cli BGSAVE', $redis->getCommandLine());
     }
 
     /**
@@ -55,49 +52,45 @@ class RedisCliTest extends \PHPUnit_Framework_TestCase
      */
     public function testLastBackup()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $redis = new RedisCli($path);
+        $redis = new RedisCli(PHPBU_TEST_BIN);
         $redis->lastBackupTime();
 
-        $this->assertEquals($path . '/redis-cli LASTSAVE', $redis->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/redis-cli LASTSAVE', $redis->getCommandLine());
     }
 
     /**
-     * Tests RedisCli::createProcess
+     * Tests RedisCli::createCommandLine
      */
     public function testPassword()
     {
         $expected = 'redis-cli -a \'fooBarBaz\' BGSAVE';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $redis  = new RedisCli($path);
+        $redis  = new RedisCli(PHPBU_TEST_BIN);
         $redis->backup()->usePassword('fooBarBaz');
 
-        $this->assertEquals($path . '/' . $expected, $redis->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $redis->getCommandLine());
     }
 
     /**
-     * Tests RedisCli::createProcess
+     * Tests RedisCli::createCommandLine
      */
     public function testHost()
     {
         $expected = 'redis-cli -h \'example.com\' BGSAVE';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $redis  = new RedisCli($path);
+        $redis  = new RedisCli(PHPBU_TEST_BIN);
         $redis->backup()->useHost('example.com');
 
-        $this->assertEquals($path . '/' . $expected, $redis->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $redis->getCommandLine());
     }
 
     /**
-     * Tests RedisCli::createProcess
+     * Tests RedisCli::createCommandLine
      */
     public function testPort()
     {
         $expected = 'redis-cli -p \'1313\' BGSAVE';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $redis  = new RedisCli($path);
+        $redis  = new RedisCli(PHPBU_TEST_BIN);
         $redis->backup()->usePort(1313);
 
-        $this->assertEquals($path . '/' . $expected, $redis->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $redis->getCommandLine());
     }
 }

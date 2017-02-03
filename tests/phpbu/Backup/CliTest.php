@@ -1,6 +1,9 @@
 <?php
 namespace phpbu\App\Backup;
 
+use SebastianFeldmann\Cli\Command\Result as CommandResult;
+use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
+
 /**
  * Cli Test
  *
@@ -12,28 +15,8 @@ namespace phpbu\App\Backup;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-abstract class CliTest extends \PHPUnit_Framework_TestCase
+abstract class CliTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Path to fake binaries.
-     *
-     * @var string
-     */
-    protected $binDir;
-
-    /**
-     * BinDir getter.
-     *
-     * @return string
-     */
-    public function getBinDir()
-    {
-        if (empty($this->binDir)) {
-            $this->binDir = realpath(__DIR__ . '/../../_files/bin');
-        }
-        return $this->binDir;
-    }
-
     /**
      * Create App\Result mock.
      *
@@ -45,16 +28,45 @@ abstract class CliTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Create CLI Runner mock.
+     *
+     * @return \SebastianFeldmann\Cli\Command\Runner
+     */
+    protected function getRunnerMock()
+    {
+        return $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Runner')
+                    ->disableOriginalConstructor()
+                    ->getMock();
+    }
+
+    /**
+     * Create runner result mock.
+     *
+     * @param  int    $code
+     * @param  string $cmd
+     * @param  string $out
+     * @param  string $err
+     * @return \SebastianFeldmann\Cli\Command\Runner\Result
+     */
+    protected function getRunnerResultMock(int $code, string $cmd, string $out = '', string $err = '')
+    {
+        $cmdRes = new CommandResult($cmd, $code, $out, $err);
+        $runRes = new RunnerResult($cmdRes);
+
+        return $runRes;
+    }
+
+    /**
      * Create Cli\Result mock.
      *
      * @param  integer $code
      * @param  string  $cmd
      * @param  string  $output
-     * @return \phpbu\App\Cli\Result
+     * @return \SebastianFeldmann\Cli\Command\Result
      */
     protected function getCliResultMock($code, $cmd, $output = '')
     {
-        $cliResult = $this->getMockBuilder('\\phpbu\\App\\Cli\\Result')
+        $cliResult = $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Result')
                           ->disableOriginalConstructor()
                           ->getMock();
 
@@ -62,7 +74,7 @@ abstract class CliTest extends \PHPUnit_Framework_TestCase
         $cliResult->method('getCmd')->willReturn($cmd);
         $cliResult->method('getStdOut')->willReturn($output);
         $cliResult->method('getStdOutAsArray')->willReturn(explode(PHP_EOL, $output));
-        $cliResult->method('wasSuccessful')->willReturn($code == 0);
+        $cliResult->method('isSuccessful')->willReturn($code == 0);
 
         return $cliResult;
     }
@@ -74,7 +86,7 @@ abstract class CliTest extends \PHPUnit_Framework_TestCase
      * @param  string $fileCompressed
      * @return \phpbu\App\Backup\Target
      */
-    protected function getTargetMock($file = '', $fileCompressed = '')
+    protected function getTargetMock(string $file = '', string $fileCompressed = '')
     {
         $compress = !empty($fileCompressed);
         $pathName = $compress ? $fileCompressed : $file;
@@ -106,7 +118,7 @@ abstract class CliTest extends \PHPUnit_Framework_TestCase
         $compression->method('isPipeable')->willReturn(in_array($cmd, ['gzip', 'bzip2']));
         $compression->method('getCommand')->willReturn($cmd);
         $compression->method('getSuffix')->willReturn($suffix);
-        $compression->method('getPath')->willReturn(realpath(__DIR__ . '/../../_files/bin'));
+        $compression->method('getPath')->willReturn(PHPBU_TEST_BIN);
 
         return $compression;
     }

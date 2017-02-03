@@ -18,56 +18,33 @@ use phpbu\App\Backup\CliTest;
 class ElasticdumpTest extends CliTest
 {
     /**
-     * Elasticdump
-     *
-     * @var \phpbu\App\Backup\Source\Elasticdump
-     */
-    protected $elasticdump;
-
-    /**
-     * Setup elasticdump
-     */
-    public function setUp()
-    {
-        $this->elasticdump = new Elasticdump();
-    }
-
-    /**
-     * Clear elasticdump
-     */
-    public function tearDown()
-    {
-        $this->elasticdump = null;
-    }
-
-    /**
-     * Tests Elasticdump::getExec
+     * Tests Elasticdump::getExecutable
      */
     public function testDefault()
     {
-        $expected = 'elasticdump --input=\'http://localhost:9200/\' --output=\'backup.json\'';
-        $target   = $this->getTargetMock('backup.json');
-        $path     = $this->getBinDir();
-        $this->elasticdump->setup(array('pathToElasticdump' => $path));
+        $target      = $this->getTargetMock('backup.json');
+        $elasticdump = new Elasticdump();
+        $elasticdump->setup(['pathToElasticdump' => PHPBU_TEST_BIN]);
 
-        $executable = $this->elasticdump->getExecutable($target);
+        $executable = $elasticdump->getExecutable($target);
+        $expected   = 'elasticdump --input=\'http://localhost:9200/\' --output=\'backup.json\'';
 
-        $this->assertEquals($path . '/' . $expected, $executable->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $executable->getCommand());
     }
 
     /**
-     * Tests Elasticdump::getExec
+     * Tests Elasticdump::getExecutable
      */
     public function testUser()
     {
-        $expected = 'elasticdump --input=\'http://root@localhost:9200/\' --output=\'backup.json\'';
-        $target   = $this->getTargetMock('backup.json');
-        $path     = $this->getBinDir();
-        $this->elasticdump->setup(array('pathToElasticdump' => $path, 'user' => 'root'));
+        $target      = $this->getTargetMock('backup.json');
+        $elasticdump = new Elasticdump();
+        $elasticdump->setup(['pathToElasticdump' => PHPBU_TEST_BIN, 'user' => 'root']);
 
-        $executable = $this->elasticdump->getExecutable($target);
+        $executable = $elasticdump->getExecutable($target);
+        $expected   = 'elasticdump --input=\'http://root@localhost:9200/\' --output=\'backup.json\'';
 
-        $this->assertEquals($path . '/' . $expected, $executable->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $executable->getCommand());
     }
 
     /**
@@ -75,19 +52,21 @@ class ElasticdumpTest extends CliTest
      */
     public function testBackupOk()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(0, 'elasticdump'));
+
         $target    = $this->getTargetMock('backup.json');
-        $cliResult = $this->getCliResultMock(0, 'elasticdump');
         $appResult = $this->getAppResultMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Elasticdump')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $this->elasticdump->setup(array());
-        $this->elasticdump->setExecutable($exec);
-        $this->elasticdump->backup($target, $appResult);
+        $elasticdump = new Elasticdump($runner);
+        $elasticdump->setup(['pathToElasticdump' => PHPBU_TEST_BIN]);
+
+        $status = $elasticdump->backup($target, $appResult);
+
+        $this->assertFalse($status->handledCompression());
     }
 
     /**
@@ -97,18 +76,17 @@ class ElasticdumpTest extends CliTest
      */
     public function testBackupFail()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(1, 'elasticdump'));
+
         $target    = $this->getTargetMock('backup.json');
-        $cliResult = $this->getCliResultMock(1, 'elasticdump');
         $appResult = $this->getAppResultMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Elasticdump')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $this->elasticdump->setup(array());
-        $this->elasticdump->setExecutable($exec);
-        $this->elasticdump->backup($target, $appResult);
+        $elasticdump = new Elasticdump($runner);
+        $elasticdump->setup(['pathToElasticdump' => PHPBU_TEST_BIN]);
+        $elasticdump->backup($target, $appResult);
     }
 }

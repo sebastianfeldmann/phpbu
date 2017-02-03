@@ -12,7 +12,7 @@ namespace phpbu\App\Backup;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class CollectorTest extends \PHPUnit_Framework_TestCase
+class CollectorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test the Backup collector with no dynamic directory

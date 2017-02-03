@@ -2,6 +2,8 @@
 namespace phpbu\App\Backup;
 
 use phpbu\App\Cli\Executable;
+use phpbu\App\Cli\Result;
+use SebastianFeldmann\Cli\Command\Runner;
 
 /**
  * Base class for Actions using cli tools.
@@ -17,20 +19,27 @@ use phpbu\App\Cli\Executable;
 abstract class Cli
 {
     /**
-     * Command to execute
+     * Command runner to execute the executable.
+     *
+     * @var \SebastianFeldmann\Cli\Command\Runner
+     */
+    protected $runner;
+
+    /**
+     * Executable command.
      *
      * @var \phpbu\App\Cli\Executable
      */
     protected $executable;
 
     /**
-     * Exec setter, mostly for test purposes.
+     * Cli constructor.
      *
-     * @param \phpbu\App\Cli\Executable $exec
+     * @param \SebastianFeldmann\Cli\Command\Runner $runner
      */
-    public function setExecutable(Executable $exec)
+    public function __construct(Runner $runner = null)
     {
-        $this->executable = $exec;
+        $this->runner = $runner ? : new Runner\Simple();
     }
 
     /**
@@ -38,11 +47,41 @@ abstract class Cli
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Result
-     * @throws \phpbu\App\Exception
+     * @throws \RuntimeException
      */
-    protected function execute(Target $target)
+    protected function execute(Target $target) : Result
     {
-        return $this->getExecutable($target)->run();
+        return $this->runCommand($this->getExecutable($target));
+    }
+
+    /**
+     * Execute a cli command.
+     *
+     * @param  \phpbu\App\Cli\Executable $command
+     * @return \phpbu\App\Cli\Result
+     */
+    protected function runCommand(Executable $command) : Result
+    {
+        $res = $this->runner->run($command);
+
+        if (!$res->isSuccessful() && $res->isOutputRedirected()) {
+            // remove file with errors
+            $this->unlinkErrorFile($res->getRedirectPath());
+        }
+
+        return new Result($res->getCommandResult(), $command->getCommandPrintable());
+    }
+
+    /**
+     * Remove file if it exists.
+     *
+     * @param string $file
+     */
+    public function unlinkErrorFile(string $file)
+    {
+        if (file_exists($file) && !is_dir($file)) {
+            unlink($file);
+        }
     }
 
     /**
@@ -51,5 +90,19 @@ abstract class Cli
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
      */
-    abstract public function getExecutable(Target $target);
+    public function getExecutable(Target $target) : Executable
+    {
+        if (null === $this->executable) {
+            $this->executable = $this->createExecutable($target);
+        }
+        return $this->executable;
+    }
+
+    /**
+     * Creates the executable for this action.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Cli\Executable
+     */
+    abstract protected function createExecutable(Target $target) : Executable;
 }

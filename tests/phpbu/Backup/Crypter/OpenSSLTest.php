@@ -19,32 +19,12 @@ use phpbu\App\Util\Cli;
 class OpenSSLTest extends CliTest
 {
     /**
-     * @var OpenSSL
-     */
-    protected $openSSL;
-
-    /**
-     * Setup OpenSSL Crypt
-     */
-    public function setUp()
-    {
-        $this->openSSL = new OpenSSL();
-    }
-
-    /**
-     * Clear OpenSSL Crypt
-     */
-    public function tearDown()
-    {
-        $this->openSSL = null;
-    }
-
-    /**
      * Tests OpenSSL::setUp
      */
     public function testSetUpOk()
     {
-        $this->openSSL->setup(array('password' => 'fooBarBaz', 'algorithm' => 'aes-256-cbc'));
+        $openSSL = new OpenSSL();
+        $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'password' => 'fooBarBaz', 'algorithm' => 'aes-256-cbc']);
 
         $this->assertTrue(true, 'no exception should occur');
     }
@@ -56,7 +36,8 @@ class OpenSSLTest extends CliTest
      */
     public function testSetUpNoCertOrPassword()
     {
-        $this->openSSL->setup(array('algorithm' => 'aes-256-cbc'));
+        $openSSL = new OpenSSL();
+        $openSSL->setup(['algorithm' => 'aes-256-cbc']);
     }
 
     /**
@@ -66,7 +47,8 @@ class OpenSSLTest extends CliTest
      */
     public function testSetUpNoAlgorithm()
     {
-        $this->openSSL->setup(array('password' => 'fooBarBaz'));
+        $openSSL = new OpenSSL();
+        $openSSL->setup(['password' => 'fooBarBaz']);
     }
 
     /**
@@ -74,16 +56,16 @@ class OpenSSLTest extends CliTest
      */
     public function testPasswordAndAlgorithm()
     {
-        $expected = 'openssl enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' '
-                  . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
-                  . '&& rm \'/foo/bar.txt\'';
-        $target   = $this->getTargetMock('/foo/bar.txt');
-        $path     = $this->getBinDir();
-        $this->openSSL->setup(array('pathToOpenSSL' => $path, 'password' => 'fooBarBaz', 'algorithm' => 'aes-256-cbc'));
+        $target  = $this->getTargetMock('/foo/bar.txt');
+        $openSSL = new OpenSSL();
+        $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'password' => 'fooBarBaz', 'algorithm' => 'aes-256-cbc']);
 
-        $executable = $this->openSSL->getExecutable($target);
+        $executable = $openSSL->getExecutable($target);
+        $expected   = '(' . PHPBU_TEST_BIN . '/openssl enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' '
+                    . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
+                    . '&& rm \'/foo/bar.txt\')';
 
-        $this->assertEquals('(' . $path . '/' . $expected . ')', $executable->getCommandLine());
+        $this->assertEquals($expected, $executable->getCommand());
     }
 
     /**
@@ -93,16 +75,16 @@ class OpenSSLTest extends CliTest
     {
         Configuration::setWorkingDirectory('/foo');
 
-        $expected = 'openssl smime -encrypt -aes256 -binary -in \'/foo/bar.txt\' '
+        $target  = $this->getTargetMock('/foo/bar.txt');
+        $openSSL = new OpenSSL();
+        $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'certFile' => '/foo/my.pem', 'algorithm' => 'aes256']);
+
+        $executable = $openSSL->getExecutable($target);
+        $expected = '(' . PHPBU_TEST_BIN . '/openssl smime -encrypt -aes256 -binary -in \'/foo/bar.txt\' '
                   . '-out \'/foo/bar.txt.enc\' -outform DER \'/foo/my.pem\' '
-                  . '&& rm \'/foo/bar.txt\'';
-        $target   = $this->getTargetMock('/foo/bar.txt');
-        $path     = $this->getBinDir();
-        $this->openSSL->setup(array('pathToOpenSSL' => $path, 'certFile' => '/foo/my.pem', 'algorithm' => 'aes256'));
+                  . '&& rm \'/foo/bar.txt\')';
 
-        $executable = $this->openSSL->getExecutable($target);
-
-        $this->assertEquals('(' . $path . '/' . $expected . ')', $executable->getCommandLine());
+        $this->assertEquals($expected, $executable->getCommand());
     }
 
     /**
@@ -110,18 +92,18 @@ class OpenSSLTest extends CliTest
      */
     public function testCryptOk()
     {
-        $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(0, 'openssl');
-        $appResult = $this->getAppResultMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\OpenSSL')
-                          ->disableOriginalConstructor()
-                          ->getMock();
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(0, 'openssl'));
 
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
+        $target    = $this->getTargetMock(__FILE__);
+        $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
-        $this->openSSL->setExecutable($exec);
-        $this->openSSL->crypt($target, $appResult);
+        $openSSL = new OpenSSL($runner);
+        $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'certFile' => '/foo/my.pem', 'algorithm' => 'aes256']);
+        $openSSL->crypt($target, $appResult);
     }
 
     /**
@@ -131,20 +113,18 @@ class OpenSSLTest extends CliTest
      */
     public function testCryptFail()
     {
-        $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(1, 'openSSL');
-        $appResult = $this->getMockBuilder('\\phpbu\\App\\Result')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\OpenSSL')
-                          ->disableOriginalConstructor()
-                          ->getMock();
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(1, 'openssl'));
 
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
+        $target    = $this->getTargetMock(__FILE__);
+        $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
-        $this->openSSL->setExecutable($exec);
-        $this->openSSL->crypt($target, $appResult);
+        $openSSL = new OpenSSL($runner);
+        $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'password' => 'fooBarBaz', 'algorithm' => 'aes-256-cbc']);
+        $openSSL->crypt($target, $appResult);
     }
 
     /**
@@ -152,7 +132,8 @@ class OpenSSLTest extends CliTest
      */
     public function testGetSuffix()
     {
-        $suffix = $this->openSSL->getSuffix();
+        $openSSL = new OpenSSL();
+        $suffix  = $openSSL->getSuffix();
         $this->assertEquals('enc', $suffix);
     }
 }

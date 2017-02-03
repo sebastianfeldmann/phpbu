@@ -33,9 +33,9 @@ abstract class Abstraction extends Cli
         $crypt = $this->execute($target);
         $name  = strtolower(get_class($this));
 
-        $result->debug($name . ':' . $this->getExecutable($target)->getCommandLinePrintable());
+        $result->debug($name . ':' . $this->getExecutable($target)->getCommandPrintable());
 
-        if (!$crypt->wasSuccessful()) {
+        if (!$crypt->isSuccessful()) {
             throw new Exception($name . ' failed:' . PHP_EOL . $crypt->getStdErr());
         }
     }
@@ -50,7 +50,7 @@ abstract class Abstraction extends Cli
     {
         $result->debug(
             'execute encryption:' . PHP_EOL .
-            $this->getExecutable($target)->getCommandLinePrintable()
+            $this->getExecutable($target)->getCommandPrintable()
         );
     }
 
@@ -61,7 +61,7 @@ abstract class Abstraction extends Cli
      * @param  string $default
      * @return string
      */
-    protected function toAbsolutePath($path, $default = null)
+    protected function toAbsolutePath(string $path, string $default = '')
     {
         return !empty($path) ? Util\Cli::toAbsolutePath($path, Configuration::getWorkingDirectory()) : $default;
     }

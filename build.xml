@@ -294,6 +294,7 @@
   <exec executable="phpab">
    <arg value="--all" />
    <arg value="--phar" />
+   <arg value="-gz" />
    <!-- <arg value="- -bzip2" /> -->
    <arg value="--output" />
    <arg path="${basedir}/build/phpbu-${phar_version}.phar" />

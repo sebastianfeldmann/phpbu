@@ -73,7 +73,7 @@ class Arangodump extends SimulatorExecutable implements Simulator
      * Include system collections
      * --include-system-collections
      *
-     * @var boolean
+     * @var bool
      */
     private $includeSystemCollections;
 
@@ -90,7 +90,7 @@ class Arangodump extends SimulatorExecutable implements Simulator
      * This does not control whether the server requires authentication.
      * -- disable-authentication
      *
-     * @var boolean
+     * @var bool
      */
     private $disableAuthentication;
 
@@ -105,11 +105,11 @@ class Arangodump extends SimulatorExecutable implements Simulator
     {
         $this->setupSourceData($conf);
 
-        $this->pathToArangodump      = Util\Arr::getValue($conf, 'pathToArangodump');
-        $this->endpoint              = Util\Arr::getValue($conf, 'endpoint');
-        $this->username              = Util\Arr::getValue($conf, 'username');
-        $this->password              = Util\Arr::getValue($conf, 'password');
-        $this->database              = Util\Arr::getValue($conf, 'database');
+        $this->pathToArangodump      = Util\Arr::getValue($conf, 'pathToArangodump', '');
+        $this->endpoint              = Util\Arr::getValue($conf, 'endpoint', '');
+        $this->username              = Util\Arr::getValue($conf, 'username', '');
+        $this->password              = Util\Arr::getValue($conf, 'password', '');
+        $this->database              = Util\Arr::getValue($conf, 'database', '');
         $this->disableAuthentication = Util\Str::toBoolean(Util\Arr::getValue($conf, 'disableAuthentication'), false);
     }
 
@@ -121,8 +121,11 @@ class Arangodump extends SimulatorExecutable implements Simulator
     protected function setupSourceData(array $conf)
     {
         $this->dumpData                  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'dumpData'), false);
-        $this->includeSystemCollections  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'includeSystemCollections'), false);
         $this->collections               = Util\Str::toList(Util\Arr::getValue($conf, 'collections'));
+        $this->includeSystemCollections  = Util\Str::toBoolean(
+            Util\Arr::getValue($conf, 'includeSystemCollections'),
+            false
+        );
     }
 
     /**
@@ -134,13 +137,13 @@ class Arangodump extends SimulatorExecutable implements Simulator
      * @return \phpbu\App\Backup\Source\Status
      * @throws \phpbu\App\Exception
      */
-    public function backup(Target $target, Result $result)
+    public function backup(Target $target, Result $result) : Status
     {
         $arangodump = $this->execute($target);
 
-        $result->debug($this->getExecutable($target)->getCommandLinePrintable());
+        $result->debug($arangodump->getCmdPrintable());
 
-        if (!$arangodump->wasSuccessful()) {
+        if (!$arangodump->isSuccessful()) {
             throw new Exception('arangodump failed: ' . $arangodump->getStdErr());
         }
 
@@ -154,21 +157,18 @@ class Arangodump extends SimulatorExecutable implements Simulator
      * @return \phpbu\App\Cli\Executable
      * @throws \phpbu\App\Exception
      */
-    public function getExecutable(Target $target)
+    protected function createExecutable(Target $target) : Executable
     {
-        if (null == $this->executable) {
-            $this->executable = new Executable\Arangodump($this->pathToArangodump);
-            $this->executable->useEndpoint($this->endpoint)
-                             ->credentials($this->username, $this->password)
-                             ->dumpDatabase($this->database)
-                             ->dumpCollections($this->collections)
-                             ->disableAuthentication($this->disableAuthentication)
-                             ->includeSystemCollections($this->includeSystemCollections)
-                             ->dumpData($this->dumpData)
-                             ->dumpTo($this->getDumpDir($target));
-        }
-
-        return $this->executable;
+        $executable = new Executable\Arangodump($this->pathToArangodump);
+        $executable->useEndpoint($this->endpoint)
+                   ->credentials($this->username, $this->password)
+                   ->dumpDatabase($this->database)
+                   ->dumpCollections($this->collections)
+                   ->disableAuthentication($this->disableAuthentication)
+                   ->includeSystemCollections($this->includeSystemCollections)
+                   ->dumpData($this->dumpData)
+                   ->dumpTo($this->getDumpDir($target));
+        return $executable;
     }
 
     /**
@@ -177,7 +177,7 @@ class Arangodump extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target
      * @return \phpbu\App\Backup\Source\Status
      */
-    protected function createStatus(Target $target)
+    protected function createStatus(Target $target) : Status
     {
         return Status::create()->uncompressedDirectory($this->getDumpDir($target));
     }
@@ -188,7 +188,7 @@ class Arangodump extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @return string
      */
-    public function getDumpDir(Target $target)
+    public function getDumpDir(Target $target) : string
     {
         return $target->getPath() . '/dump';
     }

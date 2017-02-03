@@ -1,10 +1,10 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
-use phpbu\App\Cli\Process;
 use phpbu\App\Exception;
+use SebastianFeldmann\Cli\CommandLine;
+use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
 /**
  * Innobackupex Executable class.
@@ -83,7 +83,7 @@ class Innobackupex extends Abstraction implements Executable
      *
      * @param string $path
      */
-    public function __construct($path = null)
+    public function __construct(string $path = '')
     {
         $this->setup('innobackupex', $path);
         $this->setMaskCandidates(['password']);
@@ -95,7 +95,7 @@ class Innobackupex extends Abstraction implements Executable
      * @param  string $path
      * @return \phpbu\App\Cli\Executable\Innobackupex
      */
-    public function dumpFrom($path)
+    public function dumpFrom(string $path) : Innobackupex
     {
         $this->dataDir = $path;
         return $this;
@@ -107,7 +107,7 @@ class Innobackupex extends Abstraction implements Executable
      * @param  string $path
      * @return \phpbu\App\Cli\Executable\Innobackupex
      */
-    public function dumpTo($path)
+    public function dumpTo(string $path) : Innobackupex
     {
         $this->dumpDir = $path;
         return $this;
@@ -119,7 +119,7 @@ class Innobackupex extends Abstraction implements Executable
      * @param  string $host
      * @return \phpbu\App\Cli\Executable\Innobackupex
      */
-    public function useHost($host)
+    public function useHost(string $host) : Innobackupex
     {
         $this->host = $host;
         return $this;
@@ -132,7 +132,7 @@ class Innobackupex extends Abstraction implements Executable
      * @param  string $password
      * @return \phpbu\App\Cli\Executable\Innobackupex
      */
-    public function credentials($user = null, $password = null)
+    public function credentials(string $user = '', string $password = '') : Innobackupex
     {
         $this->user     = $user;
         $this->password = $password;
@@ -145,7 +145,7 @@ class Innobackupex extends Abstraction implements Executable
      * @param  string $include
      * @return \phpbu\App\Cli\Executable\Innobackupex
      */
-    public function including($include)
+    public function including(string $include) : Innobackupex
     {
         $this->include = $include;
         return $this;
@@ -164,17 +164,17 @@ class Innobackupex extends Abstraction implements Executable
     }
 
     /**
-     * Subclass Process generator.
+     * Innobackupex CommandLine generator.
      *
-     * @return \phpbu\App\Cli\Process
+     * @return \SebastianFeldmann\Cli\CommandLine
      * @throws \phpbu\App\Exception
      */
-    public function createProcess()
+    public function createCommandLine() : CommandLine
     {
         if (empty($this->dumpDir)) {
             throw new Exception('no directory to dump to');
         }
-        $process  = new Process();
+        $process  = new CommandLine();
         $cmdDump  = new Cmd($this->binary);
         $cmdApply = new Cmd($this->binary);
         $process->addCommand($cmdDump);

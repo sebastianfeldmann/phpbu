@@ -12,7 +12,7 @@ namespace phpbu\App\Backup\Target;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class CompressionTest extends \PHPUnit_Framework_TestCase
+class CompressionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Compression::create

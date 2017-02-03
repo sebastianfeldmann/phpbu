@@ -1,10 +1,10 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
-use phpbu\App\Cli\Process;
 use phpbu\App\Exception;
+use SebastianFeldmann\Cli\CommandLine;
+use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
 /**
  * RedisCli executable class.
@@ -65,7 +65,7 @@ class RedisCli extends Abstraction implements Executable
      *
      * @param string $path
      */
-    public function __construct($path = null)
+    public function __construct(string $path = '')
     {
         $this->setup('redis-cli', $path);
         $this->setMaskCandidates(['password']);
@@ -78,7 +78,7 @@ class RedisCli extends Abstraction implements Executable
      * @return \phpbu\App\Cli\Executable\RedisCli
      * @throws \phpbu\App\Exception
      */
-    public function runCommand($command)
+    public function runCommand(string $command) : RedisCli
     {
         if(!isset($this->availableCommands[$command])) {
             throw new Exception('Unknown redis-cli command');
@@ -93,7 +93,7 @@ class RedisCli extends Abstraction implements Executable
      * @return \phpbu\App\Cli\Executable\RedisCli
      * @throws \phpbu\App\Exception
      */
-    public function backup()
+    public function backup() : RedisCli
     {
         return $this->runCommand('BGSAVE');
     }
@@ -104,7 +104,7 @@ class RedisCli extends Abstraction implements Executable
      * @return \phpbu\App\Cli\Executable\RedisCli
      * @throws \phpbu\App\Exception
      */
-    public function lastBackupTime()
+    public function lastBackupTime() : RedisCli
     {
         return $this->runCommand('LASTSAVE');
     }
@@ -115,7 +115,7 @@ class RedisCli extends Abstraction implements Executable
      * @param  string $host
      * @return \phpbu\App\Cli\Executable\RedisCli
      */
-    public function useHost($host)
+    public function useHost(string $host) : RedisCli
     {
         $this->host = $host;
         return $this;
@@ -127,7 +127,7 @@ class RedisCli extends Abstraction implements Executable
      * @param  int $port
      * @return \phpbu\App\Cli\Executable\RedisCli
      */
-    public function usePort($port)
+    public function usePort(int $port) : RedisCli
     {
         $this->port = $port;
         return $this;
@@ -139,25 +139,25 @@ class RedisCli extends Abstraction implements Executable
      * @param  string $password
      * @return \phpbu\App\Cli\Executable\RedisCli
      */
-    public function usePassword($password)
+    public function usePassword(string $password) : RedisCli
     {
         $this->password = $password;
         return $this;
     }
 
     /**
-     * RedisCli Process generator.
+     * RedisCli CommandLine generator.
      *
-     * @return \phpbu\App\Cli\Process
+     * @return \SebastianFeldmann\Cli\CommandLine
      * @throws \phpbu\App\Exception
      */
-    protected function createProcess()
+    protected function createCommandLine() : CommandLine
     {
         if (empty($this->command)) {
             throw new Exception('Choose command to execute');
         }
 
-        $process = new Process();
+        $process = new CommandLine();
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 
@@ -168,9 +168,9 @@ class RedisCli extends Abstraction implements Executable
     }
 
     /**
-     * Set the openssl command line options
+     * Set the openssl command line options.
      *
-     * @param \phpbu\App\Cli\Cmd $cmd
+     * @param \SebastianFeldmann\Cli\Command\Executable $cmd
      */
     protected function setOptions(Cmd $cmd)
     {

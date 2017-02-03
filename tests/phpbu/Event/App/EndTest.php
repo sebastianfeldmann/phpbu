@@ -12,7 +12,7 @@ namespace phpbu\App\Event\App;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class EndTest extends \PHPUnit_Framework_TestCase
+class EndTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests End::getResult

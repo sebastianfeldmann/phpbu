@@ -12,15 +12,17 @@ namespace phpbu\App\Adapter;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class DotenvTest extends \PHPUnit_Framework_TestCase
+class DotenvTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests DotEnv::createRunner
+     * Tests DotEnv::setUp
      */
     public function testSetup()
     {
         $dotenv = new Dotenv();
-        $dotenv->setup(['file' => realpath(__DIR__ . '/../../_files/misc/.envfoo')]);
+        $dotenv->setup(['file' => PHPBU_TEST_FILES . '/misc/.envfoo']);
+
+        $this->assertTrue(true);
     }
 
     /**
@@ -29,7 +31,7 @@ class DotenvTest extends \PHPUnit_Framework_TestCase
     public function testGetValue()
     {
         $dotenv = new Dotenv();
-        $dotenv->setup(['file' => realpath(__DIR__ . '/../../_files/misc/.envbar')]);
+        $dotenv->setup(['file' => PHPBU_TEST_FILES . '/misc/.envbar']);
 
         $foo = $dotenv->getValue('DOT_ENV_BAR');
         $this->assertEquals('bar', $foo);

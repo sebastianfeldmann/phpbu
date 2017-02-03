@@ -12,7 +12,7 @@ namespace phpbu\App\Event;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class DebugTest extends \PHPUnit_Framework_TestCase
+class DebugTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Debug::getMessage

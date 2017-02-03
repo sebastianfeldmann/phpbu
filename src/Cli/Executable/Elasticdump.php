@@ -1,11 +1,11 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
-use phpbu\App\Cli\Process;
 use phpbu\App\Exception;
 use phpbu\App\Util\Str;
+use SebastianFeldmann\Cli\CommandLine;
+use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
 /**
  * Elasticdump source class.
@@ -71,7 +71,7 @@ class Elasticdump extends Abstraction implements Executable
      *
      * @param string $path
      */
-    public function __construct($path = null)
+    public function __construct(string $path = '')
     {
         $this->setup('elasticdump', $path);
         $this->setMaskCandidates(['password']);
@@ -140,12 +140,12 @@ class Elasticdump extends Abstraction implements Executable
     }
 
     /**
-     * Subclass Process generator.
+     * Elasticdump CommandLine generator.
      *
-     * @return \phpbu\App\Cli\Process
+     * @return \SebastianFeldmann\Cli\CommandLine
      * @throws \phpbu\App\Exception
      */
-    protected function createProcess()
+    protected function createCommandLine() : CommandLine
     {
         if (empty($this->host)) {
             throw new Exception('host is mandatory');
@@ -154,7 +154,7 @@ class Elasticdump extends Abstraction implements Executable
             throw new Exception('no file to dump to');
         }
 
-        $process = new Process();
+        $process = new CommandLine();
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 

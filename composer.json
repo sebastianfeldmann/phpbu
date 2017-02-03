@@ -7,6 +7,8 @@
     "mysql",
     "mongodb",
     "tar",
+    "arangodb",
+    "elasticsearch",
     "cloud",
     "rsync",
     "sftp"
@@ -29,12 +31,14 @@
     }
   },
   "require": {
+    "php": ">=7.0.0",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-spl": "*",
-    "phpunit/php-timer": "~1.0.2",
+    "phpunit/php-timer": "~1.0",
     "sebastian/environment": "~1.1",
     "sebastian/version": "~1.0",
+    "sebastianfeldmann/cli": "~1.0",
     "swiftmailer/swiftmailer": "~5.3",
     "symfony/event-dispatcher": "~2.6|~3.0"
   },
@@ -43,7 +47,8 @@
     "dropbox/dropbox-sdk": "~1.1",
     "phpseclib/phpseclib": "~2.0",
     "softlayer/objectstorage": "dev-master",
-    "vlucas/phpdotenv": "~2.4"
+    "vlucas/phpdotenv": "~2.4",
+    "google/apiclient":"^2.0"
   },
   "suggest": {
     "aws/aws-sdk-php": "Require '~3.10' to sync to Amazon S3",
@@ -57,7 +62,7 @@
   ],
   "extra": {
     "branch-alias": {
-      "dev-master": "2.0.x-dev"
+      "dev-master": "5.0.x-dev"
     }
   }
 }

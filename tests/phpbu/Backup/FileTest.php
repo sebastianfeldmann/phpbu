@@ -12,7 +12,7 @@ namespace phpbu\App\Backup;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class FileTest extends \PHPUnit_Framework_TestCase
+class FileTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests File::getFileInfo

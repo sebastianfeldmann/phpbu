@@ -12,30 +12,28 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class CompressorTest extends \PHPUnit_Framework_TestCase
+class CompressorTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests Compressor::getCommandLine
+     * Tests Compressor::getCommand
      */
     public function testDefault()
     {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $gzip = new Compressor('gzip', $path);
+        $gzip = new Compressor('gzip', PHPBU_TEST_BIN);
         $gzip->force(true)->compressFile(__FILE__);
 
-        $this->assertEquals($path . '/gzip -f \'' . __FILE__ . '\'', $gzip->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/gzip -f \'' . __FILE__ . '\'', $gzip->getCommand());
     }
 
     /**
-     * Tests Compressor::getCommandLine
+     * Tests Compressor::getCommand
      */
     public function testZipNoForceOption()
     {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $gzip = new Compressor('zip', $path);
+        $gzip = new Compressor('zip', PHPBU_TEST_BIN);
         $gzip->force(true)->compressFile(__FILE__);
 
-        $this->assertEquals($path . '/zip \'' . __FILE__ . '\'', $gzip->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/zip \'' . __FILE__ . '\'', $gzip->getCommand());
     }
 
     /**
@@ -45,8 +43,7 @@ class CompressorTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailEarlyCompress()
     {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $gzip = new Compressor('gzip', $path);
-        $gzip->run();
+        $gzip = new Compressor('gzip', PHPBU_TEST_BIN);
+        $gzip->getCommand();
     }
 }

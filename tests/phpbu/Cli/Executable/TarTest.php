@@ -12,21 +12,20 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class TarTest extends \PHPUnit_Framework_TestCase
+class TarTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Tar::getCommandLine
      */
     public function testDefault()
     {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
         $dir  = sys_get_temp_dir();
         $tarC = dirname($dir);
         $tarD = basename($dir);
-        $tar  = new Tar($path);
+        $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar');
 
-        $this->assertEquals($path . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommand());
     }
 
     /**
@@ -34,14 +33,13 @@ class TarTest extends \PHPUnit_Framework_TestCase
      */
     public function testignoreFailedRead()
     {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
         $dir  = sys_get_temp_dir();
         $tarC = dirname($dir);
         $tarD = basename($dir);
-        $tar  = new Tar($path);
+        $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->ignoreFailedRead(true);
 
-        $this->assertEquals($path . '/tar --ignore-failed-read -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/tar --ignore-failed-read -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommand());
     }
 
     /**
@@ -49,14 +47,13 @@ class TarTest extends \PHPUnit_Framework_TestCase
      */
     public function testDefaultPrintable()
     {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
         $dir  = sys_get_temp_dir();
         $tarC = dirname($dir);
         $tarD = basename($dir);
-        $tar  = new Tar($path);
+        $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar');
 
-        $this->assertEquals($path . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommandLinePrintable());
+        $this->assertEquals(PHPBU_TEST_BIN . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommandPrintable());
     }
 
     /**
@@ -64,14 +61,16 @@ class TarTest extends \PHPUnit_Framework_TestCase
      */
     public function testCompressionGzip()
     {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
         $dir  = sys_get_temp_dir();
         $tarC = dirname($dir);
         $tarD = basename($dir);
-        $tar  = new Tar($path);
+        $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar.gz')->useCompression('gzip');
 
-        $this->assertEquals($path . '/tar -zcf \'/tmp/foo.tar.gz\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommandLine());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar -zcf \'/tmp/foo.tar.gz\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            $tar->getCommandLine()
+        );
     }
 
     /**
@@ -79,14 +78,16 @@ class TarTest extends \PHPUnit_Framework_TestCase
      */
     public function testCompressionBzip2()
     {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
         $dir  = sys_get_temp_dir();
         $tarC = dirname($dir);
         $tarD = basename($dir);
-        $tar  = new Tar($path);
+        $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar.bzip2')->useCompression('bzip2');
 
-        $this->assertEquals($path . '/tar -jcf \'/tmp/foo.tar.bzip2\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommandLine());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar -jcf \'/tmp/foo.tar.bzip2\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            $tar->getCommandLine()
+        );
     }
 
     /**
@@ -94,18 +95,40 @@ class TarTest extends \PHPUnit_Framework_TestCase
      */
     public function testRemoveSourceDir()
     {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
         $dir  = sys_get_temp_dir();
         $tarC = dirname($dir);
         $tarD = basename($dir);
-        $tar  = new Tar($path);
+        $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->removeSourceDirectory(true);
 
         $this->assertEquals(
-            '(' . $path . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\''
-            . ' && rm -rf \'' . $dir . '\')',
+            '(' . PHPBU_TEST_BIN . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\''
+              . ' && rm -rf \'' . $dir . '\')',
             $tar->getCommandLine()
         );
+    }
+
+    /**
+     * Tests Tar::getCommandLine
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testWithoutSource()
+    {
+        $tar  = new Tar(PHPBU_TEST_BIN);
+        $tar->getCommand();
+    }
+
+    /**
+     * Tests Tar::getCommandLine
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testWithoutTarget()
+    {
+        $tar  = new Tar(PHPBU_TEST_BIN);
+        $tar->archiveDirectory(__DIR__);
+        $tar->getCommand();
     }
 
     /**
@@ -115,35 +138,8 @@ class TarTest extends \PHPUnit_Framework_TestCase
      */
     public function testSourceNotCWD()
     {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $tar  = new Tar($path);
+        $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->archiveDirectory('.');
-    }
-
-    /**
-     * Tests Tar::getProcess
-     *
-     * @expectedException \phpbu\App\Exception
-     */
-    public function testNoSource()
-    {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $tar  = new Tar($path);
-        $tar->run();
-    }
-
-    /**
-     * Tests Tar::getProcess
-     *
-     * @expectedException \phpbu\App\Exception
-     */
-    public function testNoTarget()
-    {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $dir  = __DIR__;
-        $tar  = new Tar($path);
-        $tar->archiveDirectory($dir);
-        $tar->run();
     }
 
     /**
@@ -161,8 +157,7 @@ class TarTest extends \PHPUnit_Framework_TestCase
      */
     public function testHandlesCompression()
     {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $tar  = new Tar($path);
+        $tar = new Tar(PHPBU_TEST_BIN);
 
         $this->assertFalse($tar->handlesCompression());
 

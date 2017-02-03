@@ -12,7 +12,7 @@ namespace phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class ArrTest extends \PHPUnit_Framework_TestCase
+class ArrTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test isSetAndNotEmptyString

@@ -17,41 +17,17 @@ use phpbu\App\Backup\CliTest;
 class MongodumpTest extends CliTest
 {
     /**
-     * Mongodump
-     *
-     * @var \phpbu\App\Backup\Source\Mongodump
-     */
-    protected $mongodump;
-
-    /**
-     * Setup Mongodump
-     */
-    public function setUp()
-    {
-        $this->mongodump = new Mongodump();
-    }
-
-    /**
-     * Clear Mongodump
-     */
-    public function tearDown()
-    {
-        $this->mongodump = null;
-    }
-
-    /**
      * Tests Mongodump::getExecutable
      */
     public function testDefault()
     {
-        $target = $this->getTargetMock(__FILE__);
-        $path   = $this->getBinDir();
-        $this->mongodump->setup(array('pathToMongodump' => $path));
+        $target    = $this->getTargetMock(__FILE__);
+        $mongodump = new Mongodump();
+        $mongodump->setup(['pathToMongodump' => PHPBU_TEST_BIN]);
 
-        $executable = $this->mongodump->getExecutable($target);
-        $cmd        = $executable->getCommandLine();
+        $executable = $mongodump->getExecutable($target);
 
-        $this->assertEquals($path . '/mongodump --out \'' . __DIR__ . '/dump\'', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mongodump --out \'' . __DIR__ . '/dump\'', $executable->getCommand());
     }
 
     /**
@@ -59,19 +35,18 @@ class MongodumpTest extends CliTest
      */
     public function testBackupOk()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(0, 'mongodump'));
+
         $target    = $this->getTargetMock(__FILE__);
-        $cliResult = $this->getCliResultMock(0, 'mongodump');
         $appResult = $this->getAppResultMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Mongodump')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $this->mongodump->setup(array());
-        $this->mongodump->setExecutable($exec);
-        $status = $this->mongodump->backup($target, $appResult);
+        $mongodump = new Mongodump($runner);
+        $mongodump->setup(['pathToMongodump' => PHPBU_TEST_BIN]);
+        $status = $mongodump->backup($target, $appResult);
 
         $this->assertFalse($status->handledCompression());
     }
@@ -83,18 +58,17 @@ class MongodumpTest extends CliTest
      */
     public function testBackupFail()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(1, 'mongodump'));
+
         $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(1, 'mongodump');
         $appResult = $this->getAppResultMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Mongodump')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $this->mongodump->setup(array());
-        $this->mongodump->setExecutable($exec);
-        $this->mongodump->backup($target, $appResult);
+        $mongodump = new Mongodump($runner);
+        $mongodump->setup(['pathToMongodump' => PHPBU_TEST_BIN]);
+        $mongodump->backup($target, $appResult);
     }
 }

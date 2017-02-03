@@ -157,8 +157,8 @@ class CapacityTest extends TestCase
                               ->disableOriginalConstructor()
                               ->getMock();
 
-        $collectorStub->method('getBackupFiles')->willReturn($fileList);
-        $targetStub->method('getSize')->willReturn(100);
+        $collectorStub->expects($this->once())->method('getBackupFiles')->willReturn($fileList);
+        $targetStub->expects($this->once())->method('getSize')->willReturn(100);
 
         $cleaner = new Capacity();
         $cleaner->setup(['size' => '1M']);

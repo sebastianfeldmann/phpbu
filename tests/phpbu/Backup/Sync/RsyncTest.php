@@ -23,9 +23,10 @@ class RsyncTest extends CliTest
     {
         $rsync = new Rsync();
         $rsync->setup([
-            'path' => 'foo',
-            'user' => 'dummy-user',
-            'host' => 'dummy-host'
+            'pathToRsync' => PHPBU_TEST_BIN,
+            'path'        => 'foo',
+            'user'        => 'dummy-user',
+            'host'        => 'dummy-host'
         ]);
 
         $this->assertTrue(true, 'no exception should occur');
@@ -36,27 +37,22 @@ class RsyncTest extends CliTest
      */
     public function testSimulate()
     {
-        $rsync = new Rsync();
+        $runner = $this->getRunnerMock();
+        $runner->method('run')
+               ->willReturn($this->getRunnerResultMock(0, 'rsync'));
+
+        $rsync = new Rsync($runner);
         $rsync->setup([
-            'path' => 'foo',
-            'user' => 'dummy-user',
-            'host' => 'dummy-host'
+            'pathToRsync' => PHPBU_TEST_BIN,
+            'path'        => 'foo',
+            'user'        => 'dummy-user',
+            'host'        => 'dummy-host'
         ]);
 
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Rsync')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-        $exec->expects($this->once())->method('getCommandLine')->willReturn('foo');
-        $rsync->setExecutable($exec);
-
-        $resultStub = $this->getMockBuilder('\\phpbu\\App\\Result')
-                           ->getMock();
+        $resultStub = $this->getAppResultMock();
         $resultStub->expects($this->once())
-                    ->method('debug');
-
-        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                           ->disableOriginalConstructor()
-                           ->getMock();
+                   ->method('debug');
+        $targetStub = $this->getTargetMock('/tmp/foo.bar');
 
         $rsync->simulate($targetStub, $resultStub);
     }
@@ -92,13 +88,13 @@ class RsyncTest extends CliTest
      */
     public function testGetExecWithCustomArgs()
     {
-        $target = $this->getTargetMock('/foo/bar.txt');
-        $path   = $this->getBinDir();
         $rsync  = new Rsync();
-        $rsync->setup(['pathToRsync' => $path, 'args' => '--foo --bar']);
-        $exec = $rsync->getExecutable($target);
+        $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'args' => '--foo --bar']);
 
-        $this->assertEquals($path . '/rsync --foo --bar', $exec->getCommandLine());
+        $target = $this->getTargetMock('/foo/bar.txt');
+        $exec   = $rsync->getExecutable($target);
+
+        $this->assertEquals(PHPBU_TEST_BIN . '/rsync --foo --bar', $exec->getCommand());
     }
 
     /**
@@ -106,13 +102,13 @@ class RsyncTest extends CliTest
      */
     public function testGetExecMinimal()
     {
-        $target = $this->getTargetMock('/foo/bar.txt');
-        $path   = $this->getBinDir();
         $rsync  = new Rsync();
-        $rsync->setup(['pathToRsync' => $path, 'path' => '/tmp']);
-        $exec = $rsync->getExecutable($target);
+        $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'path' => '/tmp']);
 
-        $this->assertEquals($path . '/rsync -avz \'/foo/bar.txt\' \'/tmp\'', $exec->getCommandLine());
+        $target = $this->getTargetMock('/foo/bar.txt');
+        $exec   = $rsync->getExecutable($target);
+
+        $this->assertEquals(PHPBU_TEST_BIN . '/rsync -avz \'/foo/bar.txt\' \'/tmp\'', $exec->getCommand());
     }
 
     /**
@@ -120,13 +116,12 @@ class RsyncTest extends CliTest
      */
     public function testGetExecWithoutCompressionIfTargetIsCompressed()
     {
-        $target = $this->getTargetMock('/foo/bar.txt', '/foo/bar.txt.gz');
-        $path   = $this->getBinDir();
         $rsync  = new Rsync();
-        $rsync->setup(['pathToRsync' => $path, 'path' => '/tmp']);
-        $exec = $rsync->getExecutable($target);
+        $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'path' => '/tmp']);
+        $target = $this->getTargetMock('/foo/bar.txt', '/foo/bar.txt.gz');
+        $exec   = $rsync->getExecutable($target);
 
-        $this->assertEquals($path . '/rsync -av \'/foo/bar.txt.gz\' \'/tmp\'', $exec->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/rsync -av \'/foo/bar.txt.gz\' \'/tmp\'', $exec->getCommand());
     }
 
     /**
@@ -134,15 +129,15 @@ class RsyncTest extends CliTest
      */
     public function testGetExecWithExcludes()
     {
+        $rsync = new Rsync();
+        $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'path' => '/tmp', 'exclude' => 'fiz:buz']);
+
         $target = $this->getTargetMock('/foo/bar.txt');
         $target->method('shouldBeCompressed')->willReturn(false);
 
-        $path  = $this->getBinDir();
-        $rsync = new Rsync();
-        $rsync->setup(['pathToRsync' => $path, 'path' => '/tmp', 'exclude' => 'fiz:buz']);
         $exec = $rsync->getExecutable($target);
 
-        $this->assertEquals($path . '/rsync -avz --exclude=\'fiz\' --exclude=\'buz\' \'/foo/bar.txt\' \'/tmp\'', $exec->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/rsync -avz --exclude=\'fiz\' --exclude=\'buz\' \'/foo/bar.txt\' \'/tmp\'', $exec->getCommand());
     }
 
     /**
@@ -150,18 +145,12 @@ class RsyncTest extends CliTest
      */
     public function testSyncOk()
     {
-        $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(0, 'rsync');
+        $target    = $this->getTargetMock('/tmp/foo.bar');
         $appResult = $this->getAppResultMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Rsync')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
         $appResult->expects($this->once())->method('debug');
 
         $rsync = new Rsync();
-        $rsync->setExecutable($exec);
+        $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'path' => '/tmp', 'exclude' => 'fiz:buz']);
         $rsync->sync($target, $appResult);
     }
 
@@ -172,19 +161,15 @@ class RsyncTest extends CliTest
      */
     public function testSyncFail()
     {
-        $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(1, 'rsync');
-        $appResult = $this->getAppResultMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Rsync')
-                          ->disableOriginalConstructor()
-                          ->getMock();
+        $runner = $this->getRunnerMock();
+        $runner->method('run')->willReturn($this->getRunnerResultMock(1, 'rsync'));
 
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
+        $target    = $this->getTargetMock();
+        $appResult = $this->getAppResultMock();
         $appResult->expects($this->exactly(2))->method('debug');
 
-        $rsync = new Rsync();
-        $rsync->setExecutable($exec);
-        $rsync->setup(['args' => '-foo -bar']);
+        $rsync = new Rsync($runner);
+        $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'args' => '-foo -bar']);
         $rsync->sync($target, $appResult);
     }
 }

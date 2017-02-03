@@ -12,16 +12,33 @@ namespace phpbu\App;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.1.0
  */
-class RunnerTest extends \PHPUnit_Framework_TestCase
+class RunnerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Runner::run
      */
     public function testRunAllGood()
     {
-        $factory        = $this->createFactoryMock(true);
-        $configuration  = $this->createConfigurationMock();
+        $factory       = $this->createFactoryMock(true);
+        $configuration = $this->createConfigurationMock();
+        $configuration->method('isBackupActive')->willReturn(true);
+
         $runner         = new Runner($factory);
+        $factoryPointer = $runner->getFactory();
+        $runner->run($configuration);
+
+        $this->assertEquals($factory, $factoryPointer);
+    }
+
+    /**
+     * Tests Runner::run
+     */
+    public function testRunExclude()
+    {
+        $factory        = $this->createFactoryMock(true);
+        $runner         = new Runner($factory);
+        $configuration  = $this->createConfigurationMock(2);
+        $configuration->method('isBackupActive')->will($this->onConsecutiveCalls(true, false));
         $factoryPointer = $runner->getFactory();
         $runner->run($configuration);
 
@@ -35,6 +52,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
     {
         $factory       = $this->createFactoryMock(false);
         $configuration = $this->createConfigurationMock();
+        $configuration->method('isBackupActive')->willReturn(true);
 
         $runner = new Runner($factory);
         $runner->run($configuration);
@@ -47,6 +65,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
     {
         $factory       = $this->createFactoryMockCheckCrash();
         $configuration = $this->createConfigurationMock();
+        $configuration->method('isBackupActive')->willReturn(true);
 
         $runner = new Runner($factory);
         $runner->run($configuration);
@@ -59,6 +78,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
     {
         $factory       = $this->createFactoryMockCryptCrash();
         $configuration = $this->createConfigurationMock();
+        $configuration->method('isBackupActive')->willReturn(true);
 
         $runner = new Runner($factory);
         $runner->run($configuration);
@@ -71,6 +91,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
     {
         $factory       = $this->createFactoryMockSyncCrash();
         $configuration = $this->createConfigurationMock();
+        $configuration->method('isBackupActive')->willReturn(true);
 
         $runner = new Runner($factory);
         $runner->run($configuration);
@@ -83,6 +104,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
     {
         $factory       = $this->createFactoryMockCleanerCrash();
         $configuration = $this->createConfigurationMock();
+        $configuration->method('isBackupActive')->willReturn(true);
 
         $runner = new Runner($factory);
         $runner->run($configuration);
@@ -95,6 +117,7 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
     {
         $factory       = $this->createFactoryMockStopOnFailure();
         $configuration = $this->createConfigurationMock(2);
+        $configuration->method('isBackupActive')->willReturn(true);
 
         $runner = new Runner($factory);
         $runner->run($configuration);
@@ -104,9 +127,10 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
      * Create Factory stub.
      *
      * @param  bool $passChecks
+     * @param  int  $backups
      * @return \phpbu\App\Factory
      */
-    protected function createFactoryMock($passChecks)
+    protected function createFactoryMock($passChecks, $backups = 1)
     {
         $runCalls        = $passChecks ? 1 : 0;
         $bootstrapRunner = $this->createBootstrapRunnerMock();
@@ -359,9 +383,9 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
      */
     protected function createSourceRunnerMock($crash = false)
     {
-        $sourceRunner  = $this->getMockBuilder('\\phpbu\\App\\Runner\\Source')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $sourceRunner = $this->getMockBuilder('\\phpbu\\App\\Runner\\Source')
+                             ->disableOriginalConstructor()
+                             ->getMock();
         if ($crash) {
             $sourceRunner->expects($this->once())->method('run')->will($this->throwException(new Exception('fail')));
         } else {
@@ -538,22 +562,21 @@ class RunnerTest extends \PHPUnit_Framework_TestCase
         $clean = new Configuration\Backup\Cleanup('outdated', true, []);
         $log   = new Configuration\Logger('json', []);
 
-        $backup = new Configuration\Backup('test', true);
-        $backup->setTarget(new Configuration\Backup\Target('/tmp', 'foo.tar', 'bzip2'));
-        $backup->setSource(new Configuration\Backup\Source('tar', []));
-        $backup->addCheck($check);
-        $backup->setCrypt($crypt);
-        $backup->addSync($sync);
-        $backup->setCleanup($clean);
-
         $configuration = $this->getMockBuilder('\\phpbu\\App\\Configuration')
                               ->disableOriginalConstructor()
                               ->getMock();
         $configuration->method('getLoggers')->willReturn([$log, $this->createLoggerMock()]);
-        $configuration->method('isBackupActive')->willReturn(true);
 
         $backups = [];
         for ($i = 0; $i < $amountOfBackups; $i++) {
+            $backup = new Configuration\Backup('test' . $i, true);
+            $backup->setTarget(new Configuration\Backup\Target('/tmp', 'foo.tar', 'bzip2'));
+            $backup->setSource(new Configuration\Backup\Source('tar', []));
+            $backup->addCheck($check);
+            $backup->setCrypt($crypt);
+            $backup->addSync($sync);
+            $backup->setCleanup($clean);
+
             $backups[] = $backup;
         }
 

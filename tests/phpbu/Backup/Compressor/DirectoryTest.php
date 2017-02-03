@@ -2,7 +2,8 @@
 namespace phpbu\App\Backup\Compressor;
 
 use phpbu\App\Backup\Target\Compression;
-use phpbu\App\Cli\Result;
+use SebastianFeldmann\Cli\Command\Result as CommandResult;
+use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
 
 /**
  * Compressor test
@@ -15,7 +16,7 @@ use phpbu\App\Cli\Result;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class DirectoryTest extends \PHPUnit_Framework_TestCase
+class DirectoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Directory:__construct
@@ -84,16 +85,19 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCompress()
     {
-        $result     = new Result('foo', 0);
-        $cmp        = Compression\Factory::create('bzip2');
-        $executable = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable')
-                           ->disableOriginalConstructor()
-                           ->getMock();
-        $executable->method('run')->willReturn($result);
+        $cmp           = Compression\Factory::create('bzip2');
+        $commandResult = new CommandResult('foo', 0);
+        $runnerResult  = new RunnerResult($commandResult);
 
         $result = $this->getMockBuilder('\\phpbu\\App\\Result')
                        ->disableOriginalConstructor()
                        ->getMock();
+
+        $runner = $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Runner')
+                       ->disableOriginalConstructor()
+                       ->getMock();
+        $runner->method('run')->willReturn($runnerResult);
+
 
         $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                        ->disableOriginalConstructor()
@@ -108,8 +112,7 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
         $target->method('getCompression')
                ->willReturn($cmp);
 
-        $compressor = new Directory(__DIR__);
-        $compressor->setExecutable($executable);
+        $compressor = new Directory(__DIR__, PHPBU_TEST_FILES . '/bin', $runner);
         $this->assertEquals('foo.txt.bz2', $compressor->compress($target, $result));
     }
 
@@ -121,16 +124,18 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCompressFails()
     {
-        $result     = new Result('foo', 1);
-        $cmp        = Compression\Factory::create('bzip2');
-        $executable = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable')
-                           ->disableOriginalConstructor()
-                           ->getMock();
-        $executable->method('run')->willReturn($result);
+        $cmp           = Compression\Factory::create('bzip2');
+        $commandResult = new CommandResult('foo', 1);
+        $runnerResult  = new RunnerResult($commandResult);
 
         $result = $this->getMockBuilder('\\phpbu\\App\\Result')
                        ->disableOriginalConstructor()
                        ->getMock();
+
+        $runner = $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Runner')
+                       ->disableOriginalConstructor()
+                       ->getMock();
+        $runner->method('run')->willReturn($runnerResult);
 
         $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                        ->disableOriginalConstructor()
@@ -145,8 +150,7 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
         $target->method('getCompression')
                ->willReturn($cmp);
 
-        $compressor = new Directory(__DIR__);
-        $compressor->setExecutable($executable);
+        $compressor = new Directory(__DIR__, PHPBU_TEST_FILES . '/bin', $runner);
         $compressor->compress($target, $result);
     }
 
@@ -157,16 +161,18 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCompressInvalidPath()
     {
-        $result     = new Result('foo', 1);
-        $cmp        = Compression\Factory::create('bzip2');
-        $executable = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable')
-                           ->disableOriginalConstructor()
-                           ->getMock();
-        $executable->method('run')->willReturn($result);
+        $cmp           = Compression\Factory::create('bzip2');
+        $commandResult = new CommandResult('foo', 1);
+        $runnerResult  = new RunnerResult($commandResult);
 
         $result = $this->getMockBuilder('\\phpbu\\App\\Result')
                        ->disableOriginalConstructor()
                        ->getMock();
+
+        $runner = $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Runner')
+                       ->disableOriginalConstructor()
+                       ->getMock();
+        $runner->method('run')->willReturn($runnerResult);
 
         $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
                        ->disableOriginalConstructor()
@@ -181,8 +187,7 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
         $target->method('getCompression')
                ->willReturn($cmp);
 
-        $compressor = new Directory('foo/bar/baz');
-        $compressor->setExecutable($executable);
+        $compressor = new Directory('foo/bar/baz', PHPBU_TEST_FILES . '/bin', $runner);
         $compressor->compress($target, $result);
     }
 }

@@ -18,134 +18,139 @@ use phpbu\App\Backup\Compressor;
 class TarTest extends CliTest
 {
     /**
-     * tar
-     *
-     * @var \phpbu\App\Backup\Source\Tar
-     */
-    protected $tar;
-
-    /**
-     * Setup tar
-     */
-    public function setUp()
-    {
-        $this->tar = new Tar();
-    }
-
-    /**
-     * Clear tar
-     */
-    public function tearDown()
-    {
-        $this->tar = null;
-    }
-
-    /**
      * Tests Tar::setUp
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testSetupPathMissing()
     {
-        $this->tar->setup([]);
+        $tar = new Tar();
+        $tar->setup([]);
 
         $this->assertFalse(true, 'exception should be thrown');
     }
 
     /**
-     * Tests Tar::getExec
+     * Tests Tar::getExecutable
      */
     public function testDefault()
     {
-        $path   = realpath(__DIR__ . '/../../../_files/bin');
         $target = $this->getTargetMock('/tmp/backup.tar');
         $target->method('shouldBeCompressed')->willReturn(false);
         $target->method('getPathname')->willReturn('/tmp/backup.tar');
 
-        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
-        $exec = $this->tar->getExecutable($target);
+        $tar = new Tar();
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
 
-        $this->assertEquals($path . '/tar -cf \'/tmp/backup.tar\' -C \'' . dirname(__DIR__) . '\' \'' . basename(__DIR__) . '\'', $exec->getCommandLine());
-    }
-
-    /**
-     * Tests Tar::getExec
-     */
-    public function testIgnoreFailedRead()
-    {
-        $path   = realpath(__DIR__ . '/../../../_files/bin');
-        $target = $this->getTargetMock('/tmp/backup.tar');
-        $target->method('shouldBeCompressed')->willReturn(false);
-        $target->method('getPathname')->willReturn('/tmp/backup.tar');
-
-        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path, 'ignoreFailedRead' => 'true']);
-        $exec = $this->tar->getExecutable($target);
-
-        $this->assertEquals($path . '/tar --ignore-failed-read -cf \'/tmp/backup.tar\' -C \'' . dirname(__DIR__) . '\' \'' . basename(__DIR__) . '\'', $exec->getCommandLine());
-    }
-
-    /**
-     * Tests Tar::getExec
-     */
-    public function testRemoveDir()
-    {
-        $path   = realpath(__DIR__ . '/../../../_files/bin');
-        $target = $this->getTargetMock('/tmp/backup.tar');
-        $target->method('shouldBeCompressed')->willReturn(false);
-        $target->method('getPathname')->willReturn('/tmp/backup.tar');
-
-        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path, 'removeSourceDir' => 'true']);
-        $exec = $this->tar->getExecutable($target);
+        $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            '(' . $path . '/tar -cf \'/tmp/backup.tar\' -C \'' .
-            dirname(__DIR__) . '\' \'' . basename(__DIR__) .
-            '\' && rm -rf \'' . __DIR__ . '\')',
-            $exec->getCommandLine()
+            PHPBU_TEST_BIN . '/tar -cf \'/tmp/backup.tar\' -C \''
+              . dirname(__DIR__) . '\' \''
+              . basename(__DIR__) . '\'',
+            $exec->getCommand()
         );
     }
 
     /**
-     * Tests Tar::getExec
+     * Tests Tar::getExecutable
+     */
+    public function testIgnoreFailedRead()
+    {
+        $tar = new Tar();
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'ignoreFailedRead' => 'true']);
+
+        $target = $this->getTargetMock('/tmp/backup.tar');
+        $target->method('shouldBeCompressed')->willReturn(false);
+        $target->method('getPathname')->willReturn('/tmp/backup.tar');
+
+        $exec = $tar->getExecutable($target);
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar --ignore-failed-read -cf \'/tmp/backup.tar\' -C \''
+              . dirname(__DIR__) . '\' \''
+              . basename(__DIR__) . '\'',
+            $exec->getCommand()
+        );
+    }
+
+    /**
+     * Tests Tar::getExecutable
+     */
+    public function testRemoveDir()
+    {
+        $tar = new Tar();
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'removeSourceDir' => 'true']);
+
+        $target = $this->getTargetMock('/tmp/backup.tar');
+        $target->method('shouldBeCompressed')->willReturn(false);
+        $target->method('getPathname')->willReturn('/tmp/backup.tar');
+
+        $exec = $tar->getExecutable($target);
+
+        $this->assertEquals(
+            '(' . PHPBU_TEST_BIN . '/tar -cf \'/tmp/backup.tar\' -C \''
+              . dirname(__DIR__) . '\' \'' . basename(__DIR__)
+              . '\' && rm -rf \'' . __DIR__ . '\')',
+            $exec->getCommand()
+        );
+    }
+
+    /**
+     * Tests Tar::backup
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testInvalidDir()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $target    = $this->getTargetMock('/tmp/backup.tar');
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(1, 'tar'));
+
+        $tar = new Tar($runner);
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
+
         $appResult = $this->getAppResultMock();
+        $target    = $this->getTargetMock('/tmp/backup.tar');
         $target->method('shouldBeCompressed')->willReturn(false);
         $target->method('getPathname')->willReturn('/tmp/backup.tar');
 
-        $this->tar->setup(['path' => __DIR__ . '/foo', 'pathToTar' => $path]);
-        $this->tar->backup($target, $appResult);
+        $tar->backup($target, $appResult);
     }
 
     /**
-     * Tests Tar::getExec
+     * Tests Tar::getExecutable
      */
     public function testCompressedTarget()
     {
-        $path        = realpath(__DIR__ . '/../../../_files/bin');
+        $tar = new Tar();
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
+
         $compression = $this->getCompressionMock('gzip', 'gz');
         $target      = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
         $target->method('shouldBeCompressed')->willReturn(true);
         $target->method('getCompression')->willReturn($compression);
         $target->method('getPathname')->willReturn('/tmp/backup.tar.gz');
 
-        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
-        $exec = $this->tar->getExecutable($target);
+        $exec = $tar->getExecutable($target);
 
-        $this->assertEquals($path . '/tar -zcf \'/tmp/backup.tar.gz\' -C \'' . dirname(__DIR__) . '\' \'' . basename(__DIR__) . '\'', $exec->getCommandLine());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar -zcf \'/tmp/backup.tar.gz\' -C \''
+              . dirname(__DIR__) . '\' \''
+              . basename(__DIR__) . '\'',
+            $exec->getCommand()
+        );
     }
 
     /**
-     * Tests Tar::getExec
+     * Tests Tar::getExecutable
      */
     public function testInvalidCompression()
     {
-        $path        = realpath(__DIR__ . '/../../../_files/bin');
+        $tar = new Tar();
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
+
         $compression = $this->getCompressionMock('zip', 'zip');
         $target      = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.zip');
         $target->method('shouldBeCompressed')->willReturn(true);
@@ -153,10 +158,14 @@ class TarTest extends CliTest
         $target->method('getPathname')->willReturn('/tmp/backup.tar.zip');
         $target->method('getPathnamePlain')->willReturn('/tmp/backup.tar');
 
-        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
-        $exec = $this->tar->getExecutable($target);
+        $exec = $tar->getExecutable($target);
 
-        $this->assertEquals($path . '/tar -cf \'/tmp/backup.tar\' -C \'' . dirname(__DIR__) . '\' \'' . basename(__DIR__) . '\'', $exec->getCommandLine());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar -cf \'/tmp/backup.tar\' -C \''
+              . dirname(__DIR__) . '\' \''
+              . basename(__DIR__) . '\'',
+            $exec->getCommand()
+        );
     }
 
     /**
@@ -164,22 +173,21 @@ class TarTest extends CliTest
      */
     public function testBackupOk()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(0, 'tar');
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(0, 'tar'));
+
+        $tar = new Tar($runner);
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
+
+        $target = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
+        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+
         $appResult = $this->getAppResultMock();
-        $tar       = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Tar')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $tar->expects($this->once())->method('run')->willReturn($cliResult);
-        $tar->expects($this->once())->method('handlesCompression')->willReturn(true);
 
-        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
-        $this->tar->setExecutable($tar);
-
-        $status = $this->tar->backup($target, $appResult);
+        $status = $tar->backup($target, $appResult);
 
         $this->assertTrue($status->handledCompression());
     }
@@ -189,22 +197,21 @@ class TarTest extends CliTest
      */
     public function testBackupOkUnsupportedCompression()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(0, 'tar');
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(0, 'tar'));
+
+        $tar = new Tar($runner);
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
+
+        $target = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.zip');
+        $target->method('getCompression')->willReturn($this->getCompressionMock('zip', 'zip'));
+
         $appResult = $this->getAppResultMock();
-        $tar       = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Tar')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $tar->expects($this->once())->method('run')->willReturn($cliResult);
-        $tar->expects($this->once())->method('handlesCompression')->willReturn(false);
 
-        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
-        $this->tar->setExecutable($tar);
-
-        $status = $this->tar->backup($target, $appResult);
+        $status = $tar->backup($target, $appResult);
 
         $this->assertFalse($status->handledCompression());
     }
@@ -216,21 +223,18 @@ class TarTest extends CliTest
      */
     public function testBackupFail()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(1, 'tar');
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(1, 'tar'));
+
+        $tar = new Tar($runner);
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
+
+        $target    = $this->getTargetMock('/tmp/backup.tar');
         $appResult = $this->getAppResultMock();
-        $tar       = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Tar')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $tar->expects($this->once())->method('run')->willReturn($cliResult);
-        $tar->method('handlesCompression')->willReturn(true);
 
-        $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
-        $this->tar->setExecutable($tar);
-
-        $this->tar->backup($target, $appResult);
+        $tar->backup($target, $appResult);
     }
 }

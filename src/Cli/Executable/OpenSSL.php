@@ -1,10 +1,10 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
-use phpbu\App\Cli\Process;
 use phpbu\App\Exception;
+use SebastianFeldmann\Cli\CommandLine;
+use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
 /**
  * OpenSSL executable class.
@@ -161,7 +161,7 @@ class OpenSSL extends Abstraction implements Executable
      *
      * @param string $path
      */
-    public function __construct($path = null)
+    public function __construct(string $path = '')
     {
         $this->setup('openssl', $path);
         $this->setMaskCandidates(['password']);
@@ -174,7 +174,7 @@ class OpenSSL extends Abstraction implements Executable
      * @return \phpbu\App\Cli\Executable\OpenSSL
      * @throws Exception
      */
-    public function encryptFile($file)
+    public function encryptFile(string $file) : OpenSSL
     {
         $this->sourceFile = $file;
         $this->targetFile = $file . '.enc';
@@ -187,7 +187,7 @@ class OpenSSL extends Abstraction implements Executable
      * @param  boolean $bool
      * @return \phpbu\App\Cli\Executable\OpenSSL
      */
-    public function deleteUncrypted($bool)
+    public function deleteUncrypted(bool $bool) : OpenSSL
     {
         $this->deleteUncrypted = $bool;
         return $this;
@@ -200,7 +200,7 @@ class OpenSSL extends Abstraction implements Executable
      * @return \phpbu\App\Cli\Executable\OpenSSL
      * @throws \phpbu\App\Exception
      */
-    public function usePassword($password)
+    public function usePassword(string $password) : OpenSSL
     {
         if (self::MODE_CERT === $this->mode) {
             throw new Exception('Cert file already set');
@@ -217,7 +217,7 @@ class OpenSSL extends Abstraction implements Executable
      * @return \phpbu\App\Cli\Executable\OpenSSL
      * @throws \phpbu\App\Exception
      */
-    public function useAlgorithm($algorithm)
+    public function useAlgorithm(string $algorithm) : OpenSSL
     {
         if (null === $this->mode) {
             throw new Exception('choose mode first, password or cert');
@@ -232,10 +232,10 @@ class OpenSSL extends Abstraction implements Executable
     /**
      * Use base64 encoding
      *
-     * @param boolean $encode
+     * @param bool $encode
      * @return \phpbu\App\Cli\Executable\OpenSSL
      */
-    public function encodeBase64($encode)
+    public function encodeBase64(bool $encode) : OpenSSL
     {
         $this->base64 = $encode;
         return $this;
@@ -248,7 +248,7 @@ class OpenSSL extends Abstraction implements Executable
      * @return \phpbu\App\Cli\Executable\OpenSSL
      * @throws \phpbu\App\Exception
      */
-    public function useSSLCert($file)
+    public function useSSLCert(string $file) : OpenSSL
     {
         if (self::MODE_PASS === $this->mode) {
             throw new Exception('Password already set');
@@ -259,12 +259,12 @@ class OpenSSL extends Abstraction implements Executable
     }
 
     /**
-     * OpenSSL Process generator.
+     * OpenSSL CommandLine generator.
      *
-     * @return \phpbu\App\Cli\Process
+     * @return \SebastianFeldmann\Cli\CommandLine
      * @throws \phpbu\App\Exception
      */
-    protected function createProcess()
+    protected function createCommandLine() : CommandLine
     {
         if (empty($this->sourceFile)) {
             throw new Exception('file is missing');
@@ -276,7 +276,7 @@ class OpenSSL extends Abstraction implements Executable
             throw new Exception('no algorithm specified');
         }
 
-        $process = new Process();
+        $process = new CommandLine();
         $cmd     = new Cmd($this->binary);
 
         $process->addCommand($cmd);
@@ -290,7 +290,7 @@ class OpenSSL extends Abstraction implements Executable
     /**
      * Set the openssl command line options
      *
-     * @param \phpbu\App\Cli\Cmd $cmd
+     * @param \SebastianFeldmann\Cli\Command\Executable $cmd
      */
     protected function setOptions(Cmd $cmd)
     {
@@ -304,7 +304,7 @@ class OpenSSL extends Abstraction implements Executable
     /**
      * Set command line options for SSL cert encryption.
      *
-     * @param \phpbu\App\Cli\Cmd $cmd
+     * @param \SebastianFeldmann\Cli\Command\Executable $cmd
      */
     protected function setCertOptions(Cmd $cmd)
     {
@@ -321,7 +321,7 @@ class OpenSSL extends Abstraction implements Executable
     /**
      * Set command line options for password encryption
      *
-     * @param \phpbu\App\Cli\Cmd $cmd
+     * @param \SebastianFeldmann\Cli\Command\Executable $cmd
      */
     protected function setPasswordOptions(Cmd $cmd)
     {
@@ -339,9 +339,9 @@ class OpenSSL extends Abstraction implements Executable
     /**
      * Add the 'rm' command to remove the uncrypted file.
      *
-     * @param \phpbu\App\Cli\Process $process
+     * @param \SebastianFeldmann\Cli\CommandLine $process
      */
-    protected function addDeleteCommand(Process $process)
+    protected function addDeleteCommand(CommandLine $process)
     {
         if ($this->deleteUncrypted) {
             $cmd = new Cmd('rm');

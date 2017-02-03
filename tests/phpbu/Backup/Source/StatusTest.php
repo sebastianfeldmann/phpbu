@@ -12,7 +12,7 @@ namespace phpbu\App\Backup\Source;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.0.1
  */
-class StatusTest extends \PHPUnit_Framework_TestCase
+class StatusTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Status::create

@@ -3,7 +3,8 @@ namespace phpbu\App\Backup\Crypter;
 
 use phpbu\App\Backup\CliTest;
 use phpbu\App\Configuration;
-use phpbu\App\Util\Cli;
+use SebastianFeldmann\Cli\Command\Result as CommandResult;
+use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
 
 /**
  * McryptTest
@@ -24,27 +25,12 @@ class McryptTest extends CliTest
     protected $mcrypt;
 
     /**
-     * Setup mysqldump
-     */
-    public function setUp()
-    {
-        $this->mcrypt = new Mcrypt();
-    }
-
-    /**
-     * Clear mysqldump
-     */
-    public function tearDown()
-    {
-        $this->mcrypt = null;
-    }
-
-    /**
      * Tests Mcrypt::setUp
      */
     public function testSetUpOk()
     {
-        $this->mcrypt->setup(array('key' => 'fooBarBaz', 'algorithm' => 'blowfish'));
+        $mcrypt = new Mcrypt();
+        $mcrypt->setup(['key' => 'fooBarBaz', 'algorithm' => 'blowfish']);
 
         $this->assertTrue(true, 'no exception should occur');
     }
@@ -56,7 +42,8 @@ class McryptTest extends CliTest
      */
     public function testSetUpNoKeyOrKeyFile()
     {
-        $this->mcrypt->setup(array('algorithm' => 'blowfish'));
+        $mcrypt = new Mcrypt();
+        $mcrypt->setup(['algorithm' => 'blowfish']);
     }
 
     /**
@@ -66,7 +53,8 @@ class McryptTest extends CliTest
      */
     public function testSetUpNoAlgorithm()
     {
-        $this->mcrypt->setup(array('k' => 'fooBarBaz'));
+        $mcrypt = new Mcrypt();
+        $mcrypt->setup(['k' => 'fooBarBaz']);
     }
 
     /**
@@ -74,14 +62,14 @@ class McryptTest extends CliTest
      */
     public function testKeyAndAlgorithm()
     {
-        $expected = 'mcrypt -u -k \'fooBarBaz\' -a \'blowfish\' \'/foo/bar.txt\'';
         $target   = $this->getTargetMock('/foo/bar.txt');
-        $path     = $this->getBinDir();
-        $this->mcrypt->setup(array('pathToMcrypt' => $path, 'key' => 'fooBarBaz', 'algorithm' => 'blowfish'));
+        $mcrypt   = new Mcrypt();
+        $mcrypt->setup(['pathToMcrypt' => PHPBU_TEST_BIN, 'key' => 'fooBarBaz', 'algorithm' => 'blowfish']);
 
-        $executable = $this->mcrypt->getExecutable($target);
+        $executable = $mcrypt->getExecutable($target);
+        $expected = PHPBU_TEST_BIN . '/mcrypt -u -k \'fooBarBaz\' -a \'blowfish\' \'/foo/bar.txt\'';
 
-        $this->assertEquals($path . '/' . $expected, $executable->getCommandLine());
+        $this->assertEquals($expected, $executable->getCommand());
     }
 
     /**
@@ -91,14 +79,14 @@ class McryptTest extends CliTest
     {
         Configuration::setWorkingDirectory('/foo');
 
-        $expected = 'mcrypt -u -f \'/foo/my.key\' -a \'blowfish\' \'/foo/bar.txt\'';
         $target   = $this->getTargetMock('/foo/bar.txt');
-        $path     = $this->getBinDir();
-        $this->mcrypt->setup(array('pathToMcrypt' => $path, 'keyFile' => '/foo/my.key', 'algorithm' => 'blowfish'));
+        $mcrypt   = new Mcrypt();
+        $mcrypt->setup(['pathToMcrypt' => PHPBU_TEST_BIN, 'keyFile' => '/foo/my.key', 'algorithm' => 'blowfish']);
 
-        $executable = $this->mcrypt->getExecutable($target);
+        $executable = $mcrypt->getExecutable($target);
+        $expected   = PHPBU_TEST_BIN . '/mcrypt -u -f \'/foo/my.key\' -a \'blowfish\' \'/foo/bar.txt\'';
 
-        $this->assertEquals($path . '/' . $expected, $executable->getCommandLine());
+        $this->assertEquals($expected, $executable->getCommand());
     }
 
     /**
@@ -106,18 +94,22 @@ class McryptTest extends CliTest
      */
     public function testCryptOk()
     {
-        $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(0, 'mcrypt');
-        $appResult = $this->getAppResultMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Mcrypt')
-                          ->disableOriginalConstructor()
-                          ->getMock();
+        $commandResult = new CommandResult('foo', 0);
+        $runnerResult  = new RunnerResult($commandResult);
 
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
+        $runner = $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Runner')
+                       ->disableOriginalConstructor()
+                       ->getMock();
+        $runner->method('run')->willReturn($runnerResult);
+
+        $target    = $this->getTargetMock(__FILE__);
+        $appResult = $this->getAppResultMock();
+
         $appResult->expects($this->once())->method('debug');
 
-        $this->mcrypt->setExecutable($exec);
-        $this->mcrypt->crypt($target, $appResult);
+        $mcrypt = new Mcrypt($runner);
+        $mcrypt->setup(['pathToMcrypt' => PHPBU_TEST_BIN, 'keyFile' => '/foo/my.key', 'algorithm' => 'blowfish']);
+        $mcrypt->crypt($target, $appResult);
     }
 
     /**
@@ -127,20 +119,24 @@ class McryptTest extends CliTest
      */
     public function testCryptFail()
     {
-        $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(1, 'mcrypt');
+        $commandResult = new CommandResult('foo', 1);
+        $runnerResult  = new RunnerResult($commandResult);
+
+        $runner = $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Runner')
+                       ->disableOriginalConstructor()
+                       ->getMock();
+        $runner->method('run')->willReturn($runnerResult);
+
+        $target    = $this->getTargetMock(__FILE__);
         $appResult = $this->getMockBuilder('\\phpbu\\App\\Result')
                           ->disableOriginalConstructor()
                           ->getMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Mcrypt')
-                          ->disableOriginalConstructor()
-                          ->getMock();
 
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
         $appResult->expects($this->once())->method('debug');
 
-        $this->mcrypt->setExecutable($exec);
-        $this->mcrypt->crypt($target, $appResult);
+        $mcrypt = new Mcrypt($runner);
+        $mcrypt->setup(['pathToMcrypt' => PHPBU_TEST_BIN, 'keyFile' => '/foo/my.key', 'algorithm' => 'blowfish']);
+        $mcrypt->crypt($target, $appResult);
     }
 
     /**
@@ -148,7 +144,8 @@ class McryptTest extends CliTest
      */
     public function testGetSuffix()
     {
-        $suffix = $this->mcrypt->getSuffix();
+        $mcrypt = new Mcrypt();
+        $suffix = $mcrypt->getSuffix();
         $this->assertEquals('nc', $suffix);
     }
 }

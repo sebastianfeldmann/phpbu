@@ -12,7 +12,7 @@ namespace phpbu\App\Backup\Sync;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class AmazonS3v3Test extends \PHPUnit_Framework_TestCase
+class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests AmazonS3::setUp

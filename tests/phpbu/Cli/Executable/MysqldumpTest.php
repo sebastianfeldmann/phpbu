@@ -13,30 +13,28 @@ use phpbu\App\Backup\Target\Compression;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class MysqldumpTest extends \PHPUnit_Framework_TestCase
+class MysqldumpTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests Mysqldump::getCommandLine
+     * Tests Mysqldump::createCommandLine
      */
     public function testDefault()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
-        $cmd       = $mysqldump->getCommandLine();
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
+        $cmd       = $mysqldump->getCommand();
 
-        $this->assertEquals($path . '/mysqldump --all-databases', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --all-databases', $cmd);
     }
 
     /**
-     * Tests Mysqldump::getCommandLinePrintable
+     * Tests Mysqldump::getCommandPrintable
      */
     public function testDefaultPrintable()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
-        $cmd       = $mysqldump->getCommandLinePrintable();
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
+        $cmd       = $mysqldump->getCommandPrintable();
 
-        $this->assertEquals($path . '/mysqldump --all-databases', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --all-databases', $cmd);
     }
 
     /**
@@ -44,65 +42,60 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
      */
     public function testHexBlob()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->dumpBlobsHexadecimal(true);
-        $cmd       = $mysqldump->getCommandLine();
+        $cmd       = $mysqldump->getCommand();
 
-        $this->assertEquals($path . '/mysqldump --hex-blob --all-databases', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --hex-blob --all-databases', $cmd);
     }
 
     /**
-     * Tests Mysqldump::getCommandLine
+     * Tests Mysqldump::createCommandLine
      */
     public function testPassword()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->credentials('foo', 'bar');
-        $cmd       = $mysqldump->getCommandLine();
+        $cmd       = $mysqldump->getCommand();
 
-        $this->assertEquals($path . '/mysqldump --user=\'foo\' --password=\'bar\' --all-databases', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --user=\'foo\' --password=\'bar\' --all-databases', $cmd);
     }
 
     /**
-     * Tests Mysqldump::getCommandLine
+     * Tests Mysqldump::createCommandLine
      */
     public function testPasswordPrintable()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->credentials('foo', 'bar');
-        $cmd       = $mysqldump->getCommandLinePrintable();
+        $cmd       = $mysqldump->getCommandPrintable();
 
-        $this->assertEquals($path . '/mysqldump --user=\'foo\' --password=\'******\' --all-databases', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --user=\'foo\' --password=\'******\' --all-databases', $cmd);
     }
 
     /**
-     * Tests Mysqldump::getCommandLine
+     * Tests Mysqldump::createCommandLine
      */
     public function testLockTables()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->lockTables(true);
-        $cmd       = $mysqldump->getCommandLine();
+        $cmd       = $mysqldump->getCommand();
 
-        $this->assertEquals($path . '/mysqldump --lock-tables --all-databases', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --lock-tables --all-databases', $cmd);
     }
 
     /**
-     * Tests Mysqldump::getCommandLine
+     * Tests Mysqldump::createCommandLine
      */
     public function testSingleTransaction()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->singleTransaction(true);
 
-        $cmd = $mysqldump->getCommandLine();
+        $cmd = $mysqldump->getCommand();
 
-        $this->assertEquals($path . '/mysqldump --single-transaction --all-databases', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --single-transaction --all-databases', $cmd);
     }
 
     /**
@@ -110,95 +103,90 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
      */
     public function testUseExtendedInsert()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->useExtendedInsert(true);
-        $cmd       = $mysqldump->getCommandLine();
+        $cmd       = $mysqldump->getCommand();
 
-        $this->assertEquals($path . '/mysqldump -e --all-databases', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump -e --all-databases', $cmd);
     }
 
     /**
-     * Tests Mysqldump::getCommandLine
+     * Tests Mysqldump::createCommandLine
      */
     public function testTables()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->dumpDatabases(['fiz']);
         $mysqldump->dumpTables(['foo', 'bar']);
-        $cmd       = $mysqldump->getCommandLine();
+        $cmd       = $mysqldump->getCommand();
 
-        $this->assertEquals($path . '/mysqldump \'fiz\' --tables \'foo\' \'bar\'', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump \'fiz\' --tables \'foo\' \'bar\'', $cmd);
     }
 
     /**
-     * Tests Mysqldump::getCommandLine
+     * Tests Mysqldump::createCommandLine
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testTablesNoDatabase()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->dumpTables(['foo', 'bar']);
-        $cmd       = $mysqldump->getCommandLine();
+        $cmd       = $mysqldump->getCommand();
     }
 
     /**
-     * Tests Mysqldump::getCommandLine
+     * Tests Mysqldump::createCommandLine
      */
     public function testSingleDatabase()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->dumpDatabases(['foo']);
-        $cmd       = $mysqldump->getCommandLine();
+        $cmd       = $mysqldump->getCommand();
 
-        $this->assertEquals($path . '/mysqldump \'foo\'', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump \'foo\'', $cmd);
     }
 
     /**
-     * Tests Mysqldump::getCommandLine
+     * Tests Mysqldump::createCommandLine
      */
     public function testDatabases()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->dumpDatabases(['foo', 'bar']);
-        $cmd       = $mysqldump->getCommandLine();
+        $cmd       = $mysqldump->getCommand();
 
-        $this->assertEquals($path . '/mysqldump --databases \'foo\' \'bar\'', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --databases \'foo\' \'bar\'', $cmd);
     }
 
     /**
-     * Tests Mysqldump::getCommandLine
+     * Tests Mysqldump::createCommandLine
      */
     public function testIgnoreTables()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->ignoreTables(['foo', 'bar']);
-        $cmd       = $mysqldump->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump --all-databases --ignore-table=\'foo\' --ignore-table=\'bar\'', $cmd);
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mysqldump --all-databases --ignore-table=\'foo\' --ignore-table=\'bar\'',
+            $mysqldump->getCommand()
+        );
     }
 
     /**
-     * Tests Mysqldump::getCommandLine
+     * Tests Mysqldump::createCommandLine
      */
     public function testNoData()
     {
         $path      = realpath(__DIR__ . '/../../../_files/bin');
         $mysqldump = new Mysqldump($path);
         $mysqldump->dumpNoData(true);
-        $cmd       = $mysqldump->getCommandLine();
 
-        $this->assertEquals($path . '/mysqldump --all-databases --no-data', $cmd);
+        $this->assertEquals($path . '/mysqldump --all-databases --no-data', $mysqldump->getCommand());
     }
 
     /**
-     * Tests Mysqldump::getCommandLine
+     * Tests Mysqldump::createCommandLine
      */
     public function testCompressor()
     {
@@ -209,92 +197,24 @@ class MysqldumpTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $path . '/mysqldump --all-databases | ' . $path . '/gzip > /tmp/foo.mysql.gz',
-            $mysqldump->getCommandLine()
+            $mysqldump->getCommand()
         );
     }
 
     /**
-     * Tests Mysqldump::getCommandLine
+     * Tests Mysqldump::createCommandLine
      */
     public function testStructureOnly()
     {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->dumpStructureOnly(['foo', 'bar']);
-        $cmd       = $mysqldump->getCommandLine();
 
         $this->assertEquals(
-            '(' . $path . '/mysqldump --all-databases --no-data'
-          . ' && '
-          . $path . '/mysqldump --all-databases --ignore-table=\'foo\' --ignore-table=\'bar\''
-          . ' --skip-add-drop-table --no-create-db --no-create-info)',
-            $cmd
+            '(' . PHPBU_TEST_BIN . '/mysqldump --all-databases --no-data'
+              . ' && '
+              . PHPBU_TEST_BIN . '/mysqldump --all-databases --ignore-table=\'foo\' --ignore-table=\'bar\''
+              . ' --skip-add-drop-table --no-create-db --no-create-info)',
+            $mysqldump->getCommand()
         );
-    }
-
-    /**
-     * Tests Abstraction::unlinkErrorFile
-     */
-    public function testUnlinkFile()
-    {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
-        $tmpFile   = tempnam(sys_get_temp_dir(), 'foo');
-
-        $this->assertTrue(file_exists($tmpFile));
-        $mysqldump->unlinkErrorFile($tmpFile);
-        $this->assertFalse(file_exists($tmpFile));
-    }
-
-    /**
-     * Tests Abstraction::run
-     */
-    public function testRunOk()
-    {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
-
-        $result = $this->getMockBuilder('\\phpbu\\App\\Cli\\Result')
-                       ->disableOriginalConstructor()
-                       ->getMock();
-        $result->method('getCode')->willReturn(0);
-
-        $process = $this->getMockBuilder('\\phpbu\\App\\Cli\\Process')
-                       ->disableOriginalConstructor()
-                       ->getMock();
-        $process->method('run')->willReturn($result);
-
-        $mysqldump->setProcess($process);
-
-        $res = $mysqldump->run();
-
-        $this->assertEquals(0, $res->getCode());
-    }
-
-    /**
-     * Tests Abstraction::run
-     */
-    public function testRunFail()
-    {
-        $path      = realpath(__DIR__ . '/../../../_files/bin');
-        $mysqldump = new Mysqldump($path);
-
-        $result = $this->getMockBuilder('\\phpbu\\App\\Cli\\Result')
-                       ->disableOriginalConstructor()
-                       ->getMock();
-        $result->method('getCode')->willReturn(1);
-
-        $process = $this->getMockBuilder('\\phpbu\\App\\Cli\\Process')
-                        ->disableOriginalConstructor()
-                        ->getMock();
-        $process->method('run')->willReturn($result);
-        $process->method('isOutputRedirected')->willReturn(true);
-        $process->method('getRedirectPath')->willReturn('/tmp/foo.txt');
-
-        $mysqldump->setProcess($process);
-
-        $res = $mysqldump->run();
-
-        $this->assertEquals(1, $res->getCode());
     }
 }

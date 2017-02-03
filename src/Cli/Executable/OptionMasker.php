@@ -29,23 +29,23 @@ trait OptionMasker
      *
      * @return string
      */
-    public abstract function getCommandLine();
+    public abstract function getCommand() : string;
 
     /**
      * Return the command with masked passwords or keys.
      *
      * @return string
      */
-    public function getCommandLinePrintable()
+    public function getCommandPrintable() : string
     {
         $propertiesToMask = $this->getPropertiesToMask();
         // no candidates need masking
         if (0 === count($propertiesToMask)) {
-            return $this->getCommandLine();
+            return $this->getCommand();
         }
 
         $masked = $this->mask($propertiesToMask);
-        $cmd    = $this->getCommandLine();
+        $cmd    = $this->getCommand();
         $this->restore($masked);
 
         return $cmd;
@@ -67,7 +67,7 @@ trait OptionMasker
      * @param  array $properties
      * @return array
      */
-    private function mask(array $properties)
+    private function mask(array $properties) : array
     {
         $masked = [];
         foreach ($properties as $p) {
@@ -94,7 +94,7 @@ trait OptionMasker
      *
      * @return array
      */
-    private function getPropertiesToMask()
+    private function getPropertiesToMask() : array
     {
         $properties = [];
         foreach ($this->maskCandidates as $p) {

@@ -1,10 +1,10 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
-use phpbu\App\Cli\Process;
 use phpbu\App\Exception;
+use SebastianFeldmann\Cli\CommandLine;
+use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
 /**
  * Tar Executable class.
@@ -70,7 +70,7 @@ class Tar extends Abstraction implements Executable
      *
      * @param string $path
      */
-    public function __construct($path = null)
+    public function __construct(string $path = '')
     {
         $this->setup('tar', $path);
     }
@@ -78,12 +78,12 @@ class Tar extends Abstraction implements Executable
     /**
      * Return 'tar' compressor option e.g. 'j' for bzip2.
      *
-     * @param  $compressor
+     * @param  string $compressor
      * @return string
      */
-    protected function getCompressionOption($compressor)
+    protected function getCompressionOption(string $compressor) : string
     {
-        return $this->isCompressionValid($compressor) ? self::$availableCompressions[$compressor] : null;
+        return $this->isCompressionValid($compressor) ? self::$availableCompressions[$compressor] : '';
     }
 
     /**
@@ -92,7 +92,7 @@ class Tar extends Abstraction implements Executable
      * @param  string $compression
      * @return \phpbu\App\Cli\Executable\Tar
      */
-    public function useCompression($compression)
+    public function useCompression(string $compression) : Tar
     {
         if ($this->isCompressionValid($compression)) {
             $this->compression = $this->getCompressionOption($compression);
@@ -106,18 +106,18 @@ class Tar extends Abstraction implements Executable
      * @param  bool $bool
      * @return \phpbu\App\Cli\Executable\Tar
      */
-    public function ignoreFailedRead($bool)
+    public function ignoreFailedRead(bool $bool) : Tar
     {
         $this->ignoreFailedRead = $bool;
         return $this;
     }
 
     /**
-     * Doe the tar handle the compression.
+     * Does the tar handle the compression.
      *
-     * @return boolean
+     * @return bool
      */
-    public function handlesCompression()
+    public function handlesCompression() : bool
     {
         return !empty($this->compression);
     }
@@ -129,7 +129,7 @@ class Tar extends Abstraction implements Executable
      * @return \phpbu\App\Cli\Executable\Tar
      * @throws \phpbu\App\Exception
      */
-    public function archiveDirectory($path)
+    public function archiveDirectory(string $path) : Tar
     {
         $this->validateDirectory($path);
         $this->path = $path;
@@ -142,7 +142,7 @@ class Tar extends Abstraction implements Executable
      * @param  string $path
      * @return \phpbu\App\Cli\Executable\Tar
      */
-    public function archiveTo($path)
+    public function archiveTo(string $path) : Tar
     {
         $this->tarPathname = $path;
         return $this;
@@ -154,27 +154,29 @@ class Tar extends Abstraction implements Executable
      * @param  boolean $bool
      * @return \phpbu\App\Cli\Executable\Tar
      */
-    public function removeSourceDirectory($bool)
+    public function removeSourceDirectory(bool $bool) : Tar
     {
         $this->removeSourceDir = $bool;
         return $this;
     }
 
     /**
-     * Process generator
+     * Tar CommandLine generator.
+     *
+     * @return \SebastianFeldmann\Cli\CommandLine
      */
-    protected function createProcess()
+    protected function createCommandLine() : CommandLine
     {
         $this->validateSetup();
 
-        $process = new Process();
+        $process = new CommandLine();
         $tar     = new Cmd($this->binary);
 
         $tar->addOptionIfNotEmpty('--ignore-failed-read', $this->ignoreFailedRead, false);
         $tar->addOption('-' . $this->compression . 'cf');
         $tar->addArgument($this->tarPathname);
         $tar->addOption('-C', dirname($this->path), ' ');
-        $tar->addArgument(basename(($this->path)));
+        $tar->addArgument(basename($this->path));
 
         $process->addCommand($tar);
 
@@ -189,9 +191,9 @@ class Tar extends Abstraction implements Executable
     /**
      * Return 'rm' command.
      *
-     * @return \phpbu\App\Cli\Cmd
+     * @return \SebastianFeldmann\Cli\Command\Executable
      */
-    protected function getRmCommand()
+    protected function getRmCommand() : Cmd
     {
         $rm = new Cmd('rm');
         $rm->addOption('-rf', $this->path, ' ');
@@ -204,7 +206,7 @@ class Tar extends Abstraction implements Executable
      * @param  string $path
      * @throws \phpbu\App\Exception
      */
-    private function validateDirectory($path)
+    private function validateDirectory(string $path)
     {
         if ($path === '.') {
             throw new Exception('unable to tar current working directory');
@@ -230,9 +232,9 @@ class Tar extends Abstraction implements Executable
      * Return true if a given compression is valid false otherwise.
      *
      * @param  string $compression
-     * @return boolean
+     * @return bool
      */
-    public static function isCompressionValid($compression)
+    public static function isCompressionValid(string  $compression) : bool
     {
         return isset(self::$availableCompressions[$compression]);
     }

@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Source;
+
 use phpbu\App\Backup\CliTest;
 
 /**
@@ -16,41 +17,20 @@ use phpbu\App\Backup\CliTest;
 class PgdumpTest extends CliTest
 {
     /**
-     * Pgdump
-     *
-     * @var \phpbu\App\Backup\Source\Pgdump
-     */
-    protected $pgDump;
-
-    /**
-     * Setup pgdump
-     */
-    public function setUp()
-    {
-        $this->pgDump = new Pgdump();
-    }
-
-    /**
-     * Clear pgdump
-     */
-    public function tearDown()
-    {
-        $this->pgDump = null;
-    }
-
-    /**
      * Tests Pgdump::getExecutable
      */
     public function testDefault()
     {
         $target = $this->getTargetMock('foo.sql');
-        $path   = realpath(__DIR__ . '/../../../_files/bin');
-        $this->pgDump->setup(['pathToPgdump' => $path]);
+        $pgDump = new Pgdump();
+        $pgDump->setup(['pathToPgdump' => PHPBU_TEST_BIN]);
 
-        $executable = $this->pgDump->getExecutable($target);
-        $cmd        = $executable->getCommandLine();
+        $executable = $pgDump->getExecutable($target);
 
-        $this->assertEquals($path . '/pg_dump -w --file=\'foo.sql\' --format=\'p\'', $cmd);
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/pg_dump -w --file=\'foo.sql\' --format=\'p\'',
+            $executable->getCommand()
+        );
     }
 
     /**
@@ -59,13 +39,15 @@ class PgdumpTest extends CliTest
     public function testDatabase()
     {
         $target = $this->getTargetMock('foo.sql');
-        $path   = realpath(__DIR__ . '/../../../_files/bin');
-        $this->pgDump->setup(['pathToPgdump' => $path, 'database' => 'myDatabase']);
+        $pgDump = new Pgdump();
+        $pgDump->setup(['pathToPgdump' => PHPBU_TEST_BIN, 'database' => 'myDatabase']);
 
-        $executable = $this->pgDump->getExecutable($target);
-        $cmd        = $executable->getCommandLine();
+        $executable = $pgDump->getExecutable($target);
 
-        $this->assertEquals($path . '/pg_dump -w --dbname=\'myDatabase\' --file=\'foo.sql\' --format=\'p\'', $cmd);
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'myDatabase\' --file=\'foo.sql\' --format=\'p\'',
+            $executable->getCommand()
+        );
     }
 
     /**
@@ -73,20 +55,18 @@ class PgdumpTest extends CliTest
      */
     public function testBackupOk()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(0, 'pg_dump'));
+
         $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(0, 'pg_dump');
         $appResult = $this->getAppResultMock();
-        $pgDump    = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Pgdump')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $pgDump->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $this->pgDump->setup(['pathTopgDump' => $path]);
-        $this->pgDump->setExecutable($pgDump);
-        $status = $this->pgDump->backup($target, $appResult);
+        $pgDump = new Pgdump($runner);
+        $pgDump->setup(['pathToPgdump' => PHPBU_TEST_BIN]);
+        $status = $pgDump->backup($target, $appResult);
 
         $this->assertFalse($status->handledCompression());
     }
@@ -98,19 +78,17 @@ class PgdumpTest extends CliTest
      */
     public function testBackupFail()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(1, 'pg_dump'));
+
         $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(1, 'pg_dump');
         $appResult = $this->getAppResultMock();
-        $pgDump    = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\pgdump')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $pgDump->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $this->pgDump->setup(['pathToPgDump' => $path]);
-        $this->pgDump->setExecutable($pgDump);
-        $this->pgDump->backup($target, $appResult);
+        $pgDump = new Pgdump($runner);
+        $pgDump->setup(['pathToPgdump' => PHPBU_TEST_BIN]);
+        $pgDump->backup($target, $appResult);
     }
 }

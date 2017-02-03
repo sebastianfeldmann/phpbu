@@ -23,7 +23,7 @@ trait Rsync
      *
      * @var string
      */
-    private $pathToRsync;
+    private $pathToRsync = '';
 
     /**
      * Raw args
@@ -37,21 +37,21 @@ trait Rsync
      *
      * @var string
      */
-    protected $user;
+    protected $user = '';
 
     /**
      * Target host
      *
      * @var string
      */
-    protected $host;
+    protected $host = '';
 
     /**
      * Target path
      *
      * @var string
      */
-    protected $path;
+    protected $path = '';
 
     /**
      * Files to ignore, extracted from config string separated by ":"
@@ -63,7 +63,7 @@ trait Rsync
     /**
      * Should only the created backup be synced or the complete directory
      *
-     * @var boolean
+     * @var bool
      */
     protected $isDirSync;
 
@@ -82,7 +82,7 @@ trait Rsync
      */
     protected function setupRsync(array $conf)
     {
-        $this->pathToRsync = Util\Arr::getValue($conf, 'pathToRsync');
+        $this->pathToRsync = Util\Arr::getValue($conf, 'pathToRsync', '');
 
         if (Util\Arr::isSetAndNotEmptyString($conf, 'args')) {
             $this->args = $conf['args'];
@@ -91,8 +91,8 @@ trait Rsync
                 throw new Exception('option \'path\' is missing');
             }
             $this->path      = Util\Str::replaceDatePlaceholders($conf['path']);
-            $this->user      = Util\Arr::getValue($conf, 'user');
-            $this->host      = Util\Arr::getValue($conf, 'host');
+            $this->user      = Util\Arr::getValue($conf, 'user', '');
+            $this->host      = Util\Arr::getValue($conf, 'host', '');
             $this->excludes  = Util\Str::toList(Util\Arr::getValue($conf, 'exclude', ''), ':');
             $this->delete    = Util\Str::toBoolean(Util\Arr::getValue($conf, 'delete', ''), false);
             $this->isDirSync = Util\Str::toBoolean(Util\Arr::getValue($conf, 'dirsync', ''), false);

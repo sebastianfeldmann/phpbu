@@ -15,7 +15,7 @@ use phpbu\App\Backup\Sync\Exception;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class SyncTest extends \PHPUnit_Framework_TestCase
+class SyncTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Sync::run

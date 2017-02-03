@@ -1,10 +1,10 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
-use phpbu\App\Cli\Process;
 use phpbu\App\Exception;
+use SebastianFeldmann\Cli\CommandLine;
+use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
 /**
  * Compressor class.
@@ -39,7 +39,7 @@ class Compressor extends Abstraction implements Executable
      * @param string $cmd
      * @param string $path
      */
-    public function __construct($cmd, $path = null)
+    public function __construct(string $cmd, string $path = '')
     {
         $this->setup($cmd, $path);
     }
@@ -69,17 +69,18 @@ class Compressor extends Abstraction implements Executable
     }
 
     /**
-     * Process generator
+     * Compressor CommandLine generator
      *
+     * @return \SebastianFeldmann\Cli\CommandLine
      * @throws \phpbu\App\Exception
      */
-    protected function createProcess()
+    protected function createCommandLine() : CommandLine
     {
         // make sure there is a file to compress
         if (empty($this->fileToCompress)) {
             throw new Exception('file to compress not set');
         }
-        $process = new Process();
+        $process = new CommandLine();
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 

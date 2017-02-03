@@ -1,88 +1,123 @@
 <?php
 namespace phpbu\App\Cli;
 
+use SebastianFeldmann\Cli\Command\Result as CommandResult;
+
 /**
- * CmdTest
+ * ResultTest
  *
  * @package    phpbu
  * @subpackage tests
+ * @author     Francis Chuang <francis.chuang@gmail.com>
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://www.phpbu.de/
- * @since      Class available since Release 1.1.5
+ * @since      Class available since Release 1.0.0
  */
-class ResultTest extends \PHPUnit_Framework_TestCase
+class ResultTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests Cmd::getCode
+     * Tests Result::getCmdResult
      */
-    public function testGetCode()
+    public function testGetEmptyPrintableCmd()
     {
-        $result = new Result('echo 1', 0);
-        $this->assertEquals(0, $result->getCode(), 'code getter should work properly');
+        $cmd = new CommandResult('echo 1', 0, "a\nb");
+        $res = new Result($cmd);
+        $this->assertEquals('', $res->getCmdPrintable());
     }
 
     /**
-     * Tests Cmd::wasSuccessful
+     * Tests Result::getCmdResult
      */
-    public function testWasSuccessfulTrue()
+    public function testGetPrintableCmd()
     {
-        $result = new Result('echo 1', 0);
-        $this->assertEquals(true, $result->wasSuccessful(), 'should be successful on code 0');
+        $cmd = new CommandResult('echo 1', 0, "a\nb");
+        $res = new Result($cmd, 'foo/bar');
+        $this->assertEquals('foo/bar', $res->getCmdPrintable());
     }
 
     /**
-     * Tests Cmd::wasSuccessful
+     * Tests Result::isSuccessful
      */
-    public function testWasSuccessfulFalse()
+    public function testIsSuccessful()
     {
-        $result = new Result('echo 1', 1);
-        $this->assertEquals(false, $result->wasSuccessful(), 'should not be successful on code 1');
+        $cmd = new CommandResult('echo 1', 0, "a\nb");
+        $res = new Result($cmd);
+        $this->assertTrue($res->isSuccessful());
     }
 
     /**
-     * Tests Cmd::getCmd
+     * Tests Result::getCmd
      */
     public function testGetCmd()
     {
-        $result = new Result('echo 1', 0);
-        $this->assertEquals('echo 1', $result->getCmd(), 'cmd getter should work properly');
+        $cmd = new CommandResult('echo 1', 0, "a\nb");
+        $res = new Result($cmd);
+        $this->assertEquals('echo 1', $res->getCmd());
     }
 
     /**
-     * Tests Cmd::getStdOut
+     * Tests Result::getStdOut
      */
     public function testGetStdOut()
     {
-        $result = new Result('echo 1', 0, 'foo bar');
-        $this->assertEquals('foo bar', $result->getStdOut(), 'output getter should work properly');
+        $cmd = new CommandResult('echo 1', 0, "a\nb");
+        $res = new Result($cmd);
+        $this->assertEquals("a\nb", $res->getStdOut());
     }
 
     /**
-     * Tests Cmd::getStdErr
+     * Tests Result::getStdErr
      */
     public function testGetStdErr()
     {
-        $result = new Result('echo 1', 0, 'foo bar', 'fiz baz');
-        $this->assertEquals('fiz baz', $result->getStdErr(), 'error getter should work properly');
+        $cmd = new CommandResult('echo 1', 0, "a\nb", "foo");
+        $res = new Result($cmd);
+        $this->assertEquals('foo', $res->getStdErr());
     }
 
     /**
-     * Tests Cmd::getStdOut
+     * Tests Result::isOutputRedirected
+     * Tests Result::getRedirectPath
      */
-    public function testGetStdOutAsArray()
+    public function testIsOutputRedirectedTrue()
     {
-        $result = new Result('echo 1', 0, 'foo' . PHP_EOL . 'bar');
-        $this->assertEquals(2, count($result->getStdOutAsArray()));
+        $cmd    = new CommandResult('echo 1', 0, 'foo', '', '/foo/bar.txt');
+        $result = new Result($cmd);
+        $this->assertTrue($result->isOutputRedirected());
+        $this->assertEquals('/foo/bar.txt', $result->getRedirectPath());
     }
 
     /**
-     * Tests Cmd::__toString
+     * Tests Result::isOutputRedirected
+     * Tests Result::getRedirectPath
      */
-    public function testToString()
+    public function testIsOutputRedirectedFalse()
     {
-        $result = new Result('echo 1', 0, 'foo');
-        $this->assertEquals('foo', (string) $result, 'toString should work properly');
+        $cmd    = new CommandResult('echo 1', 0, 'foo');
+        $result = new Result($cmd);
+        $this->assertFalse($result->isOutputRedirected());
+        $this->assertEquals('', $result->getRedirectPath());
+    }
+
+    /**
+     * Tests Result::getCommandResult
+     */
+    public function testGetCommandResult()
+    {
+        $cmd = new CommandResult('echo 1', 0, "a\nb");
+        $res = new Result($cmd);
+        $this->assertEquals($cmd, $res->getCommandResult());
+    }
+
+    /**
+     * Tests Result::getOutput
+     */
+    public function testGetBufferedOutput()
+    {
+        $cmd = new CommandResult('echo 1', 0, "a\nb");
+        $res = new Result($cmd);
+        $this->assertEquals(['a', 'b'], $res->getBufferedOutput());
     }
 }

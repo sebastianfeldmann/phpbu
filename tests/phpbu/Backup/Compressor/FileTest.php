@@ -2,6 +2,8 @@
 namespace phpbu\App\Backup\Compressor;
 
 use phpbu\App\Backup\CliTest;
+use SebastianFeldmann\Cli\Command\Result as CommandResult;
+use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
 
 /**
  * File compressor test.
@@ -21,15 +23,14 @@ class FileTest extends CliTest
      */
     public function testDefault()
     {
-        $path   = $this->getBinDir();
-        $dir    = new File(__FILE__, $path);
         $target = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
-        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+        $target->method('getCompression')
+               ->willReturn($this->getCompressionMock('gzip', 'gz'));
 
-        $executable = $dir->getExecutable($target);
-        $cmd        = $executable->getCommandLine();
+        $file       = new File(__FILE__, PHPBU_TEST_BIN);
+        $executable = $file->getExecutable($target);
 
-        $this->assertEquals($path . '/gzip -f \'' . __FILE__ . '\'', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/gzip -f \'' . __FILE__ . '\'', $executable->getCommand());
     }
 
     /**
@@ -39,7 +40,7 @@ class FileTest extends CliTest
      */
     public function testNoPath()
     {
-        $dir = new File('');
+        $file = new File('');
     }
 
     /**
@@ -49,11 +50,12 @@ class FileTest extends CliTest
      */
     public function testNoFile()
     {
-        $file   = new File(__DIR__);
         $result = $this->getAppResultMock();
         $target = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
-        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+        $target->method('getCompression')
+               ->willReturn($this->getCompressionMock('gzip', 'gz'));
 
+        $file = new File(__DIR__);
         $file->compress($target, $result);
     }
 
@@ -62,19 +64,18 @@ class FileTest extends CliTest
      */
     public function testCompressOk()
     {
-        $dir       = new File(__FILE__);
-        $cliResult = $this->getCliResultMock(0, 'gzip');
-        $target    = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
-        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(0, 'gzip'));
 
         $appResult = $this->getAppResultMock();
-        $gzip      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Compressor')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-        $gzip->method('run')->willReturn($cliResult);
+        $target    = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
+        $target->expects($this->once())
+               ->method('getCompression')
+               ->willReturn($this->getCompressionMock('gzip', 'gz'));
 
-
-        $dir->setExecutable($gzip);
+        $dir = new File(__FILE__, PHPBU_TEST_FILES . '/bin', $runner);
         $dir->compress($target, $appResult);
     }
 
@@ -99,19 +100,16 @@ class FileTest extends CliTest
      */
     public function testCompressFail()
     {
-        $dir       = new File(__FILE__);
-        $cliResult = $this->getCliResultMock(1, 'gzip');
-        $target    = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
-        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+        $runner = $this->getRunnerMock();
+        $runner->method('run')
+               ->willReturn($this->getRunnerResultMock(1, 'gzip'));
 
-        $appResult = $this->getAppResultMock();
-        $gzip      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Compressor')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-        $gzip->method('run')->willReturn($cliResult);
+        $appResult     = $this->getAppResultMock();
+        $target        = $this->getTargetMock(__FILE__, __FILE__ . '.gz');
+        $target->method('getCompression')
+               ->willReturn($this->getCompressionMock('gzip', 'gz'));
 
-
-        $dir->setExecutable($gzip);
-        $dir->compress($target, $appResult);
+        $file = new File(__FILE__, PHPBU_TEST_FILES . '/bin', $runner);
+        $file->compress($target, $appResult);
     }
 }

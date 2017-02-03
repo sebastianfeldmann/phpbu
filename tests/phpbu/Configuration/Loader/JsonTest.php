@@ -13,7 +13,7 @@ use phpbu\App\Factory;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class JsonTest extends \PHPUnit_Framework_TestCase
+class JsonTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \phpbu\App\Factory
@@ -46,7 +46,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNoJson()
     {
-        $json   = realpath(__DIR__ . '/../../../_files/conf/json/config-no-json.xml');
+        $json   = PHPBU_TEST_FILES . '/conf/json/config-no-json.xml';
         $loader = new Json($json);
         $this->assertFalse($loader, 'exception should be thrown');
     }
@@ -58,7 +58,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupNoBackup()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/json/config-no-backup.json');
+        $file   = PHPBU_TEST_FILES . '/conf/json/config-no-backup.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
@@ -71,7 +71,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupNoTarget()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/json/config-no-target.json');
+        $file   = PHPBU_TEST_FILES . '/conf/json/config-no-target.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
@@ -84,7 +84,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupNoSource()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/json/config-no-source.json');
+        $file   = PHPBU_TEST_FILES . '/conf/json/config-no-source.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
@@ -97,7 +97,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNoSourceType()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/json/config-no-source-type.json');
+        $file   = PHPBU_TEST_FILES . '/conf/json/config-no-source-type.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
@@ -110,7 +110,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNoLoggerType()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/json/config-no-logger-type.json');
+        $file   = PHPBU_TEST_FILES . '/conf/json/config-no-logger-type.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
@@ -123,7 +123,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNoCleanupType()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/json/config-no-cleanup-type.json');
+        $file   = PHPBU_TEST_FILES . '/conf/json/config-no-cleanup-type.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
@@ -136,7 +136,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNoCryptType()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/json/config-no-crypt-type.json');
+        $file   = PHPBU_TEST_FILES . '/conf/json/config-no-crypt-type.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
@@ -149,7 +149,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testFileNoSyncType()
     {
-        $file   = realpath(__DIR__ . '/../../../_files/conf/json/config-no-sync-type.json');
+        $file   = PHPBU_TEST_FILES . '/conf/json/config-no-sync-type.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse($config, 'exception should be thrown');
@@ -160,7 +160,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testAppSettings()
     {
-        $dir    = realpath(__DIR__ . '/../../../_files/conf/json');
+        $dir    = PHPBU_TEST_FILES . '/conf/json';
         $file   = 'config-valid.json';
         $loader = new Json($dir . '/' . $file);
         $config = $loader->getConfiguration(self::$factory);
@@ -175,7 +175,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testPhpSettings()
     {
-        $dir    = realpath(__DIR__ . '/../../../_files/conf/json');
+        $dir    = PHPBU_TEST_FILES . '/conf/json';
         $file   = 'config-valid.json';
         $loader = new Json($dir . '/' . $file);
         $conf   = $loader->getConfiguration(self::$factory);
@@ -192,7 +192,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupSettings()
     {
-        $dir      = realpath(__DIR__ . '/../../../_files/conf/json');
+        $dir      = PHPBU_TEST_FILES . '/conf/json';
         $file     = 'config-valid.json';
         $loader   = new Json($dir . '/' . $file);
         $conf     = $loader->getConfiguration(self::$factory);
@@ -225,7 +225,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackupSettingsInvalidChecks()
     {
-        $json     = realpath(__DIR__ . '/../../../_files/conf/json/config-invalid-checks.json');
+        $json    = PHPBU_TEST_FILES . '/conf/json/config-invalid-checks.json';
         $loader  = new Json($json);
         $conf    = $loader->getConfiguration(self::$factory);
         $backups = $conf->getBackups();
@@ -242,7 +242,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoggingSettings()
     {
-        $dir     = realpath(__DIR__ . '/../../../_files/conf/json');
+        $dir     = PHPBU_TEST_FILES . '/conf/json';
         $file    = 'config-valid.json';
         $loader  = new Json($dir . '/' . $file);
         $conf    = $loader->getConfiguration(self::$factory);
@@ -259,7 +259,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
      */
     public function testAppLoggingSettingsWithOption()
     {
-        $file    = realpath(__DIR__ . '/../../../_files/conf/json/config-logging.json');
+        $file    = PHPBU_TEST_FILES . '/conf/json/config-logging.json';
         $loader  = new Json($file);
         $conf    = $loader->getConfiguration(self::$factory);
         $loggers = $conf->getLoggers();
@@ -275,7 +275,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
     public function testGetAdapterConfigs()
     {
         Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
-        $file    = realpath(__DIR__ . '/../../../_files/conf/json/config-valid-adapter.json');
+        $file    = PHPBU_TEST_FILES . '/conf/json/config-valid-adapter.json';
         $loader  = new Json($file);
         $conf    = $loader->getConfiguration(self::$factory);
         $backups = $conf->getBackups();
@@ -293,7 +293,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
     public function testGetAdapterInvalidNoType()
     {
         Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
-        $file    = realpath(__DIR__ . '/../../../_files/conf/json/config-no-adapter-type.json');
+        $file    = PHPBU_TEST_FILES . '/conf/json/config-no-adapter-type.json';
         $loader  = new Json($file);
         $loader->getConfiguration(self::$factory);
     }
@@ -306,7 +306,7 @@ class JsonTest extends \PHPUnit_Framework_TestCase
     public function testGetAdapterInvalidNoName()
     {
         Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
-        $file    = realpath(__DIR__ . '/../../../_files/conf/json/config-no-adapter-name.json');
+        $file    = PHPBU_TEST_FILES . '/conf/json/config-no-adapter-name.json';
         $loader  = new Json($file);
         $loader->getConfiguration(self::$factory);
     }

@@ -12,7 +12,7 @@ namespace phpbu\App\Cmd;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class ArgsTest extends \PHPUnit_Framework_TestCase
+class ArgsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test short option -h

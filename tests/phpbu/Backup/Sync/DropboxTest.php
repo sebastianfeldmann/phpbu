@@ -12,7 +12,7 @@ namespace phpbu\App\Backup\Sync;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class DropboxTest extends \PHPUnit_Framework_TestCase
+class DropboxTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Dropbox::setUp

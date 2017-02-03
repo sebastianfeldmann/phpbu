@@ -1,10 +1,10 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
-use phpbu\App\Cli\Process;
 use phpbu\App\Exception;
+use SebastianFeldmann\Cli\CommandLine;
+use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
 /**
  * Mongodump executable class.
@@ -105,7 +105,7 @@ class Mongodump extends Abstraction implements Executable
      *
      * @param string $path
      */
-    public function __construct($path = null)
+    public function __construct(string $path = '')
     {
         $this->setup('mongodump', $path);
         $this->setMaskCandidates(['password']);
@@ -117,7 +117,7 @@ class Mongodump extends Abstraction implements Executable
      * @param  string $path
      * @return \phpbu\App\Cli\Executable\Mongodump
      */
-    public function dumpToDirectory($path)
+    public function dumpToDirectory(string $path) : Mongodump
     {
         $this->dumpDir = $path;
         return $this;
@@ -129,7 +129,7 @@ class Mongodump extends Abstraction implements Executable
      * @param  boolean $bool
      * @return \phpbu\App\Cli\Executable\Mongodump
      */
-    public function useIpv6($bool)
+    public function useIpv6(bool $bool) : Mongodump
     {
         $this->useIPv6 = $bool;
         return $this;
@@ -141,7 +141,7 @@ class Mongodump extends Abstraction implements Executable
      * @param  string $host
      * @return \phpbu\App\Cli\Executable\Mongodump
      */
-    public function useHost($host)
+    public function useHost(string $host) : Mongodump
     {
         $this->host = $host;
         return $this;
@@ -155,7 +155,7 @@ class Mongodump extends Abstraction implements Executable
      * @param  string $authDatabase
      * @return \phpbu\App\Cli\Executable\Mongodump
      */
-    public function credentials($user = null, $password = null, $authDatabase = null)
+    public function credentials(string $user = '', string $password = '', string $authDatabase = '') : Mongodump
     {
         $this->user                   = $user;
         $this->password               = $password;
@@ -169,7 +169,7 @@ class Mongodump extends Abstraction implements Executable
      * @param  array $databases
      * @return \phpbu\App\Cli\Executable\Mongodump
      */
-    public function dumpDatabases(array $databases)
+    public function dumpDatabases(array $databases) : Mongodump
     {
         $this->databases = $databases;
         return $this;
@@ -181,7 +181,7 @@ class Mongodump extends Abstraction implements Executable
      * @param  array $collections
      * @return \phpbu\App\Cli\Executable\Mongodump
      */
-    public function dumpCollections(array $collections)
+    public function dumpCollections(array $collections) : Mongodump
     {
         $this->collections = $collections;
         return $this;
@@ -193,7 +193,7 @@ class Mongodump extends Abstraction implements Executable
      * @param  array $collections
      * @return \phpbu\App\Cli\Executable\Mongodump
      */
-    public function excludeCollections(array $collections)
+    public function excludeCollections(array $collections) : Mongodump
     {
         $this->excludeCollections = $collections;
         return $this;
@@ -205,24 +205,24 @@ class Mongodump extends Abstraction implements Executable
      * @param  array $prefixes
      * @return \phpbu\App\Cli\Executable\Mongodump
      */
-    public function excludeCollectionsWithPrefix(array $prefixes)
+    public function excludeCollectionsWithPrefix(array $prefixes) : Mongodump
     {
         $this->excludeCollectionsWithPrefix = $prefixes;
         return $this;
     }
 
     /**
-     * Subclass Process generator.
+     * Mongodump CommandLine generator.
      *
-     * @return \phpbu\App\Cli\Process
+     * @return \SebastianFeldmann\Cli\CommandLine
      * @throws \phpbu\App\Exception
      */
-    protected function createProcess()
+    protected function createCommandLine() : CommandLine
     {
         if (empty($this->dumpDir)) {
             throw new Exception('no directory to dump to');
         }
-        $process = new Process();
+        $process = new CommandLine();
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 

@@ -81,13 +81,13 @@ class Mcrypt extends Abstraction implements Simulator
             throw new Exception('mcrypt \'algorithm\' is mandatory');
         }
 
-        $this->pathToMcrypt  = Util\Arr::getValue($options, 'pathToMcrypt');
+        $this->pathToMcrypt  = Util\Arr::getValue($options, 'pathToMcrypt', '');
         $this->keepUncrypted = Util\Str::toBoolean(Util\Arr::getValue($options, 'keepUncrypted', ''), false);
-        $this->key           = Util\Arr::getValue($options, 'key');
-        $this->keyFile       = $this->toAbsolutePath(Util\Arr::getValue($options, 'keyFile'));
+        $this->key           = Util\Arr::getValue($options, 'key', '');
+        $this->keyFile       = $this->toAbsolutePath(Util\Arr::getValue($options, 'keyFile', ''));
         $this->algorithm     = $options['algorithm'];
-        $this->hash          = Util\Arr::getValue($options, 'hash');
-        $this->config        = $this->toAbsolutePath(Util\Arr::getValue($options, 'config'));
+        $this->hash          = Util\Arr::getValue($options, 'hash', '');
+        $this->config        = $this->toAbsolutePath(Util\Arr::getValue($options, 'config', ''));
 
         if (empty($this->key) && empty($this->keyFile)) {
             throw new Exception('one of \'key\' or \'keyFile\' is mandatory');
@@ -100,7 +100,7 @@ class Mcrypt extends Abstraction implements Simulator
      * @see    \phpbu\App\Backup\Crypter
      * @return string
      */
-    public function getSuffix()
+    public function getSuffix() : string
     {
         return 'nc';
     }
@@ -111,19 +111,16 @@ class Mcrypt extends Abstraction implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
      */
-    public function getExecutable(Target $target)
+    protected function createExecutable(Target $target) : Executable
     {
-        if (null == $this->executable) {
-            $this->executable = new Executable\Mcrypt($this->pathToMcrypt);
-            $this->executable->useAlgorithm($this->algorithm)
-                             ->useKey($this->key)
-                             ->useKeyFile($this->keyFile)
-                             ->useConfig($this->config)
-                             ->useHash($this->hash)
-                             ->saveAt($target->getPathname())
-                             ->deleteUncrypted(!$this->keepUncrypted);
-        }
-
-        return $this->executable;
+        $executable = new Executable\Mcrypt((string)$this->pathToMcrypt);
+        $executable->useAlgorithm($this->algorithm)
+                   ->useKey($this->key)
+                   ->useKeyFile($this->keyFile)
+                   ->useConfig($this->config)
+                   ->useHash($this->hash)
+                   ->saveAt($target->getPathname())
+                   ->deleteUncrypted(!$this->keepUncrypted);
+        return $executable;
     }
 }

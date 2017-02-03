@@ -12,7 +12,7 @@ namespace phpbu\App\Adapter;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 4.0.0
  */
-class PHPArrayTest extends \PHPUnit_Framework_TestCase
+class PHPArrayTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests PHPArray::setup
@@ -20,7 +20,7 @@ class PHPArrayTest extends \PHPUnit_Framework_TestCase
     public function testSetup()
     {
         $arr = new PHPArray();
-        $arr->setup(['file' => realpath(__DIR__ . '/../../_files/misc/array.config.php')]);
+        $arr->setup(['file' => PHPBU_TEST_FILES . '/misc/array.config.php']);
 
         $this->assertTrue(true);
     }
@@ -42,7 +42,7 @@ class PHPArrayTest extends \PHPUnit_Framework_TestCase
     public function testGetValue()
     {
         $arr = new PHPArray();
-        $arr->setup(['file' => realpath(__DIR__ . '/../../_files/misc/array.config.php')]);
+        $arr->setup(['file' => PHPBU_TEST_FILES . '/misc/array.config.php']);
 
         $fiz = $arr->getValue('foo.bar.baz');
 
@@ -58,7 +58,7 @@ class PHPArrayTest extends \PHPUnit_Framework_TestCase
     public function testGetValueFail()
     {
         $arr = new PHPArray();
-        $arr->setup(['file' => realpath(__DIR__ . '/../../_files/misc/array.config.php')]);
+        $arr->setup(['file' => PHPBU_TEST_FILES . '/misc/array.config.php']);
 
         $arr->getValue('foo.bar.fiz');
     }

@@ -2,7 +2,6 @@
 namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\Rsync as RsyncTrait;
-use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
@@ -45,12 +44,12 @@ class Rsync extends SimulatorExecutable implements Simulator
      * @return \phpbu\App\Backup\Source\Status
      * @throws \phpbu\App\Exception
      */
-    public function backup(Target $target, Result $result)
+    public function backup(Target $target, Result $result) : Status
     {
         $rsync = $this->execute($target);
         $result->debug($rsync->getCmd());
 
-        if (!$rsync->wasSuccessful()) {
+        if (!$rsync->isSuccessful()) {
             throw new Exception('rsync failed:' . $rsync->getStdErr());
         }
 
@@ -63,27 +62,25 @@ class Rsync extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target
      * @return \phpbu\App\Cli\Executable
      */
-    public function getExecutable(Target $target)
+    protected function createExecutable(Target $target) : Executable
     {
-        if (null == $this->executable) {
-            $this->executable = new Executable\Rsync($this->pathToRsync);
-            if (!empty($this->args)) {
-                $this->executable->useArgs(
-                    Util\Str::replaceTargetPlaceholders(
-                        $this->args,
-                        $target->getPathnamePlain()
-                    )
-                );
-            } else {
-                $this->executable->fromHost($this->host)
-                                 ->fromUser($this->user)
-                                 ->fromPath($this->path)
-                                 ->toPath($this->getRsyncLocation($target, true))
-                                 ->removeDeleted($this->delete)
-                                 ->exclude($this->excludes);
-            }
+        $executable = new Executable\Rsync($this->pathToRsync);
+        if (!empty($this->args)) {
+            $executable->useArgs(
+                Util\Str::replaceTargetPlaceholders(
+                    $this->args,
+                    $target->getPathnamePlain()
+                )
+            );
+        } else {
+            $executable->fromHost($this->host)
+                       ->fromUser($this->user)
+                       ->fromPath($this->path)
+                       ->toPath($this->getRsyncLocation($target, true))
+                       ->removeDeleted($this->delete)
+                       ->exclude($this->excludes);
         }
-        return $this->executable;
+        return $executable;
     }
 
     /**
@@ -92,7 +89,7 @@ class Rsync extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target
      * @return \phpbu\App\Backup\Source\Status
      */
-    protected function createStatus(Target $target)
+    protected function createStatus(Target $target) : Status
     {
         $status = Status::create();
         if (!$this->isDirSync) {

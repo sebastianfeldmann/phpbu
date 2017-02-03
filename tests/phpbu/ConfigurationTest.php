@@ -12,7 +12,7 @@ namespace phpbu\App;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class ConfigurationTest extends \PHPUnit_Framework_TestCase
+class ConfigurationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Configuration::getWorkingDirectory

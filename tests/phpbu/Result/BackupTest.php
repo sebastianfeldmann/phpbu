@@ -14,7 +14,7 @@ use phpbu\App\Configuration;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class BackupTest extends \PHPUnit_Framework_TestCase
+class BackupTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Backup::wasSuccessFul

@@ -14,7 +14,7 @@ use phpbu\App\Util\Str;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class TestCase extends \PHPUnit_Framework_TestCase
+class TestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test execution time
@@ -57,7 +57,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getFileMock($size, $shouldBeDeleted, $mTime, $writable)
     {
-        /* @var $fileStub PHPUnit_Framework_MockObject */
+        /* @var $fileStub \PHPUnit\Framework\MockObject */
         $fileStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\File')
                          ->disableOriginalConstructor()
                          ->getMock();

@@ -1,10 +1,10 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
-use phpbu\App\Cli\Process;
 use phpbu\App\Exception;
+use SebastianFeldmann\Cli\CommandLine;
+use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
 /**
  * Arangodump source class.
@@ -99,7 +99,7 @@ class Arangodump extends Abstraction implements Executable
      *
      * @param string $path
      */
-    public function __construct($path = null)
+    public function __construct(string $path = '')
     {
         $this->setup('arangodump', $path);
         $this->setMaskCandidates(['password']);
@@ -111,7 +111,7 @@ class Arangodump extends Abstraction implements Executable
      * @param  string $path
      * @return \phpbu\App\Cli\Executable\Arangodump
      */
-    public function dumpTo($path)
+    public function dumpTo(string $path) : Arangodump
     {
         $this->dumpDir = $path;
         return $this;
@@ -124,7 +124,7 @@ class Arangodump extends Abstraction implements Executable
      * @param  string $password
      * @return \phpbu\App\Cli\Executable\Arangodump
      */
-    public function credentials($username = null, $password = null)
+    public function credentials(string $username = '', string $password = '') : Arangodump
     {
         $this->username = $username;
         $this->password = $password;
@@ -135,9 +135,9 @@ class Arangodump extends Abstraction implements Executable
      * Endpoint to use.
      *
      * @param  string $endpoint
-     * @return $this
+     * @return \phpbu\App\Cli\Executable\Arangodump
      */
-    public function useEndpoint($endpoint)
+    public function useEndpoint(string $endpoint) : Arangodump
     {
         $this->endpoint = $endpoint;
         return $this;
@@ -149,7 +149,7 @@ class Arangodump extends Abstraction implements Executable
      * @param  string $database
      * @return \phpbu\App\Cli\Executable\Arangodump
      */
-    public function dumpDatabase($database)
+    public function dumpDatabase(string $database) : Arangodump
     {
         $this->database = $database;
         return $this;
@@ -161,7 +161,7 @@ class Arangodump extends Abstraction implements Executable
      * @param  array $collections
      * @return \phpbu\App\Cli\Executable\Arangodump
      */
-    public function dumpCollections(array $collections)
+    public function dumpCollections(array $collections) : Arangodump
     {
         $this->collections = $collections;
         return $this;
@@ -173,7 +173,7 @@ class Arangodump extends Abstraction implements Executable
      * @param  boolean $bool
      * @return \phpbu\App\Cli\Executable\Arangodump
      */
-    public function disableAuthentication($bool)
+    public function disableAuthentication(bool $bool) : Arangodump
     {
         $this->disableAuthentication = $bool;
         return $this;
@@ -185,7 +185,7 @@ class Arangodump extends Abstraction implements Executable
      * @param  boolean $bool
      * @return \phpbu\App\Cli\Executable\Arangodump
      */
-    public function includeSystemCollections($bool)
+    public function includeSystemCollections(bool $bool) : Arangodump
     {
         $this->includeSystemCollections = $bool;
         return $this;
@@ -197,25 +197,25 @@ class Arangodump extends Abstraction implements Executable
      * @param  boolean $bool
      * @return \phpbu\App\Cli\Executable\Arangodump
      */
-    public function dumpData($bool)
+    public function dumpData(bool $bool) : Arangodump
     {
         $this->dumpData = $bool;
         return $this;
     }
 
     /**
-     * Subclass Process generator.
+     * Arangodump CommandLine generator.
      *
-     * @return \phpbu\App\Cli\Executable
+     * @return \SebastianFeldmann\Cli\CommandLine
      * @throws \phpbu\App\Exception
      */
-    public function createProcess()
+    public function createCommandLine() : CommandLine
     {
         if (empty($this->dumpDir)) {
             throw new Exception('dump dir is mandatory');
         }
 
-        $process = new Process();
+        $process = new CommandLine();
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 

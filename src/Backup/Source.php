@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup;
 
+use phpbu\App\Backup\Source\Status;
 use phpbu\App\Result;
 
 /**
@@ -30,5 +31,5 @@ interface Source
      * @param  \phpbu\App\Result        $result
      * @return \phpbu\App\Backup\Source\Status
      */
-    public function backup(Target $target, Result $result);
+    public function backup(Target $target, Result $result) : Status;
 }

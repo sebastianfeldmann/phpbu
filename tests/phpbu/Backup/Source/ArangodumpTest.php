@@ -18,41 +18,18 @@ use phpbu\App\Backup\CliTest;
 class ArangodumpTest extends CliTest
 {
     /**
-     * Arangodump
-     *
-     * @var \phpbu\App\Backup\Source\Arangodump
-     */
-    protected $arangodump;
-
-    /**
-     * Setup arangodump
-     */
-    public function setUp()
-    {
-        $this->arangodump = new Arangodump();
-    }
-
-    /**
-     * Clear arangodump
-     */
-    public function tearDown()
-    {
-        $this->arangodump = null;
-    }
-
-    /**
      * Tests Arangodump::getExecutable
      */
     public function testDefault()
     {
-        $expected = 'arangodump --output-directory \'./dir/dump\'';
-        $target   = $this->getTargetMock('./dir/foo.dump');
-        $path     = $this->getBinDir();
-        $this->arangodump->setup(array('pathToArangodump' => $path));
+        $target     = $this->getTargetMock('./dir/foo.dump');
+        $arangodump = new Arangodump();
+        $arangodump->setup(['pathToArangodump' => PHPBU_TEST_BIN]);
 
-        $executable = $this->arangodump->getExecutable($target);
+        $executable = $arangodump->getExecutable($target);
+        $expected   = PHPBU_TEST_BIN . '/arangodump --output-directory \'./dir/dump\'';
 
-        $this->assertEquals($path . '/' . $expected, $executable->getCommandLine());
+        $this->assertEquals($expected, $executable->getCommand());
     }
 
     /**
@@ -60,14 +37,14 @@ class ArangodumpTest extends CliTest
      */
     public function testUser()
     {
-        $expected = 'arangodump --server.username \'root\' --output-directory \'./dir/dump\'';
-        $target   = $this->getTargetMock('./dir/foo.dump');
-        $path     = $this->getBinDir();
-        $this->arangodump->setup(array('pathToArangodump' => $path, 'username' => 'root'));
+        $target     = $this->getTargetMock('./dir/foo.dump');
+        $arangodump = new Arangodump();
+        $arangodump->setup(['pathToArangodump' => PHPBU_TEST_BIN, 'username' => 'root']);
 
-        $executable = $this->arangodump->getExecutable($target);
+        $executable = $arangodump->getExecutable($target);
+        $expected   = PHPBU_TEST_BIN . '/arangodump --server.username \'root\' --output-directory \'./dir/dump\'';
 
-        $this->assertEquals($path . '/' . $expected, $executable->getCommandLine());
+        $this->assertEquals($expected, $executable->getCommand());
     }
 
     /**
@@ -75,14 +52,15 @@ class ArangodumpTest extends CliTest
      */
     public function testCollections()
     {
-        $expected = 'arangodump --collection \'collection1\' --collection \'collection2\' --output-directory \'./dir/dump\'';
-        $target   = $this->getTargetMock('./dir/foo.dump');
-        $path     = $this->getBinDir();
-        $this->arangodump->setup(array('pathToArangodump' => $path, 'collections' => 'collection1,collection2'));
+        $target     = $this->getTargetMock('./dir/foo.dump');
+        $arangodump = new Arangodump();
+        $arangodump->setup(['pathToArangodump' => PHPBU_TEST_BIN, 'collections' => 'collection1,collection2']);
 
-        $executable = $this->arangodump->getExecutable($target);
+        $executable = $arangodump->getExecutable($target);
+        $expected   = PHPBU_TEST_BIN . '/arangodump --collection \'collection1\' '
+                    . '--collection \'collection2\' --output-directory \'./dir/dump\'';
 
-        $this->assertEquals($path . '/' . $expected, $executable->getCommandLine());
+        $this->assertEquals($expected, $executable->getCommand());
     }
 
     /**
@@ -90,19 +68,19 @@ class ArangodumpTest extends CliTest
      */
     public function testBackupOk()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(0, 'arangodump'));
+
         $target    = $this->getTargetMock(__FILE__);
-        $cliResult = $this->getCliResultMock(0, 'arangodump');
         $appResult = $this->getAppResultMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Arangodump')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $this->arangodump->setup(array());
-        $this->arangodump->setExecutable($exec);
-        $status = $this->arangodump->backup($target, $appResult);
+        $arangodump = new Arangodump($runner);
+        $arangodump->setup(['pathToArangodump' => PHPBU_TEST_BIN]);
+
+        $status = $arangodump->backup($target, $appResult);
 
         $this->assertFalse($status->handledCompression());
     }
@@ -114,18 +92,17 @@ class ArangodumpTest extends CliTest
      */
     public function testBackupFail()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(1, 'arangodump'));
+
         $target    = $this->getTargetMock(__FILE__);
-        $cliResult = $this->getCliResultMock(1, 'arangodump');
         $appResult = $this->getAppResultMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Arangodump')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $this->arangodump->setup(array());
-        $this->arangodump->setExecutable($exec);
-        $this->arangodump->backup($target, $appResult);
+        $arangodump = new Arangodump($runner);
+        $arangodump->setup(['pathToArangodump' => PHPBU_TEST_BIN]);
+        $arangodump->backup($target, $appResult);
     }
 }

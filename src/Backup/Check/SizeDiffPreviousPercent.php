@@ -24,15 +24,15 @@ use phpbu\App\Util\Math;
 class SizeDiffPreviousPercent implements Check
 {
     /**
-     * @see    \phpbu\App\Backup\Check::pass()
-     * @param  \phpbu\App\Backup\Target    $target
-     * @param  string                      $value
-     * @param  \phpbu\App\Backup\Collector $collector
-     * @param  \phpbu\App\Result           $result
+     * Execute check.
+     *
+     * @param \phpbu\App\Backup\Target    $target
+     * @param string                      $value
+     * @param \phpbu\App\Backup\Collector $collector
+     * @param \phpbu\App\Result           $result
      * @return bool
-     * @throws \phpbu\App\Exception
      */
-    public function pass(Target $target, $value, Collector $collector, Result $result)
+    public function pass(Target $target, $value, Collector $collector, Result $result) : bool
     {
         // throws App\Exception if file doesn't exist
         $backupSize   = $target->getSize();

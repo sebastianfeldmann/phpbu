@@ -76,12 +76,10 @@ class Elasticdump extends SimulatorExecutable implements Simulator
     {
         $this->setupSourceData($conf);
 
-        // environment settings
-        $this->pathToElasticdump = Util\Arr::getValue($conf, 'pathToElasticdump');
-
-        $this->host       = Util\Arr::getValue($conf, 'host', 'http://localhost:9200');
-        $this->user       = Util\Arr::getValue($conf, 'user');
-        $this->password   = Util\Arr::getValue($conf, 'password');
+        $this->pathToElasticdump = Util\Arr::getValue($conf, 'pathToElasticdump', '');
+        $this->host              = Util\Arr::getValue($conf, 'host', 'http://localhost:9200');
+        $this->user              = Util\Arr::getValue($conf, 'user', '');
+        $this->password          = Util\Arr::getValue($conf, 'password', '');
     }
 
     /**
@@ -91,8 +89,8 @@ class Elasticdump extends SimulatorExecutable implements Simulator
      */
     protected function setupSourceData(array $conf)
     {
-        $this->index = Util\Arr::getValue($conf, 'index');
-        $this->type  = Util\Arr::getValue($conf, 'type');
+        $this->index = Util\Arr::getValue($conf, 'index', '');
+        $this->type  = Util\Arr::getValue($conf, 'type', '');
     }
 
     /**
@@ -104,13 +102,13 @@ class Elasticdump extends SimulatorExecutable implements Simulator
      * @return \phpbu\App\Backup\Source\Status
      * @throws \phpbu\App\Exception
      */
-    public function backup(Target $target, Result $result)
+    public function backup(Target $target, Result $result) : Status
     {
         $elasticdump = $this->execute($target);
 
-        $result->debug($this->getExecutable($target)->getCommandLinePrintable());
+        $result->debug($elasticdump->getCmdPrintable());
 
-        if (!$elasticdump->wasSuccessful()) {
+        if (!$elasticdump->isSuccessful()) {
             throw new Exception('elasticdump failed: ' . $elasticdump->getStdErr());
         }
 
@@ -124,17 +122,15 @@ class Elasticdump extends SimulatorExecutable implements Simulator
      * @return \phpbu\App\Cli\Executable
      * @throws \phpbu\App\Exception
      */
-    public function getExecutable(Target $target)
+    protected function createExecutable(Target $target) : Executable
     {
-        if (null == $this->executable) {
-            $this->executable = new Executable\Elasticdump($this->pathToElasticdump);
-            $this->executable->useHost($this->host)
-                             ->credentials($this->user, $this->password)
-                             ->dumpIndex($this->index)
-                             ->dumpType($this->type)
-                             ->dumpTo($target->getPathnamePlain());
-        }
-        return $this->executable;
+            $executable = new Executable\Elasticdump($this->pathToElasticdump);
+            $executable->useHost($this->host)
+                       ->credentials($this->user, $this->password)
+                       ->dumpIndex($this->index)
+                       ->dumpType($this->type)
+                       ->dumpTo($target->getPathnamePlain());
+        return $executable;
     }
 
     /**
@@ -143,7 +139,7 @@ class Elasticdump extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Source\Status
      */
-    protected function createStatus(Target $target)
+    protected function createStatus(Target $target) : Status
     {
         return Status::create()->uncompressedFile($target->getPathnamePlain());
     }

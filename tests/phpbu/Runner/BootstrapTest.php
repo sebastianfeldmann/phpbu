@@ -14,7 +14,7 @@ use phpbu\App\Configuration;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class BootstrapTest extends \PHPUnit_Framework_TestCase
+class BootstrapTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Bootstrap::run
@@ -32,7 +32,7 @@ class BootstrapTest extends \PHPUnit_Framework_TestCase
                       ->willReturn([]);
         $configuration->expects($this->once())
                       ->method('getBootstrap')
-                      ->willReturn(__DIR__ . '/../../_files/misc/bootstrap.php');
+                      ->willReturn(PHPBU_TEST_FILES . '/misc/bootstrap.php');
 
         $runner = new Bootstrap();
         $runner->run($configuration);
@@ -58,7 +58,7 @@ class BootstrapTest extends \PHPUnit_Framework_TestCase
                       ->willReturn([]);
         $configuration->expects($this->once())
                       ->method('getBootstrap')
-                      ->willReturn(__DIR__ . '/../../_files/misc/bootstrap_FAIL.php');
+                      ->willReturn(PHPBU_TEST_FILES . '/misc/bootstrap_FAIL.php');
 
         $runner = new Bootstrap();
         $runner->run($configuration);
@@ -103,8 +103,8 @@ class BootstrapTest extends \PHPUnit_Framework_TestCase
         $new = 'FOO';
 
         $configuration = $this->getMockBuilder('\\phpbu\\App\\Configuration')
-                             ->disableOriginalConstructor()
-                             ->getMock();
+                              ->disableOriginalConstructor()
+                              ->getMock();
         $configuration->expects($this->once())
                       ->method('getIniSettings')
                       ->willReturn(['session.name' => $new]);

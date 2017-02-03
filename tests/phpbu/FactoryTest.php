@@ -19,7 +19,7 @@ use phpbu\App\Log\Logger;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Factory::createRunner
@@ -328,7 +328,7 @@ class phpbuAppFactoryTestCheck implements Check
      * @param  \phpbu\App\Result
      * @return boolean
      */
-    public function pass(Target $target, $value, Collector $collector, Result $result)
+    public function pass(Target $target, $value, Collector $collector, Result $result) : bool
     {
         // do something fooish
     }
@@ -442,7 +442,7 @@ class phpbuAppFactoryTestSource implements Source
      * @param  \phpbu\App\Result $result
      * @return \phpbu\App\Backup\Source\Status
      */
-    public function backup(Target $target, Result $result)
+    public function backup(Target $target, Result $result) : Source\Status
     {
         // do something fooish
         return new Source\Status();

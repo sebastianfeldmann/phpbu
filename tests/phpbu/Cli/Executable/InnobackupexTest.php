@@ -13,122 +13,119 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class InnobackupexTest extends \PHPUnit_Framework_TestCase
+class InnobackupexTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests XtraBackup::getExec
+     * Tests XtraBackup::createCommandLine
      */
     public function testDefault()
     {
         $expectedDump  = 'innobackupex --no-timestamp \'./dump\'';
         $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $path          = realpath(__DIR__ . '/../../../_files/bin');
-        $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
-        $xtra          = new Innobackupex($path);
+        $expected      = '(' . PHPBU_TEST_BIN . '/'
+                       . $expectedDump . ' && ' . PHPBU_TEST_BIN
+                       . '/' . $expectedApply . ')';
+        $xtra          = new Innobackupex(PHPBU_TEST_BIN);
         $xtra->dumpTo('./dump');
 
-        $this->assertEquals($expected, $xtra->getCommandLine());
+        $this->assertEquals($expected, $xtra->getCommand());
     }
 
     /**
-     * Tests XtraBackup::getExec
+     * Tests XtraBackup::createCommandLine
      */
     public function testDataDir()
     {
         $expectedDump  = 'innobackupex --no-timestamp --datadir=\'/foo/bar\' \'./dump\'';
         $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $path          = realpath(__DIR__ . '/../../../_files/bin');
-        $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
-        $xtra          = new Innobackupex($path);
+        $expected      = '(' . PHPBU_TEST_BIN . '/' . $expectedDump . ' && '
+                       . PHPBU_TEST_BIN . '/' . $expectedApply . ')';
+        $xtra          = new Innobackupex(PHPBU_TEST_BIN);
         $xtra->dumpFrom('/foo/bar')->dumpTo('./dump');
 
-        $this->assertEquals($expected, $xtra->getCommandLine());
+        $this->assertEquals($expected, $xtra->getCommand());
     }
 
     /**
-     * Tests Mongodump::createProcess
+     * Tests Mongodump::createCommandLine
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testFailNoDumpDir()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $xtra  = new Innobackupex($path);
-        $xtra->getCommandLine();
+        $xtra  = new Innobackupex(PHPBU_TEST_BIN);
+        $xtra->getCommand();
     }
 
     /**
-     * Tests XtraBackup::getExec
+     * Tests XtraBackup::createCommandLine
      */
     public function testUser()
     {
         $expectedDump  = 'innobackupex --no-timestamp --user=\'root\' \'./dump\'';
         $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $path          = realpath(__DIR__ . '/../../../_files/bin');
-        $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
-        $xtra          = new Innobackupex($path);
+        $expected      = '(' . PHPBU_TEST_BIN . '/' . $expectedDump
+                       . ' && ' . PHPBU_TEST_BIN . '/' . $expectedApply . ')';
+        $xtra          = new Innobackupex(PHPBU_TEST_BIN);
         $xtra->credentials('root')->dumpTo('./dump');
 
-        $this->assertEquals($expected, $xtra->getCommandLine());
+        $this->assertEquals($expected, $xtra->getCommand());
     }
 
     /**
-     * Tests XtraBackup::getExec
+     * Tests XtraBackup::createCommandLine
      */
     public function testPassword()
     {
         $expectedDump  = 'innobackupex --no-timestamp --password=\'secret\' \'./dump\'';
         $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $path          = realpath(__DIR__ . '/../../../_files/bin');
-        $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
-        $xtra          = new Innobackupex($path);
-        $xtra->credentials(null, 'secret')->dumpTo('./dump');
+        $expected      = '(' . PHPBU_TEST_BIN . '/' . $expectedDump . ' && '
+                       . PHPBU_TEST_BIN . '/' . $expectedApply . ')';
+        $xtra          = new Innobackupex(PHPBU_TEST_BIN);
+        $xtra->credentials('', 'secret')->dumpTo('./dump');
 
-        $this->assertEquals($expected, $xtra->getCommandLine());
+        $this->assertEquals($expected, $xtra->getCommand());
     }
 
     /**
-     * Tests XtraBackup::getExec
+     * Tests XtraBackup::createCommandLine
      */
     public function testHost()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --host=\'example.com\' \'./dump\'';
-        $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $path          = realpath(__DIR__ . '/../../../_files/bin');
-        $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
-        $xtra          = new Innobackupex($path);
+        $expectedDump  = PHPBU_TEST_BIN . '/innobackupex --no-timestamp --host=\'example.com\' \'./dump\'';
+        $expectedApply = PHPBU_TEST_BIN . '/innobackupex --apply-log \'./dump\'';
+        $expected      = '(' . $expectedDump . ' && ' . $expectedApply . ')';
+        $xtra          = new Innobackupex(PHPBU_TEST_BIN);
         $xtra->useHost('example.com')->dumpTo('./dump');
 
-        $this->assertEquals($expected, $xtra->getCommandLine());
+        $this->assertEquals($expected, $xtra->getCommand());
     }
 
     /**
-     * Tests XtraBackup::getExec
+     * Tests XtraBackup::createCommandLine
      */
     public function testDatabases()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --databases=\'db1 db2 db3.table1\' \'./dump\'';
-        $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $path          = realpath(__DIR__ . '/../../../_files/bin');
-        $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
-        $xtra          = new Innobackupex($path);
-        $xtra->dumpDatabases(array('db1', 'db2', 'db3.table1'))->dumpTo('./dump');
+        $expectedDump  = PHPBU_TEST_BIN . '/innobackupex --no-timestamp --databases=\'db1 db2 db3.table1\' \'./dump\'';
+        $expectedApply = PHPBU_TEST_BIN . '/innobackupex --apply-log \'./dump\'';
+        $expected      = '(' . $expectedDump . ' && ' . $expectedApply . ')';
+        $xtra          = new Innobackupex(PHPBU_TEST_BIN);
+        $xtra->dumpDatabases(['db1', 'db2', 'db3.table1'])->dumpTo('./dump');
 
-        $this->assertEquals($expected, $xtra->getCommandLine());
+        $this->assertEquals($expected, $xtra->getCommand());
     }
 
     /**
-     * Tests XtraBackup::getExec
+     * Tests XtraBackup::createCommandLine
      */
     public function testInclude()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --include=\'^myDatabase[.]myTable\' \'./dump\'';
-        $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $path          = realpath(__DIR__ . '/../../../_files/bin');
-        $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
-        $xtra          = new Innobackupex($path);
+        $expectedDump  = PHPBU_TEST_BIN . '/innobackupex --no-timestamp --include=\'^myDatabase[.]myTable\' \'./dump\'';
+        $expectedApply = PHPBU_TEST_BIN . '/innobackupex --apply-log \'./dump\'';
+        $expected      = '(' . $expectedDump . ' && ' . $expectedApply . ')';
+        $xtra          = new Innobackupex(PHPBU_TEST_BIN);
         $xtra->including('^myDatabase[.]myTable')->dumpTo('./dump');
 
-        $this->assertEquals($expected, $xtra->getCommandLine());
+        $this->assertEquals($expected, $xtra->getCommand());
     }
 }

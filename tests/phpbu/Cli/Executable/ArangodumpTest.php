@@ -13,134 +13,126 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class ArangodumpTest extends \PHPUnit_Framework_TestCase
+class ArangodumpTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests Arangodump::createProcess
+     * Tests Arangodump::createCommand
      */
     public function testDefault()
     {
-        $expected = 'arangodump --output-directory \'./dump\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $arango   = new Arangodump($path);
+        $expected = PHPBU_TEST_BIN . '/arangodump --output-directory \'./dump\'';
+        $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->dumpTo('./dump');
 
-        $this->assertEquals($path . '/' . $expected, $arango->getCommandLine());
+        $this->assertEquals($expected, $arango->getCommand());
     }
 
     /**
-     * Tests Arangodump::createProcess
+     * Tests Arangodump::createCommand
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testNoDumpDir()
     {
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $arango   = new Arangodump($path);
-        $arango->getCommandLine();
+        $arango   = new Arangodump(PHPBU_TEST_BIN);
+        $arango->getCommand();
     }
 
     /**
-     * Tests Arangodump::createProcess
+     * Tests Arangodump::createCommand
      */
     public function testUser()
     {
-        $expected = 'arangodump --server.username \'root\' --output-directory \'./dump\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $arango   = new Arangodump($path);
+        $expected = PHPBU_TEST_BIN . '/arangodump --server.username \'root\' --output-directory \'./dump\'';
+        $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->credentials('root')->dumpTo('./dump');
 
-        $this->assertEquals($path . '/' . $expected, $arango->getCommandLine());
+        $this->assertEquals($expected, $arango->getCommand());
     }
 
     /**
-     * Tests Arangodump::createProcess
+     * Tests Arangodump::createCommandLine
      */
     public function testPassword()
     {
-        $expected = 'arangodump --server.password \'secret\' --output-directory \'./dump\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $arango   = new Arangodump($path);
-        $arango->credentials(null, 'secret')->dumpTo('./dump');
+        $expected = PHPBU_TEST_BIN . '/arangodump --server.password \'secret\' --output-directory \'./dump\'';
+        $arango   = new Arangodump(PHPBU_TEST_BIN);
+        $arango->credentials('', 'secret')->dumpTo('./dump');
 
-        $this->assertEquals($path . '/' . $expected, $arango->getCommandLine());
+        $this->assertEquals($expected, $arango->getCommand());
     }
 
     /**
-     * Tests Arangodump::createProcess
+     * Tests Arangodump::createCommandLine
      */
     public function testEndpoint()
     {
-        $expected = 'arangodump --server.endpoint \'tcp://example.com:8529\' --output-directory \'./dump\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $arango   = new Arangodump($path);
+        $expected = PHPBU_TEST_BIN . '/arangodump --server.endpoint \'tcp://example.com:8529\' --output-directory \'./dump\'';
+        $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->useEndpoint('tcp://example.com:8529')->dumpTo('./dump');
 
-        $this->assertEquals($path . '/' . $expected, $arango->getCommandLine());
+        $this->assertEquals($expected, $arango->getCommand());
     }
 
     /**
-     * Tests Arangodump::createProcess
+     * Tests Arangodump::createCommandLine
      */
     public function testDatabase()
     {
-        $expected = 'arangodump --server.database \'myDatabase\' --output-directory \'./dump\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $arango   = new Arangodump($path);
+        $expected = PHPBU_TEST_BIN . '/arangodump --server.database \'myDatabase\' --output-directory \'./dump\'';
+        $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->dumpDatabase('myDatabase')->dumpTo('./dump');
 
-        $this->assertEquals($path . '/' . $expected, $arango->getCommandLine());
+        $this->assertEquals($expected, $arango->getCommand());
     }
 
     /**
-     * Tests Arangodump::createProcess
+     * Tests Arangodump::createCommandLine
      */
     public function testCollections()
     {
-        $expected = 'arangodump --collection \'col1\' --collection \'col2\' --output-directory \'./dump\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $arango   = new Arangodump($path);
-        $arango->dumpCollections(array('col1', 'col2'))->dumpTo('./dump');
+        $expected = PHPBU_TEST_BIN
+                  . '/arangodump --collection \'col1\' --collection \'col2\' --output-directory \'./dump\'';
+        $arango   = new Arangodump(PHPBU_TEST_BIN);
+        $arango->dumpCollections(['col1', 'col2'])->dumpTo('./dump');
 
-        $this->assertEquals($path . '/' . $expected, $arango->getCommandLine());
+        $this->assertEquals($expected, $arango->getCommand());
     }
 
     /**
-     * Tests Arangodump::createProcess
+     * Tests Arangodump::createCommandLine
      */
     public function testDisableAuthentication()
     {
-        $expected = 'arangodump --server.disable-authentication \'true\' --output-directory \'./dump\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $arango   = new Arangodump($path);
+        $expected = PHPBU_TEST_BIN
+                  . '/arangodump --server.disable-authentication \'true\' --output-directory \'./dump\'';
+        $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->disableAuthentication(true)->dumpTo('./dump');
 
-        $this->assertEquals($path . '/' . $expected, $arango->getCommandLine());
+        $this->assertEquals($expected, $arango->getCommand());
     }
 
     /**
-     * Tests Arangodump::createProcess
+     * Tests Arangodump::createCommandLine
      */
     public function testIncludeSystemCollections()
     {
-        $expected = 'arangodump --include-system-collections \'true\' --output-directory \'./dump\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $arango   = new Arangodump($path);
+        $expected = PHPBU_TEST_BIN . '/arangodump --include-system-collections \'true\' --output-directory \'./dump\'';
+        $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->includeSystemCollections(true)->dumpTo('./dump');
 
-        $this->assertEquals($path . '/' . $expected, $arango->getCommandLine());
+        $this->assertEquals($expected, $arango->getCommand());
     }
 
     /**
-     * Tests Arangodump::createProcess
+     * Tests Arangodump::createCommandLine
      */
     public function testDumpData()
     {
-        $expected = 'arangodump --dump-data \'true\' --output-directory \'./dump\'';
-        $path     = realpath(__DIR__ . '/../../../_files/bin');
-        $arango   = new Arangodump($path);
+        $expected = PHPBU_TEST_BIN . '/arangodump --dump-data \'true\' --output-directory \'./dump\'';
+        $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->dumpData(true)->dumpTo('./dump');
 
-        $this->assertEquals($path . '/' . $expected, $arango->getCommandLine());
+        $this->assertEquals($expected, $arango->getCommand());
     }
 }

@@ -25,5 +25,5 @@ interface Check
      * @param  \phpbu\App\Result           $result
      * @return bool
      */
-    public function pass(Target $target, $value, Collector $collector, Result $result);
+    public function pass(Target $target, $value, Collector $collector, Result $result) : bool;
 }

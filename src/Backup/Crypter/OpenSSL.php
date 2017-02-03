@@ -71,11 +71,11 @@ class OpenSSL extends Abstraction implements Simulator
             throw new Exception('openssl expects \'key\' or \'password\'');
         }
 
-        $this->pathToOpenSSL = Util\Arr::getValue($options, 'pathToOpenSSL');
+        $this->pathToOpenSSL = Util\Arr::getValue($options, 'pathToOpenSSL', '');
         $this->keepUncrypted = Util\Str::toBoolean(Util\Arr::getValue($options, 'keepUncrypted', ''), false);
-        $this->certFile      = $this->toAbsolutePath(Util\Arr::getValue($options, 'certFile'));
-        $this->algorithm     = Util\Arr::getValue($options, 'algorithm');
-        $this->password      = Util\Arr::getValue($options, 'password');
+        $this->certFile      = $this->toAbsolutePath(Util\Arr::getValue($options, 'certFile', ''));
+        $this->algorithm     = Util\Arr::getValue($options, 'algorithm', '');
+        $this->password      = Util\Arr::getValue($options, 'password', '');
     }
 
     /**
@@ -84,7 +84,7 @@ class OpenSSL extends Abstraction implements Simulator
      * @see    \phpbu\App\Backup\Crypter
      * @return string
      */
-    public function getSuffix()
+    public function getSuffix() : string
     {
         return 'enc';
     }
@@ -95,23 +95,20 @@ class OpenSSL extends Abstraction implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
      */
-    public function getExecutable(Target $target)
+    protected function createExecutable(Target $target) : Executable
     {
-        if (null == $this->executable) {
-            $this->executable = new Executable\OpenSSL($this->pathToOpenSSL);
-            $this->executable->encryptFile($target->getPathname());
+        $executable = new Executable\OpenSSL($this->pathToOpenSSL);
+        $executable->encryptFile($target->getPathname());
 
-            // use key or password to encrypt
-            if (!empty($this->certFile)) {
-                $this->executable->useSSLCert($this->certFile);
-            } else {
-                $this->executable->usePassword($this->password)
-                                 ->encodeBase64(true);
-            }
-            $this->executable->useAlgorithm($this->algorithm)
-                             ->deleteUncrypted(!$this->keepUncrypted);
+        // use key or password to encrypt
+        if (!empty($this->certFile)) {
+            $executable->useSSLCert($this->certFile);
+        } else {
+            $executable->usePassword($this->password)
+                       ->encodeBase64(true);
         }
-
-        return $this->executable;
+        $executable->useAlgorithm($this->algorithm)
+                   ->deleteUncrypted(!$this->keepUncrypted);
+        return $executable;
     }
 }

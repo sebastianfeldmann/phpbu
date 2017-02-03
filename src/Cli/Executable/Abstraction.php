@@ -1,8 +1,8 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Process;
 use phpbu\App\Util\Cli;
+use SebastianFeldmann\Cli\CommandLine;
 
 /**
  * Execute Binary
@@ -34,9 +34,9 @@ abstract class Abstraction
     /**
      * Command to execute
      *
-     * @var \phpbu\App\Cli\Process
+     * @var \SebastianFeldmann\Cli\CommandLine
      */
-    protected $process;
+    protected $commandLine;
 
     /**
      * Setup binary.
@@ -44,59 +44,30 @@ abstract class Abstraction
      * @param string $cmd
      * @param string $path
      */
-    protected function setup($cmd, $path = null) {
+    protected function setup(string $cmd, string $path = '') {
         $this->cmd    = $cmd;
         $this->binary = Cli::detectCmdLocation($cmd, $path, Cli::getCommandLocations($this->cmd));
     }
 
     /**
-     * Process setter, mostly for test purposes.
+     * Returns the CommandLine for this command.
      *
-     * @param \phpbu\App\Cli\Process $process
+     * @return \SebastianFeldmann\Cli\CommandLine
      */
-    public function setProcess(Process $process)
+    public function getCommandLine() : CommandLine
     {
-        $this->process = $process;
-    }
-
-    /**
-     * Returns the Process for this command.
-     *
-     * @return \phpbu\App\Cli\Process
-     */
-    public function getProcess()
-    {
-        if ($this->process == null) {
-            $this->process = $this->createProcess();
+        if ($this->commandLine == null) {
+            $this->commandLine = $this->createCommandLine();
         }
-        return $this->process;
+        return $this->commandLine;
     }
 
     /**
-     * Subclass Process generator.
+     * CommandLine generator.
      *
-     * @return \phpbu\App\Cli\Process
+     * @return \SebastianFeldmann\Cli\CommandLine
      */
-    abstract protected function createProcess();
-
-    /**
-     * Executes the cli commands.
-     *
-     * @return \phpbu\App\Cli\Result
-     * @throws \phpbu\App\Exception
-     */
-    public function run()
-    {
-        $process = $this->getProcess();
-        $res     = $process->run();
-
-        if (0 !== $res->getCode() && $process->isOutputRedirected()) {
-            // remove file with errors
-            $this->unlinkErrorFile($process->getRedirectPath());
-        }
-
-        return $res;
-    }
+    abstract protected function createCommandLine() : CommandLine;
 
     /**
      * Return the command line to execute.
@@ -104,30 +75,21 @@ abstract class Abstraction
      * @return string
      * @throws \phpbu\App\Exception
      */
-    public function getCommandLine()
+    public function getCommand() : string
     {
-        return $this->getProcess()->getCommandLine();
+        return $this->getCommandLine()->getCommand();
     }
 
     /**
      * Return the command with masked passwords or keys.
      *
+     * By default just return the original command. Subclasses with password
+     * arguments have to override this method.
+     *
      * @return string
      */
-    public function getCommandLinePrintable()
+    public function getCommandPrintable() : string
     {
-        return $this->getCommandLine();
-    }
-
-    /**
-     * Remove file if it exists.
-     *
-     * @param string $file
-     */
-    public function unlinkErrorFile($file)
-    {
-        if (file_exists($file) && !is_dir($file)) {
-            unlink($file);
-        }
+        return $this->getCommand();
     }
 }

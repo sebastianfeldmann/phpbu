@@ -3,6 +3,7 @@ namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
+use phpbu\App\Cli\Result as CliResult;
 use phpbu\App\Exception;
 use phpbu\App\Result;
 use phpbu\App\Util;
@@ -61,7 +62,7 @@ class Tar extends SimulatorExecutable implements Simulator
      *
      * @var string
      */
-    private $compression;
+    private $compression = '';
 
     /**
      * Path where to store the archive.
@@ -79,8 +80,8 @@ class Tar extends SimulatorExecutable implements Simulator
      */
     public function setup(array $conf = [])
     {
-        $this->pathToTar        = Util\Arr::getValue($conf, 'pathToTar');
-        $this->path             = Util\Arr::getValue($conf, 'path');
+        $this->pathToTar        = Util\Arr::getValue($conf, 'pathToTar', '');
+        $this->path             = Util\Arr::getValue($conf, 'path', '');
         $this->ignoreFailedRead = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ignoreFailedRead', ''), false);
         $this->removeSourceDir  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeSourceDir', ''), false);
 
@@ -98,7 +99,7 @@ class Tar extends SimulatorExecutable implements Simulator
      * @return \phpbu\App\Backup\Source\Status
      * @throws \phpbu\App\Exception
      */
-    public function backup(Target $target, Result $result)
+    public function backup(Target $target, Result $result) : Status
     {
         // make sure source path is a directory
         $this->validatePath();
@@ -106,7 +107,7 @@ class Tar extends SimulatorExecutable implements Simulator
         $target->setMimeType('application/x-tar');
         $tar = $this->execute($target);
 
-        $result->debug($tar->getCmd());
+        $result->debug($tar->getCmdPrintable());
 
         if ($this->tarFailed($tar)) {
             throw new Exception('tar failed: ' . $tar->getStdErr());
@@ -118,46 +119,44 @@ class Tar extends SimulatorExecutable implements Simulator
     /**
      * Check if tar failed.
      *
-     * @param  \phpbu\App\Cli\Result $tar
+     * @param  \phpbu\App\Cli\Result
      * @return bool
      */
-    public function tarFailed(\phpbu\App\Cli\Result $tar)
+    public function tarFailed(CliResult $tar) : bool
     {
         $ignoreFail = $this->ignoreFailedRead && $tar->getCode() == 1;
-        return !$tar->wasSuccessful() && !$ignoreFail;
+        return !$tar->isSuccessful() && !$ignoreFail;
     }
 
     /**
      * Setup the Executable to run the 'tar' command.
      *
      * @param  \phpbu\App\Backup\Target
-     * @return \phpbu\App\Cli\Executable\Tar
+     * @return \phpbu\App\Cli\Executable
      */
-    public function getExecutable(Target $target)
+    protected function createExecutable(Target $target) : Executable
     {
-        if (null == $this->executable) {
-            // check if tar supports requested compression
-            if ($target->shouldBeCompressed()) {
-                if (!Executable\Tar::isCompressionValid($target->getCompression()->getCommand())) {
-                    $this->pathToArchive = $target->getPathnamePlain();
-                } else {
-                    // compression could be handled by the tar command
-                    $this->pathToArchive = $target->getPathname();
-                    $this->compression   = $target->getCompression()->getCommand();
-                }
+        // check if tar supports requested compression
+        if ($target->shouldBeCompressed()) {
+            if (!Executable\Tar::isCompressionValid($target->getCompression()->getCommand())) {
+                $this->pathToArchive = $target->getPathnamePlain();
             } else {
-                // no compression at all
+                // compression could be handled by the tar command
                 $this->pathToArchive = $target->getPathname();
+                $this->compression   = $target->getCompression()->getCommand();
             }
-
-            $this->executable = new Executable\Tar($this->pathToTar);
-            $this->executable->archiveDirectory($this->path)
-                             ->useCompression($this->compression)
-                             ->ignoreFailedRead($this->ignoreFailedRead)
-                             ->removeSourceDirectory($this->removeSourceDir)
-                             ->archiveTo($this->pathToArchive);
+        } else {
+            // no compression at all
+            $this->pathToArchive = $target->getPathname();
         }
-        return $this->executable;
+
+        $executable = new Executable\Tar($this->pathToTar);
+        $executable->archiveDirectory($this->path)
+                   ->useCompression($this->compression)
+                   ->ignoreFailedRead($this->ignoreFailedRead)
+                   ->removeSourceDirectory($this->removeSourceDir)
+                   ->archiveTo($this->pathToArchive);
+        return $executable;
     }
 
     /**
@@ -178,7 +177,7 @@ class Tar extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target
      * @return \phpbu\App\Backup\Source\Status
      */
-    protected function createStatus(Target $target)
+    protected function createStatus(Target $target) : Status
     {
         $status = Status::create();
         // if tar doesn't handle the compression mark status uncompressed so the app can take care of compression

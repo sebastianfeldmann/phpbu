@@ -12,7 +12,7 @@ namespace phpbu\App\Cli\Executable\Rsync;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.1.4
  */
-class LocationTest extends \PHPUnit_Framework_TestCase
+class LocationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Rsync::toString

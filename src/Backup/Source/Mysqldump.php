@@ -156,10 +156,10 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     {
         $this->setupSourceData($conf);
 
-        $this->pathToMysqldump   = Util\Arr::getValue($conf, 'pathToMysqldump');
-        $this->host              = Util\Arr::getValue($conf, 'host');
-        $this->user              = Util\Arr::getValue($conf, 'user');
-        $this->password          = Util\Arr::getValue($conf, 'password');
+        $this->pathToMysqldump   = Util\Arr::getValue($conf, 'pathToMysqldump', '');
+        $this->host              = Util\Arr::getValue($conf, 'host', '');
+        $this->user              = Util\Arr::getValue($conf, 'user', '');
+        $this->password          = Util\Arr::getValue($conf, 'password', '');
         $this->hexBlob           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'hexBlob', ''), false);
         $this->quick             = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
         $this->lockTables        = Util\Str::toBoolean(Util\Arr::getValue($conf, 'lockTables', ''), false);
@@ -182,10 +182,10 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      */
     protected function setupSourceData(array $conf)
     {
-        $this->tables        = Util\Str::toList(Util\Arr::getValue($conf, 'tables'));
-        $this->databases     = Util\Str::toList(Util\Arr::getValue($conf, 'databases'));
-        $this->ignoreTables  = Util\Str::toList(Util\Arr::getValue($conf, 'ignoreTables'));
-        $this->structureOnly = Util\Str::toList(Util\Arr::getValue($conf, 'structureOnly'));
+        $this->tables        = Util\Str::toList(Util\Arr::getValue($conf, 'tables', ''));
+        $this->databases     = Util\Str::toList(Util\Arr::getValue($conf, 'databases', ''));
+        $this->ignoreTables  = Util\Str::toList(Util\Arr::getValue($conf, 'ignoreTables', ''));
+        $this->structureOnly = Util\Str::toList(Util\Arr::getValue($conf, 'structureOnly', ''));
     }
 
     /**
@@ -197,7 +197,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      * @return \phpbu\App\Backup\Source\Status
      * @throws \phpbu\App\Exception
      */
-    public function backup(Target $target, Result $result)
+    public function backup(Target $target, Result $result) : Status
     {
         // create the writable dump directory for tables files
         if ($this->filePerTable && !is_dir($this->getDumpTarget($target))) {
@@ -208,9 +208,9 @@ class Mysqldump extends SimulatorExecutable implements Simulator
 
         $mysqldump = $this->execute($target);
 
-        $result->debug($this->getExecutable($target)->getCommandLinePrintable());
+        $result->debug($this->getExecutable($target)->getCommandPrintable());
 
-        if (!$mysqldump->wasSuccessful()) {
+        if (!$mysqldump->isSuccessful()) {
             throw new Exception('mysqldump failed:' . $mysqldump->getStdErr());
         }
 
@@ -223,31 +223,29 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
      */
-    public function getExecutable(Target $target)
+    protected function createExecutable(Target $target) : Executable
     {
-        if (null == $this->executable) {
-            $this->executable = new Executable\Mysqldump($this->pathToMysqldump);
-            $this->executable->credentials($this->user, $this->password)
-                             ->useHost($this->host)
-                             ->useQuickMode($this->quick)
-                             ->lockTables($this->lockTables)
-                             ->dumpBlobsHexadecimal($this->hexBlob)
-                             ->useCompression($this->compress)
-                             ->useExtendedInsert($this->extendedInsert)
-                             ->dumpTables($this->tables)
-                             ->singleTransaction($this->singleTransaction)
-                             ->dumpDatabases($this->databases)
-                             ->ignoreTables($this->ignoreTables)
-                             ->produceFilePerTable($this->filePerTable)
-                             ->dumpNoData($this->noData)
-                             ->dumpStructureOnly($this->structureOnly)
-                             ->dumpTo($this->getDumpTarget($target));
-            // if compression is active and commands can be piped
-            if ($this->isHandlingCompression($target)) {
-                $this->executable->compressOutput($target->getCompression());
-            }
+        $executable = new Executable\Mysqldump($this->pathToMysqldump);
+        $executable->credentials($this->user, $this->password)
+                   ->useHost($this->host)
+                   ->useQuickMode($this->quick)
+                   ->lockTables($this->lockTables)
+                   ->dumpBlobsHexadecimal($this->hexBlob)
+                   ->useCompression($this->compress)
+                   ->useExtendedInsert($this->extendedInsert)
+                   ->dumpTables($this->tables)
+                   ->singleTransaction($this->singleTransaction)
+                   ->dumpDatabases($this->databases)
+                   ->ignoreTables($this->ignoreTables)
+                   ->produceFilePerTable($this->filePerTable)
+                   ->dumpNoData($this->noData)
+                   ->dumpStructureOnly($this->structureOnly)
+                   ->dumpTo($this->getDumpTarget($target));
+        // if compression is active and commands can be piped
+        if ($this->isHandlingCompression($target)) {
+            $executable->compressOutput($target->getCompression());
         }
-        return $this->executable;
+        return $executable;
     }
 
     /**
@@ -256,7 +254,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target
      * @return \phpbu\App\Backup\Source\Status
      */
-    protected function createStatus(Target $target)
+    protected function createStatus(Target $target) : Status
     {
         // file_per_table creates a directory with all the files
         if ($this->filePerTable) {
@@ -279,7 +277,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @return bool
      */
-    private function isHandlingCompression(Target $target)
+    private function isHandlingCompression(Target $target) : bool
     {
         return $target->shouldBeCompressed() && Util\Cli::canPipe() && $target->getCompression()->isPipeable();
     }
@@ -290,7 +288,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @return string
      */
-    private function getDumpTarget(Target $target)
+    private function getDumpTarget(Target $target) : string
     {
         return $target->getPathnamePlain() . ($this->filePerTable ? '.dump' : '');
     }

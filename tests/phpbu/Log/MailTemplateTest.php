@@ -12,7 +12,7 @@ namespace phpbu\App\Log;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class MailTemplateTest extends \PHPUnit_Framework_TestCase
+class MailTemplateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests MailTemplate::setSnippets

@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Source;
+
 use phpbu\App\Backup\CliTest;
 
 /**
@@ -16,41 +17,17 @@ use phpbu\App\Backup\CliTest;
 class MysqldumpTest extends CliTest
 {
     /**
-     * Mysqldump
-     *
-     * @var \phpbu\App\Backup\Source\Mysqldump
-     */
-    protected $mysqldump;
-
-    /**
-     * Setup mysqldump
-     */
-    public function setUp()
-    {
-        $this->mysqldump = new Mysqldump();
-    }
-
-    /**
-     * Clear mysqldump
-     */
-    public function tearDown()
-    {
-        $this->mysqldump = null;
-    }
-
-    /**
      * Tests Mysqldump::getExecutable
      */
     public function testDefault()
     {
-        $target = $this->getTargetMock();
-        $path   = realpath(__DIR__ . '/../../../_files/bin');
-        $this->mysqldump->setup(['pathToMysqldump' => $path]);
+        $target    = $this->getTargetMock();
+        $mysqldump = new Mysqldump();
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN]);
 
-        $executable = $this->mysqldump->getExecutable($target);
-        $cmd        = $executable->getCommandLine();
+        $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals($path . '/mysqldump --all-databases', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --all-databases', $executable->getCommand());
     }
 
     /**
@@ -60,10 +37,10 @@ class MysqldumpTest extends CliTest
      */
     public function testSetupFail()
     {
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $this->mysqldump->setup(
+        $mysqldump = new Mysqldump();
+        $mysqldump->setup(
             [
-                'pathToMysqldump' => $path,
+                'pathToMysqldump' => PHPBU_TEST_BIN,
                 'databases'       => 'foo',
                 'filePerTable'    => 'true',
                 'structureOnly'   => 'foo,bar,baz'
@@ -79,15 +56,14 @@ class MysqldumpTest extends CliTest
         $target = $this->getTargetMock('/tmp/foo.sql', '/tmp/foo.sql.gz');
         $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
 
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $this->mysqldump->setup(['pathToMysqldump' => $path]);
+        $mysqldump = new Mysqldump();
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN]);
 
-        $executable = $this->mysqldump->getExecutable($target);
-        $cmd        = $executable->getCommandLine();
+        $executable = $mysqldump->getExecutable($target);
 
         $this->assertEquals(
-            $path . '/mysqldump --all-databases | ' . $path . '/gzip > /tmp/foo.sql.gz',
-            $cmd
+            PHPBU_TEST_BIN . '/mysqldump --all-databases | ' . PHPBU_TEST_BIN . '/gzip > /tmp/foo.sql.gz',
+            $executable->getCommand()
         );
     }
 
@@ -96,14 +72,13 @@ class MysqldumpTest extends CliTest
      */
     public function testLockTables()
     {
-        $target = $this->getTargetMock();
-        $path   = realpath(__DIR__ . '/../../../_files/bin');
-        $this->mysqldump->setup(array('pathToMysqldump' => $path, 'lockTables' => 'true'));
+        $target    = $this->getTargetMock();
+        $mysqldump = new Mysqldump();
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'lockTables' => 'true']);
 
-        $executable = $this->mysqldump->getExecutable($target);
-        $cmd        = $executable->getCommandLine();
+        $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals($path . '/mysqldump --lock-tables --all-databases', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --lock-tables --all-databases', $executable->getCommand());
     }
 
     /**
@@ -111,14 +86,16 @@ class MysqldumpTest extends CliTest
      */
     public function testFilePerTable()
     {
-        $target = $this->getTargetMock('/tmp/foo');
-        $path   = realpath(__DIR__ . '/../../../_files/bin');
-        $this->mysqldump->setup(array('pathToMysqldump' => $path, 'filePerTable' => 'true'));
+        $target    = $this->getTargetMock('/tmp/foo');
+        $mysqldump = new Mysqldump();
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'filePerTable' => 'true']);
 
-        $executable = $this->mysqldump->getExecutable($target);
-        $cmd        = $executable->getCommandLine();
+        $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals($path . '/mysqldump --all-databases --tab=\'/tmp/foo.dump\'', $cmd);
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mysqldump --all-databases --tab=\'/tmp/foo.dump\'',
+            $executable->getCommand()
+        );
     }
 
     /**
@@ -126,14 +103,13 @@ class MysqldumpTest extends CliTest
      */
     public function testHexBlob()
     {
-        $target = $this->getTargetMock();
-        $path   = realpath(__DIR__ . '/../../../_files/bin');
-        $this->mysqldump->setup(array('pathToMysqldump' => $path, 'hexBlob' => 'true'));
+        $target    = $this->getTargetMock();
+        $mysqldump = new Mysqldump();
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'hexBlob' => 'true']);
 
-        $executable = $this->mysqldump->getExecutable($target);
-        $cmd        = $executable->getCommandLine();
+        $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals($path . '/mysqldump --hex-blob --all-databases', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --hex-blob --all-databases', $executable->getCommand());
     }
 
     /**
@@ -141,14 +117,13 @@ class MysqldumpTest extends CliTest
      */
     public function testExtendedInsert()
     {
-        $target = $this->getTargetMock();
-        $path   = realpath(__DIR__ . '/../../../_files/bin');
-        $this->mysqldump->setup(array('pathToMysqldump' => $path, 'extendedInsert' => 'true'));
+        $target    = $this->getTargetMock();
+        $mysqldump = new Mysqldump();
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'extendedInsert' => 'true']);
 
-        $executable = $this->mysqldump->getExecutable($target);
-        $cmd        = $executable->getCommandLine();
+        $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals($path . '/mysqldump -e --all-databases', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump -e --all-databases', $executable->getCommand());
     }
 
     /**
@@ -156,20 +131,19 @@ class MysqldumpTest extends CliTest
      */
     public function testBackupOk()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(0, 'mysqldump'));
+
         $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(0, 'mysqldump');
         $appResult = $this->getAppResultMock();
-        $mysqldump = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Mysqldump')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $mysqldump->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $this->mysqldump->setup(array('pathToMysqldump' => $path));
-        $this->mysqldump->setExecutable($mysqldump);
-        $status = $this->mysqldump->backup($target, $appResult);
+        $mysqldump = new Mysqldump($runner);
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN]);
+
+        $status = $mysqldump->backup($target, $appResult);
 
         $this->assertFalse($status->handledCompression());
     }
@@ -179,22 +153,22 @@ class MysqldumpTest extends CliTest
      */
     public function testBackupOkCompressed()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(0, 'mysqldump'));
+
         $target = $this->getTargetMock('/tmp/foo.sql', '/tmp/foo.sql.gz');
         $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
 
-        $cliResult = $this->getCliResultMock(0, 'mysqldump');
+
         $appResult = $this->getAppResultMock();
-        $mysqldump = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Mysqldump')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $mysqldump->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $this->mysqldump->setup(array('pathToMysqldump' => $path));
-        $this->mysqldump->setExecutable($mysqldump);
-        $status = $this->mysqldump->backup($target, $appResult);
+        $mysqldump= new Mysqldump($runner);
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN]);
+
+        $status = $mysqldump->backup($target, $appResult);
 
         $this->assertTrue($status->handledCompression());
     }
@@ -204,20 +178,19 @@ class MysqldumpTest extends CliTest
      */
     public function testBackupFilePerTable()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(0, 'mysqldump'));
+
         $target    = $this->getTargetMock('/tmp/foo');
-        $cliResult = $this->getCliResultMock(0, 'mysqldump');
         $appResult = $this->getAppResultMock();
-        $mysqldump = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Mysqldump')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $mysqldump->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $path = realpath(__DIR__ . '/../../../_files/bin');
-        $this->mysqldump->setup(array('pathToMysqldump' => $path, 'filePerTable' => 'true'));
-        $this->mysqldump->setExecutable($mysqldump);
-        $status = $this->mysqldump->backup($target, $appResult);
+        $mysqldump= new Mysqldump($runner);
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'filePerTable' => 'true']);
+
+        $status = $mysqldump->backup($target, $appResult);
 
         $this->assertFalse($status->handledCompression());
     }
@@ -229,19 +202,17 @@ class MysqldumpTest extends CliTest
      */
     public function testBackupFail()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(1, 'mysqldump'));
+
         $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(1, 'mysqldump');
         $appResult = $this->getAppResultMock();
-        $mysqldump = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Mysqldump')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $mysqldump->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $path   = realpath(__DIR__ . '/../../../_files/bin');
-        $this->mysqldump->setup(array('pathToMysqldump' => $path));
-        $this->mysqldump->setExecutable($mysqldump);
-        $this->mysqldump->backup($target, $appResult);
+        $mysqldump= new Mysqldump($runner);
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN]);
+        $mysqldump->backup($target, $appResult);
     }
 }

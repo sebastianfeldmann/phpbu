@@ -12,125 +12,134 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class MongodumpTest extends \PHPUnit_Framework_TestCase
+class MongodumpTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests Mongodump::createProcess
+     * Tests Mongodump::createCommandLine
      */
     public function testDefault()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $mongo = new Mongodump($path);
+        $mongo = new Mongodump(PHPBU_TEST_BIN);
         $mongo->dumpToDirectory('./dump');
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\'', $mongo->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\'', $mongo->getCommand());
     }
 
     /**
-     * Tests Mongodump::createProcess
+     * Tests Mongodump::createCommandLine
      *
      * @expectedException \phpbu\App\Exception
      */
     public function testFailNoDumpDir()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $mongo = new Mongodump($path);
-        $mongo->getCommandLine();
+        $mongo = new Mongodump(PHPBU_TEST_BIN);
+        $mongo->getCommand();
     }
 
     /**
-     * Tests Mongodump::createProcess
+     * Tests Mongodump::createCommandLine
      */
     public function testUser()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $mongo = new Mongodump($path);
+        $mongo = new Mongodump(PHPBU_TEST_BIN);
         $mongo->dumpToDirectory('./dump')->credentials('root');
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --user \'root\'', $mongo->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --user \'root\'', $mongo->getCommand());
     }
 
     /**
-     * Tests Mongodump::createProcess
+     * Tests Mongodump::createCommandLine
      */
     public function testPassword()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $mongo = new Mongodump($path);
-        $mongo->dumpToDirectory('./dump')->credentials(null, 'secret');
+        $mongo = new Mongodump(PHPBU_TEST_BIN);
+        $mongo->dumpToDirectory('./dump')->credentials('', 'secret');
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --password \'secret\'', $mongo->getCommandLine());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --password \'secret\'',
+            $mongo->getCommand()
+        );
     }
 
     /**
-     * Tests Mongodump::createProcess
+     * Tests Mongodump::createCommandLine
      */
     public function testHost()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $mongo = new Mongodump($path);
+        $mongo = new Mongodump(PHPBU_TEST_BIN);
         $mongo->dumpToDirectory('./dump')->useHost('example.com');
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --host \'example.com\'', $mongo->getCommandLine());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --host \'example.com\'',
+            $mongo->getCommand()
+        );
     }
 
     /**
-     * Tests Mongodump::createProcess
+     * Tests Mongodump::createCommandLine
      */
     public function testDatabases()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $mongo = new Mongodump($path);
-        $mongo->dumpToDirectory('./dump')->dumpDatabases(array('db1', 'db2'));
+        $mongo = new Mongodump(PHPBU_TEST_BIN);
+        $mongo->dumpToDirectory('./dump')->dumpDatabases(['db1', 'db2']);
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --db \'db1\' --db \'db2\'', $mongo->getCommandLine());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --db \'db1\' --db \'db2\'',
+            $mongo->getCommand()
+        );
     }
 
     /**
-     * Tests Mongodump::createProcess
+     * Tests Mongodump::createCommandLine
      */
     public function testCollections()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $mongo = new Mongodump($path);
-        $mongo->dumpToDirectory('./dump')->dumpCollections(array('collection1', 'collection2'));
+        $mongo = new Mongodump(PHPBU_TEST_BIN);
+        $mongo->dumpToDirectory('./dump')->dumpCollections(['collection1', 'collection2']);
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --collection \'collection1\' --collection \'collection2\'', $mongo->getCommandLine());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mongodump --out \'./dump'
+              . '\' --collection \'collection1\' --collection \'collection2\'',
+            $mongo->getCommand()
+        );
     }
 
     /**
-     * Tests Mongodump::createProcess
+     * Tests Mongodump::createCommandLine
      */
     public function testIPv6()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $mongo = new Mongodump($path);
+        $mongo = new Mongodump(PHPBU_TEST_BIN);
         $mongo->dumpToDirectory('./dump')->useIpv6(true);
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --ipv6', $mongo->getCommandLine());
+        $this->assertEquals(PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --ipv6', $mongo->getCommand());
     }
 
     /**
-     * Tests Mongodump::createProcess
+     * Tests Mongodump::createCommandLine
      */
     public function testExcludeCollections()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $mongo = new Mongodump($path);
+        $mongo = new Mongodump(PHPBU_TEST_BIN);
         $mongo->dumpToDirectory('./dump')->excludeCollections(array('col1', 'col2'));
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --excludeCollection \'col1\' \'col2\'', $mongo->getCommandLine());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --excludeCollection \'col1\' \'col2\'',
+            $mongo->getCommand()
+        );
     }
 
     /**
-     * Tests Mongodump::createProcess
+     * Tests Mongodump::createCommandLine
      */
     public function testExcludeCollectionsWithPrefix()
     {
-        $path  = realpath(__DIR__ . '/../../../_files/bin');
-        $mongo = new Mongodump($path);
+        $mongo = new Mongodump(PHPBU_TEST_BIN);
         $mongo->dumpToDirectory('./dump')->excludeCollectionsWithPrefix(array('pre1', 'pre2'));
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --excludeCollectionWithPrefix \'pre1\' \'pre2\'', $mongo->getCommandLine());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --excludeCollectionWithPrefix \'pre1\' \'pre2\'',
+            $mongo->getCommand()
+        );
     }
 }

@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Compressor;
 
 use phpbu\App\Backup\Target;
+use phpbu\App\Cli\Executable;
 use phpbu\App\Cli\Executable\Tar;
 use phpbu\App\Exception;
 use phpbu\App\Result;
@@ -23,9 +24,9 @@ class Directory extends Abstraction
      * Validate path.
      *
      * @param  string $path
-     * @return boolean
+     * @return bool
      */
-    public function isPathValid($path)
+    public function isPathValid($path) : bool
     {
         return is_dir($path);
     }
@@ -37,7 +38,7 @@ class Directory extends Abstraction
      * @return bool
      * @throws \phpbu\App\Exception
      */
-    public function canCompress(Target $target)
+    public function canCompress(Target $target) : bool
     {
         if (!$target->shouldBeCompressed()) {
             throw new Exception('target should not be compressed at all');
@@ -53,7 +54,7 @@ class Directory extends Abstraction
      * @return string
      * @throws \phpbu\App\Exception
      */
-    public function compress(Target $target, Result $result)
+    public function compress(Target $target, Result $result) : string
     {
         $target->setMimeType('application/x-tar');
         $target->appendFileSuffix('tar');
@@ -66,17 +67,16 @@ class Directory extends Abstraction
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
      */
-    public function getExecutable(Target $target) {
-        if (null === $this->executable) {
-            $this->executable = new Tar($this->pathToCommand);
-            $this->executable->archiveDirectory($this->path);
-            $this->executable->archiveTo($this->getArchiveFile($target))
-                             ->useCompression(
-                                 $target->shouldBeCompressed() ? $target->getCompression()->getCommand() : ''
-                             )
-                             ->removeSourceDirectory(true);
-        }
-        return $this->executable;
+    protected function createExecutable(Target $target) : Executable
+    {
+        $executable = new Tar($this->pathToCommand);
+        $executable->archiveDirectory($this->path);
+        $executable->archiveTo($this->getArchiveFile($target))
+                   ->useCompression(
+                       $target->shouldBeCompressed() ? $target->getCompression()->getCommand() : ''
+                   )
+                   ->removeSourceDirectory(true);
+        return $executable;
     }
 
     /**
@@ -85,7 +85,7 @@ class Directory extends Abstraction
      * @param  \phpbu\App\Backup\Target $target
      * @return string
      */
-    public function getArchiveFile(Target $target)
+    public function getArchiveFile(Target $target) : string
     {
         return $target->shouldBeCompressed() && $this->canCompress($target)
                ? $target->getPathname()

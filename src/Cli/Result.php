@@ -1,8 +1,10 @@
 <?php
 namespace phpbu\App\Cli;
 
+use SebastianFeldmann\Cli\Command\Result as CommandResult;
+
 /**
- * Executable result
+ * Result
  *
  * @package    phpbu
  * @subpackage Backup
@@ -15,134 +17,118 @@ namespace phpbu\App\Cli;
 class Result
 {
     /**
-     * Command that got executed.
+     * Result of executed command.
+     *
+     * @var \SebastianFeldmann\Cli\Command\Result
+     */
+    private $cmdResult;
+
+    /**
+     * Command print safe.
      *
      * @var string
      */
-    private $cmd;
+    private $printableCmd;
 
     /**
-     * Result code
+     * Result constructor.
      *
-     * @var integer
+     * @param \SebastianFeldmann\Cli\Command\Result $cmdResult
+     * @param string                                $cmdPrintable
      */
-    private $code;
-
-    /**
-     * Output buffer.
-     *
-     * @var array
-     */
-    private $buffer;
-
-    /**
-     * StdOut
-     *
-     * @var string
-     */
-    private $stdOut;
-
-    /**
-     * StdErr
-     *
-     * @var string
-     */
-    private $stdErr;
-
-    /**
-     * Constructor
-     *
-     * @param string  $cmd
-     * @param integer $code
-     * @param string  $stdOut
-     * @param string  $stdErr
-     */
-    public function __construct($cmd, $code, $stdOut = '', $stdErr = '')
+    public function __construct(CommandResult $cmdResult, string $cmdPrintable = '')
     {
-        $this->cmd    = $cmd;
-        $this->code   = $code;
-        $this->stdOut = $stdOut;
-        $this->stdErr = $stdErr;
+        $this->cmdResult    = $cmdResult;
+        $this->printableCmd = $cmdPrintable;
     }
 
     /**
-     * Cmd getter.
+     * Get the raw command result.
+     *
+     * @return \SebastianFeldmann\Cli\Command\Result
+     */
+    public function getCommandResult() : CommandResult
+    {
+        return $this->cmdResult;
+    }
+
+    /**
+     * Return true if command execution was successful.
+     *
+     * @return bool
+     */
+    public function isSuccessful() : bool
+    {
+        return $this->cmdResult->isSuccessful();
+    }
+
+    /**
+     * Return the executed cli command.
      *
      * @return string
      */
-    public function getCmd()
+    public function getCmd() : string
     {
-        return $this->cmd;
+        return $this->cmdResult->getCmd();
     }
 
     /**
-     * Code getter.
-     *
-     * @return integer
-     */
-    public function getCode()
-    {
-        return $this->code;
-    }
-
-    /**
-     * Command executed successful.
-     */
-    public function wasSuccessful()
-    {
-        return $this->code == 0;
-    }
-
-    /**
-     * StdOutput getter.
-     *
-     * @return mixed array
-     */
-    public function getStdOut()
-    {
-        return $this->stdOut;
-    }
-
-    /**
-     * StdError getter.
-     *
-     * @return mixed array
-     */
-    public function getStdErr()
-    {
-        return $this->stdErr;
-    }
-
-    /**
-     * Return the output ins string format.
+     * Return the executed cli command.
      *
      * @return string
      */
-    public function getStdOutAsArray()
+    public function getCmdPrintable() : string
     {
-        if (null === $this->buffer) {
-            $this->buffer = $this->textToBuffer();
-        }
-        return $this->buffer;
+        return $this->printableCmd;
     }
 
     /**
-     * Converts the output buffer array into a string.
+     * Return commands output to stdOut.
      *
      * @return string
      */
-    private function textToBuffer()
+    public function getStdOut() : string
     {
-        return explode(PHP_EOL, $this->stdOut);
+        return $this->cmdResult->getStdOut();
     }
 
     /**
-     * Magic to string method.
+     * Return commands error output to stdErr.
      *
      * @return string
      */
-    public function __toString()
+    public function getStdErr() : string
     {
-        return $this->stdOut;
+        return $this->cmdResult->getStdErr();
+    }
+
+    /**
+     * Is the output redirected to a file.
+     *
+     * @return bool
+     */
+    public function isOutputRedirected() : bool
+    {
+        return $this->cmdResult->isOutputRedirected();
+    }
+
+    /**
+     * Return path to the file where the output is redirected to.
+     *
+     * @return string
+     */
+    public function getRedirectPath() : string
+    {
+        return $this->cmdResult->getRedirectPath();
+    }
+
+    /**
+     * Return cmd output as array.
+     *
+     * @return array
+     */
+    public function getBufferedOutput() : array
+    {
+        return $this->cmdResult->getStdOutAsArray();
     }
 }

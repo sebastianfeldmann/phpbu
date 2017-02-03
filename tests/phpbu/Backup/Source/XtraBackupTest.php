@@ -19,60 +19,43 @@ use phpbu\App\Util\Cli;
 class XtraBackupTest extends CliTest
 {
     /**
-     * XtraBackup
-     *
-     * @var \phpbu\App\Backup\Source\XtraBackup
-     */
-    protected $xtrabackup;
-
-    /**
-     * Setup XtraBackup
-     */
-    public function setUp()
-    {
-        $this->xtrabackup = new XtraBackup();
-    }
-
-    /**
-     * Clear XtraBackup
-     */
-    public function tearDown()
-    {
-        $this->xtrabackup = null;
-    }
-
-    /**
-     * Tests XtraBackup::getExec
+     * Tests XtraBackup::getExecutable
      */
     public function testDefault()
     {
+        $target = $this->getTargetMock('./foo.dump');
+
+        $xtrabackup = new XtraBackup();
+        $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN]);
+
+        $executable    = $xtrabackup->getExecutable($target);
         $expectedDump  = 'innobackupex --no-timestamp \'./dump\'';
         $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $target        = $this->getTargetMock('./foo.dump');
-        $path          = $this->getBinDir();
-        $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
-        $this->xtrabackup->setup(array('pathToXtraBackup' => $path));
+        $expected      = '(' . PHPBU_TEST_BIN . '/'
+                       . $expectedDump . ' && ' . PHPBU_TEST_BIN
+                       . '/' . $expectedApply . ')';
 
-        $executable = $this->xtrabackup->getExecutable($target);
-
-        $this->assertEquals($expected, $executable->getCommandLine());
+        $this->assertEquals($expected, $executable->getCommand());
     }
 
     /**
-     * Tests XtraBackup::getExec
+     * Tests XtraBackup::getExecutable
      */
     public function testDataDir()
     {
+        $target = $this->getTargetMock('./foo.dump');
+
+        $xtrabackup = new XtraBackup();
+        $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN, 'dataDir' => '/x/mysql']);
+
+        $executable    = $xtrabackup->getExecutable($target);
         $expectedDump  = 'innobackupex --no-timestamp --datadir=\'/x/mysql\' \'./dump\'';
         $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $target        = $this->getTargetMock('./foo.dump');
-        $path          = $this->getBinDir();
-        $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
-        $this->xtrabackup->setup(['pathToXtraBackup' => $path, 'dataDir' => '/x/mysql']);
+        $expected      = '(' . PHPBU_TEST_BIN . '/'
+                       . $expectedDump . ' && ' . PHPBU_TEST_BIN
+                       . '/' . $expectedApply . ')';
 
-        $executable = $this->xtrabackup->getExecutable($target);
-
-        $this->assertEquals($expected, $executable->getCommandLine());
+        $this->assertEquals($expected, $executable->getCommand());
     }
 
     /**
@@ -80,16 +63,19 @@ class XtraBackupTest extends CliTest
      */
     public function testDatabases()
     {
+        $target = $this->getTargetMock('./foo.dump');
+
+        $xtrabackup = new XtraBackup();
+        $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN, 'databases' => 'db1,db2,db3.table1']);
+
+        $executable    = $xtrabackup->getExecutable($target);
         $expectedDump  = 'innobackupex --no-timestamp --databases=\'db1 db2 db3.table1\' \'./dump\'';
         $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $target        = $this->getTargetMock('./foo.dump');
-        $path          = $this->getBinDir();
-        $expected      = '(' . $path . '/' . $expectedDump . ' && ' . $path . '/' . $expectedApply . ')';
-        $this->xtrabackup->setup(array('pathToXtraBackup' => $path, 'databases' => 'db1,db2,db3.table1'));
+        $expected      = '(' . PHPBU_TEST_BIN . '/'
+                       . $expectedDump . ' && ' . PHPBU_TEST_BIN
+                       . '/' . $expectedApply . ')';
 
-        $executable = $this->xtrabackup->getExecutable($target);
-
-        $this->assertEquals($expected, $executable->getCommandLine());
+        $this->assertEquals($expected, $executable->getCommand());
     }
 
     /**
@@ -97,19 +83,18 @@ class XtraBackupTest extends CliTest
      */
     public function testBackupOk()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')->willReturn($this->getRunnerResultMock(0, 'innobackupex'));
+
         $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(0, 'innobackupex');
         $appResult = $this->getAppResultMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Innobackupex')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $this->xtrabackup->setup(array());
-        $this->xtrabackup->setExecutable($exec);
-        $status = $this->xtrabackup->backup($target, $appResult);
+        $xtrabackup = new XtraBackup($runner);
+        $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN]);
+
+        $status = $xtrabackup->backup($target, $appResult);
 
         $this->assertFalse($status->handledCompression());
     }
@@ -121,18 +106,18 @@ class XtraBackupTest extends CliTest
      */
     public function testBackupFail()
     {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(1, 'innobackupex'));
+
         $target    = $this->getTargetMock();
-        $cliResult = $this->getCliResultMock(1, 'innobackupex');
         $appResult = $this->getAppResultMock();
-        $exec      = $this->getMockBuilder('\\phpbu\\App\\Cli\\Executable\\Innobackupex')
-                          ->disableOriginalConstructor()
-                          ->getMock();
-
         $appResult->expects($this->once())->method('debug');
-        $exec->expects($this->once())->method('run')->willReturn($cliResult);
 
-        $this->xtrabackup->setup(array());
-        $this->xtrabackup->setExecutable($exec);
-        $this->xtrabackup->backup($target, $appResult);
+        $xtrabackup = new XtraBackup($runner);
+        $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN]);
+
+        $xtrabackup->backup($target, $appResult);
     }
 }

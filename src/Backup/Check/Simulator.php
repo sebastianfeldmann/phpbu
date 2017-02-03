@@ -28,5 +28,5 @@ interface Simulator extends Check
      * @param  \phpbu\App\Result           $result
      * @return bool
      */
-    public function simulate(Target $target, $value, Collector $collector, Result $result);
+    public function simulate(Target $target, $value, Collector $collector, Result $result) : bool;
 }

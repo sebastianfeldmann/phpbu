@@ -1,10 +1,10 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
-use phpbu\App\Cli\Process;
 use phpbu\App\Exception;
+use SebastianFeldmann\Cli\CommandLine;
+use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
 /**
  * Pgdump Executable class.
@@ -194,7 +194,7 @@ class Pgdump extends Abstraction implements Executable
      *
      * @param string $path
      */
-    public function __construct($path = null)
+    public function __construct(string $path = '')
     {
         $this->setup('pg_dump', $path);
         $this->setMaskCandidates(['password']);
@@ -207,7 +207,7 @@ class Pgdump extends Abstraction implements Executable
      * @param  string $password
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function credentials($user = null, $password = null)
+    public function credentials(string $user = '', string $password = '') : Pgdump
     {
         $this->user     = $user;
         $this->password = $password;
@@ -220,7 +220,7 @@ class Pgdump extends Abstraction implements Executable
      * @param  string $host
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function useHost($host)
+    public function useHost(string $host) : Pgdump
     {
         $this->host = $host;
         return $this;
@@ -232,7 +232,7 @@ class Pgdump extends Abstraction implements Executable
      * @param  int $port
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function usePort($port)
+    public function usePort(int $port) : Pgdump
     {
         $this->port = $port;
         return $this;
@@ -244,7 +244,7 @@ class Pgdump extends Abstraction implements Executable
      * @param  string $database
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function dumpDatabase($database)
+    public function dumpDatabase(string $database) : Pgdump
     {
         $this->databaseToDump = $database;
         return $this;
@@ -257,7 +257,7 @@ class Pgdump extends Abstraction implements Executable
      * @param  boolean $bool
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function addDropStatements($bool)
+    public function addDropStatements(bool $bool) : Pgdump
     {
         $this->clean = $bool;
         return $this;
@@ -269,7 +269,7 @@ class Pgdump extends Abstraction implements Executable
      * @param  boolean $bool
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function skipOwnerCommands($bool)
+    public function skipOwnerCommands(bool $bool) : Pgdump
     {
         $this->noOwner = $bool;
         return $this;
@@ -281,7 +281,7 @@ class Pgdump extends Abstraction implements Executable
      * @param  array $schemas
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function dumpSchemas(array $schemas)
+    public function dumpSchemas(array $schemas) : Pgdump
     {
         $this->schemasToDump = $schemas;
         return $this;
@@ -293,7 +293,7 @@ class Pgdump extends Abstraction implements Executable
      * @param  array $schemas
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function excludeSchemas(array $schemas)
+    public function excludeSchemas(array $schemas) : Pgdump
     {
         $this->schemasToExclude = $schemas;
         return $this;
@@ -305,7 +305,7 @@ class Pgdump extends Abstraction implements Executable
      * @param  array $tables
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function dumpTables(array $tables)
+    public function dumpTables(array $tables) : Pgdump
     {
         $this->tablesToDump = $tables;
         return $this;
@@ -317,7 +317,7 @@ class Pgdump extends Abstraction implements Executable
      * @param  array $tables
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function excludeTables(array $tables)
+    public function excludeTables(array $tables) : Pgdump
     {
         $this->tablesToExclude = $tables;
         return $this;
@@ -329,7 +329,7 @@ class Pgdump extends Abstraction implements Executable
      * @param  array $tables
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function excludeTableData(array $tables)
+    public function excludeTableData(array $tables) : Pgdump
     {
         $this->excludeTableData = $tables;
         return $this;
@@ -342,7 +342,7 @@ class Pgdump extends Abstraction implements Executable
      * @return \phpbu\App\Cli\Executable\Pgdump
      * @throws \phpbu\App\Exception
      */
-    public function dumpSchemaOnly($bool)
+    public function dumpSchemaOnly(bool $bool) : Pgdump
     {
         if ($this->dataOnly) {
             throw new Exception('can\'t use schema-only when data-only is used already');
@@ -358,7 +358,7 @@ class Pgdump extends Abstraction implements Executable
      * @return \phpbu\App\Cli\Executable\Pgdump
      * @throws \phpbu\App\Exception
      */
-    public function dumpDataOnly($bool)
+    public function dumpDataOnly(bool $bool) : Pgdump
     {
         if ($this->schemaOnly) {
             throw new Exception('can\'t use data-only when schema-only is used already');
@@ -373,7 +373,7 @@ class Pgdump extends Abstraction implements Executable
      * @param  string $path
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function dumpTo($path)
+    public function dumpTo(string $path) : Pgdump
     {
         $this->file = $path;
         return $this;
@@ -386,7 +386,7 @@ class Pgdump extends Abstraction implements Executable
      * @return \phpbu\App\Cli\Executable\Pgdump
      * @throws \phpbu\App\Exception
      */
-    public function dumpFormat($format)
+    public function dumpFormat(string $format) : Pgdump
     {
         if (!isset($this->availableFormats[$format])) {
             throw new Exception('invalid format');
@@ -399,10 +399,10 @@ class Pgdump extends Abstraction implements Executable
      * Do not dump commands setting ownership.
      * --no-owner
      *
-     * @param $bool
+     * @param  bool $bool
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function dumpNoOwner($bool)
+    public function dumpNoOwner(bool $bool) : Pgdump
     {
         $this->noOwner = $bool;
         return $this;
@@ -412,10 +412,10 @@ class Pgdump extends Abstraction implements Executable
      * Do not output commands to select tablespaces.
      * --no-tablespaces
      *
-     * @param  boolean $bool
+     * @param  bool $bool
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function dumpNoTablespaces($bool)
+    public function dumpNoTablespaces(bool $bool) : Pgdump
     {
         $this->noTablespaces = $bool;
         return $this;
@@ -428,7 +428,7 @@ class Pgdump extends Abstraction implements Executable
      * @param  boolean $bool
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function dumpNoPrivileges($bool)
+    public function dumpNoPrivileges(bool $bool) : Pgdump
     {
         $this->noPrivileges = $bool;
         return $this;
@@ -439,20 +439,20 @@ class Pgdump extends Abstraction implements Executable
      * @param  string $encoding
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function encode($encoding)
+    public function encode(string $encoding) : Pgdump
     {
         $this->encoding = $encoding;
         return $this;
     }
 
     /**
-     * Process generator.
+     * Pgdump CommandLine generator.
      *
-     * @return \phpbu\App\Cli\Process
+     * @return \SebastianFeldmann\Cli\CommandLine
      */
-    protected function createProcess()
+    protected function createCommandLine() : CommandLine
     {
-        $process  = new Process();
+        $process  = new CommandLine();
         $password = $this->password ? 'PGPASSWORD=' . escapeshellarg($this->password) . ' ' : '';
         $cmd      = new Cmd($password . $this->binary);
         $process->addCommand($cmd);

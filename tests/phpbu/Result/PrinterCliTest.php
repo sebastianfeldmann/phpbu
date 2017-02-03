@@ -14,7 +14,7 @@ use phpbu\App\Configuration;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class PrinterCliTest extends \PHPUnit_Framework_TestCase
+class PrinterCliTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Mail::getSubscribedEvents
@@ -79,7 +79,7 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
         $result  = $this->getMockBuilder('\\phpbu\\App\\Result')
                         ->disableOriginalConstructor()
                         ->getMock();
-        $result->expects($this->once())->method('getErrors')->willReturn(array());
+        $result->expects($this->once())->method('getErrors')->willReturn([]);
 
         $configuration = $this->getMockBuilder('\\phpbu\\App\\Configuration')
                               ->disableOriginalConstructor()
@@ -91,6 +91,27 @@ class PrinterCliTest extends \PHPUnit_Framework_TestCase
         $printer->onPhpbuEnd($this->getEventMock('App\\End', $result));
         $output = ob_get_clean();
         $this->assertTrue(strpos($output, 'phpbu') !== false);
+    }
+
+    /**
+     * Tests PrinterCli::phpbuStart
+     */
+    public function testPhpbuStarVerbose()
+    {
+        $printer = new PrinterCli(true, false, false);
+        $result  = $this->getMockBuilder('\\phpbu\\App\\Result')
+                        ->disableOriginalConstructor()
+                        ->getMock();
+
+        $configuration = $this->getMockBuilder('\\phpbu\\App\\Configuration')
+                              ->disableOriginalConstructor()
+                              ->getMock();
+        $configuration->method('getFilename')->willReturn('/tmp/TestConfig.xml');
+
+        ob_start();
+        $printer->onPhpbuStart($this->getEventMock('App\\Start', $configuration));
+        $output = ob_get_clean();
+        $this->assertTrue(strpos($output, 'Runtime') !== false);
     }
 
     /**

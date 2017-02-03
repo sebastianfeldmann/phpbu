@@ -5,6 +5,7 @@ use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Target;
 use phpbu\App\Exception;
 use phpbu\App\Result;
+use SebastianFeldmann\Cli\Command\Runner;
 
 /**
  * Compressor base class.
@@ -36,17 +37,20 @@ abstract class Abstraction extends Cli implements Executable
     /**
      * Constructor.
      *
-     * @param  string $path
-     * @param  string $pathToCommand
+     * @param  string                                $path
+     * @param  string                                $pathToCommand
+     * @param  \SebastianFeldmann\Cli\Command\Runner $runner
      * @throws \phpbu\App\Exception
      */
-    public function __construct($path, $pathToCommand = null)
+    public function __construct($path, $pathToCommand = '', Runner $runner = null)
     {
         if (empty($path)) {
             throw new Exception('no path to compress set');
         }
         $this->path          = $path;
         $this->pathToCommand = $pathToCommand;
+
+        parent::__construct($runner);
     }
 
     /**
@@ -66,7 +70,7 @@ abstract class Abstraction extends Cli implements Executable
         $res = $this->execute($target);
         $result->debug($res->getCmd());
 
-        if (0 !== $res->getCode()) {
+        if (!$res->isSuccessful()) {
             throw new Exception('Failed to \'compress\' file: ' . $this->path);
         }
 

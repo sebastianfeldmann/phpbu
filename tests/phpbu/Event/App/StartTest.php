@@ -14,7 +14,7 @@ use phpbu\App\Configuration;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class StartTest extends \PHPUnit_Framework_TestCase
+class StartTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Start::getConfig

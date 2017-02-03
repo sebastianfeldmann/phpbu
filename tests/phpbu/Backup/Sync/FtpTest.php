@@ -11,7 +11,7 @@ namespace phpbu\App\Backup\Sync;
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://www.phpbu.de/
  */
-class FtpTest extends \PHPUnit_Framework_TestCase
+class FtpTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Ftp::setUp

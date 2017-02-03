@@ -1,10 +1,10 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Cmd;
 use phpbu\App\Cli\Executable;
-use phpbu\App\Cli\Process;
 use phpbu\App\Exception;
+use SebastianFeldmann\Cli\CommandLine;
+use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
 /**
  * Mcrypt executable class.
@@ -75,7 +75,7 @@ class Mcrypt extends Abstraction implements Executable
      *
      * @param string $path
      */
-    public function __construct($path = null)
+    public function __construct(string $path = '')
     {
         $this->setup('mcrypt', $path);
         $this->setMaskCandidates(['key']);
@@ -87,7 +87,7 @@ class Mcrypt extends Abstraction implements Executable
      * @param  string $path
      * @return \phpbu\App\Cli\Executable\Mcrypt
      */
-    public function saveAt($path)
+    public function saveAt(string $path) : Mcrypt
     {
         $this->targetFile = $path;
         return $this;
@@ -96,10 +96,10 @@ class Mcrypt extends Abstraction implements Executable
     /**
      * Delete the uncrypted data.
      *
-     * @param  boolean $bool
+     * @param  bool $bool
      * @return \phpbu\App\Cli\Executable\Mcrypt
      */
-    public function deleteUncrypted($bool)
+    public function deleteUncrypted(bool $bool) : Mcrypt
     {
         $this->deleteUncrypted = $bool;
         return $this;
@@ -111,7 +111,7 @@ class Mcrypt extends Abstraction implements Executable
      * @param  string $key
      * @return \phpbu\App\Cli\Executable\Mcrypt
      */
-    public function useKey($key)
+    public function useKey(string $key) : Mcrypt
     {
         $this->key = $key;
         return $this;
@@ -123,7 +123,7 @@ class Mcrypt extends Abstraction implements Executable
      * @param  string $keyFile
      * @return \phpbu\App\Cli\Executable\Mcrypt
      */
-    public function useKeyFile($keyFile)
+    public function useKeyFile(string $keyFile) : Mcrypt
     {
         $this->keyFile = $keyFile;
         return $this;
@@ -135,7 +135,7 @@ class Mcrypt extends Abstraction implements Executable
      * @param  string $algorithm
      * @return \phpbu\App\Cli\Executable\Mcrypt
      */
-    public function useAlgorithm($algorithm)
+    public function useAlgorithm(string $algorithm) : Mcrypt
     {
         $this->algorithm = $algorithm;
         return $this;
@@ -147,7 +147,7 @@ class Mcrypt extends Abstraction implements Executable
      * @param  string $hash
      * @return \phpbu\App\Cli\Executable\Mcrypt
      */
-    public function useHash($hash)
+    public function useHash(string $hash) : Mcrypt
     {
         $this->hash = $hash;
         return $this;
@@ -159,19 +159,19 @@ class Mcrypt extends Abstraction implements Executable
      * @param  string $path
      * @return \phpbu\App\Cli\Executable\Mcrypt
      */
-    public function useConfig($path)
+    public function useConfig(string $path) : Mcrypt
     {
         $this->config = $path;
         return $this;
     }
 
     /**
-     * Subclass Process generator.
+     * Mcrypt CommandLine generator.
      *
-     * @return \phpbu\App\Cli\Process
+     * @return \SebastianFeldmann\Cli\CommandLine
      * @throws \phpbu\App\Exception
      */
-    protected function createProcess()
+    protected function createCommandLine() : CommandLine
     {
         if (empty($this->targetFile)) {
             throw new Exception('target file is missing');
@@ -179,7 +179,7 @@ class Mcrypt extends Abstraction implements Executable
         if (empty($this->key) && empty($this->keyFile)) {
             throw new Exception('one of \'key\' or \'keyFile\' is mandatory');
         }
-        $process = new Process();
+        $process = new CommandLine();
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 
