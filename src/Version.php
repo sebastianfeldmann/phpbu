@@ -36,7 +36,7 @@ class Version
      *
      * @return string
      */
-    public static function id()
+    public static function id() : string
     {
         if (self::$pharVersion !== null) {
             return self::$pharVersion;
@@ -55,8 +55,8 @@ class Version
      *
      * @return string
      */
-    public static function getVersionString()
+    public static function getVersionString() : string
     {
-        return 'phpbu ' . self::id();
+        return 'phpbu ' . self::id() . ' by Sebastian Feldmann and contributors.';
     }
 }

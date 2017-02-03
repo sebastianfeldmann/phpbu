@@ -49,13 +49,13 @@ class Args
     /**
      * Constructor.
      *
-     * @param boolean $isPhar
+     * @param bool $isPhar
      */
-    public function __construct($isPhar = false)
+    public function __construct(bool $isPhar = false)
     {
         if ($isPhar) {
-            $this->longOptions['selfupdate']  = true;
-            $this->longOptions['self-update'] = true;
+            $this->longOptions['self-upgrade']  = true;
+            $this->longOptions['version-check'] = true;
         }
     }
 
@@ -65,7 +65,7 @@ class Args
      * @param  array $args
      * @return array
      */
-    public function getOptions(array $args)
+    public function getOptions(array $args) : array
     {
         // remove script name from args
         if (isset($args[0][0]) && $args[0][0] != '-') {

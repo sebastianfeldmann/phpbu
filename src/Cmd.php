@@ -2,7 +2,7 @@
 /**
  * phpbu
  *
- * Copyright (c) 2014 - 2016 Sebastian Feldmann <sebastian@phpbu.de>
+ * Copyright (c) 2014 - 2017 Sebastian Feldmann <sebastian@phpbu.de>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -101,6 +101,7 @@ class Cmd
         $runner  = new Runner($factory);
 
         try {
+            $this->printVersionString();
             $result = $runner->run($this->createConfiguration($factory));
 
             if ($result->wasSuccessful()) {
@@ -164,9 +165,11 @@ class Cmd
                 case '--limit':
                     $this->arguments['limit'] = $argument;
                     break;
-                case '--selfupdate':
-                case '--self-update':
-                    $this->handleSelfUpdate();
+                case '--self-upgrade':
+                    $this->handleSelfUpgrade();
+                    break;
+                case '--version-check':
+                    $this->handleVersionCheck();
                     break;
                 case '--simulate':
                     $this->arguments['simulate'] = $argument;
@@ -277,7 +280,7 @@ class Cmd
      * @param \phpbu\App\Configuration $configuration
      * @param string                   $arg
      */
-    protected function overrideConfigWithArgument(Configuration $configuration, $arg)
+    protected function overrideConfigWithArgument(Configuration $configuration, string $arg)
     {
         $value = Arr::getValue($this->arguments, $arg);
         if (!empty($value)) {
@@ -289,9 +292,15 @@ class Cmd
     /**
      * Handle the phar self-update.
      */
-    protected function handleSelfUpdate()
+    protected function handleSelfUpgrade()
     {
         $this->printVersionString();
+
+        // check if upgrade is necessary
+        if (!$this->isPharOutdated($this->getLatestVersion())) {
+            echo 'You already have the latest version of phpbu installed.' . PHP_EOL;
+            exit(self::EXIT_SUCCESS);
+        }
 
         $remoteFilename = 'http://phar.phpbu.de/phpbu.phar';
         $localFilename  = realpath($_SERVER['argv'][0]);
@@ -328,15 +337,61 @@ class Cmd
     }
 
     /**
+     * Handle phar version-check.
+     */
+    protected function handleVersionCheck()
+    {
+        $this->printVersionString();
+
+        $latestVersion = $this->getLatestVersion();
+        if ($this->isPharOutdated($latestVersion)) {
+            print 'You are not using the latest version of phpbu.' . PHP_EOL
+                . 'Use "phpunit --self-upgrade" to install phpbu ' . $latestVersion . PHP_EOL;
+        } else {
+            print 'You are using the latest version of phpbu.' . PHP_EOL;
+        }
+        exit(self::EXIT_SUCCESS);
+    }
+
+    /**
+     * Returns latest released phpbu version.
+     *
+     * @return string
+     * @throws \RuntimeException
+     */
+    protected function getLatestVersion() : string
+    {
+        $old     = error_reporting(0);
+        $version = file_get_contents('https://phar.phpbu.de/latest-version-of/phpbu');
+        error_reporting($old);
+        if (!$version) {
+            echo 'Network-Error: Could not check latest version.' . PHP_EOL;
+            exit(self::EXIT_EXCEPTION);
+        }
+        return $version;
+    }
+
+    /**
+     * Check if current phar is outdated.
+     *
+     * @param  string $latestVersion
+     * @return bool
+     */
+    protected function isPharOutdated(string $latestVersion) : bool
+    {
+        return version_compare($latestVersion, Version::id(), '>');
+    }
+
+    /**
      * Shows the current application version.
      */
-    private function printVersionString()
+    protected function printVersionString()
     {
         if ($this->isVersionStringPrinted) {
             return;
         }
 
-        echo Version::getVersionString() . PHP_EOL;
+        echo Version::getVersionString() . PHP_EOL . PHP_EOL;
         $this->isVersionStringPrinted = true;
     }
 
@@ -355,7 +410,6 @@ class Cmd
     {
         $this->printVersionString();
         echo <<<EOT
-
 Usage: phpbu [option]
 
   --bootstrap=<file>     A "bootstrap" PHP file that is included before the backup.
@@ -370,7 +424,8 @@ Usage: phpbu [option]
 
 EOT;
         if ($this->isPhar) {
-            echo '  --self-update          Update phpbu to the latest version.' . PHP_EOL;
+            echo '  --version-check        Check whether phpbu is the latest version.' . PHP_EOL;
+            echo '  --self-upgrade         Upgrade phpbu to the latest version.' . PHP_EOL;
         }
     }
 
