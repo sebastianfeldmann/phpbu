@@ -224,26 +224,44 @@ class Arangodump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('--server.endpoint', $this->endpoint, true, ' ');
         $cmd->addOptionIfNotEmpty('--server.database', $this->database, true, ' ');
 
-        if (count($this->collections)) {
-            foreach ($this->collections as $collection) {
-                $cmd->addOption('--collection', $collection, ' ');
-            }
-        }
+        $this->handleCollections($cmd);
 
         if ($this->disableAuthentication) {
             $cmd->addOption('--server.disable-authentication', 'true', ' ');
         }
 
+        $this->handleDump($cmd);
+
+        return $process;
+    }
+
+    /**
+     * Handle command collection settings.
+     *
+     * @param \SebastianFeldmann\Cli\Command\Executable $cmd
+     */
+    protected function handleCollections(Cmd $cmd)
+    {
+        if (count($this->collections)) {
+            foreach ($this->collections as $collection) {
+                $cmd->addOption('--collection', $collection, ' ');
+            }
+        }
         if ($this->includeSystemCollections) {
             $cmd->addOption('--include-system-collections', 'true', ' ');
         }
+    }
 
+    /**
+     * Handle command data settings.
+     *
+     * @param \SebastianFeldmann\Cli\Command\Executable $cmd
+     */
+    protected function handleDump(Cmd $cmd)
+    {
         if ($this->dumpData) {
             $cmd->addOption('--dump-data', 'true', ' ');
         }
-
         $cmd->addOption('--output-directory', $this->dumpDir, ' ');
-
-        return $process;
     }
 }
