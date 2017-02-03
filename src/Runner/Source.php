@@ -147,7 +147,7 @@ class Source extends Abstraction
     {
         // if this is a simulation just debug the command that would have been executed
         if ($this->isSimulation()) {
-            $result->debug($compressor->getExecutable($target)->getCommandLine());
+            $result->debug($compressor->getExecutable($target)->getCommand());
             return $compressor->getArchiveFile($target);
         } else {
             return $compressor->compress($target, $result);
