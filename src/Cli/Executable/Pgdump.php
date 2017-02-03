@@ -472,6 +472,21 @@ class Pgdump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('--no-tablespaces', $this->noTablespaces, false);
         $cmd->addOptionIfNotEmpty('--no-acl', $this->noPrivileges, false);
 
+        $this->handleSchemas($cmd);
+        $this->handleTables($cmd);
+
+        $cmd->addOptionIfNotEmpty('--file', $this->file);
+        $cmd->addOptionIfNotEmpty('--format', $this->format);
+        return $process;
+    }
+
+    /**
+     * Handle command schema settings.
+     *
+     * @param \SebastianFeldmann\Cli\Command\Executable $cmd
+     */
+    protected function handleSchemas(Cmd $cmd)
+    {
         foreach ($this->schemasToDump as $schema) {
             $cmd->addOption('--schema', $schema);
         }
@@ -479,7 +494,15 @@ class Pgdump extends Abstraction implements Executable
         foreach ($this->schemasToExclude as $table) {
             $cmd->addOption('--exclude-schema', $table);
         }
+    }
 
+    /**
+     * Handle command table settings.
+     *
+     * @param \SebastianFeldmann\Cli\Command\Executable $cmd
+     */
+    protected function handleTables(Cmd $cmd)
+    {
         foreach ($this->tablesToDump as $table) {
             $cmd->addOption('--table', $table);
         }
@@ -491,9 +514,5 @@ class Pgdump extends Abstraction implements Executable
         foreach ($this->excludeTableData as $table) {
             $cmd->addOption('--exclude-table-data', $table);
         }
-
-        $cmd->addOptionIfNotEmpty('--file', $this->file);
-        $cmd->addOptionIfNotEmpty('--format', $this->format);
-        return $process;
     }
 }
