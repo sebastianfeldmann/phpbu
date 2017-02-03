@@ -124,7 +124,7 @@ class Tar extends SimulatorExecutable implements Simulator
      */
     public function tarFailed(CliResult $tar) : bool
     {
-        $ignoreFail = $this->ignoreFailedRead && $tar->getCode() == 1;
+        $ignoreFail = $this->ignoreFailedRead && !$tar->isSuccessful();
         return !$tar->isSuccessful() && !$ignoreFail;
     }
 
@@ -180,8 +180,9 @@ class Tar extends SimulatorExecutable implements Simulator
     protected function createStatus(Target $target) : Status
     {
         $status = Status::create();
-        // if tar doesn't handle the compression mark status uncompressed so the app can take care of compression
-        if (!$this->getExecutable($target)->handlesCompression()) {
+        // if tar doesn't handle the compression mark status uncompressed
+        // so the app can take care of compression
+        if (!$this->executable->handlesCompression()) {
             $status->uncompressedFile($target->getPathnamePlain());
         }
         return $status;
