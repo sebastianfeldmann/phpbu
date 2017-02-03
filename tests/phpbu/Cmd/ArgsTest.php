@@ -30,8 +30,8 @@ class ArgsTest extends \PHPUnit\Framework\TestCase
     public function testGetSelfUpdate()
     {
         $args    = new Args(true);
-        $options = $args->getOptions(['--self-update']);
-        $this->assertTrue($options['--self-update'], 'long option --self-update must be set');
+        $options = $args->getOptions(['--self-upgrade']);
+        $this->assertTrue($options['--self-upgrade'], 'long option --self-upgrade must be set');
     }
 
     /**
