@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
@@ -21,6 +20,13 @@ use phpbu\App\Util;
  */
 class Redis extends SimulatorExecutable implements Simulator
 {
+    /**
+     * Executable to handle redis command.
+     *
+     * @var \phpbu\App\Cli\Executable\RedisCli
+     */
+    protected $executable;
+
     /**
      * Path to executable.
      *
@@ -99,7 +105,7 @@ class Redis extends SimulatorExecutable implements Simulator
         $target->setMimeType('application/octet-stream');
 
         $redisSave = $this->getExecutable($target);
-        $redisLast = $this->getRedisLastSave($redisSave);
+        $redisLast = $this->getRedisLastSave($this->executable);
 
         $lastBackupTimestamp = $this->getLastBackupTime($redisLast);
         $saveResult          = $this->runCommand($redisSave);
