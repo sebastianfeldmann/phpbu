@@ -59,7 +59,6 @@ abstract class File
         $this->setupAdapters($factory);
 
         $this->setAppSettings($configuration);
-        $this->setPhpSettings($configuration);
         $this->setLoggers($configuration);
         $this->setBackups($configuration);
 
@@ -106,14 +105,6 @@ abstract class File
      * @param  \phpbu\App\Configuration $configuration
      */
     abstract public function setAppSettings(Configuration $configuration);
-
-    /**
-     * Set the php settings.
-     * Checking for include_path and ini settings.
-     *
-     * @param  \phpbu\App\Configuration $configuration
-     */
-    abstract public function setPhpSettings(Configuration $configuration);
 
     /**
      * Set the log configuration.

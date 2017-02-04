@@ -8,12 +8,6 @@
       "name": "foo"
     }
   ],
-  "php": {
-    "includePath": ["."],
-    "ini": {
-      "max_execution_time": 0
-    }
-  },
   "logging": [
     {
       "type": "json",

@@ -9,11 +9,6 @@
     </adapter>
   </adapters>
 
-  <php>
-    <includePath>.</includePath>
-    <ini name="max_execution_time" value="0"/>
-  </php>
-
   <logging>
     <log type="json" target="backup/json.log"/>
     <log type="mail">

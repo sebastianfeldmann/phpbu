@@ -25,37 +25,7 @@ class Bootstrap extends Abstraction
      */
     public function run(Configuration $configuration)
     {
-        $this->handleIniSettings($configuration);
-        $this->handleIncludePath($configuration);
         $this->handleBootstrap($configuration);
-    }
-
-    /**
-     * Handle configured ini settings.
-     *
-     * @param Configuration $configuration
-     */
-    protected function handleIniSettings(Configuration $configuration)
-    {
-        // set/overwrite php.ini settings
-        foreach ($configuration->getIniSettings() as $name => $value) {
-            ini_set($name, $value);
-        }
-    }
-
-    /**
-     * Handles the php include_path settings.
-     *
-     * @param  \phpbu\App\Configuration $configuration
-     * @return void
-     */
-    protected function handleIncludePath(Configuration $configuration)
-    {
-        $path = $configuration->getIncludePaths();
-        if (count($path)) {
-            $path = implode(PATH_SEPARATOR, $path);
-            ini_set('include_path', $path . PATH_SEPARATOR . ini_get('include_path'));
-        }
     }
 
     /**

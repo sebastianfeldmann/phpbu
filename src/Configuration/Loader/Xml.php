@@ -20,11 +20,6 @@ use phpbu\App\Util\Str;
  *        bootstrap="backup/bootstrap.php"
  *        verbose="true">
  *
- *   <php>
- *     <includePath>.</includePath>
- *     <ini name="max_execution_time" value="0" />
- *   </php>
- *
  *   <logging>
  *     <log type="json" target="/tmp/logfile.json" />
  *   </logging>
@@ -141,29 +136,6 @@ class Xml extends File implements Loader
         }
         if ($root->hasAttribute('colors')) {
             $configuration->setColors(Str::toBoolean($root->getAttribute('colors'), false));
-        }
-    }
-
-    /**
-     * Set the php settings.
-     * Checking for include_path and ini settings.
-     *
-     * @param  \phpbu\App\Configuration $configuration
-     */
-    public function setPhpSettings(Configuration $configuration)
-    {
-        foreach ($this->xpath->query('php/includePath') as $includePath) {
-            $path = $includePath->nodeValue;
-            if ($path) {
-                $configuration->addIncludePath($this->toAbsolutePath($path));
-            }
-        }
-        foreach ($this->xpath->query('php/ini') as $ini) {
-            /** @var DOMElement $ini */
-            $name  = $ini->getAttribute('name');
-            $value = $ini->getAttribute('value');
-
-            $configuration->addIniSetting($name, $value);
         }
     }
 

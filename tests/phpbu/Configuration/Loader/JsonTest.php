@@ -36,7 +36,6 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     public function testFileNotFound()
     {
         $loader = new Json('some.json');
-        $this->assertFalse($loader, 'exception should be thrown');
     }
 
     /**
@@ -48,7 +47,6 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     {
         $json   = PHPBU_TEST_FILES . '/conf/json/config-no-json.xml';
         $loader = new Json($json);
-        $this->assertFalse($loader, 'exception should be thrown');
     }
 
     /**
@@ -61,7 +59,6 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-backup.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -74,7 +71,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-target.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
+        $this->assertFalse(true, 'exception should be thrown');
     }
 
     /**
@@ -87,7 +84,6 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-source.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -100,7 +96,6 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-source-type.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -113,7 +108,6 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-logger-type.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -126,7 +120,6 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-cleanup-type.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -139,7 +132,6 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-crypt-type.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -152,7 +144,6 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-sync-type.json';
         $loader = new Json($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -173,30 +164,12 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests Json::getConfiguration
      */
-    public function testPhpSettings()
-    {
-        $dir    = PHPBU_TEST_FILES . '/conf/json';
-        $file   = 'config-valid.json';
-        $loader = new Json($dir . '/' . $file);
-        $conf   = $loader->getConfiguration(self::$factory);
-        $ini    = $conf->getIniSettings();
-        $path   = $conf->getIncludePaths();
-
-        $this->assertEquals(0, $ini['max_execution_time']);
-        $this->assertTrue(is_array($path));
-        $this->assertEquals($dir . '/.', $path[0]);
-    }
-
-    /**
-     * Tests Json::getConfiguration
-     */
     public function testBackupSettings()
     {
         $dir      = PHPBU_TEST_FILES . '/conf/json';
         $file     = 'config-valid.json';
         $loader   = new Json($dir . '/' . $file);
         $conf     = $loader->getConfiguration(self::$factory);
-        $settings = $conf->getIniSettings();
         $backups  = $conf->getBackups();
         $backup   = $backups[0];
         $checks   = $backup->getChecks();
@@ -204,7 +177,6 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $crypt    = $backup->getCrypt();
         $cleanup  = $backup->getCleanup();
 
-        $this->assertTrue(is_array($settings));
         $this->assertTrue(is_array($backups));
         $this->assertEquals(1, count($backups), 'should be exactly one backup');
         $this->assertEquals('tarball', $backup->getName());
@@ -231,7 +203,6 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $backups = $conf->getBackups();
         $backup  = $backups[0];
 
-        $this->assertTrue(is_array($conf->getIncludePaths()));
         $this->assertEquals(1, count($conf->getBackups()), 'should be exactly one backup');
         $this->assertTrue(is_array($backup->getChecks()));
         $this->assertEquals(0, count($backup->getChecks()));

@@ -16,10 +16,6 @@ use phpbu\App\Util\Arr;
  *   "verbose": true,
  *   "colors": true,
  *   "debug": false,
- *   "php": {
- *     "includePath": [],
- *     "ini": {}
- *   },
  *   "logging": [
  *     {
  *       "type": "json",
@@ -124,28 +120,6 @@ class Json extends File implements Loader
         }
         if (isset($this->json['colors'])) {
             $configuration->setColors($this->json['colors']);
-        }
-    }
-
-    /**
-     * Set the php settings.
-     * Checking for include_path and ini settings.
-     *
-     * @param \phpbu\App\Configuration $configuration
-     */
-    public function setPhpSettings(Configuration $configuration)
-    {
-        if (isset($this->json['php'])) {
-            if (isset($this->json['php']['includePath'])) {
-                foreach ($this->json['php']['includePath'] as $path) {
-                    $configuration->addIncludePath($this->toAbsolutePath($path));
-                }
-            }
-            if (isset($this->json['php']['ini'])) {
-                foreach ($this->json['php']['ini'] as $name => $value) {
-                    $configuration->addIniSetting($name, $value);
-                }
-            }
         }
     }
 

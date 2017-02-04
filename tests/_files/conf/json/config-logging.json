@@ -2,12 +2,6 @@
   "verbose": false,
   "colors": true,
   "bootstrap": "backup/bootstrap.php",
-  "php": {
-    "includePath": ["."],
-    "ini": {
-      "max_execution_time": 0
-    }
-  },
   "logging": [
     {
       "type": "json",

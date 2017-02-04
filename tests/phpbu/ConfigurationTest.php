@@ -87,7 +87,7 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
     {
         $conf = new Configuration();
         $conf->setFilename('/tmp/foo.xml');
-        $this->assertEquals(null, $conf->getBootstrap());
+        $this->assertEquals('', $conf->getBootstrap());
         $conf->setBootstrap('file.php');
         $this->assertEquals('file.php', $conf->getBootstrap());
     }
@@ -103,30 +103,6 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(true, $conf->isBackupActive('foo'));
         $this->assertEquals(true, $conf->isBackupActive('bar'));
         $this->assertEquals(false, $conf->isBackupActive('baz'));
-    }
-
-    /**
-     * Tests Configuration::addIncludePath
-     */
-    public function testIncludePath()
-    {
-        $conf = new Configuration();
-        $conf->setFilename('/tmp/foo.xml');
-        $this->assertEquals(array(), $conf->getIncludePaths());
-        $conf->addIncludePath('/tmp');
-        $this->assertEquals(1, count($conf->getIncludePaths()));
-    }
-
-    /**
-     * Tests Configuration::addIniSettings
-     */
-    public function testIniSettings()
-    {
-        $conf = new Configuration();
-        $conf->setFilename('/tmp/foo.xml');
-        $this->assertEquals(array(), $conf->getIniSettings());
-        $conf->addIniSetting('max_execution_time', 0);
-        $this->assertEquals(1, count($conf->getIniSettings()));
     }
 
     /**

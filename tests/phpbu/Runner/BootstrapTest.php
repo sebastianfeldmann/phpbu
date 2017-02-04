@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\App\Runner;
 
-use phpbu\App\Configuration;
-
 /**
  * Bootstrap Runner test
  *
@@ -25,12 +23,6 @@ class BootstrapTest extends \PHPUnit\Framework\TestCase
                               ->disableOriginalConstructor()
                               ->getMock();
         $configuration->expects($this->once())
-                      ->method('getIniSettings')
-                      ->willReturn([]);
-        $configuration->expects($this->once())
-                      ->method('getIncludePaths')
-                      ->willReturn([]);
-        $configuration->expects($this->once())
                       ->method('getBootstrap')
                       ->willReturn(PHPBU_TEST_FILES . '/misc/bootstrap.php');
 
@@ -51,79 +43,10 @@ class BootstrapTest extends \PHPUnit\Framework\TestCase
                               ->disableOriginalConstructor()
                               ->getMock();
         $configuration->expects($this->once())
-                      ->method('getIniSettings')
-                      ->willReturn([]);
-        $configuration->expects($this->once())
-                      ->method('getIncludePaths')
-                      ->willReturn([]);
-        $configuration->expects($this->once())
                       ->method('getBootstrap')
                       ->willReturn(PHPBU_TEST_FILES . '/misc/bootstrap_FAIL.php');
 
         $runner = new Bootstrap();
         $runner->run($configuration);
-    }
-
-    /**
-     * Tests Bootstrap::run
-     */
-    public function testIncludePath()
-    {
-        $configuration = $this->getMockBuilder('\\phpbu\\App\\Configuration')
-                              ->disableOriginalConstructor()
-                              ->getMock();
-        $configuration->expects($this->once())
-                      ->method('getIniSettings')
-                      ->willReturn([]);
-        $configuration->expects($this->once())
-                      ->method('getIncludePaths')
-                      ->willReturn(['/FOO', '/BAR']);
-        $configuration->expects($this->once())
-                      ->method('getBootstrap')
-                      ->willReturn(null);
-
-        $old = ini_get('include_path');
-
-        $runner = new Bootstrap();
-        $runner->run($configuration);
-
-        $this->assertTrue(strpos(ini_get('include_path'), 'FOO') !== false, '/FOO should be set');
-        $this->assertTrue(strpos(ini_get('include_path'), 'BAR') !== false, '/FOO should be set');
-
-        ini_set('include_path', $old);
-    }
-
-    /**
-     * Tests Bootstrap::run
-     */
-    public function testIniSettings()
-    {
-
-        $old = ini_get('session.name');
-        $new = 'FOO';
-
-        $configuration = $this->getMockBuilder('\\phpbu\\App\\Configuration')
-                              ->disableOriginalConstructor()
-                              ->getMock();
-        $configuration->expects($this->once())
-                      ->method('getIniSettings')
-                      ->willReturn(['session.name' => $new]);
-        $configuration->expects($this->once())
-                      ->method('getIncludePaths')
-                      ->willReturn([]);
-        $configuration->expects($this->once())
-                      ->method('getBootstrap')
-                      ->willReturn(null);
-
-
-        $this->assertEquals($old, ini_get('session.name'), 'name should be PHPSESS');
-
-        $runner = new Bootstrap();
-        $runner->run($configuration);
-
-        $this->assertEquals('FOO', ini_get('session.name'), 'name should be FOO');
-
-        // restore the default ini setting
-        ini_set('session.name', $old);
     }
 }

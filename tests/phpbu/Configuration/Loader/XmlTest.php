@@ -36,7 +36,6 @@ class XmlTest extends \PHPUnit\Framework\TestCase
     public function testFileNotFound()
     {
         $loader = new Xml('some.xml');
-        $this->assertFalse(true, 'exception should be thrown');
     }
 
     /**
@@ -48,7 +47,6 @@ class XmlTest extends \PHPUnit\Framework\TestCase
     {
         $json   = PHPBU_TEST_FILES . '/conf/xml/config-no-xml.json';
         $loader = new Xml($json);
-        $this->assertFalse($loader, 'exception should be thrown');
     }
 
     /**
@@ -61,7 +59,6 @@ class XmlTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-target.xml';
         $loader = new Xml($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -74,7 +71,6 @@ class XmlTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-source.xml';
         $loader = new Xml($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -87,7 +83,6 @@ class XmlTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-source-type.xml';
         $loader = new Xml($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -100,7 +95,6 @@ class XmlTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-logger-type.xml';
         $loader = new Xml($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -113,7 +107,6 @@ class XmlTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-cleanup-type.xml';
         $loader = new Xml($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -126,7 +119,6 @@ class XmlTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-crypt-type.xml';
         $loader = new Xml($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -139,7 +131,6 @@ class XmlTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-sync-type.xml';
         $loader = new Xml($file);
         $config = $loader->getConfiguration(self::$factory);
-        $this->assertFalse($config, 'exception should be thrown');
     }
 
     /**
@@ -160,30 +151,12 @@ class XmlTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests Xml::getConfiguration
      */
-    public function testPhpSettings()
-    {
-        $dir    = PHPBU_TEST_FILES . '/conf/xml';
-        $file   = 'config-valid.xml';
-        $loader = new Xml($dir . '/' . $file);
-        $conf   = $loader->getConfiguration(self::$factory);
-        $ini    = $conf->getIniSettings();
-        $path   = $conf->getIncludePaths();
-
-        $this->assertEquals(0, $ini['max_execution_time']);
-        $this->assertTrue(is_array($path));
-        $this->assertEquals($dir . '/.', $path[0]);
-    }
-
-    /**
-     * Tests Xml::getConfiguration
-     */
     public function testBackupSettings()
     {
         $dir      = PHPBU_TEST_FILES . '/conf/xml';
         $file     = 'config-valid.xml';
         $loader   = new Xml($dir . '/' . $file);
         $conf     = $loader->getConfiguration(self::$factory);
-        $settings = $conf->getIniSettings();
         $backups  = $conf->getBackups();
         $backup   = $backups[0];
         $checks   = $backup->getChecks();
@@ -191,7 +164,6 @@ class XmlTest extends \PHPUnit\Framework\TestCase
         $crypt    = $backup->getCrypt();
         $cleanup  = $backup->getCleanup();
 
-        $this->assertTrue(is_array($settings));
         $this->assertTrue(is_array($backups));
         $this->assertEquals(1, count($backups), 'should be exactly one backup');
         $this->assertEquals('tarball', $backup->getName());
@@ -218,7 +190,6 @@ class XmlTest extends \PHPUnit\Framework\TestCase
         $backups = $conf->getBackups();
         $backup  = $backups[0];
 
-        $this->assertTrue(is_array($conf->getIncludePaths()));
         $this->assertEquals(1, count($conf->getBackups()), 'should be exactly one backup');
         $this->assertTrue(is_array($backup->getChecks()));
         $this->assertEquals(0, count($backup->getChecks()));

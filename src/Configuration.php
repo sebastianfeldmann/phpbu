@@ -19,14 +19,14 @@ class Configuration
      *
      * @var string
      */
-    private $filename;
+    private $filename = '';
 
     /**
      * Path to bootstrap file.
      *
      * @var string
      */
-    private $bootstrap;
+    private $bootstrap = '';
 
     /**
      * Verbose output
@@ -55,20 +55,6 @@ class Configuration
      * @var bool
      */
     private $simulate = false;
-
-    /**
-     * List of include paths
-     *
-     * @var array
-     */
-    private $includePaths = [];
-
-    /**
-     * List of ini settings
-     *
-     * @var array
-     */
-    private $iniSettings = [];
 
     /**
      * List of logger configurations
@@ -103,7 +89,7 @@ class Configuration
      *
      * @param string $file
      */
-    public function setFilename($file)
+    public function setFilename(string $file)
     {
         $this->filename = $file;
         self::setWorkingDirectory(dirname($file));
@@ -114,7 +100,7 @@ class Configuration
      *
      * @return string
      */
-    public function getFilename()
+    public function getFilename() : string
     {
         return $this->filename;
     }
@@ -124,7 +110,7 @@ class Configuration
      *
      * @param $file
      */
-    public function setBootstrap($file)
+    public function setBootstrap(string $file)
     {
         $this->bootstrap = $file;
     }
@@ -134,7 +120,7 @@ class Configuration
      *
      * @return string
      */
-    public function getBootstrap()
+    public function getBootstrap() : string
     {
         return $this->bootstrap;
     }
@@ -154,7 +140,7 @@ class Configuration
      *
      * @param bool $bool
      */
-    public function setVerbose($bool)
+    public function setVerbose(bool $bool)
     {
         $this->verbose = $bool;
     }
@@ -164,7 +150,7 @@ class Configuration
      *
      * @return bool
      */
-    public function getVerbose()
+    public function getVerbose() : bool
     {
         return $this->verbose;
     }
@@ -174,7 +160,7 @@ class Configuration
      *
      * @param bool $bool
      */
-    public function setColors($bool)
+    public function setColors(bool $bool)
     {
         $this->colors = $bool;
     }
@@ -184,7 +170,7 @@ class Configuration
      *
      * @return bool
      */
-    public function getColors()
+    public function getColors() : bool
     {
         return $this->colors;
     }
@@ -194,7 +180,7 @@ class Configuration
      *
      * @param bool $bool
      */
-    public function setDebug($bool)
+    public function setDebug(bool $bool)
     {
         $this->debug = $bool;
     }
@@ -204,7 +190,7 @@ class Configuration
      *
      * @return bool
      */
-    public function getDebug()
+    public function getDebug() : bool
     {
         return $this->debug;
     }
@@ -214,7 +200,7 @@ class Configuration
      *
      * @param bool $bool
      */
-    public function setSimulate($bool)
+    public function setSimulate(bool $bool)
     {
         $this->simulate = $bool;
     }
@@ -224,50 +210,9 @@ class Configuration
      *
      * @return bool
      */
-    public function isSimulation()
+    public function isSimulation() : bool
     {
         return $this->simulate;
-    }
-
-    /**
-     * Add an include_path.
-     *
-     * @param string $path
-     */
-    public function addIncludePath($path)
-    {
-        $this->includePaths[] = $path;
-    }
-
-    /**
-     * Get the list of include path.
-     *
-     * @return array
-     */
-    public function getIncludePaths()
-    {
-        return $this->includePaths;
-    }
-
-    /**
-     * Add a ini settings.
-     *
-     * @param string $name
-     * @param string $value
-     */
-    public function addIniSetting($name, $value)
-    {
-        $this->iniSettings[$name] = $value;
-    }
-
-    /**
-     * Get the list of ini settings.
-     *
-     * @return array
-     */
-    public function getIniSettings()
-    {
-        return $this->iniSettings;
     }
 
     /**
@@ -290,7 +235,7 @@ class Configuration
      *
      * @return array
      */
-    public function getLoggers()
+    public function getLoggers() : array
     {
         return $this->loggers;
     }
@@ -308,9 +253,9 @@ class Configuration
     /**
      * Get the list of backup configurations.
      *
-     * @return array
+     * @return \phpbu\App\Configuration\Backup[]
      */
-    public function getBackups()
+    public function getBackups() : array
     {
         return $this->backups;
     }
@@ -322,7 +267,7 @@ class Configuration
      * @param  string $backupName
      * @return bool
      */
-    public function isBackupActive($backupName)
+    public function isBackupActive($backupName) : bool
     {
         if (empty($this->limit) || in_array($backupName, $this->limit)) {
             return true;
@@ -335,7 +280,7 @@ class Configuration
      *
      * @param string $wd
      */
-    public static function setWorkingDirectory($wd)
+    public static function setWorkingDirectory(string $wd)
     {
         self::$workingDirectory = $wd;
     }
@@ -345,7 +290,7 @@ class Configuration
      *
      * @return string
      */
-    public static function getWorkingDirectory()
+    public static function getWorkingDirectory() : string
     {
         return !empty(self::$workingDirectory) ? self::$workingDirectory : getcwd();
     }
