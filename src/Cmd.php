@@ -52,19 +52,6 @@ class Cmd
     const EXIT_EXCEPTION = 2;
 
     /**
-     * Ascii-Art app logo
-     *
-     * @var string
-     */
-    private static $logo = '             __          __
-      ____  / /_  ____  / /_  __  __
-     / __ \/ __ \/ __ \/ __ \/ / / /
-    / /_/ / / / / /_/ / /_/ / /_/ /
-   / .___/_/ /_/ .___/_.___/\__,_/
-  /_/         /_/
-';
-
-    /**
      * Is cmd executed from phar.
      *
      * @var boolean
@@ -94,15 +81,15 @@ class Cmd
     {
         $this->isPhar = defined('__PHPBU_PHAR__');
         $this->handleOpt($args);
-        $this->findConfiguration();
 
-        $ret     = self::EXIT_FAILURE;
-        $factory = new Factory();
-        $runner  = new Runner($factory);
+        $ret        = self::EXIT_FAILURE;
+        $factory    = new Factory();
+        $runner     = new Runner($factory);
+        $configFile = $this->findConfiguration();
 
         try {
             $this->printVersionString();
-            $result = $runner->run($this->createConfiguration($factory));
+            $result = $runner->run($this->createConfiguration($configFile, $factory));
 
             if ($result->wasSuccessful()) {
                 $ret = self::EXIT_SUCCESS;
@@ -187,69 +174,35 @@ class Cmd
     }
 
     /**
-     * Try to find the configuration file.
+     * Try to find a configuration file.
      */
-    protected function findConfiguration()
+    protected function findConfiguration() : string
     {
-        // check configuration argument
-        // if configuration argument is a directory
-        // check for default configuration files 'phpbu.xml' and 'phpbu.xml.dist'
-        if (isset($this->arguments['configuration']) && is_file($this->arguments['configuration'])) {
-            $this->arguments['configuration'] = realpath($this->arguments['configuration']);
-        } elseif (isset($this->arguments['configuration']) && is_dir($this->arguments['configuration'])) {
-            $this->findConfigurationInDir();
-        } elseif (!isset($this->arguments['configuration'])) {
-            // no configuration argument search for default configuration files
-            // 'phpbu.xml' and 'phpbu.xml.dist' in current working directory
-            $this->findConfigurationDefault();
-        }
-        // no config found, exit with some help output
-        if (!isset($this->arguments['configuration'])) {
-            $this->printLogo();
+        $configOption = $this->arguments['configuration'] ?? '';
+
+        try {
+            $finder = new Configuration\Finder();
+            return $finder->findConfiguration($configOption);
+        } catch (\Exception $e) {
+            // config option given but still no config found
+            if (!empty($configOption)) {
+                $this->printError('Can\'t find configuration file.');
+            }
             $this->printHelp();
             exit(self::EXIT_EXCEPTION);
         }
     }
 
     /**
-     * Check directory for default configuration files phpbu.xml, phpbu.xml.dist.
-     *
-     * @return void
-     */
-    protected function findConfigurationInDir()
-    {
-        $configurationFile = $this->arguments['configuration'] . '/phpbu.xml';
-
-        if (file_exists($configurationFile)) {
-            $this->arguments['configuration'] = realpath($configurationFile);
-        } elseif (file_exists($configurationFile . '.dist')) {
-            $this->arguments['configuration'] = realpath($configurationFile . '.dist');
-        }
-    }
-
-    /**
-     * Check default configuration files phpbu.xml, phpbu.xml.dist in current working directory.
-     *
-     * @return void
-     */
-    protected function findConfigurationDefault()
-    {
-        if (file_exists('phpbu.xml')) {
-            $this->arguments['configuration'] = realpath('phpbu.xml');
-        } elseif (file_exists('phpbu.xml.dist')) {
-            $this->arguments['configuration'] = realpath('phpbu.xml.dist');
-        }
-    }
-
-    /**
      * Create a application configuration.
      *
+     * @param  string             $configurationFile
      * @param  \phpbu\App\Factory $factory
      * @return \phpbu\App\Configuration
      */
-    protected function createConfiguration(Factory $factory)
+    protected function createConfiguration(string $configurationFile, Factory $factory)
     {
-        $configLoader  = Configuration\Loader\Factory::createLoader($this->arguments['configuration']);
+        $configLoader  = Configuration\Loader\Factory::createLoader($configurationFile);
         $configuration = $configLoader->getConfiguration($factory);
 
         // command line arguments overrule the config file settings
@@ -393,14 +346,6 @@ class Cmd
 
         echo Version::getVersionString() . PHP_EOL . PHP_EOL;
         $this->isVersionStringPrinted = true;
-    }
-
-    /**
-     * Show the phpbu logo
-     */
-    protected function printLogo()
-    {
-        echo self::$logo . PHP_EOL;
     }
 
     /**
