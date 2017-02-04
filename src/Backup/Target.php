@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup;
 
-use phpbu\App\Backup\Target\Compression;
 use phpbu\App\Exception;
 use phpbu\App\Util\Str;
 
@@ -13,7 +12,7 @@ use phpbu\App\Util\Str;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class Target
