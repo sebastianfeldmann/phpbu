@@ -35,7 +35,7 @@ class Target
     /**
      * Indicates if the path changes over time.
      *
-     * @var boolean
+     * @var bool
      */
     private $pathIsChanging = false;
 
@@ -49,7 +49,7 @@ class Target
     /**
      * List of directories containing date placeholders
      *
-     * @var array
+     * @var string[]
      */
     private $pathElementsChanging = [];
 
@@ -70,14 +70,14 @@ class Target
     /**
      * List of custom file suffixes f.e. 'tar'
      *
-     * @var array
+     * @var string[]
      */
     private $fileSuffixes = [];
 
     /**
      * Indicates if the filename changes over time.
      *
-     * @var boolean
+     * @var bool
      */
     private $filenameIsChanging = false;
 
@@ -91,14 +91,14 @@ class Target
     /**
      * Size in bytes
      *
-     * @var integer
+     * @var int
      */
     private $size;
 
     /**
      * Should the file be compressed.
      *
-     * @var boolean
+     * @var bool
      */
     private $compress = false;
 
@@ -112,7 +112,7 @@ class Target
     /**
      * Should the file be encrypted.
      *
-     * @var boolean
+     * @var bool
      */
     private $crypt = false;
 
@@ -140,8 +140,8 @@ class Target
     /**
      * Directory setter.
      *
-     * @param  string  $path
-     * @param  integer $time
+     * @param  string $path
+     * @param  int    $time
      * @throws \phpbu\App\Exception
      */
     public function setPath($path, $time = null)
@@ -149,19 +149,7 @@ class Target
         $this->pathRaw = $path;
         if (Str::isContainingPlaceholder($path)) {
             $this->pathIsChanging = true;
-            // path should be absolute so we remove the root slash
-            $dirs = explode('/', substr($this->pathRaw, 1));
-
-            $this->pathNotChanging = '';
-            $foundChangingElement  = false;
-            foreach ($dirs as $d) {
-                if ($foundChangingElement || Str::isContainingPlaceholder($d)) {
-                    $this->pathElementsChanging[] = $d;
-                    $foundChangingElement         = true;
-                } else {
-                    $this->pathNotChanging .= DIRECTORY_SEPARATOR . $d;
-                }
-            }
+            $this->detectChangingPathElements($path);
             // replace potential date placeholder
             $path = Str::replaceDatePlaceholders($path, $time);
         } else {
@@ -171,10 +159,36 @@ class Target
     }
 
     /**
+     * Find path elements that can change because of placeholder usage.
+     *
+     * @param string $path
+     */
+    private function detectChangingPathElements(string $path)
+    {
+        // path should be absolute so we remove the root slash to prevent empty first element
+        $dirs = explode('/', substr($path, 1));
+
+        // check all path elements for placeholders
+        // this is important to effectively generate search regex to collect backups
+        $this->pathNotChanging = '';
+        $foundChangingElement  = false;
+        foreach ($dirs as $d) {
+            // already found placeholder or found one right now
+            // if not add directory to not changing part of the path
+            if ($foundChangingElement || Str::isContainingPlaceholder($d)) {
+                $this->pathElementsChanging[] = $d;
+                $foundChangingElement         = true;
+            } else {
+                $this->pathNotChanging .= DIRECTORY_SEPARATOR . $d;
+            }
+        }
+    }
+
+    /**
      * Filename setter.
      *
-     * @param string  $file
-     * @param integer $time
+     * @param string $file
+     * @param int    $time
      */
     public function setFile($file, $time = null)
     {
@@ -191,7 +205,7 @@ class Target
      *
      * @param string $suffix
      */
-    public function appendFileSuffix($suffix)
+    public function appendFileSuffix(string $suffix)
     {
         $this->fileSuffixes[] = $suffix;
     }
@@ -224,7 +238,7 @@ class Target
      *
      * @param string $mime
      */
-    public function setMimeType($mime)
+    public function setMimeType(string $mime)
     {
         $this->mimeType = $mime;
     }
@@ -234,7 +248,7 @@ class Target
      *
      * @return string
      */
-    public function getPath()
+    public function getPath() : string
     {
         return $this->path;
     }
@@ -244,7 +258,7 @@ class Target
      *
      * @return string
      */
-    public function getPathRaw()
+    public function getPathRaw() : string
     {
         return $this->pathRaw;
     }
@@ -255,7 +269,7 @@ class Target
      * @param  bool $plain
      * @return string
      */
-    public function getFilename($plain = false)
+    public function getFilename(bool $plain = false) : string
     {
         return $this->filename . $this->getFilenameSuffix($plain);
     }
@@ -265,7 +279,7 @@ class Target
      *
      * @return string
      */
-    public function getFilenamePlain()
+    public function getFilenamePlain() : string
     {
         return $this->getFilename(true);
     }
@@ -276,7 +290,7 @@ class Target
      * @param  bool $plain
      * @return string
      */
-    public function getFilenameRaw($plain = false)
+    public function getFilenameRaw($plain = false) : string
     {
         return $this->filenameRaw . $this->getFilenameSuffix($plain);
     }
@@ -284,10 +298,10 @@ class Target
     /**
      * Return custom file suffix like '.tar'.
      *
-     * @param bool $plain
+     * @param  bool $plain
      * @return string
      */
-    public function getFilenameSuffix($plain = false)
+    public function getFilenameSuffix($plain = false) : string
     {
         return $this->getSuffixToAppend() . ($plain ? '' : $this->getCompressionSuffix() . $this->getCrypterSuffix());
     }
@@ -297,7 +311,7 @@ class Target
      *
      * @return string
      */
-    public function getSuffixToAppend()
+    public function getSuffixToAppend() : string
     {
         return count($this->fileSuffixes) ? '.' . implode('.', $this->fileSuffixes) : '';
     }
@@ -307,7 +321,7 @@ class Target
      *
      * @return string
      */
-    public function getCompressionSuffix()
+    public function getCompressionSuffix() : string
     {
         return $this->shouldBeCompressed() ? '.' . $this->compression->getSuffix() : '';
     }
@@ -317,7 +331,7 @@ class Target
      *
      * @return string
      */
-    public function getCrypterSuffix()
+    public function getCrypterSuffix() : string
     {
         return $this->shouldBeEncrypted() ? '.' . $this->crypter->getSuffix() : '';
     }
@@ -327,7 +341,7 @@ class Target
      *
      * @return string
      */
-    public function getMimeType()
+    public function getMimeType() : string
     {
         $mimeType = $this->mimeType;
         if ($this->shouldBeCompressed()) {
@@ -341,7 +355,7 @@ class Target
      *
      * @param int $size
      */
-    public function setSize($size)
+    public function setSize(int $size)
     {
         $this->size = $size;
     }
@@ -349,10 +363,10 @@ class Target
     /**
      * Return the actual file size in bytes.
      *
-     * @throws Exception
-     * @return integer
+     * @return int
+     * @throws \phpbu\App\Exception
      */
-    public function getSize()
+    public function getSize() : int
     {
         if (null === $this->size) {
             if (!file_exists($this)) {
@@ -366,10 +380,10 @@ class Target
     /**
      * Target file exists already.
      *
-     * @param  boolean $plain
-     * @return boolean
+     * @param  bool $plain
+     * @return bool
      */
-    public function fileExists($plain = false)
+    public function fileExists(bool $plain = false) : bool
     {
         return file_exists($this->getPathname($plain));
     }
@@ -379,26 +393,9 @@ class Target
      *
      * @return \phpbu\App\Backup\File
      */
-    public function toFile()
+    public function toFile() : File
     {
         return new File(new \SplFileInfo($this->getPathname()));
-    }
-
-    /**
-     * Deletes the target file.
-     *
-     * @param  boolean $plain
-     * @throws \phpbu\App\Exception
-     */
-    public function unlink($plain = false)
-    {
-        if (!$this->fileExists($plain)) {
-            throw new Exception(sprintf('target file \'%s\' doesn\'t exist', $this->getFilename($plain)));
-        }
-        if (!is_writable($this->getPathname($plain))) {
-            throw new Exception(sprintf('can\t delete file \'%s\'', $this->getFilename($plain)));
-        }
-        unlink($this->getPathname($plain));
     }
 
     /**
@@ -407,7 +404,7 @@ class Target
      * @param  bool $plain
      * @return string
      */
-    public function getPathname($plain = false)
+    public function getPathname(bool $plain = false) : string
     {
         return $this->path . DIRECTORY_SEPARATOR . $this->getFilename($plain);
     }
@@ -417,7 +414,7 @@ class Target
      *
      * @return string
      */
-    public function getPathnamePlain()
+    public function getPathnamePlain() : string
     {
         return $this->getPathname(true);
     }
@@ -425,9 +422,9 @@ class Target
     /**
      * Is dirname configured with any date placeholders.
      *
-     * @return boolean
+     * @return bool
      */
-    public function hasChangingPath()
+    public function hasChangingPath() : bool
     {
         return $this->pathIsChanging;
     }
@@ -437,7 +434,7 @@ class Target
      *
      * @return string
      */
-    public function getPathThatIsNotChanging()
+    public function getPathThatIsNotChanging() : string
     {
         return $this->pathNotChanging;
     }
@@ -447,7 +444,7 @@ class Target
      *
      * @return array
      */
-    public function getChangingPathElements()
+    public function getChangingPathElements() : array
     {
         return $this->pathElementsChanging;
     }
@@ -455,9 +452,9 @@ class Target
     /**
      * Return amount of changing path elements.
      *
-     * @return integer
+     * @return int
      */
-    public function countChangingPathElements()
+    public function countChangingPathElements() : int
     {
         return count($this->pathElementsChanging);
     }
@@ -465,9 +462,9 @@ class Target
     /**
      * Filename configured with any date placeholders.
      *
-     * @return boolean
+     * @return bool
      */
-    public function hasChangingFilename()
+    public function hasChangingFilename() : bool
     {
         return $this->filenameIsChanging;
     }
@@ -509,7 +506,7 @@ class Target
      *
      * @return \phpbu\App\Backup\Target\Compression
      */
-    public function getCompression()
+    public function getCompression() : Target\Compression
     {
         return $this->compression;
     }
@@ -517,9 +514,9 @@ class Target
     /**
      * Is a compressor set?
      *
-     * @return boolean
+     * @return bool
      */
-    public function shouldBeCompressed()
+    public function shouldBeCompressed() : bool
     {
         return $this->compress !== false;
     }
@@ -540,7 +537,7 @@ class Target
      *
      * @return \phpbu\App\Backup\Crypter
      */
-    public function getCrypter()
+    public function getCrypter() : Crypter
     {
         return $this->crypter;
     }
@@ -556,9 +553,9 @@ class Target
     /**
      * Is a crypter set?
      *
-     * @return boolean
+     * @return bool
      */
-    public function shouldBeEncrypted()
+    public function shouldBeEncrypted() : bool
     {
         return $this->crypt !== false;
     }
@@ -568,7 +565,7 @@ class Target
      *
      * @return string
      */
-    public function __toString()
+    public function __toString() : string
     {
         return $this->getPathname();
     }

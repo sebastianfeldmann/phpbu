@@ -249,8 +249,6 @@ class TargetTest extends \PHPUnit\Framework\TestCase
      */
     public function testEnableCompressorWithoutCompressor()
     {
-        $compression = $this->getCompressionMockForCmd('zip', 'zip', 'application/zip');
-
         $path     = '/tmp/foo/bar';
         $filename = '%Y-test-%d.txt';
         $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
@@ -348,7 +346,7 @@ class TargetTest extends \PHPUnit\Framework\TestCase
 
         $target->setCrypter($mock);
 
-        $crypter = $target->getCrypter($mock);
+        $crypter = $target->getCrypter();
 
         $this->assertEquals($mock, $crypter);
     }
@@ -479,77 +477,18 @@ class TargetTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Target::unlink
-     *
-     * @expectedException \phpbu\App\Exception
-     */
-    public function testUnlinkNotExists()
-    {
-        $path     = sys_get_temp_dir() . '/foo';
-        $filename = 'foo.txt';
-        $target   = new Target($path, $filename);
-        $target->unlink();
-    }
-
-    /**
-     * Tests Target::unlink
-     *
-     * @expectedException \phpbu\App\Exception
-     */
-    public function testUnlinkNotWritable()
-    {
-        $path     = sys_get_temp_dir() . '/foo';
-        $filename = 'foo.txt';
-        $target   = new Target($path, $filename);
-
-        // create the file
-        mkdir($target->getPath(), 0755);
-        file_put_contents($target->getPathname(), 'content');
-        chmod($target->getPathname(), 0444);
-
-        try {
-            $target->unlink();
-        } catch (\Exception $e) {
-            chmod($target->getPathname(), 0644);
-            unlink($target->getPathname());
-            rmdir($target->getPath());
-            throw $e;
-        }
-    }
-
-    /**
-     * Tests Target::unlink
-     */
-    public function testUnlinkSuccess()
-    {
-        $path     = sys_get_temp_dir() . '/foo';
-        $filename = 'foo.txt';
-        $target   = new Target($path, $filename);
-        $target->setupPath();
-
-        // create the file
-        file_put_contents($target->getPathname(), 'content');
-
-        $target->unlink();
-        rmdir($target->getPath());
-
-        $this->assertFalse(file_exists($target->getPathname()));
-        $this->assertFalse(is_dir($target->getPath()));
-    }
-
-    /**
      * Create Compressor Mock.
      *
      * @param  string $cmd
      * @param  string $suffix
      * @param  string $mimeType
-     * @return \phpbu\App\Backup\Compressor
+     * @return \phpbu\App\Backup\Target\Compression
      */
     protected function getCompressionMockForCmd($cmd, $suffix, $mimeType)
     {
         $compressionStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target\\Compression')
-                               ->disableOriginalConstructor()
-                               ->getMock();
+                                ->disableOriginalConstructor()
+                                ->getMock();
         $compressionStub->method('getCommand')->willReturn($cmd);
         $compressionStub->method('getSuffix')->willReturn($suffix);
         $compressionStub->method('getMimeType')->willReturn($mimeType);
