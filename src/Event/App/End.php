@@ -42,7 +42,7 @@ class End extends Event
      *
      * @return \phpbu\App\Result
      */
-    public function getResult()
+    public function getResult() : Result
     {
         return $this->result;
     }

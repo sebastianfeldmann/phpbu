@@ -33,7 +33,7 @@ class Debug extends Event
      *
      * @param string $message
      */
-    public function __construct($message)
+    public function __construct(string $message)
     {
         $this->message = $message;
     }
@@ -43,7 +43,7 @@ class Debug extends Event
      *
      * @return string
      */
-    public function getMessage()
+    public function getMessage() : string
     {
         return $this->message;
     }

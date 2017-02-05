@@ -48,7 +48,7 @@ class File
      *
      * @param string $out
      */
-    protected function setupOut($out)
+    protected function setupOut(string $out)
     {
         if (strpos($out, 'php://') === false && !is_dir(dirname($out))) {
             mkdir(dirname($out), 0777, true);

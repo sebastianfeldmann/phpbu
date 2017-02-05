@@ -41,7 +41,7 @@ class Json extends File implements Listener, Logger
     public static function getSubscribedEvents()
     {
         return [
-            'phpbu.debug'     => 'onDebug',
+            'phpbu.debug'   => 'onDebug',
             'phpbu.app_end' => 'onPhpbuEnd',
         ];
     }
@@ -49,7 +49,7 @@ class Json extends File implements Listener, Logger
     /**
      * Setup the logger.
      *
-     * @see    \phpbu\Log\Logger::setup
+     * @see    \phpbu\App\Log\Logger::setup
      * @param  array $options
      * @throws \phpbu\App\Exception
      */
@@ -91,6 +91,7 @@ class Json extends File implements Listener, Logger
     }
 
     /**
+     * Write a buffer to file.
      *
      * @param array $buffer
      */
@@ -105,7 +106,7 @@ class Json extends File implements Listener, Logger
      * @param \phpbu\App\Result $result
      * @return array
      */
-    protected function extractErrors(Result $result)
+    protected function extractErrors(Result $result) : array
     {
         $errors = [];
         /** @var \Exception $e */
@@ -126,7 +127,7 @@ class Json extends File implements Listener, Logger
      * @param  \phpbu\App\Result $result
      * @return array
      */
-    protected function extractBackups(Result $result)
+    protected function extractBackups(Result $result) : array
     {
         $output = [];
         $backups = $result->getBackups();
