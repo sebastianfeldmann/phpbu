@@ -152,8 +152,8 @@ class Cmd
                 case '--limit':
                     $this->arguments['limit'] = $argument;
                     break;
-                case '--self-upgrade':
-                    $this->handleSelfUpgrade();
+                case '--self-update':
+                    $this->handleSelfUpdate();
                     break;
                 case '--version-check':
                     $this->handleVersionCheck();
@@ -245,12 +245,13 @@ class Cmd
     /**
      * Handle the phar self-update.
      */
-    protected function handleSelfUpgrade()
+    protected function handleSelfUpdate()
     {
         $this->printVersionString();
 
         // check if upgrade is necessary
-        if (!$this->isPharOutdated($this->getLatestVersion())) {
+        $latestVersion = $this->getLatestVersion();
+        if (!$this->isPharOutdated($latestVersion)) {
             echo 'You already have the latest version of phpbu installed.' . PHP_EOL;
             exit(self::EXIT_SUCCESS);
         }
@@ -259,7 +260,7 @@ class Cmd
         $localFilename  = realpath($_SERVER['argv'][0]);
         $tempFilename   = basename($localFilename, '.phar') . '-temp.phar';
 
-        echo 'Updating the phpbu PHAR ... ';
+        echo 'Updating the phpbu PHAR to version ' . $latestVersion . ' ... ';
 
         $old  = error_reporting(0);
         $phar = file_get_contents($remoteFilename);
@@ -299,7 +300,7 @@ class Cmd
         $latestVersion = $this->getLatestVersion();
         if ($this->isPharOutdated($latestVersion)) {
             print 'You are not using the latest version of phpbu.' . PHP_EOL
-                . 'Use "phpunit --self-upgrade" to install phpbu ' . $latestVersion . PHP_EOL;
+                . 'Use "phpunit --self-update" to install phpbu ' . $latestVersion . PHP_EOL;
         } else {
             print 'You are using the latest version of phpbu.' . PHP_EOL;
         }
@@ -358,7 +359,7 @@ class Cmd
 Usage: phpbu [option]
 
   --bootstrap=<file>     A "bootstrap" PHP file that is included before the backup.
-  --configuration=<file> A phpbu xml config file.
+  --configuration=<file> A phpbu configuration file.
   --colors               Use colors in output.
   --debug                Display debugging information during backup generation.
   --limit=<subset>       Limit backup execution to a subset.
@@ -369,8 +370,8 @@ Usage: phpbu [option]
 
 EOT;
         if ($this->isPhar) {
-            echo '  --version-check        Check whether phpbu is the latest version.' . PHP_EOL;
-            echo '  --self-upgrade         Upgrade phpbu to the latest version.' . PHP_EOL;
+            echo '  --version-check        Check whether phpbu is up to date.' . PHP_EOL;
+            echo '  --self-update          Upgrade phpbu to the latest version.' . PHP_EOL;
         }
     }
 

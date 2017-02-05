@@ -55,7 +55,7 @@ class Collector
      *
      * @return \phpbu\App\Backup\File[]
      */
-    public function getBackupFiles()
+    public function getBackupFiles() : array
     {
         if (null === $this->files) {
             // create regex to match only created backup files
@@ -73,7 +73,7 @@ class Collector
      * @param string $path
      * @param int    $depth
      */
-    protected function collect($path, $depth)
+    protected function collect(string $path, int $depth)
     {
         $dirIterator = new DirectoryIterator($path);
         // collect all matching sub directories and get all the backup files
@@ -121,7 +121,7 @@ class Collector
      * @param  int          $depth
      * @return bool
      */
-    protected function isValidDirectory(SplFileInfo $file, $depth)
+    protected function isValidDirectory(SplFileInfo $file, int $depth)
     {
         return $file->isDir() && $this->isMatchingDirectory($file->getBasename(), $depth);
     }
@@ -133,7 +133,7 @@ class Collector
      * @param  int    $depth
      * @return bool
      */
-    protected function isMatchingDirectory($dir, $depth)
+    protected function isMatchingDirectory(string $dir, int $depth)
     {
         $dirTarget = Arr::getValue($this->target->getChangingPathElements(), $depth);
         $dirRegex  = Str::datePlaceholdersToRegex($dirTarget);

@@ -54,7 +54,7 @@ class Args
     public function __construct(bool $isPhar = false)
     {
         if ($isPhar) {
-            $this->longOptions['self-upgrade']  = true;
+            $this->longOptions['self-update']  = true;
             $this->longOptions['version-check'] = true;
         }
     }
