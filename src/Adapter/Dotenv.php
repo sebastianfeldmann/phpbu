@@ -53,8 +53,8 @@ class Dotenv implements Adapter
      * @param  string $path
      * @return string
      */
-    public function getValue($path)
+    public function getValue(string $path) : string
     {
-        return getenv($path);
+        return (string) getenv($path);
     }
 }

@@ -28,5 +28,5 @@ interface Adapter
      * @param  string $path
      * @return string
      */
-    public function getValue($path);
+    public function getValue(string $path) : string;
 }

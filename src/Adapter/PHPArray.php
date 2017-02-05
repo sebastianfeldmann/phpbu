@@ -67,7 +67,7 @@ class PHPArray implements Adapter
      * @return string
      * @throws \phpbu\App\Exception
      */
-    public function getValue($path)
+    public function getValue(string $path) : string
     {
         $arrPath = explode('.', $path);
         $data    = $this->config;
