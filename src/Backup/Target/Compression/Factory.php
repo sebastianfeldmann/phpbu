@@ -35,7 +35,7 @@ class Factory
      */
     public static function create($name)
     {
-        $path = null;
+        $path = '';
         // check if a path is given for the compression command
         if (basename($name) !== $name) {
             $path = dirname($name);

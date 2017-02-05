@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Target;
 
+use SebastianFeldmann\Cli\Command;
+
 /**
  * Compression
  *
@@ -12,40 +14,33 @@ namespace phpbu\App\Backup\Target;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-interface Compression
+interface Compression extends Command
 {
-    /**
-     * Return the cli command.
-     *
-     * @return string
-     */
-    public function getCommand();
-
     /**
      * Path getter.
      *
      * @return string
      */
-    public function getPath();
+    public function getPath() : string;
 
     /**
      * Returns the compressor suffix e.g. 'bz2'
      *
      * @return string
      */
-    public function getSuffix();
+    public function getSuffix() : string;
 
     /**
      * Returns the compressor mime type.
      *
      * @return string
      */
-    public function getMimeType();
+    public function getMimeType() : string;
 
     /**
      * Is the compression app pipeable.
      *
      * @return bool
      */
-    public function isPipeable();
+    public function isPipeable() : bool;
 }

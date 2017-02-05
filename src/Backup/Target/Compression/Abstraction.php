@@ -56,7 +56,7 @@ abstract class Abstraction implements Compression
      *
      * @param string $path
      */
-    public function __construct($path = null)
+    public function __construct(string $path = '')
     {
         $this->path = $path;
     }
@@ -66,7 +66,7 @@ abstract class Abstraction implements Compression
      *
      * @return string
      */
-    public function getCommand()
+    public function getCommand() : string
     {
         return $this->cmd;
     }
@@ -76,7 +76,7 @@ abstract class Abstraction implements Compression
      *
      * @return string
      */
-    public function getPath()
+    public function getPath() : string
     {
         return $this->path;
     }
@@ -86,7 +86,7 @@ abstract class Abstraction implements Compression
      *
      * @return string
      */
-    public function getSuffix()
+    public function getSuffix() : string
     {
         return $this->suffix;
     }
@@ -96,7 +96,7 @@ abstract class Abstraction implements Compression
      *
      * @return bool
      */
-    public function isPipeable()
+    public function isPipeable() : bool
     {
         return $this->pipeable;
     }
@@ -106,7 +106,7 @@ abstract class Abstraction implements Compression
      *
      * @return string
      */
-    public function getMimeType()
+    public function getMimeType() : string
     {
         return $this->mimeType;
     }
