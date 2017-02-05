@@ -105,9 +105,9 @@ class Mail implements Listener, Logger
     /**
      * Send mail only if there was an error
      *
-     * @var boolean
+     * @var bool
      */
-    private $sendOnlyOnError;
+    private $sendOnlyOnError = false;
 
     /**
      * Returns an array of event names this subscriber wants to listen to.
@@ -270,15 +270,11 @@ class Mail implements Listener, Logger
                 $transport = \Swift_NullTransport::newInstance();
                 break;
 
-            case 'mail':
-                /* @var $transport \Swift_MailTransport */
-                $transport = \Swift_MailTransport::newInstance();
-                break;
-
             case 'smtp':
                 $transport = $this->getSmtpTransport($options);
                 break;
 
+            case 'mail':
             case 'sendmail':
                 $transport = $this->getSendmailTransport($options);
                 break;
@@ -326,20 +322,16 @@ class Mail implements Listener, Logger
      *
      * @param  array $options
      * @return \Swift_SendmailTransport
-     * @throws \phpbu\App\Exception
      */
     protected function getSendmailTransport(array $options)
     {
-        if (!isset($options['sendmail.path'])) {
-            throw new Exception('option \'sendmail.path\' ist missing');
+        if (isset($options['sendmail.path'])) {
+            $path    = $options['sendmail.path'];
+            $options = isset($options['sendmail.options']) ? ' ' . $options['sendmail.options'] : '';
+            /* @var $transport \Swift_SendmailTransport */
+            return \Swift_SendmailTransport::newInstance($path . $options);
         }
-        $path    = $options['sendmail.path'];
-        $options = isset($options['sendmail.options']) ? ' ' . $options['sendmail.options'] : '';
-
-        /* @var $transport \Swift_SendmailTransport */
-        $transport = \Swift_SendmailTransport::newInstance($path . $options);
-
-        return $transport;
+        return \Swift_SendmailTransport::newInstance();
     }
 
     /**
@@ -350,7 +342,7 @@ class Mail implements Listener, Logger
     protected function getHeaderHtml()
     {
         return '<table ' . TPL::getSnippet('sTableContent') . '><tr><td ' . TPL::getSnippet('sTableContentCol') . '>' .
-                 '<table ' . TPL::getSnippet('sTableHeader') . '><tr><td>PHPBU - backup report</td></tr></table>';
+               '<table ' . TPL::getSnippet('sTableHeader') . '><tr><td>PHPBU - backup report</td></tr></table>';
     }
 
     /**

@@ -30,7 +30,7 @@ class MailTemplate
      * @return string
      * @throws \phpbu\App\Exception
      */
-    public static function getSnippet($snippet)
+    public static function getSnippet($snippet) : string
     {
         if (null === self::$snippets) {
             self::setDefaultSnippets();

@@ -81,8 +81,6 @@ class MailTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test Mail::setup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupNoSendmailPath()
     {
@@ -93,6 +91,7 @@ class MailTest extends \PHPUnit\Framework\TestCase
                 'transport'  => 'sendmail'
             ]
         );
+        $this->assertTrue(true, 'should work');
     }
 
     /**
