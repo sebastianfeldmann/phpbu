@@ -143,7 +143,7 @@ class Source extends Abstraction
      * @param  \phpbu\App\Result                       $result
      * @return string
      */
-    private function executeCompressor(Compressor\Executable $compressor, Target $target, Result $result)
+    private function executeCompressor(Compressor\Executable $compressor, Target $target, Result $result) : string
     {
         // if this is a simulation just debug the command that would have been executed
         if ($this->isSimulation()) {

@@ -26,7 +26,7 @@ abstract class Abstraction implements Task
      *
      * @param $bool
      */
-    public function setSimulation($bool)
+    public function setSimulation(bool $bool)
     {
         $this->isSimulation = $bool;
     }
@@ -36,7 +36,7 @@ abstract class Abstraction implements Task
      *
      * @return bool
      */
-    public function isSimulation()
+    public function isSimulation() : bool
     {
         return $this->isSimulation;
     }

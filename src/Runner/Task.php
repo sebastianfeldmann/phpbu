@@ -19,12 +19,12 @@ interface Task
      *
      * @param $bool
      */
-    public function setSimulation($bool);
+    public function setSimulation(bool $bool);
 
     /**
      * Is simulation getter.
      *
      * @return bool
      */
-    public function isSimulation();
+    public function isSimulation() : bool;
 }

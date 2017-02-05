@@ -30,7 +30,7 @@ class Check extends Abstraction
      * @param  \phpbu\App\Result           $result
      * @return bool
      */
-    public function run(CheckExe $check, Target $target, $value, Collector $collector, Result $result)
+    public function run(CheckExe $check, Target $target, $value, Collector $collector, Result $result) : bool
     {
         return $this->isSimulation()
             ? $this->simulate($check, $target, $value, $collector, $result)
@@ -47,7 +47,7 @@ class Check extends Abstraction
      * @param  \phpbu\App\Result           $result
      * @return bool
      */
-    protected function runCheck(CheckExe $check, Target $target, $value, Collector $collector, Result $result)
+    protected function runCheck(CheckExe $check, Target $target, $value, Collector $collector, Result $result) : bool
     {
         return $check->pass($target, $value, $collector, $result);
     }
@@ -62,7 +62,7 @@ class Check extends Abstraction
      * @param  \phpbu\App\Result           $result
      * @return bool
      */
-    protected function simulate(CheckExe $check, Target $target, $value, Collector $collector, Result $result)
+    protected function simulate(CheckExe $check, Target $target, $value, Collector $collector, Result $result) : bool
     {
         return ($check instanceof Simulator) ? $check->simulate($target, $value, $collector, $result) : true;
     }
