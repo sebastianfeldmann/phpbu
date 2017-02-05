@@ -29,23 +29,23 @@ class PrinterCli implements Listener
     /**
      * Verbose output
      *
-     * @var boolean
+     * @var bool
      */
-    protected $verbose;
+    protected $verbose = false;
 
     /**
      * Output with colors
      *
-     * @var boolean
+     * @var bool
      */
-    protected $colors;
+    protected $colors = false;
 
     /**
      * Is debug active
      *
-     * @var boolean
+     * @var bool
      */
-    protected $debug;
+    protected $debug = false;
 
     /**
      * Amount of executed backups
@@ -138,23 +138,13 @@ class PrinterCli implements Listener
     /**
      * Constructor
      *
-     * @param  boolean $verbose
-     * @param  boolean $colors
-     * @param  boolean $debug
+     * @param  bool $verbose
+     * @param  bool $colors
+     * @param  bool $debug
      * @throws \InvalidArgumentException
      */
-    public function __construct($verbose = false, $colors = false, $debug = false)
+    public function __construct(bool $verbose = false, bool $colors = false, bool $debug = false)
     {
-        if (!is_bool($verbose)) {
-            throw new InvalidArgumentException('Expected $verbose to be of type boolean');
-        }
-        if (!is_bool($colors)) {
-            throw new InvalidArgumentException('Expected $colors to be of type boolean');
-        }
-        if (!is_bool($debug)) {
-            throw new InvalidArgumentException('Expected $debug to be of type boolean');
-        }
-
         $this->console = new Console;
         $this->runtime = new Runtime;
         $this->debug   = $debug;

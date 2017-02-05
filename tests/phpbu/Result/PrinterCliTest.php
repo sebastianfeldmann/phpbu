@@ -32,36 +32,6 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests PrinterCli::__construct
-     *
-     * @expectedException \InvalidArgumentException
-     */
-    public function testInvalidArgumentVerbose()
-    {
-        $printer = new PrinterCli('foo', 'bar', 'baz');
-    }
-
-    /**
-     * Tests PrinterCli::__construct
-     *
-     * @expectedException \InvalidArgumentException
-     */
-    public function testInvalidArgumentColors()
-    {
-        $printer = new PrinterCli(false, 'bar', 'baz');
-    }
-
-    /**
-     * Tests PrinterCli::__construct
-     *
-     * @expectedException \InvalidArgumentException
-     */
-    public function testInvalidArgumentDebug()
-    {
-        $printer = new PrinterCli(false, false, 'baz');
-    }
-
-    /**
-     * Tests PrinterCli::__construct
      */
     public function testConstructOk()
     {

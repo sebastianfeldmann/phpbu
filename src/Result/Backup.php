@@ -122,7 +122,7 @@ class Backup
      *
      * @return string
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
@@ -130,9 +130,9 @@ class Backup
     /**
      * Backup successful and nothing skipped or failed.
      *
-     * @return boolean
+     * @return bool
      */
-    public function allOk()
+    public function allOk() : bool
     {
         return $this->wasSuccessful() && $this->noneSkipped() && $this->noneFailed();
     }
@@ -140,9 +140,9 @@ class Backup
     /**
      * Backup successful but something was skipped or failed.
      *
-     * @return boolean
+     * @return bool
      */
-    public function okButSkipsOrFails()
+    public function okButSkipsOrFails() : bool
     {
         return $this->wasSuccessful() && (!$this->noneFailed() || !$this->noneSkipped());
     }
@@ -150,9 +150,9 @@ class Backup
     /**
      * Backup executed successfully and no checks failed.
      *
-     * @return boolean
+     * @return bool
      */
-    public function wasSuccessful()
+    public function wasSuccessful() : bool
     {
         return $this->wasSuccessful;
     }
@@ -161,9 +161,9 @@ class Backup
     /**
      * No skipped crypts, syncs or cleanups.
      *
-     * @return boolean
+     * @return bool
      */
-    public function noneSkipped()
+    public function noneSkipped() : bool
     {
         return count($this->cryptsFailed) + count($this->syncsSkipped) + count($this->cleanupsSkipped) === 0;
     }
@@ -171,9 +171,9 @@ class Backup
     /**
      * No failed crypts, syncs or cleanups.
      *
-     * @return boolean
+     * @return bool
      */
-    public function noneFailed()
+    public function noneFailed() : bool
     {
         return count($this->cryptsFailed) + count($this->syncsFailed) + count($this->cleanupsFailed) === 0;
     }
@@ -200,9 +200,9 @@ class Backup
     /**
      * Return amount of executed checks.
      *
-     * @return number
+     * @return int
      */
-    public function checkCount()
+    public function checkCount() : int
     {
         return count($this->checks);
     }
@@ -220,9 +220,9 @@ class Backup
     /**
      * Return amount of failed checks.
      *
-     * @return number
+     * @return int
      */
-    public function checkCountFailed()
+    public function checkCountFailed() : int
     {
         return count($this->checksFailed);
     }
@@ -240,9 +240,9 @@ class Backup
     /**
      * Return amount of executed crypts.
      *
-     * @return number
+     * @return int
      */
-    public function cryptCount()
+    public function cryptCount() : int
     {
         return count($this->crypts);
     }
@@ -260,9 +260,9 @@ class Backup
     /**
      * Return amount of failed crypts.
      *
-     * @return number
+     * @return int
      */
-    public function cryptCountSkipped()
+    public function cryptCountSkipped() : int
     {
         return count($this->cryptsSkipped);
     }
@@ -280,9 +280,9 @@ class Backup
     /**
      * Return amount of failed crypts.
      *
-     * @return number
+     * @return int
      */
-    public function cryptCountFailed()
+    public function cryptCountFailed() : int
     {
         return count($this->cryptsFailed);
     }
@@ -300,9 +300,9 @@ class Backup
     /**
      * Return count of executed syncs.
      *
-     * @return number
+     * @return int
      */
-    public function syncCount()
+    public function syncCount() : int
     {
         return count($this->syncs);
     }
@@ -320,9 +320,9 @@ class Backup
     /**
      * Return amount of skipped syncs.
      *
-     * @return number
+     * @return int
      */
-    public function syncCountSkipped()
+    public function syncCountSkipped() : int
     {
         return count($this->syncsSkipped);
     }
@@ -340,9 +340,9 @@ class Backup
     /**
      * Return amount of failed syncs.
      *
-     * @return number
+     * @return int
      */
-    public function syncCountFailed()
+    public function syncCountFailed() : int
     {
         return count($this->syncsFailed);
     }
@@ -360,9 +360,9 @@ class Backup
     /**
      * Return amount of executed cleanups.
      *
-     * @return number
+     * @return int
      */
-    public function cleanupCount()
+    public function cleanupCount() : int
     {
         return count($this->cleanups);
     }
@@ -380,9 +380,9 @@ class Backup
     /**
      * Return amount of skipped cleanups
      *
-     * @return number
+     * @return int
      */
-    public function cleanupCountSkipped()
+    public function cleanupCountSkipped() : int
     {
         return count($this->cleanupsSkipped);
     }
@@ -400,9 +400,9 @@ class Backup
     /**
      * Return amount of failed cleanups.
      *
-     * @return number
+     * @return int
      */
-    public function cleanupCountFailed()
+    public function cleanupCountFailed() : int
     {
         return count($this->cleanupsFailed);
     }
