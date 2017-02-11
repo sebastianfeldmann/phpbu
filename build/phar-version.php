@@ -4,10 +4,12 @@ if (!isset($argv[1])) {
     exit(1);
 }
 
-if ($argv[1] == 'alpha' || $argv[1] == 'beta') {
+$arg = trim($argv[1]);
+
+if ($arg == 'alpha' || $arg == 'beta') {
     $version = sprintf('%s-%s', $argv[1], date('Y-m-d'));
 } else {
-    $version = $argv[1];
+    $version = $arg;
 }
 
 file_put_contents(
