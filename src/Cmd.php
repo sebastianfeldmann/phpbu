@@ -54,14 +54,14 @@ class Cmd
     /**
      * Is cmd executed from phar.
      *
-     * @var boolean
+     * @var bool
      */
     private $isPhar;
 
     /**
      * Is version string printed already.
      *
-     * @var boolean
+     * @var bool
      */
     private $isVersionStringPrinted = false;
 
@@ -70,7 +70,7 @@ class Cmd
      *
      * @var array
      */
-    private $arguments;
+    private $arguments = [];
 
     /**
      * Runs the application.
