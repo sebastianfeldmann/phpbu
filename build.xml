@@ -1,310 +1,326 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="phpbu" default="build">
- <property name="php" value="php"/>
+  <property name="php" value="php"/>
 
- <target name="build"
-   depends="prepare,lint,phploc,phpcs-ci,phpunit"/>
+  <target name="build"
+          depends="prepare,lint,phploc,phpcs-ci,phpunit"/>
 
- <target name="clean" description="Cleanup build artifacts">
-  <delete dir="${basedir}/build/logs"/>
-  <delete dir="${basedir}/build/phar"/>
+  <target name="clean" description="Cleanup build artifacts">
+    <delete dir="${basedir}/build/logs"/>
+    <delete dir="${basedir}/build/phar"/>
 
-  <delete>
-   <fileset dir="${basedir}/build">
-    <include name="**/*.phar" />
-   </fileset>
-  </delete>
- </target>
+    <delete>
+      <fileset dir="${basedir}/build">
+        <include name="**/*.phar"/>
+      </fileset>
+    </delete>
+  </target>
 
- <target name="prepare" description="Prepare for build">
-  <mkdir dir="${basedir}/build/logs"/>
- </target>
+  <target name="prepare" description="Prepare for build">
+    <mkdir dir="${basedir}/build/logs"/>
+  </target>
 
- <target name="lint">
-  <apply executable="${php}" failonerror="true">
-   <arg value="-l" />
+  <target name="lint">
+    <apply executable="${php}" failonerror="true">
+      <arg value="-l"/>
 
-   <fileset dir="${basedir}/src">
-    <include name="**/*.php" />
-    <modified />
-   </fileset>
+      <fileset dir="${basedir}/src">
+        <include name="**/*.php"/>
+        <modified/>
+      </fileset>
 
-   <fileset dir="${basedir}/tests">
-    <include name="**/*.php" />
-    <modified />
-   </fileset>
-  </apply>
- </target>
+      <fileset dir="${basedir}/tests">
+        <include name="**/*.php"/>
+        <modified/>
+      </fileset>
+    </apply>
+  </target>
 
- <target name="phploc" description="Measure project size using PHPLOC">
-  <exec executable="phploc">
-   <arg value="--log-csv" />
-   <arg value="${basedir}/build/logs/phploc.csv" />
-   <arg value="--log-xml" />
-   <arg value="${basedir}/build/logs/phploc.xml" />
-   <arg path="${basedir}/src" />
-  </exec>
- </target>
+  <target name="phploc" description="Measure project size using PHPLOC">
+    <exec executable="phploc">
+      <arg value="--log-csv"/>
+      <arg value="${basedir}/build/logs/phploc.csv"/>
+      <arg value="--log-xml"/>
+      <arg value="${basedir}/build/logs/phploc.xml"/>
+      <arg path="${basedir}/src"/>
+    </exec>
+  </target>
 
- <target name="phpcs" description="Find coding standard violations using PHP_CodeSniffer">
-  <exec executable="phpcs">
-   <arg value="--standard=PSR2" />
-   <arg value="--extensions=php" />
-   <arg path="${basedir}/src" />
-   <arg path="${basedir}/tests" />
-  </exec>
- </target>
+  <target name="phpcs" description="Find coding standard violations using PHP_CodeSniffer">
+    <exec executable="phpcs">
+      <arg value="--standard=PSR2"/>
+      <arg value="--extensions=php"/>
+      <arg path="${basedir}/src"/>
+      <arg path="${basedir}/tests"/>
+    </exec>
+  </target>
 
- <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer">
-  <exec executable="phpcs" output="/dev/null">
-   <arg value="--report=checkstyle" />
-   <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
-   <arg value="--standard=PSR2" />
-   <arg value="--extensions=php" />
-   <arg path="${basedir}/src" />
-   <arg path="${basedir}/tests" />
-  </exec>
- </target>
+  <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer">
+    <exec executable="phpcs" output="/dev/null">
+      <arg value="--report=checkstyle"/>
+      <arg value="--report-file=${basedir}/build/logs/checkstyle.xml"/>
+      <arg value="--standard=PSR2"/>
+      <arg value="--extensions=php"/>
+      <arg path="${basedir}/src"/>
+      <arg path="${basedir}/tests"/>
+    </exec>
+  </target>
 
- <target name="phpunit" description="Run unit tests with PHPUnit">
-  <exec executable="phpunit" failonerror="true">
-  </exec>
- </target>
+  <target name="phpunit" description="Run unit tests with PHPUnit">
+    <exec executable="phpunit" failonerror="true">
+    </exec>
+  </target>
 
- <target name="phar"
-         description="Create PHAR archive of phpbu and all its dependencies (release)"
-         depends="phar-prepare">
-  <exec executable="bash" outputproperty="version">
-   <arg value="-c" />
-   <arg value="${basedir}/phpbu --version | awk '{print $2}'" />
-  </exec>
+  <target name="phar"
+          description="Create PHAR archive of phpbu and all its dependencies (release)"
+          depends="phar-prepare">
+    <exec executable="bash" outputproperty="version">
+      <arg value="-c"/>
+      <arg value="${basedir}/phpbu --version | awk '{print $2}'"/>
+    </exec>
 
-  <antcall target="phar-build">
-   <param name="version" value="${version}"/>
-  </antcall>
- </target>
+    <antcall target="phar-build">
+      <param name="version" value="${version}"/>
+    </antcall>
+  </target>
 
- <target name="phar-alpha"
-         description="Create PHAR archive of PHPUnit and all its dependencies (alpha)"
-         depends="phar-prepare">
-  <antcall target="phar-build">
-   <param name="version" value="alpha"/>
-  </antcall>
- </target>
+  <target name="phar-alpha"
+          description="Create PHAR archive of PHPUnit and all its dependencies (alpha)"
+          depends="phar-prepare">
+    <antcall target="phar-build">
+      <param name="version" value="alpha"/>
+    </antcall>
+  </target>
 
- <target name="phar-beta"
-         description="Create PHAR archive of PHPUnit and all its dependencies (beta)"
-         depends="phar-prepare">
-  <antcall target="phar-build">
-   <param name="version" value="beta"/>
-  </antcall>
- </target>
+  <target name="phar-beta"
+          description="Create PHAR archive of PHPUnit and all its dependencies (beta)"
+          depends="phar-prepare">
+    <antcall target="phar-build">
+      <param name="version" value="beta"/>
+    </antcall>
+  </target>
 
- <target name="phar-prepare" depends="clean">
-  <mkdir dir="${basedir}/build/phar"/>
+  <target name="phar-prepare" depends="clean">
+    <mkdir dir="${basedir}/build/phar"/>
 
-  <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
+    <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
 
-   <!-- DOTENV -->
-   <copy file="${basedir}/vendor/vlucas/phpdotenv/LICENSE.txt" tofile="${basedir}/build/phar/lib/phpdotenv/LICENSE"/>
-   <copy todir="${basedir}/build/phar/lib/phpdotenv">
-     <fileset dir="${basedir}/vendor/vlucas/phpdotenv/src">
-       <include name="**/*.php" />
-     </fileset>
-   </copy>
+    <!-- SF/CLI -->
+    <copy file="${basedir}/vendor/sebastianfeldmann/cli/LICENSE" tofile="${basedir}/build/phar/lib/sf-cli/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/phpdotenv">
+      <fileset dir="${basedir}/vendor/sebastianfeldmann/cli/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
 
-  <!-- DROPBOX SDK -->
-  <copy file="${basedir}/vendor/dropbox/dropbox-sdk/License.txt" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/dropbox">
-    <fileset dir="${basedir}/vendor/dropbox/dropbox-sdk/lib/Dropbox">
-      <include name="**/*.php" />
-      <include name="**/*.crt" />
-      <exclude name="**/autoload.php" />
-      <exclude name="**/strict.php" />
-    </fileset>
-  </copy>
+    <!-- DOTENV -->
+    <copy file="${basedir}/vendor/vlucas/phpdotenv/LICENSE.txt" tofile="${basedir}/build/phar/lib/phpdotenv/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/phpdotenv">
+      <fileset dir="${basedir}/vendor/vlucas/phpdotenv/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
 
-  <!-- AMAZON AWS -->
-  <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE.md" tofile="${basedir}/build/phar/lib/aws-sdk/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/aws-sdk">
-    <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src">
-      <include name="**/*.php" />
-      <exclude name="Acm/**" />
-      <exclude name="AutoScaling/**" />
-      <exclude name="CloudFormation/**" />
-      <exclude name="CloudFront/**" />
-      <exclude name="CloudHsm/**" />
-      <exclude name="CloudSearch/**" />
-      <exclude name="CloudSearchDomain/**" />
-      <exclude name="CloudTrail/**" />
-      <exclude name="CloudWatch/**" />
-      <exclude name="CloudWatchEvents/**" />
-      <exclude name="CloudWatchLogs/**" />
-      <exclude name="CodeCommit/**" />
-      <exclude name="CodeDeploy/**" />
-      <exclude name="CodePipeline/**" />
-      <exclude name="CognitoIdentity/**" />
-      <exclude name="CognitoSync/**" />
-      <exclude name="ConfigService/**" />
-      <exclude name="DataPipeline/**" />
-      <exclude name="DeviceFarm/**" />
-      <exclude name="DirectConnect/**" />
-      <exclude name="DirectoryService/**" />
-      <exclude name="DynamoDb/**" />
-      <exclude name="DynamoDbStreams/**" />
-      <exclude name="Ec2/**" />
-      <exclude name="Ecr/**" />
-      <exclude name="Ecs/**" />
-      <exclude name="Efs/**" />
-      <exclude name="ElastiCache/**" />
-      <exclude name="ElasticBeanstalk/**" />
-      <exclude name="ElasticLoadBalancing/**" />
-      <exclude name="ElasticsearchService/**" />
-      <exclude name="ElasticTranscoder/**" />
-      <exclude name="Emr/**" />
-      <exclude name="Firehose/**" />
-      <exclude name="Glacier/**" />
-      <exclude name="AutoScaling/**" />
-      <exclude name="Iam/**" />
-      <exclude name="Inspector/**" />
-      <exclude name="Iot/**" />
-      <exclude name="IotDataPlane/**" />
-      <exclude name="Kinesis/**" />
-      <exclude name="Kms/**" />
-      <exclude name="Lambda/**" />
-      <exclude name="MachineLearning/**" />
-      <exclude name="MarketplaceCommerceAnalytics/**" />
-      <exclude name="OpsWorks/**" />
-      <exclude name="Rds/**" />
-      <exclude name="Redshift/**" />
-      <exclude name="Route53/**" />
-      <exclude name="Route53Domains/**" />
-      <exclude name="Ses/**" />
-      <exclude name="Sns/**" />
-      <exclude name="Sqs/**" />
-      <exclude name="Ssm/**" />
-      <exclude name="StorageGateway/**" />
-      <exclude name="Sts/**" />
-      <exclude name="Support/**" />
-      <exclude name="Swf/**" />
-      <exclude name="Waf/**" />
-      <exclude name="WorkSpaces/**" />
-    </fileset>
-  </copy>
+    <!-- DROPBOX SDK -->
+    <copy file="${basedir}/vendor/dropbox/dropbox-sdk/License.txt" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/dropbox">
+      <fileset dir="${basedir}/vendor/dropbox/dropbox-sdk/lib/Dropbox">
+        <include name="**/*.php"/>
+        <include name="**/*.crt"/>
+        <exclude name="**/autoload.php"/>
+        <exclude name="**/strict.php"/>
+      </fileset>
+    </copy>
 
-  <!-- AMAZON AWS GUZZLE -->
-  <copy file="${basedir}/vendor/guzzlehttp/guzzle/LICENSE" tofile="${basedir}/build/phar/lib/guzzlehttp/guzzle/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/guzzlehttp/guzzle">
-    <fileset dir="${basedir}/vendor/guzzlehttp/guzzle/src">
-      <include name="**/*.php" />
-      <include name="**/*.pem" />
-    </fileset>
-  </copy>
-  <copy file="${basedir}/vendor/guzzlehttp/promises/LICENSE" tofile="${basedir}/build/phar/lib/guzzlehttp/promises/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/guzzlehttp/promises">
-   <fileset dir="${basedir}/vendor/guzzlehttp/promises/src">
-    <include name="**/*.php" />
-   </fileset>
-  </copy>
-  <copy file="${basedir}/vendor/guzzlehttp/psr7/LICENSE" tofile="${basedir}/build/phar/lib/guzzlehttp/psr7/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/guzzlehttp/psr7">
-   <fileset dir="${basedir}/vendor/guzzlehttp/psr7/src">
-    <include name="**/*.php" />
-   </fileset>
-  </copy>
-  <copy file="${basedir}/vendor/psr/http-message/LICENSE" tofile="${basedir}/build/phar/lib/psr/http-message/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/psr/http-message">
-   <fileset dir="${basedir}/vendor/psr/http-message/src">
-    <include name="**/*.php" />
-   </fileset>
-  </copy>
+    <!-- AMAZON AWS -->
+    <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE.md" tofile="${basedir}/build/phar/lib/aws-sdk/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/aws-sdk">
+      <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src">
+        <include name="**/*.php"/>
+        <exclude name="Acm/**"/>
+        <exclude name="AutoScaling/**"/>
+        <exclude name="CloudFormation/**"/>
+        <exclude name="CloudFront/**"/>
+        <exclude name="CloudHsm/**"/>
+        <exclude name="CloudSearch/**"/>
+        <exclude name="CloudSearchDomain/**"/>
+        <exclude name="CloudTrail/**"/>
+        <exclude name="CloudWatch/**"/>
+        <exclude name="CloudWatchEvents/**"/>
+        <exclude name="CloudWatchLogs/**"/>
+        <exclude name="CodeCommit/**"/>
+        <exclude name="CodeDeploy/**"/>
+        <exclude name="CodePipeline/**"/>
+        <exclude name="CognitoIdentity/**"/>
+        <exclude name="CognitoSync/**"/>
+        <exclude name="ConfigService/**"/>
+        <exclude name="DataPipeline/**"/>
+        <exclude name="DeviceFarm/**"/>
+        <exclude name="DirectConnect/**"/>
+        <exclude name="DirectoryService/**"/>
+        <exclude name="DynamoDb/**"/>
+        <exclude name="DynamoDbStreams/**"/>
+        <exclude name="Ec2/**"/>
+        <exclude name="Ecr/**"/>
+        <exclude name="Ecs/**"/>
+        <exclude name="Efs/**"/>
+        <exclude name="ElastiCache/**"/>
+        <exclude name="ElasticBeanstalk/**"/>
+        <exclude name="ElasticLoadBalancing/**"/>
+        <exclude name="ElasticsearchService/**"/>
+        <exclude name="ElasticTranscoder/**"/>
+        <exclude name="Emr/**"/>
+        <exclude name="Firehose/**"/>
+        <exclude name="Glacier/**"/>
+        <exclude name="AutoScaling/**"/>
+        <exclude name="Iam/**"/>
+        <exclude name="Inspector/**"/>
+        <exclude name="Iot/**"/>
+        <exclude name="IotDataPlane/**"/>
+        <exclude name="Kinesis/**"/>
+        <exclude name="Kms/**"/>
+        <exclude name="Lambda/**"/>
+        <exclude name="MachineLearning/**"/>
+        <exclude name="MarketplaceCommerceAnalytics/**"/>
+        <exclude name="OpsWorks/**"/>
+        <exclude name="Rds/**"/>
+        <exclude name="Redshift/**"/>
+        <exclude name="Route53/**"/>
+        <exclude name="Route53Domains/**"/>
+        <exclude name="Ses/**"/>
+        <exclude name="Sns/**"/>
+        <exclude name="Sqs/**"/>
+        <exclude name="Ssm/**"/>
+        <exclude name="StorageGateway/**"/>
+        <exclude name="Sts/**"/>
+        <exclude name="Support/**"/>
+        <exclude name="Swf/**"/>
+        <exclude name="Waf/**"/>
+        <exclude name="WorkSpaces/**"/>
+      </fileset>
+    </copy>
 
-  <!-- PHPSECLIB -->
-  <copy file="${basedir}/vendor/phpseclib/phpseclib/LICENSE" tofile="${basedir}/build/phar/lib/phpseclib/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/phpseclib">
-   <fileset dir="${basedir}/vendor/phpseclib/phpseclib/phpseclib">
-    <include name="**/*.php" />
-    <include name="**/*.cnf" />
-    <exclude name="**/autoload.php" />
-   </fileset>
-  </copy>
+    <!-- AMAZON AWS GUZZLE -->
+    <copy file="${basedir}/vendor/guzzlehttp/guzzle/LICENSE"
+          tofile="${basedir}/build/phar/lib/guzzlehttp/guzzle/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/guzzlehttp/guzzle">
+      <fileset dir="${basedir}/vendor/guzzlehttp/guzzle/src">
+        <include name="**/*.php"/>
+        <include name="**/*.pem"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/guzzlehttp/promises/LICENSE"
+          tofile="${basedir}/build/phar/lib/guzzlehttp/promises/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/guzzlehttp/promises">
+      <fileset dir="${basedir}/vendor/guzzlehttp/promises/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/guzzlehttp/psr7/LICENSE" tofile="${basedir}/build/phar/lib/guzzlehttp/psr7/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/guzzlehttp/psr7">
+      <fileset dir="${basedir}/vendor/guzzlehttp/psr7/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/psr/http-message/LICENSE"
+          tofile="${basedir}/build/phar/lib/psr/http-message/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/psr/http-message">
+      <fileset dir="${basedir}/vendor/psr/http-message/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
 
-  <copy file="${basedir}/vendor/phpunit/php-timer/LICENSE" tofile="${basedir}/build/phar/lib/php-timer/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/php-timer">
-   <fileset dir="${basedir}/vendor/phpunit/php-timer/src">
-    <include name="**/*.php" />
-    <exclude name="**/Autoload.*" />
-   </fileset>
-  </copy>
+    <!-- PHPSECLIB -->
+    <copy file="${basedir}/vendor/phpseclib/phpseclib/LICENSE" tofile="${basedir}/build/phar/lib/phpseclib/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/phpseclib">
+      <fileset dir="${basedir}/vendor/phpseclib/phpseclib/phpseclib">
+        <include name="**/*.php"/>
+        <include name="**/*.cnf"/>
+        <exclude name="**/autoload.php"/>
+      </fileset>
+    </copy>
 
-  <copy file="${basedir}/vendor/sebastian/environment/LICENSE" tofile="${basedir}/build/phar/lib/sebastian-environment/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/sebastian-environment">
-   <fileset dir="${basedir}/vendor/sebastian/environment/src">
-    <include name="**/*.php" />
-   </fileset>
-  </copy>
+    <copy file="${basedir}/vendor/phpunit/php-timer/LICENSE" tofile="${basedir}/build/phar/lib/php-timer/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-timer">
+      <fileset dir="${basedir}/vendor/phpunit/php-timer/src">
+        <include name="**/*.php"/>
+        <exclude name="**/Autoload.*"/>
+      </fileset>
+    </copy>
 
-  <copy file="${basedir}/vendor/sebastian/version/LICENSE" tofile="${basedir}/build/phar/lib/sebastian-version/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/sebastian-version">
-   <fileset dir="${basedir}/vendor/sebastian/version/src">
-    <include name="**/*.php" />
-    <exclude name="**/autoload.php" />
-   </fileset>
-  </copy>
+    <copy file="${basedir}/vendor/sebastian/environment/LICENSE"
+          tofile="${basedir}/build/phar/lib/sebastian-environment/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/sebastian-environment">
+      <fileset dir="${basedir}/vendor/sebastian/environment/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
 
-  <copy file="${basedir}/vendor/softlayer/objectstorage/COPYING" tofile="${basedir}/build/phar/lib/softlayer-os/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/softlayer-os">
-    <fileset dir="${basedir}/vendor/softlayer/objectstorage/lib">
-      <include name="**/*.php" />
-    </fileset>
-  </copy>
+    <copy file="${basedir}/vendor/sebastian/version/LICENSE"
+          tofile="${basedir}/build/phar/lib/sebastian-version/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/sebastian-version">
+      <fileset dir="${basedir}/vendor/sebastian/version/src">
+        <include name="**/*.php"/>
+        <exclude name="**/autoload.php"/>
+      </fileset>
+    </copy>
 
-  <copy file="${basedir}/vendor/swiftmailer/swiftmailer/LICENSE" tofile="${basedir}/build/phar/lib/swiftmailer/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/swiftmailer">
-   <fileset dir="${basedir}/vendor/swiftmailer/swiftmailer/lib">
-    <include name="**/*.php" />
-    <exclude name="**/swift_required_pear.php" />
-   </fileset>
-  </copy>
+    <copy file="${basedir}/vendor/softlayer/objectstorage/COPYING"
+          tofile="${basedir}/build/phar/lib/softlayer-os/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/softlayer-os">
+      <fileset dir="${basedir}/vendor/softlayer/objectstorage/lib">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
 
-  <copy file="${basedir}/vendor/symfony/event-dispatcher/LICENSE" tofile="${basedir}/build/phar/lib/symfony/event-dispatcher/LICENSE"/>
-  <copy todir="${basedir}/build/phar/lib/symfony/event-dispatcher">
-   <fileset dir="${basedir}/vendor/symfony/event-dispatcher">
-    <include name="**/*.php" />
-    <exclude name="**/Test*" />
-   </fileset>
-  </copy>
+    <copy file="${basedir}/vendor/swiftmailer/swiftmailer/LICENSE"
+          tofile="${basedir}/build/phar/lib/swiftmailer/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/swiftmailer">
+      <fileset dir="${basedir}/vendor/swiftmailer/swiftmailer/lib">
+        <include name="**/*.php"/>
+        <exclude name="**/swift_required_pear.php"/>
+      </fileset>
+    </copy>
 
-  <exec executable="${basedir}/build/phar-patch.php"/>
+    <copy file="${basedir}/vendor/symfony/event-dispatcher/LICENSE"
+          tofile="${basedir}/build/phar/lib/symfony/event-dispatcher/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/symfony/event-dispatcher">
+      <fileset dir="${basedir}/vendor/symfony/event-dispatcher">
+        <include name="**/*.php"/>
+        <exclude name="**/Test*"/>
+      </fileset>
+    </copy>
 
- </target>
+    <exec executable="${basedir}/build/phar-patch.php"/>
+
+  </target>
 
 
- <target name="phar-build">
-  <copy todir="${basedir}/build/phar">
-   <fileset dir="${basedir}/src">
-    <include name="**/*.php" />
-   </fileset>
-  </copy>
+  <target name="phar-build">
+    <copy todir="${basedir}/build/phar">
+      <fileset dir="${basedir}/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
 
-  <exec executable="${basedir}/build/phar-version.php" outputproperty="phar_version">
-   <arg value="${version}" />
-  </exec>
+    <exec executable="${basedir}/build/phar-version.php" outputproperty="phar_version">
+      <arg value="${version}"/>
+    </exec>
 
-  <exec executable="phpab">
-   <arg value="--all" />
-   <arg value="--phar" />
-   <arg value="-gz" />
-   <!-- <arg value="- -bzip2" /> -->
-   <arg value="--output" />
-   <arg path="${basedir}/build/phpbu-${phar_version}.phar" />
-   <arg value="--template" />
-   <arg path="${basedir}/build/phar-autoload.php.in" />
-   <arg value="--indent" />
-   <arg value="            " />
-   <arg path="${basedir}/build/phar" />
-  </exec>
+    <exec executable="phpab">
+      <arg value="--all"/>
+      <arg value="--phar"/>
+      <arg value="--gzip"/>
+      <!-- <arg value="- -bzip2" /> -->
+      <arg value="--output"/>
+      <arg path="${basedir}/build/phpbu-${phar_version}.phar"/>
+      <arg value="--template"/>
+      <arg path="${basedir}/build/phar-autoload.php.in"/>
+      <arg value="--indent"/>
+      <arg value="            " />
+      <arg path="${basedir}/build/phar"/>
+    </exec>
 
-  <chmod file="${basedir}/build/phpbu-${phar_version}.phar" perm="ugo+rx"/>
- </target>
+    <chmod file="${basedir}/build/phpbu-${phar_version}.phar" perm="ugo+rx"/>
+  </target>
 </project>
