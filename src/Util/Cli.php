@@ -25,6 +25,7 @@ abstract class Cli
         'bold'       => 1,
         'fg-black'   => 30,
         'fg-red'     => 31,
+        'fg-green'   => 32,
         'fg-yellow'  => 33,
         'fg-cyan'    => 36,
         'fg-white'   => 37,

@@ -476,17 +476,17 @@ class PrinterCli implements Listener
         $this->write(sprintf('backup %s: ', $backup->getName()));
         if ($backup->allOk()) {
             $this->writeWithColor(
-                'fg-black, bg-green',
+                'fg-green',
                 'OK'
             );
         } elseif ($backup->okButSkipsOrFails()) {
                 $this->writeWithColor(
-                    'fg-black, bg-yellow',
+                    'fg-yellow',
                     'OK, but skipped or failed Crypts, Syncs or Cleanups!'
                 );
         } else {
             $this->writeWithColor(
-                'fg-white, bg-red, bold',
+                'fg-red',
                 'FAILED'
             );
         }
@@ -522,12 +522,12 @@ class PrinterCli implements Listener
     {
         if (count($result->getBackups()) === 0) {
             $this->writeWithColor(
-                'fg-black, bg-yellow',
+                'fg-yellow',
                 'No backups executed!'
             );
         } elseif ($result->allOk()) {
             $this->writeWithColor(
-                'fg-black, bg-green',
+                'fg-green',
                 sprintf(
                     'OK (%d %s, %d %s, %d %s, %d %s, %d %s)' . PHP_EOL,
                     count($result->getBackups()),
@@ -544,7 +544,7 @@ class PrinterCli implements Listener
             );
         } elseif ($result->backupOkButSkipsOrFails()) {
             $this->writeWithColor(
-                'fg-black, bg-yellow',
+                'fg-yellow',
                 sprintf(
                     "WARNING, skipped|failed Crypts, Syncs or Cleanups!" . PHP_EOL .
                     'Backups: %d, Crypts: %d|%d, Syncs: %d|%d, Cleanups: %d|%d ' . PHP_EOL,
@@ -559,7 +559,7 @@ class PrinterCli implements Listener
             );
         } else {
             $this->writeWithColor(
-                'fg-white, bg-red',
+                'fg-red',
                 sprintf(
                     "FAILURE!" . PHP_EOL .
                     'Backups: %d, failed Checks: %d, failed Crypts: %d, failed Syncs: %d, failed Cleanups: %d.' . PHP_EOL,
