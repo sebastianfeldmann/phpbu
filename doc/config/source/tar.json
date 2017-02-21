@@ -2,6 +2,7 @@
   "type": "tar",
   "option": {
     "path": "src",
+    "exclude": "foo/bar,fiz/baz",
     "ignoreFailedRead": false,
     "removeSourceDir": false,
     "pathToTar": "/path/to/custom/bin"

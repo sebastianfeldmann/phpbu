@@ -43,6 +43,14 @@ class Tar extends SimulatorExecutable implements Simulator
     private $path;
 
     /**
+     * List of paths to exclude
+     * --exclude
+     *
+     * @var array
+     */
+    private $excludes;
+
+    /**
      * Tar should ignore failed reads
      * --ignore-failed-read
      *
@@ -82,6 +90,7 @@ class Tar extends SimulatorExecutable implements Simulator
     {
         $this->pathToTar        = Util\Arr::getValue($conf, 'pathToTar', '');
         $this->path             = Util\Arr::getValue($conf, 'path', '');
+        $this->excludes         = Util\Str::toList(Util\Arr::getValue($conf, 'exclude', ''));
         $this->ignoreFailedRead = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ignoreFailedRead', ''), false);
         $this->removeSourceDir  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeSourceDir', ''), false);
 
@@ -156,6 +165,11 @@ class Tar extends SimulatorExecutable implements Simulator
                    ->ignoreFailedRead($this->ignoreFailedRead)
                    ->removeSourceDirectory($this->removeSourceDir)
                    ->archiveTo($this->pathToArchive);
+        // add paths to exclude
+        foreach ($this->excludes as $path) {
+            $executable->addExclude($path);
+        }
+
         return $executable;
     }
 

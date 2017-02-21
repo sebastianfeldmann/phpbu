@@ -25,13 +25,34 @@ class TarTest extends \PHPUnit\Framework\TestCase
         $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommand());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            $tar->getCommand()
+        );
     }
 
     /**
      * Tests Tar::getCommandLine
      */
-    public function testignoreFailedRead()
+    public function testExclude()
+    {
+        $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
+        $tar  = new Tar(PHPBU_TEST_BIN);
+        $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->addExclude('./foo')->addExclude('./bar');
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar --exclude=\'./foo\' --exclude=\'./bar\' -cf \'/tmp/foo.tar\' -C \''
+            . $tarC .  '\' \'' . $tarD . '\'',
+            $tar->getCommand()
+        );
+    }
+
+    /**
+     * Tests Tar::getCommandLine
+     */
+    public function testIgnoreFailedRead()
     {
         $dir  = sys_get_temp_dir();
         $tarC = dirname($dir);
