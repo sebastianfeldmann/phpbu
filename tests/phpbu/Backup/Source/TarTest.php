@@ -69,6 +69,28 @@ class TarTest extends CliTest
     }
 
     /**
+     * Tests Tar::getExecutable
+     */
+    public function testExcludes()
+    {
+        $path = realpath(__DIR__ . '/../../../_files/bin');
+        $this->tar->setup(['pathToTar' => $path, 'path' => __DIR__, 'exclude' => './foo,./bar']);
+
+        $target = $this->getTargetMock('/tmp/backup.tar');
+        $target->method('shouldBeCompressed')->willReturn(false);
+        $target->method('getPathname')->willReturn('/tmp/backup.tar');
+
+        $exec = $this->tar->getExecutable($target);
+
+        $this->assertEquals(
+            $path . '/tar --exclude=\'./foo\' --exclude=\'./bar\' -cf \'/tmp/backup.tar\' -C \''
+            . dirname(__DIR__) . '\' \''
+            . basename(__DIR__) . '\'',
+            $exec->getCommandLine()
+        );
+    }
+
+    /**
      * Tests Tar::getExec
      */
     public function testIgnoreFailedRead()

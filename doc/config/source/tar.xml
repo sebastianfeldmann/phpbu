@@ -3,9 +3,15 @@
   <!-- mandatory -->
   <option name="path" value="src" />
 
+  <!-- optional, default null -->
+  <option name="exclude" value="foo/bar,fiz/baz" />
+
   <!-- optional, default false -->
   <option name="ignoreFailedRead" value="false" />
 
   <!-- optional, default false -->
   <option name="removeSourceDir" value="false" />
+
+  <!-- define your custom tar executable location -->
+  <option name="pathToTar" value="/path/to/custom/bin" />
 </source>

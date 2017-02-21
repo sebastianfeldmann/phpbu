@@ -32,7 +32,26 @@ class TarTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests Tar::getCommandLine
      */
-    public function testignoreFailedRead()
+    public function testExclude()
+    {
+        $path = realpath(__DIR__ . '/../../../_files/bin');
+        $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
+        $tar  = new Tar($path);
+        $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->addExclude('./foo')->addExclude('./bar');
+
+        $this->assertEquals(
+            $path . '/tar --exclude=\'./foo\' --exclude=\'./bar\' -cf \'/tmp/foo.tar\' -C \''
+            . $tarC .  '\' \'' . $tarD . '\'',
+            $tar->getCommandLine()
+        );
+    }
+
+    /**
+     * Tests Tar::getCommandLine
+     */
+    public function testIgnoreFailedRead()
     {
         $path = realpath(__DIR__ . '/../../../_files/bin');
         $dir  = sys_get_temp_dir();

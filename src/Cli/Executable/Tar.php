@@ -41,6 +41,14 @@ class Tar extends Abstraction implements Executable
     private $tarPathname;
 
     /**
+     * List of excluded path.
+     * --exclude='foo'
+     *
+     * @var array
+     */
+    private $excludes = [];
+
+    /**
      * Ignore failed reads
      * --ignore-failed-read
      *
@@ -97,6 +105,18 @@ class Tar extends Abstraction implements Executable
         if ($this->isCompressionValid($compression)) {
             $this->compression = $this->getCompressionOption($compression);
         }
+        return $this;
+    }
+
+    /**
+     * Add an path to exclude.
+     *
+     * @param  string $path
+     * @return \phpbu\App\Cli\Executable\Tar
+     */
+    public function addExclude($path)
+    {
+        $this->excludes[] = $path;
         return $this;
     }
 
@@ -169,6 +189,10 @@ class Tar extends Abstraction implements Executable
 
         $process = new Process();
         $tar     = new Cmd($this->binary);
+
+        foreach ($this->excludes as $path) {
+            $tar->addOption('--exclude', $path);
+        }
 
         $tar->addOptionIfNotEmpty('--ignore-failed-read', $this->ignoreFailedRead, false);
         $tar->addOption('-' . $this->compression . 'cf');
