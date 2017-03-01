@@ -229,6 +229,13 @@
         <include name="**/*.php"/>
       </fileset>
     </copy>
+    <copy file="${basedir}/vendor/mtdowling/jmespath.php/LICENSE"
+          tofile="${basedir}/build/phar/lib/mtdowling/jmespath.php/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/mtdowling/jmespath.php">
+      <fileset dir="${basedir}/vendor/mtdowling/jmespath.php/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
 
     <!-- PHPSECLIB -->
     <copy file="${basedir}/vendor/phpseclib/phpseclib/LICENSE" tofile="${basedir}/build/phar/lib/phpseclib/LICENSE"/>
