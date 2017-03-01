@@ -43,7 +43,7 @@ class Version
         }
 
         if (self::$version === null) {
-            $version = new SebastianBergmann\Version('4.0.4', dirname(dirname(__DIR__)));
+            $version = new SebastianBergmann\Version('4.0.5', dirname(dirname(__DIR__)));
             self::$version = $version->getVersion();
         }
 
