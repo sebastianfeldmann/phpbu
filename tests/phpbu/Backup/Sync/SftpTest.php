@@ -40,7 +40,7 @@ class SftpTest extends \PHPUnit_Framework_TestCase
             'host'     => 'example.com',
             'user'     => 'user.name',
             'password' => 'secret',
-            'path'     => 'foo'
+            'path'     => '/foo'
         ]);
 
         $resultStub = $this->getMockBuilder('\\phpbu\\App\\Result')
