@@ -82,10 +82,7 @@ abstract class Xtp implements Simulator
         if (!Arr::isSetAndNotEmptyString($config, 'password')) {
             throw new Exception('option \'password\' is missing');
         }
-        $path = Arr::getValue($config, 'path', '');
-        if ('/' === substr($path, 0, 1)) {
-            throw new Exception('absolute path is not allowed');
-        }
+        $path             = Arr::getValue($config, 'path', '');
         $this->host       = $config['host'];
         $this->user       = $config['user'];
         $this->password   = $config['password'];

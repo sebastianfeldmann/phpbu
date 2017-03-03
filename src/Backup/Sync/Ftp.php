@@ -20,6 +20,21 @@ use phpbu\App\Util\Str;
 class Ftp extends Xtp implements Simulator
 {
     /**
+     * Setup the Ftp sync.
+     *
+     * @param  array $config
+     * @throws \phpbu\App\Backup\Sync\Exception
+     */
+    public function setup(array $config)
+    {
+        $path = Arr::getValue($config, 'path', '');
+        if ('/' === substr($path, 0, 1)) {
+            throw new Exception('absolute path is not allowed');
+        }
+        parent::setup($config);
+    }
+
+    /**
      * Check for required loaded libraries or extensions.
      *
      * @throws \phpbu\App\Backup\Sync\Exception

@@ -24,7 +24,7 @@ class SftpTest extends \PHPUnit\Framework\TestCase
             'host'     => 'example.com',
             'user'     => 'user.name',
             'password' => 'secret',
-            'path'     => 'foo'
+            'path'     => '/foo'
         ]);
 
         $this->assertTrue(true, 'no exception should occur');
