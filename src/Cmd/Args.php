@@ -39,7 +39,6 @@ class Args
         'configuration=' => true,
         'debug'          => true,
         'help'           => true,
-        'include-path='  => true,
         'limit='         => true,
         'simulate'       => true,
         'verbose'        => true,

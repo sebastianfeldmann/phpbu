@@ -107,20 +107,6 @@ class ArgsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Test log option --include-path
-     */
-    public function testGetOptionsLongIncludePath()
-    {
-        $args    = new Args();
-        $options = $args->getOptions(['foo', '--include-path=/foo/bar', 'bar']);
-        $this->assertEquals(
-            '/foo/bar',
-            $options['--include-path'],
-            'long option --include-path must be set correctly'
-        );
-    }
-
-    /**
      * Test log option --bootstrap
      */
     public function testGetOptionsLongBootstrap()
