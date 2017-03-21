@@ -50,7 +50,7 @@ class TarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Tar::getCommandLine
+     * Tests Tar::getCommand
      */
     public function testIgnoreFailedRead()
     {
@@ -64,7 +64,7 @@ class TarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Tar::getCommandLinePrintable
+     * Tests Tar::getCommandPrintable
      */
     public function testDefaultPrintable()
     {
@@ -78,7 +78,7 @@ class TarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Tar::getCommandLine
+     * Tests Tar::getCommand
      */
     public function testCompressionGzip()
     {
@@ -90,12 +90,12 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             PHPBU_TEST_BIN . '/tar -zcf \'/tmp/foo.tar.gz\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
-            $tar->getCommandLine()
+            $tar->getCommand()
         );
     }
 
     /**
-     * Tests Tar::getCommandLine
+     * Tests Tar::getCommand
      */
     public function testCompressionBzip2()
     {
@@ -107,12 +107,12 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             PHPBU_TEST_BIN . '/tar -jcf \'/tmp/foo.tar.bzip2\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
-            $tar->getCommandLine()
+            $tar->getCommand()
         );
     }
 
     /**
-     * Tests Tar::getCommandLine
+     * Tests Tar::getCommand
      */
     public function testRemoveSourceDir()
     {
@@ -125,12 +125,12 @@ class TarTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(
             '(' . PHPBU_TEST_BIN . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\''
               . ' && rm -rf \'' . $dir . '\')',
-            $tar->getCommandLine()
+            $tar->getCommand()
         );
     }
 
     /**
-     * Tests Tar::getCommandLine
+     * Tests Tar::getCommand
      *
      * @expectedException \phpbu\App\Exception
      */
@@ -141,7 +141,7 @@ class TarTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Tar::getCommandLine
+     * Tests Tar::getCommand
      *
      * @expectedException \phpbu\App\Exception
      */
