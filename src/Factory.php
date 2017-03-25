@@ -32,7 +32,7 @@ class Factory
         //   alias => fqcn
         'adapter'  => [
             'array'  => '\\phpbu\\App\\Adapter\\PHPArray',
-            'dotenv' => '\\phpbu\\App\\Adapter\\DotEnv',
+            'dotenv' => '\\phpbu\\App\\Adapter\\Dotenv',
             'env'    => '\\phpbu\\App\\Adapter\\Env',
         ],
         'runner' => [
