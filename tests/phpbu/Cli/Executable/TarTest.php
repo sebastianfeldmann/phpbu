@@ -142,6 +142,24 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Tar::getCommand
+     */
+    public function testUseCompressProgram()
+    {
+        $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
+        $tar  = new Tar(PHPBU_TEST_BIN);
+        $tar->useCompressProgram('lbzip2');
+        $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar');
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar --use-compress-program=\'lbzip2\' -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            $tar->getCommand()
+        );
+    }
+
+    /**
+     * Tests Tar::getCommand
      *
      * @expectedException \phpbu\App\Exception
      */

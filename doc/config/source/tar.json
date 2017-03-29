@@ -4,6 +4,7 @@
     "path": "src",
     "exclude": "foo/bar,fiz/baz",
     "ignoreFailedRead": false,
+    "compressProgram": "lbzip2",
     "removeSourceDir": false,
     "pathToTar": "/path/to/custom/bin"
   }

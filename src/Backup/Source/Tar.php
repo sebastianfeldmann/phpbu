@@ -51,6 +51,14 @@ class Tar extends SimulatorExecutable implements Simulator
     private $excludes;
 
     /**
+     * Special compression program
+     * --use-compress-program
+     *
+     * @var string
+     */
+    private $compressProgram;
+
+    /**
      * Tar should ignore failed reads
      * --ignore-failed-read
      *
@@ -91,6 +99,7 @@ class Tar extends SimulatorExecutable implements Simulator
         $this->pathToTar        = Util\Arr::getValue($conf, 'pathToTar', '');
         $this->path             = Util\Arr::getValue($conf, 'path', '');
         $this->excludes         = Util\Str::toList(Util\Arr::getValue($conf, 'exclude', ''));
+        $this->compressProgram  = Util\Arr::getValue($conf, 'compressProgram', '');
         $this->ignoreFailedRead = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ignoreFailedRead', ''), false);
         $this->removeSourceDir  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeSourceDir', ''), false);
 
@@ -150,7 +159,7 @@ class Tar extends SimulatorExecutable implements Simulator
             if (!Executable\Tar::isCompressionValid($target->getCompression()->getCommand())) {
                 $this->pathToArchive = $target->getPathnamePlain();
             } else {
-                // compression could be handled by the tar command
+                // compression can be handled by the tar command
                 $this->pathToArchive = $target->getPathname();
                 $this->compression   = $target->getCompression()->getCommand();
             }
@@ -162,6 +171,7 @@ class Tar extends SimulatorExecutable implements Simulator
         $executable = new Executable\Tar($this->pathToTar);
         $executable->archiveDirectory($this->path)
                    ->useCompression($this->compression)
+                   ->useCompressProgram($this->compressProgram)
                    ->ignoreFailedRead($this->ignoreFailedRead)
                    ->removeSourceDirectory($this->removeSourceDir)
                    ->archiveTo($this->pathToArchive);

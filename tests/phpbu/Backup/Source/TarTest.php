@@ -168,6 +168,30 @@ class TarTest extends CliTest
     /**
      * Tests Tar::getExecutable
      */
+    public function testUseCompressProgram()
+    {
+        $tar = new Tar();
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'compressProgram' => 'lbzip2']);
+
+        $compression = $this->getCompressionMock('bzip2', 'bz2');
+        $target      = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.bz2');
+        $target->method('shouldBeCompressed')->willReturn(true);
+        $target->method('getCompression')->willReturn($compression);
+        $target->method('getPathname')->willReturn('/tmp/backup.tar.bz2');
+
+        $exec = $tar->getExecutable($target);
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar --use-compress-program=\'lbzip2\' -cf \'/tmp/backup.tar.bz2\' -C \''
+            . dirname(__DIR__) . '\' \''
+            . basename(__DIR__) . '\'',
+            $exec->getCommand()
+        );
+    }
+
+    /**
+     * Tests Tar::getExecutable
+     */
     public function testInvalidCompression()
     {
         $tar = new Tar();

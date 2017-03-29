@@ -34,6 +34,14 @@ class Tar extends Abstraction implements Executable
     private $compression;
 
     /**
+     * Compress program to use.
+     * --use-compress-program
+     *
+     * @var string
+     */
+    private $compressProgram;
+
+    /**
      * Path to dump file
      *
      * @var string
@@ -105,6 +113,18 @@ class Tar extends Abstraction implements Executable
         if ($this->isCompressionValid($compression)) {
             $this->compression = $this->getCompressionOption($compression);
         }
+        return $this;
+    }
+
+    /**
+     * Set compress program.
+     *
+     * @param  string $program
+     * @return \phpbu\App\Cli\Executable\Tar
+     */
+    public function useCompressProgram(string $program) : Tar
+    {
+        $this->compressProgram = $program;
         return $this;
     }
 
@@ -192,12 +212,11 @@ class Tar extends Abstraction implements Executable
         $process = new CommandLine();
         $tar     = new Cmd($this->binary);
 
-        foreach ($this->excludes as $path) {
-            $tar->addOption('--exclude', $path);
-        }
+        $this->setExcludeOptions($tar);
 
         $tar->addOptionIfNotEmpty('--ignore-failed-read', $this->ignoreFailedRead, false);
-        $tar->addOption('-' . $this->compression . 'cf');
+        $tar->addOptionIfNotEmpty('--use-compress-program', $this->compressProgram);
+        $tar->addOption('-' . (empty($this->compressProgram) ? $this->compression : '') . 'cf');
         $tar->addArgument($this->tarPathname);
         $tar->addOption('-C', dirname($this->path), ' ');
         $tar->addArgument(basename($this->path));
@@ -205,11 +224,33 @@ class Tar extends Abstraction implements Executable
         $process->addCommand($tar);
 
         // delete the source data if requested
+        $this->addRemoveCommand($process);
+
+        return $process;
+    }
+
+    /**
+     * Adds necessary exclude options to tat command.
+     *
+     * @param \SebastianFeldmann\Cli\Command\Executable $tar
+     */
+    protected function setExcludeOptions(Cmd $tar)
+    {
+        foreach ($this->excludes as $path) {
+            $tar->addOption('--exclude', $path);
+        }
+    }
+
+    /**
+     * Add a remove command if requested.
+     *
+     * @param \SebastianFeldmann\Cli\CommandLine $process
+     */
+    protected function addRemoveCommand(CommandLine $process)
+    {
         if ($this->removeSourceDir) {
             $process->addCommand($this->getRmCommand());
         }
-
-        return $process;
     }
 
     /**

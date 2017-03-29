@@ -9,6 +9,9 @@
   <!-- optional, default false -->
   <option name="ignoreFailedRead" value="false" />
 
+  <!-- optional, default null -->
+  <option name="compressProgram" value="lbzip2" />
+
   <!-- optional, default false -->
   <option name="removeSourceDir" value="false" />
 
