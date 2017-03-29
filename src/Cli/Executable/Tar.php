@@ -34,6 +34,14 @@ class Tar extends Abstraction implements Executable
     private $compression;
 
     /**
+     * Compress program to use.
+     * --use-compress-program
+     *
+     * @var string
+     */
+    private $compressProgram;
+
+    /**
      * Path to dump file
      *
      * @var string
@@ -105,6 +113,18 @@ class Tar extends Abstraction implements Executable
         if ($this->isCompressionValid($compression)) {
             $this->compression = $this->getCompressionOption($compression);
         }
+        return $this;
+    }
+
+    /**
+     * Set compress program.
+     *
+     * @param  string $program
+     * @return \phpbu\App\Cli\Executable\Tar
+     */
+    public function useCompressProgram($program)
+    {
+        $this->compressProgram = $program;
         return $this;
     }
 
@@ -195,7 +215,8 @@ class Tar extends Abstraction implements Executable
         }
 
         $tar->addOptionIfNotEmpty('--ignore-failed-read', $this->ignoreFailedRead, false);
-        $tar->addOption('-' . $this->compression . 'cf');
+        $tar->addOptionIfNotEmpty('--use-compress-program', $this->compressProgram);
+        $tar->addOption('-' . (empty($this->compressProgram) ? $this->compression : '') . 'cf');
         $tar->addArgument($this->tarPathname);
         $tar->addOption('-C', dirname($this->path), ' ');
         $tar->addArgument(basename(($this->path)));

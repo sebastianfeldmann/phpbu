@@ -159,7 +159,36 @@ class TarTest extends CliTest
         $this->tar->setup(['path' => __DIR__, 'pathToTar' => $path]);
         $exec = $this->tar->getExecutable($target);
 
-        $this->assertEquals($path . '/tar -zcf \'/tmp/backup.tar.gz\' -C \'' . dirname(__DIR__) . '\' \'' . basename(__DIR__) . '\'', $exec->getCommandLine());
+        $this->assertEquals(
+            $path . '/tar -zcf \'/tmp/backup.tar.gz\' -C \''
+            . dirname(__DIR__) . '\' \''
+            . basename(__DIR__) . '\'',
+            $exec->getCommandLine()
+        );
+    }
+
+
+    /**
+     * Tests Tar::getExecutable
+     */
+    public function testUseCompressProgram()
+    {
+        $path        = realpath(__DIR__ . '/../../../_files/bin');
+        $compression = $this->getCompressionMock('bzip2', 'bz2');
+        $target      = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.bz2');
+        $target->method('shouldBeCompressed')->willReturn(true);
+        $target->method('getCompression')->willReturn($compression);
+        $target->method('getPathname')->willReturn('/tmp/backup.tar.bz2');
+
+        $this->tar->setup(['pathToTar' => $path, 'path' => __DIR__, 'compressProgram' => 'lbzip2']);
+        $exec = $this->tar->getExecutable($target);
+
+        $this->assertEquals(
+            $path . '/tar --use-compress-program=\'lbzip2\' -cf \'/tmp/backup.tar.bz2\' -C \''
+            . dirname(__DIR__) . '\' \''
+            . basename(__DIR__) . '\'',
+            $exec->getCommandLine()
+        );
     }
 
     /**

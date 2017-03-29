@@ -108,6 +108,27 @@ class TarTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($path . '/tar -jcf \'/tmp/foo.tar.bzip2\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommandLine());
     }
 
+
+    /**
+     * Tests Tar::getCommandLine
+     */
+    public function testUseCompressionProgram()
+    {
+        $path = realpath(__DIR__ . '/../../../_files/bin');
+        $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
+        $tar  = new Tar($path);
+        $tar->useCompressProgram('lbzip2')
+            ->archiveDirectory($dir)
+            ->archiveTo('/tmp/foo.tar.bzip2');
+
+        $this->assertEquals(
+            $path . '/tar --use-compress-program=\'lbzip2\' -cf \'/tmp/foo.tar.bzip2\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            $tar->getCommandLine()
+        );
+    }
+
     /**
      * Tests Tar::getCommandLine
      */
