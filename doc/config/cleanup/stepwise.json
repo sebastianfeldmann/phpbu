@@ -1,0 +1,10 @@
+{
+  "type": "stepwise",
+  "options": {
+    "daysToKeepAll": "2",
+    "daysToKeepDaily": "5",
+    "weeksToKeepWeekly": "3",
+    "monthToKeepMonthly": "4",
+    "yearsToKeepYearly": "10"
+  }
+}

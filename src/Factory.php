@@ -81,6 +81,7 @@ class Factory
         'cleaner' => [
             'capacity'  => '\\phpbu\\App\\Backup\\Cleaner\\Capacity',
             'outdated'  => '\\phpbu\\App\\Backup\\Cleaner\\Outdated',
+            'stepwise'  => '\\phpbu\\App\\Backup\\Cleaner\\Stepwise',
             'quantity'  => '\\phpbu\\App\\Backup\\Cleaner\\Quantity',
         ],
     ];

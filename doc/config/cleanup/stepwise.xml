@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cleanup type="stepwise">
+  <!-- mandatory -->
+  <option name="daysToKeepAll" value="2" />
+
+  <!-- mandatory -->
+  <option name="daysToKeepDaily" value="5" />
+
+  <!-- mandatory -->
+  <option name="weeksToKeepWeekly" value="3" />
+
+  <!-- mandatory -->
+  <option name="monthToKeepMonthly" value="4" />
+
+  <!-- mandatory -->
+  <option name="yearsToKeepYearly" value="10" />
+</cleanup>
