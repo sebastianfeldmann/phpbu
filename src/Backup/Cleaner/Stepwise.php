@@ -155,9 +155,9 @@ class Stepwise extends Abstraction implements Cleaner
     {
         foreach ($this->ranges as $range) {
             if ($file->getMTime() > $range->getEnd()) {
-                break;
+                return $range;
             }
         }
-        return $range;
+        throw new Exception('no range for file');
     }
 }

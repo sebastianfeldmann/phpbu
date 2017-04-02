@@ -104,17 +104,19 @@ class StepwiseTest extends TestCase
     }
 
     /**
-     * Tests Capacity::cleanup
+     * Tests Stepwise::cleanup
+     *
+     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
-    public function __testCleanupDeleteNoFile()
+    public function testCleanupInvalidRange()
     {
         $fileList      = $this->getFileMockList(
             [
-                ['size' => 100, 'shouldBeDeleted' => false],
-                ['size' => 100, 'shouldBeDeleted' => false],
-                ['size' => 100, 'shouldBeDeleted' => false],
-                ['size' => 100, 'shouldBeDeleted' => false],
-                ['size' => 100, 'shouldBeDeleted' => false],
+                [
+                    'size'            => 100,
+                    'shouldBeDeleted' => false,
+                    'mTime'           => -5,
+                ]
             ]
         );
         $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
@@ -127,10 +129,17 @@ class StepwiseTest extends TestCase
                               ->getMock();
 
         $collectorStub->expects($this->once())->method('getBackupFiles')->willReturn($fileList);
-        $targetStub->expects($this->once())->method('getSize')->willReturn(100);
 
-        $cleaner = new Capacity();
-        $cleaner->setup(['size' => '1M']);
+        $cleaner = new Stepwise();
+        $cleaner->setup(
+            [
+                'daysToKeepAll'      => '1',
+                'daysToKeepDaily'    => '3',
+                'weeksToKeepWeekly'  => '3',
+                'monthToKeepMonthly' => '3',
+                'yearsToKeepYearly'  => '1',
+            ]
+        );
 
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }
