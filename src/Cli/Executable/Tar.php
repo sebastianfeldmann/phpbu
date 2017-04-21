@@ -79,6 +79,7 @@ class Tar extends Abstraction implements Executable
     private static $availableCompressions = [
         'bzip2' => 'j',
         'gzip'  => 'z',
+        'xz'    => 'J'
     ];
 
     /**

@@ -48,6 +48,17 @@ class CompressionTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Test xz compressor
+     */
+    public function testXz()
+    {
+        $gzip = Compression\Factory::create('xz');
+        $this->assertEquals('xz', $gzip->getSuffix());
+        $this->assertEquals('xz', $gzip->getCommand());
+        $this->assertEquals('application/x-xz', $gzip->getMimeType());
+    }
+
+    /**
      * Test Compression::isPipeable
      */
     public function testIsPipeable()
@@ -56,6 +67,9 @@ class CompressionTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($gzip->isPipeable());
 
         $bzip = Compression\Factory::create('bzip2');
+        $this->assertTrue($bzip->isPipeable());
+
+        $xz = Compression\Factory::create('xz');
         $this->assertTrue($bzip->isPipeable());
 
         $zip = Compression\Factory::create('zip');
