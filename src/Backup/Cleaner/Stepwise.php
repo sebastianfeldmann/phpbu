@@ -12,7 +12,7 @@ use phpbu\App\Util\Arr;
  * Cleanup backup directory.
  * Keep less and less backups over time
  *
- *         | for x days  | for x days        | for x weeks           | for x month keep            | for x years
+ *         | for x days  | for x days        | for x weeks           | for x month                 | for x years
  *         | keep all    | keep one per day  | keep one per week     | keep one per month          | keep one per year
  * --------+-------------+-------------------+-----------------------+-----------------------------+------------------
  * backups | ............| . . . . . . . . . | .       .       .     | .                         . |
@@ -97,19 +97,19 @@ class Stepwise extends Abstraction implements Cleaner
         $end   = $start - (86400 * $this->daysToKeepAll);
         $all   = new Range($start, $end, new Stepwise\Keeper\All());
 
-        // define the range that keeps one backup per day
+        // define the range that keeps backups per day
         $end   = mktime(0, 0, 0, date('m', $end), date('d', $end) - $this->daysToKeepDaily, date('Y', $end));
         $daily = new Range($all->getEnd(), $end, new Stepwise\Keeper\OnePerGroup('Ymd'));
 
-        // define the range that keeps one backup per week
+        // define the range that keeps backups per week
         $end    = mktime(0, 0, 0, date('m', $end), date('d', $end) - (7 * $this->weeksToKeepWeekly), date('Y', $end));
         $weekly = new Range($daily->getEnd(), $end, new Stepwise\Keeper\OnePerGroup('YW'));
 
-        // define the range that keeps one backup per month
+        // define the range that keeps backups per month
         $end     = mktime(0, 0, 0, date('m', $end) - $this->monthToKeepMonthly, date('d', $end), date('Y', $end));
         $monthly = new Range($weekly->getEnd(), $end, new Stepwise\Keeper\OnePerGroup('Ym'));
 
-        // define the range that keeps one backup per year
+        // define the range that keeps backups per year
         $end    = mktime(0, 0, 0, date('m', $end), date('d', $end), date('Y', $end) - $this->yearsToKeepYearly);
         $yearly = new Range($monthly->getEnd(), $end, new Stepwise\Keeper\OnePerGroup('Y'));
 
