@@ -122,13 +122,15 @@
     </copy>
 
     <!-- DROPBOX SDK -->
-    <copy file="${basedir}/vendor/dropbox/dropbox-sdk/License.txt" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
+    <copy file="${basedir}/vendor/kunalvarma05/dropbox-php-sdk/LICENSE" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/dropbox">
-      <fileset dir="${basedir}/vendor/dropbox/dropbox-sdk/lib/Dropbox">
+      <fileset dir="${basedir}/vendor/kunalvarma05/dropbox-php-sdk/src/Dropbox">
         <include name="**/*.php"/>
-        <include name="**/*.crt"/>
-        <exclude name="**/autoload.php"/>
-        <exclude name="**/strict.php"/>
+      </fileset>
+    </copy>
+    <copy todir="${basedir}/build/phar/lib/collect">
+      <fileset dir="${basedir}/vendor/tightenco/collect/src/Illuminate">
+        <include name="**/*.php"/>
       </fileset>
     </copy>
 

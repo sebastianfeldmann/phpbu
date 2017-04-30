@@ -44,7 +44,7 @@
   },
   "require-dev": {
     "aws/aws-sdk-php": "~3.10",
-    "dropbox/dropbox-sdk": "~1.1",
+    "kunalvarma05/dropbox-php-sdk": "~0.2",
     "phpseclib/phpseclib": "~2.0",
     "softlayer/objectstorage": "dev-master",
     "vlucas/phpdotenv": "~2.4",
