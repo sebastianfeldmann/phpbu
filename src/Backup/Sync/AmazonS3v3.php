@@ -65,24 +65,6 @@ class AmazonS3v3 extends AmazonS3
                 'LocationConstraint' => $this->region,
             ]
         ]);
-
-        // if a special expiration date is configured, set the bucket lifecycle rule
-        if (!empty($this->bucketTTL)) {
-            $s3->putBucketLifecycleConfiguration(
-                [
-                    'Bucket' => $this->bucket,
-                    'Rules'  => [
-                        [
-                            'Status'     => 'Enabled',
-                            'Prefix'     => 'backup',
-                            'Expiration' => [
-                                'Days' => $this->bucketTTL,
-                            ]
-                        ]
-                    ]
-                ]
-            );
-        }
     }
 
     /**
