@@ -1,9 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use Aws\S3\S3Client;
 use phpbu\App\Result;
-use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
@@ -41,6 +39,13 @@ abstract class AmazonS3 implements Simulator
      * @var string
      */
     protected $bucket;
+
+    /**
+     * TTL for all items in this bucket.
+     *
+     * @var int
+     */
+    protected $bucketTTL;
 
     /**
      * AWS S3 region
@@ -108,6 +113,7 @@ abstract class AmazonS3 implements Simulator
         $this->key             = $config['key'];
         $this->secret          = $config['secret'];
         $this->bucket          = $config['bucket'];
+        $this->bucketTTL       = Arr::getValue($config, 'bucketTTL');
         $this->region          = $config['region'];
         $this->path            = Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path']));
         $this->acl             = Arr::getValue($config, 'acl', 'private');

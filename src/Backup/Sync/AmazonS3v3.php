@@ -4,7 +4,6 @@ namespace phpbu\App\Backup\Sync;
 use Aws\S3\S3Client;
 use Aws\S3\MultipartUploader;
 use phpbu\App\Result;
-use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 
 /**
@@ -39,16 +38,66 @@ class AmazonS3v3 extends AmazonS3
             ]
         ]);
 
+        if (!$s3->doesBucketExist($this->bucket)) {
+            $result->debug('create s3 bucket');
+            $this->createBucket($s3);
+        }
+
         try {
-            if ($this->useMultiPartUpload($target)) {
-                $this->uploadMultiPart($target, $s3);
-            } else {
-                $this->uploadStream($target, $s3);
-            }
+            $this->upload($target, $s3);
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }
         $result->debug('upload: done');
+    }
+
+    /**
+     * Create a s3 bucket.
+     *
+     * @param \Aws\S3\S3Client $s3
+     */
+    private function createBucket(S3Client $s3)
+    {
+        $s3->createBucket([
+            'ACL'                       => $this->acl,
+            'Bucket'                    => $this->bucket,
+            'CreateBucketConfiguration' => [
+                'LocationConstraint' => $this->region,
+            ]
+        ]);
+
+        // if a special expiration date is configured, set the bucket lifecycle rule
+        if (!empty($this->bucketTTL)) {
+            $s3->putBucketLifecycleConfiguration(
+                [
+                    'Bucket' => $this->bucket,
+                    'Rules'  => [
+                        [
+                            'Status'     => 'Enabled',
+                            'Prefix'     => 'backup',
+                            'Expiration' => [
+                                'Days' => $this->bucketTTL,
+                            ]
+                        ]
+                    ]
+                ]
+            );
+        }
+    }
+
+    /**
+     * Upload backup to Amazon S3 bucket.
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \Aws\S3\S3Client         $s3
+     */
+    private function upload(Target $target, S3Client $s3)
+    {
+        if ($this->useMultiPartUpload($target)) {
+            $this->uploadMultiPart($target, $s3);
+        } else {
+            $this->uploadStream($target, $s3);
+        }
     }
 
     /**
