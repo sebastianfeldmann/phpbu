@@ -22,3 +22,19 @@ foreach ($lock->packages as $package) {
     }
     echo PHP_EOL;
 }
+foreach ($lock->{'packages-dev'} as $package) {
+    if (!in_array($package->name, [
+        "aws/aws-sdk-php",
+        "dropbox/dropbox-sdk",
+        "phpseclib/phpseclib",
+        "softlayer/objectstorage",
+        "vlucas/phpdotenv"
+    ])) {
+      continue;
+    }
+    echo $package->name . ': ' . $package->version;
+    if (!preg_match('/^[v= ]*(([0-9]+)(\\.([0-9]+)(\\.([0-9]+)(-([0-9]+))?(-?([a-zA-Z-+][a-zA-Z0-9\\.\\-:]*)?)?)?)?)$/', $package->version)) {
+        echo '@' . $package->source->reference;
+    }
+    echo PHP_EOL;
+}
