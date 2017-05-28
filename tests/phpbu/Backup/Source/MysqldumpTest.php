@@ -223,17 +223,27 @@ class MysqldumpTest extends CliTest
      */
     public function testBackupFail()
     {
-        $runner = $this->getRunnerMock();
+        $file = sys_get_temp_dir() . '/fakedump';
+        file_put_contents($file, '# mysql fake dump');
+
+        $runnerResultMock = $this->getRunnerResultMock(1, 'mysqldump', '', '', $file);
+        $runner           = $this->getRunnerMock();
         $runner->expects($this->once())
                ->method('run')
-               ->willReturn($this->getRunnerResultMock(1, 'mysqldump'));
+               ->willReturn($runnerResultMock);
 
-        $target    = $this->getTargetMock();
+        $target    = $this->getTargetMock($file);
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
         $mysqldump= new Mysqldump($runner);
         $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN]);
-        $mysqldump->backup($target, $appResult);
+
+        try {
+            $mysqldump->backup($target, $appResult);
+        } catch (\Exception $e) {
+            $this->assertFalse(file_exists($file));
+            throw $e;
+        }
     }
 }

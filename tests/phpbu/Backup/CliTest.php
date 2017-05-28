@@ -46,11 +46,18 @@ abstract class CliTest extends \PHPUnit\Framework\TestCase
      * @param  string $cmd
      * @param  string $out
      * @param  string $err
+     * @param  string $redirect
      * @return \SebastianFeldmann\Cli\Command\Runner\Result
      */
-    protected function getRunnerResultMock(int $code, string $cmd, string $out = '', string $err = '')
+    protected function getRunnerResultMock(
+        int $code,
+        string $cmd,
+        string $out = '',
+        string $err = '',
+        string $redirect = ''
+    )
     {
-        $cmdRes = new CommandResult($cmd, $code, $out, $err);
+        $cmdRes = new CommandResult($cmd, $code, $out, $err, $redirect);
         $runRes = new RunnerResult($cmdRes);
 
         return $runRes;
