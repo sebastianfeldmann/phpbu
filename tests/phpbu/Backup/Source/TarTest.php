@@ -267,6 +267,23 @@ class TarTest extends CliTest
      *
      * @expectedException \phpbu\App\Exception
      */
+    public function testBackupInvalidPath()
+    {
+        $runner = $this->getRunnerMock();
+        $tar    = new Tar($runner);
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __FILE__]);
+
+        $target    = $this->getTargetMock('/tmp/backup.tar');
+        $appResult = $this->getAppResultMock();
+
+        $tar->backup($target, $appResult);
+    }
+
+    /**
+     * Tests Tar::backup
+     *
+     * @expectedException \phpbu\App\Exception
+     */
     public function testBackupFail()
     {
         $runner = $this->getRunnerMock();
