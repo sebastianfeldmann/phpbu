@@ -104,11 +104,7 @@ abstract class AmazonS3 implements Simulator
         }
 
         // check for mandatory options
-        foreach (['key', 'secret', 'bucket', 'region', 'path'] as $option) {
-            if (!Arr::isSetAndNotEmptyString($config, $option)) {
-                throw new Exception('AWS S3 ' . $option . ' is mandatory');
-            }
-        }
+        $this->validateConfig($config);
 
         $this->key             = $config['key'];
         $this->secret          = $config['secret'];
@@ -118,6 +114,21 @@ abstract class AmazonS3 implements Simulator
         $this->path            = Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path']));
         $this->acl             = Arr::getValue($config, 'acl', 'private');
         $this->multiPartUpload = Str::toBoolean(Arr::getValue($config, 'useMultiPartUpload'), false);
+    }
+
+    /**
+     * Make sure all mandatory keys are present in given config.
+     *
+     * @param  array $config
+     * @throws \phpbu\App\Backup\Sync\Exception
+     */
+    protected function validateConfig(array $config)
+    {
+        foreach (['key', 'secret', 'bucket', 'region', 'path'] as $option) {
+            if (!Arr::isSetAndNotEmptyString($config, $option)) {
+                throw new Exception('AWS S3 ' . $option . ' is mandatory');
+            }
+        }
     }
 
     /**
