@@ -201,7 +201,9 @@ class MysqldumpTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(0, 'mysqldump'));
 
-        $target    = $this->getTargetMock('/tmp/foo');
+
+        $targetDir = sys_get_temp_dir() . '/foo';
+        $target    = $this->getTargetMock($targetDir);
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
@@ -211,6 +213,7 @@ class MysqldumpTest extends CliTest
         $status = $mysqldump->backup($target, $appResult);
 
         $this->assertFalse($status->handledCompression());
+        rmdir($targetDir . '.dump');
     }
 
     /**
