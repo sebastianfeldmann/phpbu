@@ -7,6 +7,12 @@
   <option name="user" value="root" />
 
   <!-- optional, default=none -->
+  <option name="password" value="secret" />
+
+  <!-- optional, default=none -->
+  <option name="passwordFile" value="/config/.rsync-config" />
+
+  <!-- optional, default=none -->
   <option name="host" value="127.0.0.1" />
 
   <!-- optional, default=false -->

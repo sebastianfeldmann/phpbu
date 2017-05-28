@@ -95,6 +95,8 @@ class Rsync extends Cli implements Simulator
             );
         } else {
             $executable->fromPath($this->getRsyncLocation($target))
+                       ->usePassword($this->password)
+                       ->usePasswordFile($this->passwordFile)
                        ->toHost($this->host)
                        ->toPath($this->path)
                        ->toUser($this->user)

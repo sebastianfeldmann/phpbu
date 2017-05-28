@@ -114,6 +114,40 @@ class RsyncTest extends CliTest
     /**
      * Tests Rsync::getExecutable
      */
+    public function testGetExecWithPassword()
+    {
+        $password = 'secret';
+        $env      = 'RSYNC_PASSWORD=' . escapeshellarg($password) . ' ';
+        $rsync  = new Rsync();
+        $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'path' => '/tmp', 'password' => $password]);
+
+        $target = $this->getTargetMock('/foo/bar.txt');
+        $exec   = $rsync->getExecutable($target);
+
+        $this->assertEquals($env . PHPBU_TEST_BIN . '/rsync -avz \'/foo/bar.txt\' \'/tmp\'', $exec->getCommand());
+    }
+
+    /**
+     * Tests Rsync::getExecutable
+     */
+    public function testGetExecWithPasswordFile()
+    {
+        $file   = './.rsync-password';
+        $rsync  = new Rsync();
+        $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'path' => '/tmp', 'passwordFile' => $file]);
+
+        $target = $this->getTargetMock('/foo/bar.txt');
+        $exec   = $rsync->getExecutable($target);
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/rsync -avz --password-file=' . escapeshellarg($file) . ' \'/foo/bar.txt\' \'/tmp\'',
+            $exec->getCommand()
+        );
+    }
+
+    /**
+     * Tests Rsync::getExecutable
+     */
     public function testGetExecWithoutCompressionIfTargetIsCompressed()
     {
         $rsync  = new Rsync();

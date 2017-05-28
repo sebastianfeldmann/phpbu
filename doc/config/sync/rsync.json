@@ -3,6 +3,8 @@
   "options": {
     "path": "/tmp/",
     "user": "root",
+    "password": "secret",
+    "passwordFile": "/config/.rsync-password",
     "host": "example.com",
     "dirsync": false,
     "delete": false,

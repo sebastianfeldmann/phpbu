@@ -40,6 +40,20 @@ trait Rsync
     protected $user = '';
 
     /**
+     * Password for remote authentication
+     *
+     * @var string
+     */
+    protected $password;
+
+    /**
+     * File containing the user password
+     *
+     * @var string
+     */
+    protected $passwordFile;
+
+    /**
      * Target host
      *
      * @var string
@@ -90,12 +104,14 @@ trait Rsync
             if (!Util\Arr::isSetAndNotEmptyString($conf, 'path')) {
                 throw new Exception('option \'path\' is missing');
             }
-            $this->path      = Util\Str::replaceDatePlaceholders($conf['path']);
-            $this->user      = Util\Arr::getValue($conf, 'user', '');
-            $this->host      = Util\Arr::getValue($conf, 'host', '');
-            $this->excludes  = Util\Str::toList(Util\Arr::getValue($conf, 'exclude', ''), ':');
-            $this->delete    = Util\Str::toBoolean(Util\Arr::getValue($conf, 'delete', ''), false);
-            $this->isDirSync = Util\Str::toBoolean(Util\Arr::getValue($conf, 'dirsync', ''), false);
+            $this->path         = Util\Str::replaceDatePlaceholders($conf['path']);
+            $this->user         = Util\Arr::getValue($conf, 'user', '');
+            $this->host         = Util\Arr::getValue($conf, 'host', '');
+            $this->password     = Util\Arr::getValue($conf, 'password', '');
+            $this->passwordFile = Util\Arr::getValue($conf, 'passwordFile', '');
+            $this->excludes     = Util\Str::toList(Util\Arr::getValue($conf, 'exclude', ''), ':');
+            $this->delete       = Util\Str::toBoolean(Util\Arr::getValue($conf, 'delete', ''), false);
+            $this->isDirSync    = Util\Str::toBoolean(Util\Arr::getValue($conf, 'dirsync', ''), false);
         }
     }
 
