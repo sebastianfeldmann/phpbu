@@ -15,7 +15,7 @@ namespace phpbu\App\Cli\Executable;
 class RsyncTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests Rsync::createCommandLine
+     * Tests Rsync::getCommandLine
      */
     public function testGetExecWithCustomArgs()
     {
@@ -27,7 +27,7 @@ class RsyncTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Rsync::getExec
+     * Tests Rsync::getCommandLine
      */
     public function testMinimal()
     {
@@ -39,7 +39,52 @@ class RsyncTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Rsync::getExec
+     * Tests Rsync::getCommandLine
+     */
+    public function testPassword()
+    {
+        $password = 'secret';
+        $export   = 'RSYNC_PASSWORD=' . escapeshellarg($password) . ' ';
+        $expected = 'rsync -av \'./foo\' \'/tmp\'';
+        $rsync    = new Rsync(PHPBU_TEST_BIN);
+        $rsync->usePassword($password)
+              ->fromPath('./foo')
+              ->toPath('/tmp');
+
+        $this->assertEquals($export . PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
+    }
+
+    /**
+     * Tests Rsync::getCommandPrintable
+     */
+    public function testPasswordPrintable()
+    {
+        $password = 'secret';
+        $env      = 'RSYNC_PASSWORD=\'******\' ';
+        $expected = 'rsync -av \'./foo\' \'/tmp\'';
+        $rsync    = new Rsync(PHPBU_TEST_BIN);
+        $rsync->usePassword($password);
+        $rsync->fromPath('./foo')->toPath('/tmp');
+
+        $this->assertEquals($env . PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandPrintable());
+    }
+
+    /**
+     * Tests Rsync::getCommandLine
+     */
+    public function testPasswordFile()
+    {
+        $expected = 'rsync -av --password-file=\'./.rsync-password\' \'./foo\' \'/tmp\'';
+        $rsync    = new Rsync(PHPBU_TEST_BIN);
+        $rsync->usePasswordFile('./.rsync-password')
+              ->fromPath('./foo')
+              ->toPath('/tmp');
+
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
+    }
+
+    /**
+     * Tests Rsync::getCommandLine
      */
     public function testWithCompression()
     {
@@ -51,7 +96,7 @@ class RsyncTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Rsync::getExec
+     * Tests Rsync::getCommandLine
      */
     public function testDelete()
     {
@@ -63,7 +108,7 @@ class RsyncTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Rsync::getExec
+     * Tests Rsync::getCommandLine
      */
     public function testExcludes()
     {
@@ -76,7 +121,7 @@ class RsyncTest extends \PHPUnit\Framework\TestCase
 
 
     /**
-     * Tests Rsync::createCommandLine
+     * Tests Rsync::getCommandLine
      *
      * @expectedException \phpbu\App\Exception
      */
@@ -87,7 +132,7 @@ class RsyncTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Rsync::createCommandLine
+     * Tests Rsync::getCommandLine
      *
      * @expectedException \phpbu\App\Exception
      */

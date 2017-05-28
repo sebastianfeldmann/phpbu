@@ -20,6 +20,8 @@ use SebastianFeldmann\Cli\Command\Executable as Cmd;
  */
 class Rsync extends Abstraction implements Executable
 {
+    use OptionMasker;
+
     /**
      * Source
      *
@@ -33,6 +35,20 @@ class Rsync extends Abstraction implements Executable
      * @var \phpbu\App\Cli\Executable\Rsync\Location
      */
     private $target;
+
+    /**
+     * Password to use to authenticate
+     *
+     * @var string
+     */
+    private $password;
+
+    /**
+     * Path to password file
+     *
+     * @var string
+     */
+    private $passwordFile;
 
     /**
      * Raw args
@@ -70,6 +86,7 @@ class Rsync extends Abstraction implements Executable
     public function __construct(string $path = '')
     {
         $this->setup('rsync', $path);
+        $this->setMaskCandidates(['password']);
         $this->source = new Rsync\Location();
         $this->target = new Rsync\Location();
     }
@@ -85,6 +102,31 @@ class Rsync extends Abstraction implements Executable
         $this->args = $args;
         return $this;
     }
+
+    /**
+     * Set password environment variable RSYNC_PASSWORD.
+     *
+     * @param  string $password
+     * @return \phpbu\App\Cli\Executable\Rsync
+     */
+    public function usePassword(string $password)
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    /**
+     * Set path to password file.
+     *
+     * @param  string $file
+     * @return \phpbu\App\Cli\Executable\Rsync
+     */
+    public function usePasswordFile(string $file)
+    {
+        $this->passwordFile = $file;
+        return $this;
+    }
+
 
     /**
      * Set source user.
@@ -202,30 +244,43 @@ class Rsync extends Abstraction implements Executable
      */
     protected function createCommandLine() : CommandLine
     {
-        $process = new CommandLine();
-        $cmd     = new Cmd($this->binary);
+        $password = !empty($this->password) ? 'RSYNC_PASSWORD=' . escapeshellarg($this->password) . ' ' : '';
+        $process  = new CommandLine();
+        $cmd      = new Cmd($password . $this->binary);
         $process->addCommand($cmd);
 
         if (!empty($this->args)) {
             $cmd->addOption($this->args);
         } else {
-            if (!$this->source->isValid()) {
-                throw new Exception('source path is missing');
-            }
-            if (!$this->target->isValid()) {
-                throw new Exception('target path is missing');
-            }
+            // make sure source and target are valid
+            $this->validateLocations();
 
             // use archive mode, verbose and compress if not already done
             $options = '-av' . ($this->compressed ? 'z' : '');
             $cmd->addOption($options);
             $this->configureExcludes($cmd, $this->excludes);
             $cmd->addOptionIfNotEmpty('--delete', $this->delete, false);
+            $cmd->addOptionIfNotEmpty('--password-file', $this->passwordFile);
             $cmd->addArgument($this->source->toString());
             $cmd->addArgument($this->target->toString());
         }
 
         return $process;
+    }
+
+    /**
+     * Makes sure source and target are valid.
+     *
+     * @throws \phpbu\App\Exception
+     */
+    protected function validateLocations()
+    {
+        if (!$this->source->isValid()) {
+            throw new Exception('source path is missing');
+        }
+        if (!$this->target->isValid()) {
+            throw new Exception('target path is missing');
+        }
     }
 
     /**
