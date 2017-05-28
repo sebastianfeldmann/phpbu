@@ -151,6 +151,24 @@ class MysqldumpTest extends CliTest
     /**
      * Tests Mysqldump::backup
      */
+    public function testSimulate()
+    {
+        $runner    = $this->getRunnerMock();
+        $target    = $this->getTargetMock();
+        $appResult = $this->getAppResultMock();
+        $appResult->expects($this->once())->method('debug');
+
+        $mysqldump = new Mysqldump($runner);
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN]);
+
+        $status = $mysqldump->simulate($target, $appResult);
+
+        $this->assertFalse($status->handledCompression());
+    }
+
+    /**
+     * Tests Mysqldump::backup
+     */
     public function testBackupOkCompressed()
     {
         $runner = $this->getRunnerMock();

@@ -107,6 +107,22 @@ class OpenSSLTest extends CliTest
     }
 
     /**
+     * Tests OpenSSL::simulate
+     */
+    public function testSimulate()
+    {
+        $runner = $this->getRunnerMock();
+
+        $target    = $this->getTargetMock(__FILE__);
+        $appResult = $this->getAppResultMock();
+        $appResult->expects($this->once())->method('debug');
+
+        $openSSL = new OpenSSL($runner);
+        $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'certFile' => '/foo/my.pem', 'algorithm' => 'aes256']);
+        $openSSL->simulate($target, $appResult);
+    }
+
+    /**
      * Tests OpenSSL::crypt
      *
      * @expectedException \phpbu\App\Backup\Crypter\Exception
