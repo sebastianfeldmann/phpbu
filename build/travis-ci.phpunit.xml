@@ -9,6 +9,14 @@
       <directory>../tests/phpbu</directory>
     </testsuite>
   </testsuites>
+  <filter>
+    <whitelist>
+      <directory>src</directory>
+      <exclude>
+        <file>src/Cmd.php</file>
+      </exclude>
+    </whitelist>
+  </filter>
   <logging>
     <log type="coverage-clover" target="../clover.xml" />
   </logging>
