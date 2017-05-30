@@ -3,10 +3,7 @@ namespace phpbu\App\Backup\Sync;
 
 use phpseclib;
 use phpbu\App\Result;
-use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Arr;
-use phpbu\App\Util\Str;
 
 /**
  * Sftp sync
@@ -53,6 +50,35 @@ class Sftp extends Xtp implements Simulator
      */
     public function sync(Target $target, Result $result)
     {
+        $sftp           = $this->login();
+        $remoteFilename = $target->getFilename();
+        $localFile      = $target->getPathname();
+
+        foreach ($this->getRemoteDirectoryList() as $dir) {
+            if (!$sftp->is_dir($dir)) {
+                $result->debug(sprintf('creating remote dir \'%s\'', $dir));
+                $sftp->mkdir($dir);
+            }
+            $result->debug(sprintf('change to remote dir \'%s\'', $dir));
+            $sftp->chdir($dir);
+        }
+
+        $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
+        $result->debug(sprintf('last error \'%s\'', $sftp->getLastSFTPError()));
+
+        if (!$sftp->put($remoteFilename, $localFile, phpseclib\Net\SFTP::SOURCE_LOCAL_FILE)) {
+            throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $sftp->getLastSFTPError()));
+        }
+    }
+
+    /**
+     * Create a sftp handle.
+     *
+     * @return \phpseclib\Net\SFTP
+     * @throws \phpbu\App\Backup\Sync\Exception
+     */
+    private function login() : phpseclib\Net\SFTP
+    {
         // silence phpseclib
         $old  = error_reporting(0);
         $sftp = new phpseclib\Net\SFTP($this->host);
@@ -67,28 +93,23 @@ class Sftp extends Xtp implements Simulator
                 )
             );
         }
+        // restore old error reporting
         error_reporting($old);
 
-        $remoteFilename = $target->getFilename();
-        $localFile      = $target->getPathname();
+        return $sftp;
+    }
 
+    /**
+     * Return list of remote directories to travers.
+     *
+     * @return array
+     */
+    private function getRemoteDirectoryList() : array
+    {
+        $remoteDirs = [];
         if ('' !== $this->remotePath) {
             $remoteDirs = explode('/', $this->remotePath);
-            foreach ($remoteDirs as $dir) {
-                if (!$sftp->is_dir($dir)) {
-                    $result->debug(sprintf('creating remote dir \'%s\'', $dir));
-                    $sftp->mkdir($dir);
-                }
-                $result->debug(sprintf('change to remote dir \'%s\'', $dir));
-                $sftp->chdir($dir);
-            }
         }
-        $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
-        $result->debug(sprintf('last error \'%s\'', $sftp->getLastSFTPError()));
-
-        /** @noinspection PhpInternalEntityUsedInspection */
-        if (!$sftp->put($remoteFilename, $localFile, phpseclib\Net\SFTP::SOURCE_LOCAL_FILE)) {
-            throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $sftp->getLastSFTPError()));
-        }
+        return $remoteDirs;
     }
 }
