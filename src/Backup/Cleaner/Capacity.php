@@ -39,7 +39,7 @@ class Capacity extends Abstraction implements Simulator
     /**
      * Delete current backup as well
      *
-     * @var boolean
+     * @var bool
      */
     protected $deleteTarget;
 
@@ -91,33 +91,59 @@ class Capacity extends Abstraction implements Simulator
      */
     protected function getFilesToDelete(Target $target, Collector $collector)
     {
-        $files  = $collector->getBackupFiles();
+        $files  = $this->getDeletableBackups($target, $collector);
         $size   = $target->getSize();
         $delete = [];
 
+        // sum up the size of all backups
         /** @var \phpbu\App\Backup\File $file */
         foreach ($files as $file) {
             $size += $file->getSize();
         }
 
-        // backups exceed capacity?
-        if ($size > $this->capacityBytes) {
-            // oldest backups first
+        // check if backups exceed capacity?
+        if ($this->isCapacityExceeded($size)) {
+            // sort backups by date, oldest first, key 'YYYYMMDDHHIISS-NR-PATH'
             ksort($files);
 
-            while ($size > $this->capacityBytes && count($files) > 0) {
+            while ($this->isCapacityExceeded($size) && count($files) > 0) {
+                // get oldest backup from list, move it to delete list
                 $file     = array_shift($files);
                 $size    -= $file->getSize();
                 $delete[] = $file;
             }
-
-            // deleted all old backups but still exceeding the space limit
-            // delete the currently created backup as well
-            if ($this->deleteTarget && $size > $this->capacityBytes) {
-                $delete[] = $target->toFile();
-            }
         }
 
         return $delete;
+    }
+
+    /**
+     * Return a list of all deletable backups, including the currently created one if configured.
+     *
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @return \phpbu\App\Backup\File[]
+     */
+    protected function getDeletableBackups(Target $target, Collector $collector) : array
+    {
+        $files = $collector->getBackupFiles();
+        // should the currently created backup be deleted as well?
+        if ($this->deleteTarget) {
+            $file          = $target->toFile();
+            $index         = date('YmdHis', $file->getMTime()) . '-' . count($files) . '-' . $file->getPathname();
+            $files[$index] = $file;
+        }
+        return $files;
+    }
+
+    /**
+     * Is a given size bigger than the configured capacity limit.
+     *
+     * @param  int|double $currentCapacity
+     * @return bool
+     */
+    protected function isCapacityExceeded($currentCapacity) : bool
+    {
+        return $currentCapacity > $this->capacityBytes;
     }
 }
