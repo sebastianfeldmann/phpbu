@@ -46,7 +46,7 @@ class Mongodump extends Abstraction implements Executable
 
     /**
      * User to connect with
-     * --user <username>
+     * --username <username>
      *
      * @var string
      */
@@ -229,7 +229,7 @@ class Mongodump extends Abstraction implements Executable
         $cmd->addOption('--out', $this->dumpDir, ' ');
         $cmd->addOptionIfNotEmpty('--ipv6', $this->useIPv6, false);
         $cmd->addOptionIfNotEmpty('--host', $this->host, true, ' ');
-        $cmd->addOptionIfNotEmpty('--user', $this->user, true, ' ');
+        $cmd->addOptionIfNotEmpty('--username', $this->user, true, ' ');
         $cmd->addOptionIfNotEmpty('--password', $this->password, true, ' ');
         $cmd->addOptionIfNotEmpty('--authenticationDatabase', $this->authenticationDatabase, true, ' ');
 
