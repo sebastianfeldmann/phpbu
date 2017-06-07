@@ -47,7 +47,7 @@ class MongodumpTest extends \PHPUnit_Framework_TestCase
         $mongo = new Mongodump($path);
         $mongo->dumpToDirectory('./dump')->credentials('root');
 
-        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --user \'root\'', $mongo->getCommandLine());
+        $this->assertEquals($path . '/mongodump --out \'./dump' . '\' --username \'root\'', $mongo->getCommandLine());
     }
 
     /**
