@@ -39,6 +39,9 @@
   <!-- optional, default=false -->
   <option name="hexBlob" value="true" />
 
+  <!-- optional, default=none, accepted=ON,OFF,AUTO -->
+  <option name="gtidPurged" value="ON" />
+
   <!-- define your custom mysqldump executable location -->
   <option name="pathToMysqldump" value="/path/to/custom/bin" />
 </source>

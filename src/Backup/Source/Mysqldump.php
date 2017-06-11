@@ -146,6 +146,14 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     private $noData;
 
     /**
+     * Add general transaction id statement.
+     * --set-gids-purged
+     *
+     * @var string
+     */
+    private $gtidPurged;
+
+    /**
      * Setup.
      *
      * @see    \phpbu\App\Backup\Source
@@ -160,6 +168,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
         $this->host              = Util\Arr::getValue($conf, 'host', '');
         $this->user              = Util\Arr::getValue($conf, 'user', '');
         $this->password          = Util\Arr::getValue($conf, 'password', '');
+        $this->gtidPurged        = Util\Arr::getValue($conf, 'gtidPurged', '');
         $this->hexBlob           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'hexBlob', ''), false);
         $this->quick             = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
         $this->lockTables        = Util\Str::toBoolean(Util\Arr::getValue($conf, 'lockTables', ''), false);
@@ -231,6 +240,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
                    ->useQuickMode($this->quick)
                    ->lockTables($this->lockTables)
                    ->dumpBlobsHexadecimal($this->hexBlob)
+                   ->addGTIDStatement($this->gtidPurged)
                    ->useCompression($this->compress)
                    ->useExtendedInsert($this->extendedInsert)
                    ->dumpTables($this->tables)

@@ -101,6 +101,23 @@ class MysqldumpTest extends CliTest
     /**
      * Tests Mysqldump::getExecutable
      */
+    public function testGtidPurged()
+    {
+        $target    = $this->getTargetMock('/tmp/foo');
+        $mysqldump = new Mysqldump();
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'gtidPurged' => 'AUTO']);
+
+        $executable = $mysqldump->getExecutable($target);
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mysqldump --set-gtid-purged=\'AUTO\' --all-databases > /tmp/foo',
+            $executable->getCommand()
+        );
+    }
+
+    /**
+     * Tests Mysqldump::getExecutable
+     */
     public function testHexBlob()
     {
         $target    = $this->getTargetMock();

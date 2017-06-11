@@ -118,6 +118,13 @@ class Mysqldump extends Abstraction implements Executable
     private $noData = false;
 
     /**
+     * Whether to add SET @@GLOBAL.GTID_PURGED to output
+     *
+     * @var string
+     */
+    private $gtidPurged;
+
+    /**
      * Table separated data files
      * --tab
      *
@@ -325,6 +332,18 @@ class Mysqldump extends Abstraction implements Executable
     }
 
     /**
+     * Add a general transaction ID statement to the dump file.
+     *
+     * @param  string $purge
+     * @return \phpbu\App\Cli\Executable\Mysqldump
+     */
+    public function addGTIDStatement(string $purge)
+    {
+        $this->gtidPurged = in_array($purge, ['ON', 'OFF', 'AUTO']) ? strtoupper($purge) : '';
+        return $this;
+    }
+
+    /**
      * Produce table separated data files.
      *
      * @param  bool $bool
@@ -380,6 +399,7 @@ class Mysqldump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('-C', $this->compress, false);
         $cmd->addOptionIfNotEmpty('-e', $this->extendedInsert, false);
         $cmd->addOptionIfNotEmpty('--hex-blob', $this->hexBlob, false);
+        $cmd->addOptionIfNotEmpty('--set-gtid-purged', $this->gtidPurged);
 
         $this->configureSourceData($cmd);
         $this->configureIgnoredTables($cmd);

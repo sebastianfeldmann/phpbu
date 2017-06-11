@@ -16,7 +16,7 @@ use phpbu\App\Backup\Target\Compression;
 class MysqldumpTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests Mysqldump::createCommandLine
+     * Tests Mysqldump::getCommand
      */
     public function testDefault()
     {
@@ -50,7 +50,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Mysqldump::createCommandLine
+     * Tests Mysqldump::getCommand
      */
     public function testPassword()
     {
@@ -62,7 +62,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Mysqldump::createCommandLine
+     * Tests Mysqldump::getCommand
      */
     public function testPasswordPrintable()
     {
@@ -74,7 +74,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Mysqldump::createCommandLine
+     * Tests Mysqldump::getCommand
      */
     public function testLockTables()
     {
@@ -86,7 +86,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Mysqldump::createCommandLine
+     * Tests Mysqldump::getCommand
      */
     public function testSingleTransaction()
     {
@@ -111,7 +111,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Mysqldump::createCommandLine
+     * Tests Mysqldump::getCommand
      */
     public function testTables()
     {
@@ -124,7 +124,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Mysqldump::createCommandLine
+     * Tests Mysqldump::getCommand
      *
      * @expectedException \phpbu\App\Exception
      */
@@ -136,7 +136,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Mysqldump::createCommandLine
+     * Tests Mysqldump::getCommand
      */
     public function testSingleDatabase()
     {
@@ -148,7 +148,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Mysqldump::createCommandLine
+     * Tests Mysqldump::getCommand
      */
     public function testDatabases()
     {
@@ -160,7 +160,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Mysqldump::createCommandLine
+     * Tests Mysqldump::getCommand
      */
     public function testIgnoreTables()
     {
@@ -174,7 +174,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Mysqldump::createCommandLine
+     * Tests Mysqldump::getCommand
      */
     public function testNoData()
     {
@@ -186,7 +186,35 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Mysqldump::createCommandLine
+     * Tests Mysqldump::getCommand
+     */
+    public function testGTIDValid()
+    {
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
+        $mysqldump->addGTIDStatement('ON');
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mysqldump --set-gtid-purged=\'ON\' --all-databases',
+            $mysqldump->getCommand()
+        );
+    }
+
+    /**
+     * Tests Mysqldump::getCommand
+     */
+    public function testGTIDInvalid()
+    {
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
+        $mysqldump->addGTIDStatement('FOO');
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mysqldump --all-databases',
+            $mysqldump->getCommand()
+        );
+    }
+
+    /**
+     * Tests Mysqldump::getCommand
      */
     public function testCompressor()
     {
@@ -202,7 +230,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Mysqldump::createCommandLine
+     * Tests Mysqldump::getCommand
      */
     public function testStructureOnly()
     {
