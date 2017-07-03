@@ -3,6 +3,7 @@
   "options": {
     "recipients": "forename.lastname@example.com",
     "sendOnlyOnError": true,
+    "subject": "My Backup Report Subject",
     "sender.mail": "no-replay@example.com",
     "transport": "mail"
   }
