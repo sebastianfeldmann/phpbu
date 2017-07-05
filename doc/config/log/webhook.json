@@ -5,6 +5,8 @@
     "method": "POST",
     "jsonOutput": {"key":{"key2":{"time":"__timestamp__"},"key3":"__duration__"}},
     "content-type": "application/json",
-    "xml-root": "rootTag"
+    "xml-root": "rootTag",
+    "auth-user": "username",
+    "auth-pwd": "password"
   }
 }

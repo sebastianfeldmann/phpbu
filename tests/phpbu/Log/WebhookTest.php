@@ -11,7 +11,7 @@ namespace phpbu\App\Log;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://www.phpbu.de/
- * @since      Class available since Release 3.0.0
+ * @since      Class available since ???
  */
 class WebhookTest extends \PHPUnit\Framework\TestCase
 {

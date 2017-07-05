@@ -11,6 +11,7 @@ use phpbu\App\Result;
  *
  * @package    phpbu
  * @subpackage Log
+ * @author     Cees Vogel <jcvogel@gmail.com>
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
@@ -77,7 +78,10 @@ class Webhook implements Listener, Logger
         $defaults = [
             'method' => 'GET',
             'xml-root' => 'root',
-            'content-type' => 'multipart/form-data'
+            'content-type' => 'multipart/form-data',
+            'auth-user' => '',
+            'auth-pwd' => '',
+            'jsonOutput' => ''
         ];
         $this->options = array_merge($defaults, $options);
     }
@@ -160,6 +164,9 @@ class Webhook implements Listener, Logger
             $output = $this->formatPostOutput($output);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $output);
+        }
+        if (!empty($this->options['auth-user']) && !empty($this->options['auth-pwd'])) {
+            curl_setopt($ch, CURLOPT_USERPWD, $this->options['auth-user'] . ":" . $this->options['auth-pwd']);
         }
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type: ' . $this->options['content-type'],

@@ -5,4 +5,6 @@
     <option name="jsonOutput" value="{&quot;key&quot;:{&quot;key2&quot;:{&quot;time&quot;:&quot;__timestamp__&quot;},&quot;key3&quot;:&quot;__duration__&quot;}}"/>
     <option name="content-type" value="application/json"/>
     <option name="xml-root" value="rootTag"/>
+    <option name="auth-user" value="username"/>
+    <option name="auth-pwd" value="password"/>
 </log>
