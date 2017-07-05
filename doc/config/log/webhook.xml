@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log type="webhook">
+    <option name="uri" value="example.exampleuri.com"/>
+    <option name="method" value="POST"/>
+    <option name="jsonOutput" value="{&quot;key&quot;:{&quot;key2&quot;:{&quot;time&quot;:&quot;__timestamp__&quot;},&quot;key3&quot;:&quot;__duration__&quot;}}"/>
+    <option name="content-type" value="application/json"/>
+    <option name="xml-root" value="rootTag"/>
+</log>

@@ -1,0 +1,10 @@
+{
+  "type": "webhook",
+  "options": {
+    "uri": "example.exampleuri.com",
+    "method": "POST",
+    "jsonOutput": {"key":{"key2":{"time":"__timestamp__"},"key3":"__duration__"}},
+    "content-type": "application/json",
+    "xml-root": "rootTag"
+  }
+}

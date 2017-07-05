@@ -46,6 +46,7 @@ class Factory
         'logger'  => [
             'json' => '\\phpbu\\App\\Log\\Json',
             'mail' => '\\phpbu\\App\\Log\\Mail',
+            'webhook' => '\\phpbu\\App\\Log\\Webhook',
         ],
         'source'  => [
             'arangodump'  => '\\phpbu\\App\\Backup\\Source\\Arangodump',
