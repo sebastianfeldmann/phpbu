@@ -120,7 +120,8 @@ class Webhook implements Listener, Logger
             '__timestamp__' => time(),
             '__duration__' => round(microtime(true) - $this->start, 4),
             '__errors__' => $this->extractErrors($result),
-            '__backups__' => $this->extractBackups($result)
+            '__backups__' => $this->extractBackups($result),
+            '__errorcount__' => count($result->getErrors())
         ];
 
         if (!empty($this->options['jsonOutput']) && is_string($this->options['jsonOutput'])) {
@@ -141,7 +142,7 @@ class Webhook implements Listener, Logger
             'status' => $vars['__status__'],
             'timestamp' => $vars['__timestamp__'],
             'duration' => $vars['__duration__'],
-            'errors' => $vars['__errors__']
+            'errorcount' => $vars['__errorcount__']
         ];
 
         return $default;

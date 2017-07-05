@@ -35,6 +35,7 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
         $output = $webhook->getOutput($result);
 
         $this->assertEquals($output['status'], 0);
+        $this->assertEquals($output['errorcount'], 1);
         $this->assertTrue(is_int($output['timestamp']));
         $this->assertTrue(is_float($output['duration']));
         $this->assertFalse(isset($output['__timestamp__']));
@@ -63,8 +64,8 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
         $options = ['uri' => 'http://not.found', 'content-type' => 'application/xml'];
         $webhook->setup($options);
         $result = $webhook->formatPostOutput($output);
-        $expected = '<?xml version="1.0"?>'.PHP_EOL.
-            '<root><key_test1>test2</key_test1><test3><key_test4>test5</key_test4></test3></root>'.PHP_EOL;
+        $expected = '<?xml version="1.0"?>' . PHP_EOL .
+            '<root><key_test1>test2</key_test1><test3><key_test4>test5</key_test4></test3></root>' . PHP_EOL;
         $this->assertEquals($expected, $result);
     }
 
@@ -91,7 +92,7 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
         $options = ['uri' => 'http://not.found'];
         $webhook->setup($options);
         $result = $webhook->formatPostOutput($output);
-        $this->assertEquals($output, $result);
+        $this->assertEquals(http_build_query($output), $result);
     }
 
     /**
@@ -108,7 +109,7 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
                 'key3' => '__duration__'
             ]
         ];
-        $outputOptionString = '{&quot;key&quot;:{&quot;key2&quot;:{&quot;time&quot;:&quot;__timestamp__&quot;}'.
+        $outputOptionString = '{&quot;key&quot;:{&quot;key2&quot;:{&quot;time&quot;:&quot;__timestamp__&quot;}' .
             ',&quot;key3&quot;:&quot;__duration__&quot;}}';
         // make sure we encoded the array right:
         $this->assertEquals($outputOption, json_decode(html_entity_decode($outputOptionString), true));
