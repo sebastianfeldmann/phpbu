@@ -52,6 +52,20 @@ class TarTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests Tar::getCommand
      */
+    public function testForceLocal()
+    {
+        $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
+        $tar  = new Tar(PHPBU_TEST_BIN);
+        $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->forceLocal(true);
+
+        $this->assertEquals(PHPBU_TEST_BIN . '/tar --force-local -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'', $tar->getCommand());
+    }
+
+    /**
+     * Tests Tar::getCommand
+     */
     public function testIgnoreFailedRead()
     {
         $dir  = sys_get_temp_dir();

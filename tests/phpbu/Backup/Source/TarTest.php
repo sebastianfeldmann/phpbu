@@ -77,6 +77,28 @@ class TarTest extends CliTest
     /**
      * Tests Tar::getExecutable
      */
+    public function testForceLocal()
+    {
+        $tar = new Tar();
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'forceLocal' => 'true']);
+
+        $target = $this->getTargetMock('/tmp/backup.tar');
+        $target->method('shouldBeCompressed')->willReturn(false);
+        $target->method('getPathname')->willReturn('/tmp/backup.tar');
+
+        $exec = $tar->getExecutable($target);
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar --force-local -cf \'/tmp/backup.tar\' -C \''
+            . dirname(__DIR__) . '\' \''
+            . basename(__DIR__) . '\'',
+            $exec->getCommand()
+        );
+    }
+
+    /**
+     * Tests Tar::getExecutable
+     */
     public function testIgnoreFailedRead()
     {
         $tar = new Tar();

@@ -59,17 +59,26 @@ class Tar extends SimulatorExecutable implements Simulator
     private $compressProgram;
 
     /**
+     * Force local file resolution
+     *
+     * --force-local
+     *
+     * @var bool
+     */
+    private $forceLocal;
+
+    /**
      * Tar should ignore failed reads
      * --ignore-failed-read
      *
-     * @var boolean
+     * @var bool
      */
     private $ignoreFailedRead;
 
     /**
      * Remove the packed data
      *
-     * @var boolean
+     * @var bool
      */
     private $removeSourceDir;
 
@@ -100,6 +109,7 @@ class Tar extends SimulatorExecutable implements Simulator
         $this->path             = Util\Arr::getValue($conf, 'path', '');
         $this->excludes         = Util\Str::toList(Util\Arr::getValue($conf, 'exclude', ''));
         $this->compressProgram  = Util\Arr::getValue($conf, 'compressProgram', '');
+        $this->forceLocal       = Util\Str::toBoolean(Util\Arr::getValue($conf, 'forceLocal', ''), false);
         $this->ignoreFailedRead = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ignoreFailedRead', ''), false);
         $this->removeSourceDir  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeSourceDir', ''), false);
 
@@ -172,6 +182,7 @@ class Tar extends SimulatorExecutable implements Simulator
         $executable->archiveDirectory($this->path)
                    ->useCompression($this->compression)
                    ->useCompressProgram($this->compressProgram)
+                   ->forceLocal($this->forceLocal)
                    ->ignoreFailedRead($this->ignoreFailedRead)
                    ->removeSourceDirectory($this->removeSourceDir)
                    ->archiveTo($this->pathToArchive);

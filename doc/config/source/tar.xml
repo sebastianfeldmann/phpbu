@@ -7,6 +7,9 @@
   <option name="exclude" value="foo/bar,fiz/baz" />
 
   <!-- optional, default false -->
+  <option name="forceLocal" value="false" />
+
+  <!-- optional, default false -->
   <option name="ignoreFailedRead" value="false" />
 
   <!-- optional, default null -->

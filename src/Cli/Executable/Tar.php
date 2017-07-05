@@ -57,6 +57,14 @@ class Tar extends Abstraction implements Executable
     private $excludes = [];
 
     /**
+     * Force local file resolution
+     * --force-local
+     *
+     * @var bool
+     */
+    private $local = false;
+
+    /**
      * Ignore failed reads
      * --ignore-failed-read
      *
@@ -142,6 +150,18 @@ class Tar extends Abstraction implements Executable
     }
 
     /**
+     * Force local file resolution.
+     *
+     * @param  bool $bool
+     * @return \phpbu\App\Cli\Executable\Tar
+     */
+    public function forceLocal(bool $bool)
+    {
+        $this->local = $bool;
+        return $this;
+    }
+
+    /**
      * Ignore failed reads setter.
      *
      * @param  bool $bool
@@ -215,6 +235,7 @@ class Tar extends Abstraction implements Executable
 
         $this->setExcludeOptions($tar);
 
+        $tar->addOptionIfNotEmpty('--force-local', $this->local, false);
         $tar->addOptionIfNotEmpty('--ignore-failed-read', $this->ignoreFailedRead, false);
         $tar->addOptionIfNotEmpty('--use-compress-program', $this->compressProgram);
         $tar->addOption('-' . (empty($this->compressProgram) ? $this->compression : '') . 'cf');
