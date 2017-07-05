@@ -155,7 +155,7 @@ class Tar extends Abstraction implements Executable
      * @param  bool $bool
      * @return \phpbu\App\Cli\Executable\Tar
      */
-    public function forceLocal(bool $bool)
+    public function forceLocal(bool $bool) : Tar
     {
         $this->local = $bool;
         return $this;
