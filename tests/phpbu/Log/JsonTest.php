@@ -93,9 +93,12 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     protected function getResultMock()
     {
         $result = $this->getMockBuilder('\\phpbu\\App\\Result')->disableOriginalConstructor()->getMock();
+        $result->method('started')->willReturn(microtime(true));
         $result->method('allOk')->willReturn(true);
         $result->method('getErrors')->willReturn([new \Exception('foo bar')]);
         $result->method('getBackups')->willReturn([$this->getBackupResultMock()]);
+        $result->method('backupsFailedCount')->willReturn(0);
+        $result->method('errorCount')->willReturn(1);
 
         return $result;
     }
@@ -108,6 +111,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     protected function getBackupResultMock()
     {
         $backup = $this->getMockBuilder('\\phpbu\\App\\Result\\Backup')->disableOriginalConstructor()->getMock();
+        $backup->method('getName')->willReturn('foo');
         $backup->method('wasSuccessful')->willReturn(true);
         $backup->method('checkCount')->willReturn(0);
         $backup->method('checkCountFailed')->willReturn(0);

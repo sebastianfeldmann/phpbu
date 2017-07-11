@@ -4,7 +4,6 @@ namespace phpbu\App\Log;
 use phpbu\App\Exception;
 use phpbu\App\Event;
 use phpbu\App\Listener;
-use phpbu\App\Result;
 
 /**
  * Json Logger
@@ -31,9 +30,9 @@ class Json extends File implements Listener, Logger
      *
      * The array keys are event names and the value can be:
      *
-     *  * The method name to call (priority defaults to 0)
-     *  * An array composed of the method name to call and the priority
-     *  * An array of arrays composed of the method names to call and respective
+     *  - The method name to call (priority defaults to 0)
+     *  - An array composed of the method name to call and the priority
+     *  - An array of arrays composed of the method names to call and respective
      *    priorities, or 0 if unset
      *
      * @return array The event names to listen to
@@ -68,15 +67,13 @@ class Json extends File implements Listener, Logger
      */
     public function onPhpbuEnd(Event\App\End $event)
     {
-        $result = $event->getResult();
-        $output = [
-            'status'    => $result->allOk() ? 0 : 1,
-            'timestamp' => time(),
-            'errors'    => $this->extractErrors($result),
-            'debug'     => $this->debug,
-            'backups'   => $this->extractBackups($result)
-        ];
-        $this->write($output);
+        $result       = $event->getResult();
+        $formatter    = new ResultFormatter\Json();
+        $json         = $formatter->format($result);
+        $raw          = json_decode($json, true);
+        $raw['debug'] = $this->debug;
+
+        $this->write($raw);
         $this->close();
     }
 
@@ -98,67 +95,5 @@ class Json extends File implements Listener, Logger
     public function write($buffer)
     {
         parent::write(json_encode($buffer));
-    }
-
-    /**
-     * Get error information.
-     *
-     * @param \phpbu\App\Result $result
-     * @return array
-     */
-    protected function extractErrors(Result $result) : array
-    {
-        $errors = [];
-        /** @var \Exception $e */
-        foreach ($result->getErrors() as $e) {
-            $errors[] = [
-                'class' => get_class($e),
-                'msg'   => $e->getMessage(),
-                'file'  => $e->getFile(),
-                'line'  => $e->getLine()
-            ];
-        }
-        return $errors;
-    }
-
-    /**
-     * Return backup information.
-     *
-     * @param  \phpbu\App\Result $result
-     * @return array
-     */
-    protected function extractBackups(Result $result) : array
-    {
-        $output = [];
-        $backups = $result->getBackups();
-        if (count($backups) > 0) {
-            /** @var \phpbu\App\Result\Backup $backup */
-            foreach ($backups as $backup) {
-                $output[] = [
-                    'name'   => $backup->getName(),
-                    'status' => $backup->wasSuccessful() ? 0 : 1,
-                    'checks' => [
-                        'executed' => $backup->checkCount(),
-                        'failed'   => $backup->checkCountFailed()
-                    ],
-                    'crypt' => [
-                        'executed' => $backup->cryptCount(),
-                        'skipped'  => $backup->cryptCountSkipped(),
-                        'failed'   => $backup->cryptCountFailed()
-                    ],
-                    'syncs' => [
-                        'executed' => $backup->syncCount(),
-                        'skipped'  => $backup->syncCountSkipped(),
-                        'failed'   => $backup->syncCountFailed()
-                    ],
-                    'cleanups' => [
-                        'executed' => $backup->cleanupCount(),
-                        'skipped'  => $backup->cleanupCountSkipped(),
-                        'failed'   => $backup->cleanupCountFailed()
-                    ]
-                ];
-            }
-        }
-        return $output;
     }
 }
