@@ -157,7 +157,6 @@ class Backup
         return $this->wasSuccessful;
     }
 
-
     /**
      * No skipped crypts, syncs or cleanups.
      *
@@ -177,7 +176,6 @@ class Backup
     {
         return count($this->cryptsFailed) + count($this->syncsFailed) + count($this->cleanupsFailed) === 0;
     }
-
 
     /**
      * Mark backup as failed.
