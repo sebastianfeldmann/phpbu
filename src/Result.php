@@ -48,6 +48,13 @@ class Result
     protected $errors = [];
 
     /**
+     * Start timestamp
+     *
+     * @var float
+     */
+    protected $start;
+
+    /**
      * @var integer
      */
     protected $backupsFailed = 0;
@@ -92,6 +99,7 @@ class Result
      */
     public function __construct()
     {
+        $this->start           = microtime(true);
         $this->eventDispatcher = new EventDispatcher();
     }
 
@@ -216,6 +224,16 @@ class Result
     }
 
     /**
+     * Return phpbu start micro time.
+     *
+     * @return float
+     */
+    public function started() : float
+    {
+        return $this->start;
+    }
+
+    /**
      * Backup start event.
      *
      * @param \phpbu\App\Configuration\Backup $backup
@@ -246,9 +264,9 @@ class Result
     /**
      * Return amount of failed backups
      *
-     * @return integer
+     * @return int
      */
-    public function backupsFailedCount()
+    public function backupsFailedCount() : int
     {
         return $this->backupsFailed;
     }
@@ -300,9 +318,9 @@ class Result
     /**
      * Return amount of failed checks.
      *
-     * @return integer
+     * @return int
      */
-    public function checksFailedCount()
+    public function checksFailedCount() : int
     {
         return $this->checksFailed;
     }
@@ -348,13 +366,12 @@ class Result
     /**
      * Return amount of skipped crypts.
      *
-     * @return integer
+     * @return int
      */
-    public function cryptsSkippedCount()
+    public function cryptsSkippedCount() : int
     {
         return $this->cryptsSkipped;
     }
-
 
     /**
      * Crypt failed event.
@@ -374,9 +391,9 @@ class Result
     /**
      * Return amount of failed crypts.
      *
-     * @return integer
+     * @return int
      */
-    public function cryptsFailedCount()
+    public function cryptsFailedCount() : int
     {
         return $this->cryptsFailed;
     }
@@ -422,9 +439,9 @@ class Result
     /**
      * Return amount of skipped syncs.
      *
-     * @return integer
+     * @return int
      */
-    public function syncsSkippedCount()
+    public function syncsSkippedCount() : int
     {
         return $this->syncsSkipped;
     }
@@ -446,9 +463,9 @@ class Result
     /**
      * Return amount of failed syncs.
      *
-     * @return integer
+     * @return int
      */
-    public function syncsFailedCount()
+    public function syncsFailedCount() : int
     {
         return $this->syncsFailed;
     }
@@ -494,9 +511,9 @@ class Result
     /**
      * Return amount of skipped cleanups.
      *
-     * @return integer
+     * @return int
      */
-    public function cleanupsSkippedCount()
+    public function cleanupsSkippedCount() : int
     {
         return $this->cleanupsSkipped;
     }
@@ -518,9 +535,9 @@ class Result
     /**
      * Return amount of failed cleanups.
      *
-     * @return integer
+     * @return int
      */
-    public function cleanupsFailedCount()
+    public function cleanupsFailedCount() : int
     {
         return $this->cleanupsFailed;
     }
