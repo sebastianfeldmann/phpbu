@@ -226,7 +226,7 @@ class Webhook implements Listener, Logger
         $context                   = stream_context_create($options);
 
         try {
-            $result = file_get_contents($uri, false, $context);
+            file_get_contents($uri, false, $context);
         } catch (\Throwable $t) {
             throw new Exception('could not reach webhook: ' . $this->uri);
         }
