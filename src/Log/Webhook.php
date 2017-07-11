@@ -138,7 +138,7 @@ class Webhook implements Listener, Logger
         $result    = $event->getResult();
         $data      = $this->getQueryStringData($result);
         $uri       = $this->method === 'GET' ? $this->buildGetUri($data) : $this->uri;
-        $formatter = $this->getBodyFormatter($result);
+        $formatter = $this->getBodyFormatter();
         $body      = $formatter->format($result);
 
         $this->fireRequest($uri, $body);
@@ -177,11 +177,10 @@ class Webhook implements Listener, Logger
     }
 
     /**
-     * Method will use the input Result to replace the placeholders in $this->jsonOutput or return an array with
-     * the default values.
+     * Returns some basic statistics as GET query string.
      *
-     * @param $result \phpbu\App\Result
-     * @return array: will return array placeholders are replaced with correct data
+     * @param  $result \phpbu\App\Result
+     * @return array
      */
     private function getQueryStringData(Result $result) : array
     {
