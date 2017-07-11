@@ -44,8 +44,9 @@ class Factory
             'sync'      => '\\phpbu\\App\\Runner\\Sync',
         ],
         'logger'  => [
-            'json' => '\\phpbu\\App\\Log\\Json',
-            'mail' => '\\phpbu\\App\\Log\\Mail',
+            'json'    => '\\phpbu\\App\\Log\\Json',
+            'mail'    => '\\phpbu\\App\\Log\\Mail',
+            'webhook' => '\\phpbu\\App\\Log\\Webhook',
         ],
         'source'  => [
             'arangodump'  => '\\phpbu\\App\\Backup\\Source\\Arangodump',
