@@ -1,0 +1,10 @@
+{
+  "type": "webhook",
+  "options": {
+    "uri": "https://example.com/webhook",
+    "username": "misterX",
+    "password": "secret",
+    "method": "POST",
+    "contentType": "application/json"
+  }
+}

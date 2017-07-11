@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log type="webhook">
+  <!-- mandatory -->
+  <option name="uri" value="https://some.host.com/webhook" />
+
+  <!-- optional default=false -->
+  <option name="username" value="misterX" />
+
+  <!-- optional default=false -->
+  <option name="password" value="secret" />
+
+  <!-- optional default=GET -->
+  <option name="method" value="GET" />
+
+  <!-- optional default=application/form-data -->
+  <option name="contentType" value="application/json" />
+
+  <!-- optional default=null -->
+  <option name="template" value="webhook.tpl" />
+
+</log>
