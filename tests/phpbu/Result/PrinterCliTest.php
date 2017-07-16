@@ -46,16 +46,12 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
     public function testPhpbuStart()
     {
         $printer = new PrinterCli(false, false, false);
-        $result  = $this->getMockBuilder('\\phpbu\\App\\Result')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $result  = $this->createMock(\phpbu\App\Result::class);
         $result->expects($this->once())
                ->method('getErrors')
                ->willReturn([]);
 
-        $configuration = $this->getMockBuilder('\\phpbu\\App\\Configuration')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $configuration = $this->createMock(\phpbu\App\Configuration::class);
         $configuration->method('getFilename')
                       ->willReturn('/tmp/TestConfig.xml');
 
@@ -71,13 +67,9 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
     public function testPhpbuStarVerbose()
     {
         $printer = new PrinterCli(true, false, false);
-        $result  = $this->getMockBuilder('\\phpbu\\App\\Result')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $result  = $this->createMock(\phpbu\App\Result::class);
 
-        $configuration = $this->getMockBuilder('\\phpbu\\App\\Configuration')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $configuration = $this->createMock(\phpbu\App\Configuration::class);
         $configuration->method('getFilename')->willReturn('/tmp/TestConfig.xml');
 
         ob_start();
@@ -386,12 +378,8 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
     public function testPrintResultAllOk()
     {
         $printer = new PrinterCli(true, false, false);
-        $result  = $this->getMockBuilder('\\phpbu\\App\\Result')
-                        ->disableOriginalConstructor()
-                        ->getMock();
-        $backup  = $this->getMockBuilder('\\phpbu\\App\\Result\\Backup')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $result  = $this->createMock(\phpbu\App\Result::class);
+        $backup  = $this->createMock(\phpbu\App\Result\Backup::class);
         $result->method('getBackups')->willReturn(array($backup));
         $result->method('getErrors')->willReturn(array());
         $result->method('allOk')->willReturn(true);
@@ -418,9 +406,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
     public function testPrintResultNoBackup()
     {
         $printer = new PrinterCli(false, true, false);
-        $result  = $this->getMockBuilder('\\phpbu\\App\\Result')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $result  = $this->createMock(\phpbu\App\Result::class);
 
         $result->method('getBackups')->willReturn(array());
         $result->method('getErrors')->willReturn(array());
@@ -437,13 +423,9 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
     public function testPrintResultSkipped()
     {
         $printer = new PrinterCli(true, false, false);
-        $result  = $this->getMockBuilder('\\phpbu\\App\\Result')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $result  = $this->createMock(\phpbu\App\Result::class);
 
-        $backup  = $this->getMockBuilder('\\phpbu\\App\\Result\\Backup')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $backup  = $this->createMock(\phpbu\App\Result\Backup::class);
 
         $backup->method('allOk')->willReturn(false);
         $backup->method('wasSuccessful')->willReturn(true);
@@ -475,18 +457,12 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
     public function testPrintResultFailure()
     {
         $printer = new PrinterCli(true, false, false);
-        $result  = $this->getMockBuilder('\\phpbu\\App\\Result')
-                        ->disableOriginalConstructor()
-                        ->getMock();
-        $e       = $this->getMockBuilder('\\phpbu\\App\\Exception')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $result  = $this->createMock(\phpbu\App\Result::class);
+        $e       = $this->createMock(\phpbu\App\Exception::class);
         $e->method('getMessage')->willReturn('foo');
         $e->method('getFile')->willReturn('foo.php');
         $e->method('getLine')->willReturn(1);
-        $backup  = $this->getMockBuilder('\\phpbu\\App\\Result\\Backup')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $backup  = $this->createMock(\phpbu\App\Result\Backup::class);
 
         $backup->method('allOk')->willReturn(false);
         $backup->method('wasSuccessful')->willReturn(false);
@@ -520,9 +496,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
      */
     public function getEventMock($type, $arg)
     {
-        $e = $this->getMockBuilder('\\phpbu\\App\\Event\\' . $type)
-                  ->disableOriginalConstructor()
-                  ->getMock();
+        $e = $this->createMock('\\phpbu\\App\\Event\\' . $type);
         switch ($type) {
             case 'App\\End':
                 $e->method('getResult')->willReturn($arg);

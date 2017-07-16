@@ -97,9 +97,7 @@ class McryptTest extends CliTest
         $commandResult = new CommandResult('foo', 0);
         $runnerResult  = new RunnerResult($commandResult);
 
-        $runner = $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Runner')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $runner = $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
         $runner->method('run')->willReturn($runnerResult);
 
         $target    = $this->getTargetMock(__FILE__);
@@ -122,15 +120,11 @@ class McryptTest extends CliTest
         $commandResult = new CommandResult('foo', 1);
         $runnerResult  = new RunnerResult($commandResult);
 
-        $runner = $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Runner')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $runner = $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
         $runner->method('run')->willReturn($runnerResult);
 
         $target    = $this->getTargetMock(__FILE__);
-        $appResult = $this->getMockBuilder('\\phpbu\\App\\Result')
-                          ->disableOriginalConstructor()
-                          ->getMock();
+        $appResult = $this->createMock(\phpbu\App\Result::class);
 
         $appResult->expects($this->once())->method('debug');
 

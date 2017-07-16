@@ -19,17 +19,12 @@ class SizeDiffPreviousPercentTest extends \PHPUnit\Framework\TestCase
      */
     public function testPass()
     {
-        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
-                              ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $resultStub    = $this->createMock(\phpbu\App\Result::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
         $collectorStub->expects($this->once())
                       ->method('getBackupFiles')
                       ->willReturn($this->getFileListMock([100, 500, 1000]));
-        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
         $targetStub->method('getSize')->willReturn(1060);
 
         $check = new SizeDiffPreviousPercent();
@@ -45,17 +40,12 @@ class SizeDiffPreviousPercentTest extends \PHPUnit\Framework\TestCase
      */
     public function testFail()
     {
-        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
-                              ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $resultStub    = $this->createMock(\phpbu\App\Result::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
         $collectorStub->expects($this->once())
                               ->method('getBackupFiles')
                               ->willReturn($this->getFileListMock([100, 500, 1000]));
-        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
         $targetStub->method('getSize')->willReturn(1060);
 
         $check = new SizeDiffPreviousPercent();
@@ -76,9 +66,7 @@ class SizeDiffPreviousPercentTest extends \PHPUnit\Framework\TestCase
     {
         $list = [];
         foreach ($sizes as $i => $size) {
-            $fileStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\File')
-                             ->disableOriginalConstructor()
-                             ->getMock();
+            $fileStub = $this->createMock(\phpbu\App\Backup\File::class);
             $fileStub->method('getSize')->willReturn($size);
             $list['201401' . str_pad($i + 1, 2, '0', STR_PAD_LEFT)] = $fileStub;
         }

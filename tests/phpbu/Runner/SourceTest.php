@@ -22,16 +22,12 @@ class SourceTest extends \PHPUnit\Framework\TestCase
      */
     public function testBackupSuccessful()
     {
-        $status = $this->getMockBuilder('\\phpbu\\App\\Backup\\Source\\Status')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $status = $this->createMock(\phpbu\App\Backup\Source\Status::class);
         $status->expects($this->once())
                ->method('handledCompression')
                ->willReturn(true);
 
-        $source = $this->getMockBuilder('\\phpbu\\App\\Backup\\Source')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $source = $this->createMock(\phpbu\App\Backup\Source::class);
         $source->expects($this->once())
                ->method('backup')
                ->willReturn($status);
@@ -48,9 +44,7 @@ class SourceTest extends \PHPUnit\Framework\TestCase
      */
     public function testSimulateWithFileToCompress()
     {
-        $status = $this->getMockBuilder('\\phpbu\\App\\Backup\\Source\\Status')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $status = $this->createMock(\phpbu\App\Backup\Source\Status::class);
         $status->expects($this->once())
                ->method('handledCompression')
                ->willReturn(false);
@@ -58,9 +52,7 @@ class SourceTest extends \PHPUnit\Framework\TestCase
                ->method('getDataPath')
                ->willReturn(realpath(PHPBU_TEST_FILES . '/misc/backup.txt'));
 
-        $source = $this->getMockBuilder('\\phpbu\\App\\Backup\\Source\\Mysqldump')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $source = $this->createMock(\phpbu\App\Backup\Source\Mysqldump::class);
         $source->expects($this->once())
                ->method('simulate')
                ->willReturn($status);
@@ -81,9 +73,7 @@ class SourceTest extends \PHPUnit\Framework\TestCase
     public function testSimulateWithDirectoryToCompress()
     {
         $targetPath = PHPBU_TEST_FILES . '/misc';
-        $status     = $this->getMockBuilder('\\phpbu\\App\\Backup\\Source\\Status')
-                           ->disableOriginalConstructor()
-                           ->getMock();
+        $status     = $this->createMock(\phpbu\App\Backup\Source\Status::class);
         $status->expects($this->once())
                ->method('handledCompression')
                ->willReturn(false);
@@ -94,9 +84,7 @@ class SourceTest extends \PHPUnit\Framework\TestCase
                ->method('isDirectory')
                ->willReturn(true);
 
-        $source = $this->getMockBuilder('\\phpbu\\App\\Backup\\Source\\Mysqldump')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $source = $this->createMock(\phpbu\App\Backup\Source\Mysqldump::class);
         $source->expects($this->once())
                ->method('simulate')
                ->willReturn($status);
@@ -121,9 +109,7 @@ class SourceTest extends \PHPUnit\Framework\TestCase
         $file           = $this->createTempFile();
         $fileCompressed = $file . '.gz';
         $targetPath     = realpath($file);
-        $status         = $this->getMockBuilder('\\phpbu\\App\\Backup\\Source\\Status')
-                               ->disableOriginalConstructor()
-                               ->getMock();
+        $status         = $this->createMock(\phpbu\App\Backup\Source\Status::class);
         $status->expects($this->once())
                ->method('handledCompression')
                ->willReturn(false);
@@ -131,9 +117,7 @@ class SourceTest extends \PHPUnit\Framework\TestCase
                ->method('getDataPath')
                ->willReturn($targetPath);
 
-        $source = $this->getMockBuilder('\\phpbu\\App\\Backup\\Source\\Mysqldump')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $source = $this->createMock(\phpbu\App\Backup\Source\Mysqldump::class);
         $source->expects($this->once())
                ->method('backup')
                ->willReturn($status);
@@ -169,18 +153,14 @@ class SourceTest extends \PHPUnit\Framework\TestCase
      */
     protected function getTargetMock($compress, $handledCompression, $runs = 1, $cmd = 'zip', $simulate = true)
     {
-        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $target = $this->createMock(\phpbu\App\Backup\Target::class);
 
         if ($compress) {
             $target->method('shouldBeCompressed')
                    ->willReturn(true);
 
             if (!$handledCompression) {
-                $compression = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target\\Compression')
-                                    ->disableOriginalConstructor()
-                                    ->getMock();
+                $compression = $this->createMock(\phpbu\App\Backup\Target\Compression::class);
                 $compression->method('getCommand')
                             ->willReturn($cmd);
 
@@ -202,9 +182,7 @@ class SourceTest extends \PHPUnit\Framework\TestCase
      */
     protected function getResultMock($expectedDebugCalls = 0)
     {
-        $result = $this->getMockBuilder('\\phpbu\\App\\Result')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $result = $this->createMock(\phpbu\App\Result::class);
         if ($expectedDebugCalls > 0) {
             $result->expects($this->exactly($expectedDebugCalls))
                    ->method('debug');

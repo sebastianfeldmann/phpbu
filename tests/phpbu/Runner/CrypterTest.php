@@ -22,9 +22,7 @@ class CrypterTest extends \PHPUnit\Framework\TestCase
      */
     public function testCryptSuccessful()
     {
-        $crypter = $this->getMockBuilder('\\phpbu\\App\\Backup\\Crypter')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $crypter = $this->createMock(\phpbu\App\Backup\Crypter::class);
         $crypter->expects($this->once())
                 ->method('crypt');
 
@@ -42,9 +40,7 @@ class CrypterTest extends \PHPUnit\Framework\TestCase
      */
     public function testCryptFailing()
     {
-        $crypter = $this->getMockBuilder('\\phpbu\\App\\Backup\\Crypter')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $crypter = $this->createMock(\phpbu\App\Backup\Crypter::class);
         $crypter->expects($this->once())
                 ->method('crypt')
                 ->will($this->throwException(new Exception));
@@ -61,9 +57,7 @@ class CrypterTest extends \PHPUnit\Framework\TestCase
      */
     public function testCryptSimulation()
     {
-        $crypter = $this->getMockBuilder('\\phpbu\\App\\Backup\\Crypter\\Simulator')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $crypter = $this->createMock(\phpbu\App\Backup\Crypter\Simulator::class);
         $crypter->expects($this->once())
                 ->method('simulate');
 
@@ -81,9 +75,7 @@ class CrypterTest extends \PHPUnit\Framework\TestCase
      */
     protected function getTargetMock()
     {
-        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $target = $this->createMock(\phpbu\App\Backup\Target::class);
         return $target;
     }
 
@@ -94,9 +86,7 @@ class CrypterTest extends \PHPUnit\Framework\TestCase
      */
     protected function getResultMock()
     {
-        $result = $this->getMockBuilder('\\phpbu\\App\\Result')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $result = $this->createMock(\phpbu\App\Result::class);
         return $result;
     }
 }

@@ -486,9 +486,7 @@ class TargetTest extends \PHPUnit\Framework\TestCase
      */
     protected function getCompressionMockForCmd($cmd, $suffix, $mimeType)
     {
-        $compressionStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target\\Compression')
-                                ->disableOriginalConstructor()
-                                ->getMock();
+        $compressionStub = $this->createMock(\phpbu\App\Backup\Target\Compression::class);
         $compressionStub->method('getCommand')->willReturn($cmd);
         $compressionStub->method('getSuffix')->willReturn($suffix);
         $compressionStub->method('getMimeType')->willReturn($mimeType);
@@ -504,9 +502,7 @@ class TargetTest extends \PHPUnit\Framework\TestCase
      */
     protected function getCrypterMock($suffix)
     {
-        $crypterStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Crypter')
-                            ->disableOriginalConstructor()
-                            ->getMock();
+        $crypterStub = $this->createMock(\phpbu\App\Backup\Crypter::class);
         $crypterStub->method('getSuffix')->willReturn($suffix);
 
         return $crypterStub;

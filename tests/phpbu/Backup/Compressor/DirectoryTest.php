@@ -46,9 +46,7 @@ class DirectoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCanCompressUncompressedTarget()
     {
-        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $target = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $target->method('shouldBeCompressed')
                ->willReturn(false);
@@ -63,9 +61,7 @@ class DirectoryTest extends \PHPUnit\Framework\TestCase
     public function testGetArchiveFile()
     {
         $cmp    = Compression\Factory::create('bzip2');
-        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $target = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $target->method('shouldBeCompressed')
                ->willReturn(true);
@@ -89,19 +85,13 @@ class DirectoryTest extends \PHPUnit\Framework\TestCase
         $commandResult = new CommandResult('foo', 0);
         $runnerResult  = new RunnerResult($commandResult);
 
-        $result = $this->getMockBuilder('\\phpbu\\App\\Result')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $result = $this->createMock(\phpbu\App\Result::class);
 
-        $runner = $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Runner')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $runner = $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
         $runner->method('run')->willReturn($runnerResult);
 
 
-        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $target = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $target->method('shouldBeCompressed')
                ->willReturn(true);
@@ -128,18 +118,12 @@ class DirectoryTest extends \PHPUnit\Framework\TestCase
         $commandResult = new CommandResult('foo', 1);
         $runnerResult  = new RunnerResult($commandResult);
 
-        $result = $this->getMockBuilder('\\phpbu\\App\\Result')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $result = $this->createMock(\phpbu\App\Result::class);
 
-        $runner = $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Runner')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $runner = $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
         $runner->method('run')->willReturn($runnerResult);
 
-        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $target = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $target->method('shouldBeCompressed')
                ->willReturn(true);
@@ -165,18 +149,12 @@ class DirectoryTest extends \PHPUnit\Framework\TestCase
         $commandResult = new CommandResult('foo', 1);
         $runnerResult  = new RunnerResult($commandResult);
 
-        $result = $this->getMockBuilder('\\phpbu\\App\\Result')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $result = $this->createMock(\phpbu\App\Result::class);
 
-        $runner = $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Runner')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $runner = $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
         $runner->method('run')->willReturn($runnerResult);
 
-        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $target = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $target->method('shouldBeCompressed')
                ->willReturn(true);

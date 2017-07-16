@@ -43,14 +43,11 @@ class SftpTest extends \PHPUnit\Framework\TestCase
             'path'     => 'foo'
         ]);
 
-        $resultStub = $this->getMockBuilder('\\phpbu\\App\\Result')
-                           ->getMock();
+        $resultStub = $this->createMock(\phpbu\App\Result::class);
         $resultStub->expects($this->once())
                    ->method('debug');
 
-        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                           ->disableOriginalConstructor()
-                           ->getMock();
+        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $sftp->simulate($targetStub, $resultStub);
     }
