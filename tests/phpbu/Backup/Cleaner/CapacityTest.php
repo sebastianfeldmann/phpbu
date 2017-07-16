@@ -49,14 +49,9 @@ class CapacityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
-                              ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
-                              ->disableOriginalConstructor()
-                              ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $resultStub    = $this->createMock(\phpbu\App\Result::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
         $targetStub->method('getSize')->willReturn(100);
@@ -81,16 +76,11 @@ class CapacityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
-                              ->getMock();
+        $resultStub    = $this->createMock(\phpbu\App\Result::class);
         $resultStub->expects($this->exactly(2))
                    ->method('debug');
-        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
-                              ->disableOriginalConstructor()
-                              ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
         $targetStub->method('getSize')->willReturn(100);
@@ -116,14 +106,9 @@ class CapacityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
-            ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $resultStub    = $this->createMock(\phpbu\App\Result::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
         $targetStub->method('getSize')->willReturn(100);
@@ -148,14 +133,9 @@ class CapacityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
-                              ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
-                              ->disableOriginalConstructor()
-                              ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $resultStub    = $this->createMock(\phpbu\App\Result::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $collectorStub->expects($this->once())->method('getBackupFiles')->willReturn($fileList);
         $targetStub->expects($this->once())->method('getSize')->willReturn(100);
@@ -180,14 +160,9 @@ class CapacityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => true],
             ]
         );
-        $resultStub    = $this->getMockBuilder('\\phpbu\\App\\Result')
-                              ->getMock();
-        $collectorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
-                              ->disableOriginalConstructor()
-                              ->getMock();
-        $targetStub    = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $resultStub    = $this->createMock(\phpbu\App\Result::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $collectorStub->method('getBackupFiles')
                       ->willReturn($fileList);

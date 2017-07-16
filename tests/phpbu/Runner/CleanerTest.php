@@ -22,9 +22,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
      */
     public function testCleanupSuccessful()
     {
-        $cleaner = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cleaner')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $cleaner = $this->createMock(\phpbu\App\Backup\Cleaner::class);
         $cleaner->expects($this->once())
                 ->method('cleanup');
 
@@ -43,9 +41,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
      */
     public function testCleanupFailing()
     {
-        $cleaner = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cleaner')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $cleaner = $this->createMock(\phpbu\App\Backup\Cleaner::class);
         $cleaner->expects($this->once())
                 ->method('cleanup')
                 ->will($this->throwException(new Exception));
@@ -63,9 +59,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
      */
     public function testCleanupSimulation()
     {
-        $cleaner = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cleaner\\Simulator')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $cleaner = $this->createMock(\phpbu\App\Backup\Cleaner\Simulator::class);
         $cleaner->expects($this->once())
                 ->method('simulate');
 
@@ -84,9 +78,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
      */
     protected function getTargetMock()
     {
-        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $target = $this->createMock(\phpbu\App\Backup\Target::class);
         return $target;
     }
 
@@ -97,9 +89,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
      */
     protected function getCollectorMock()
     {
-        $collector = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $collector = $this->createMock(\phpbu\App\Backup\Collector::class);
         return $collector;
     }
 
@@ -110,9 +100,7 @@ class CleanerTest extends \PHPUnit\Framework\TestCase
      */
     protected function getResultMock()
     {
-        $result = $this->getMockBuilder('\\phpbu\\App\\Result')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $result = $this->createMock(\phpbu\App\Result::class);
         return $result;
     }
 }

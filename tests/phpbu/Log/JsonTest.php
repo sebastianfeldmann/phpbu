@@ -43,15 +43,11 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $result = $this->getResultMock();
 
         // debug event mock
-        $debugEvent = $this->getMockBuilder('\\phpbu\\App\\Event\\Debug')
-                           ->disableOriginalConstructor()
-                           ->getMock();
+        $debugEvent = $this->createMock(\phpbu\App\Event\Debug::class);
         $debugEvent->method('getMessage')->willReturn('debug');
 
         // phpbu end event mock
-        $phpbuEndEvent = $this->getMockBuilder('\\phpbu\\App\\Event\\App\\End')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
         $json = new Json();
@@ -92,7 +88,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
      */
     protected function getResultMock()
     {
-        $result = $this->getMockBuilder('\\phpbu\\App\\Result')->disableOriginalConstructor()->getMock();
+        $result = $this->createMock(\phpbu\App\Result::class);
         $result->method('started')->willReturn(microtime(true));
         $result->method('allOk')->willReturn(true);
         $result->method('getErrors')->willReturn([new \Exception('foo bar')]);
@@ -110,7 +106,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
      */
     protected function getBackupResultMock()
     {
-        $backup = $this->getMockBuilder('\\phpbu\\App\\Result\\Backup')->disableOriginalConstructor()->getMock();
+        $backup = $this->createMock(\phpbu\App\Result\Backup::class);
         $backup->method('getName')->willReturn('foo');
         $backup->method('wasSuccessful')->willReturn(true);
         $backup->method('checkCount')->willReturn(0);

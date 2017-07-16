@@ -24,7 +24,7 @@ abstract class CliTest extends \PHPUnit\Framework\TestCase
      */
     protected function getAppResultMock()
     {
-        return $this->getMockBuilder('\\phpbu\\App\\Result')->disableOriginalConstructor()->getMock();
+        return $this->createMock(\phpbu\App\Result::class);
     }
 
     /**
@@ -34,9 +34,7 @@ abstract class CliTest extends \PHPUnit\Framework\TestCase
      */
     protected function getRunnerMock()
     {
-        return $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Runner')
-                    ->disableOriginalConstructor()
-                    ->getMock();
+        return $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
     }
 
     /**
@@ -73,9 +71,7 @@ abstract class CliTest extends \PHPUnit\Framework\TestCase
      */
     protected function getCliResultMock($code, $cmd, $output = '')
     {
-        $cliResult = $this->getMockBuilder('\\SebastianFeldmann\\Cli\\Command\\Result')
-                          ->disableOriginalConstructor()
-                          ->getMock();
+        $cliResult = $this->createMock(\SebastianFeldmann\Cli\Command\Result::class);
 
         $cliResult->method('getCode')->willReturn($code);
         $cliResult->method('getCmd')->willReturn($cmd);
@@ -97,9 +93,7 @@ abstract class CliTest extends \PHPUnit\Framework\TestCase
     {
         $compress = !empty($fileCompressed);
         $pathName = $compress ? $fileCompressed : $file;
-        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $target = $this->createMock(\phpbu\App\Backup\Target::class);
         $target->method('getPathnamePlain')->willReturn($file);
         $target->method('getPathname')->willReturn($pathName);
         $target->method('getPath')->willReturn(dirname($pathName));
@@ -119,9 +113,7 @@ abstract class CliTest extends \PHPUnit\Framework\TestCase
      */
     protected function getCompressionMock($cmd, $suffix)
     {
-        $compression = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target\\Compression')
-                            ->disableOriginalConstructor()
-                            ->getMock();
+        $compression = $this->createMock(\phpbu\App\Backup\Target\Compression::class);
         $compression->method('isPipeable')->willReturn(in_array($cmd, ['gzip', 'bzip2']));
         $compression->method('getCommand')->willReturn($cmd);
         $compression->method('getSuffix')->willReturn($suffix);

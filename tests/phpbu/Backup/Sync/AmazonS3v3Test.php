@@ -45,9 +45,7 @@ class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
             'path'   => '/'
         ]);
 
-        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                           ->disableOriginalConstructor()
-                           ->getMock();
+        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
         $targetStub->expects($this->once())->method('getFilename')->willReturn('foo.zip');
 
         $this->assertEquals('foo.zip', $amazonS3->getUploadPath($targetStub));
@@ -67,9 +65,7 @@ class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
             'path'   => 'fiz'
         ]);
 
-        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
         $targetStub->expects($this->once())->method('getFilename')->willReturn('foo.zip');
 
         $this->assertEquals('fiz/foo.zip', $amazonS3->getUploadPath($targetStub));
@@ -89,14 +85,11 @@ class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
             'path'   => '/'
         ]);
 
-        $resultStub = $this->getMockBuilder('\\phpbu\\App\\Result')
-                           ->getMock();
+        $resultStub = $this->createMock(\phpbu\App\Result::class);
         $resultStub->expects($this->once())
                    ->method('debug');
 
-        $targetStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                           ->disableOriginalConstructor()
-                           ->getMock();
+        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $amazonS3->simulate($targetStub, $resultStub);
     }

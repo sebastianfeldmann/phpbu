@@ -37,7 +37,7 @@ class FormDataTest extends \PHPUnit\Framework\TestCase
      */
     protected function getResultMock()
     {
-        $result = $this->getMockBuilder('\\phpbu\\App\\Result')->disableOriginalConstructor()->getMock();
+        $result = $this->createMock(\phpbu\App\Result::class);
         $result->expects($this->once())->method('started')->willReturn(microtime(true));
         $result->expects($this->once())->method('allOk')->willReturn(true);
         $result->expects($this->once())->method('backupsFailedCount')->willReturn(0);
@@ -55,7 +55,7 @@ class FormDataTest extends \PHPUnit\Framework\TestCase
      */
     protected function getBackupResultMock()
     {
-        $backup = $this->getMockBuilder('\\phpbu\\App\\Result\\Backup')->disableOriginalConstructor()->getMock();
+        $backup = $this->createMock(\phpbu\App\Result\Backup::class);
         $backup->method('getName')->willReturn('foo');
         $backup->method('allOk')->willReturn(true);
         $backup->method('checkCount')->willReturn(0);

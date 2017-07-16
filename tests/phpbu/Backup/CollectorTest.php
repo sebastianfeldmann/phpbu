@@ -138,9 +138,7 @@ class CollectorTest extends \PHPUnit\Framework\TestCase
      */
     protected function getCompressionMockForCmd($cmd, $suffix)
     {
-        $compressorStub = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target\\Compression')
-                               ->disableOriginalConstructor()
-                               ->getMock();
+        $compressorStub = $this->createMock(\phpbu\App\Backup\Target\Compression::class);
         $compressorStub->method('getCommand')->willReturn($cmd);
         $compressorStub->method('getSuffix')->willReturn($suffix);
 

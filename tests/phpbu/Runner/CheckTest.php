@@ -22,9 +22,7 @@ class CheckTest extends \PHPUnit\Framework\TestCase
      */
     public function testCheckSuccessful()
     {
-        $check = $this->getMockBuilder('\\phpbu\\App\\Backup\\Check')
-                      ->disableOriginalConstructor()
-                      ->getMock();
+        $check = $this->createMock(\phpbu\App\Backup\Check::class);
         $check->expects($this->once())
               ->method('pass')
               ->willReturn(true);
@@ -44,9 +42,7 @@ class CheckTest extends \PHPUnit\Framework\TestCase
      */
     public function testCheckFailed()
     {
-        $check = $this->getMockBuilder('\\phpbu\\App\\Backup\\Check')
-                      ->disableOriginalConstructor()
-                      ->getMock();
+        $check = $this->createMock(\phpbu\App\Backup\Check::class);
         $check->expects($this->once())
               ->method('pass')
               ->willReturn(false);
@@ -66,9 +62,7 @@ class CheckTest extends \PHPUnit\Framework\TestCase
      */
     public function testCheckSimulationNoSimulator()
     {
-        $check = $this->getMockBuilder('\\phpbu\\App\\Backup\\Check')
-                      ->disableOriginalConstructor()
-                      ->getMock();
+        $check = $this->createMock(\phpbu\App\Backup\Check::class);
 
         $target    = $this->getTargetMock();
         $result    = $this->getResultMock();
@@ -85,9 +79,7 @@ class CheckTest extends \PHPUnit\Framework\TestCase
      */
     public function testCheckSimulation()
     {
-        $check = $this->getMockBuilder('\\phpbu\\App\\Backup\\Check\\Simulator')
-                      ->disableOriginalConstructor()
-                      ->getMock();
+        $check = $this->createMock(\phpbu\App\Backup\Check\Simulator::class);
 
         $check->expects($this->once())
               ->method('simulate')
@@ -110,9 +102,7 @@ class CheckTest extends \PHPUnit\Framework\TestCase
      */
     protected function getTargetMock()
     {
-        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $target = $this->createMock(\phpbu\App\Backup\Target::class);
         return $target;
     }
 
@@ -123,9 +113,7 @@ class CheckTest extends \PHPUnit\Framework\TestCase
      */
     protected function getCollectorMock()
     {
-        $collector = $this->getMockBuilder('\\phpbu\\App\\Backup\\Collector')
-                          ->disableOriginalConstructor()
-                          ->getMock();
+        $collector = $this->createMock(\phpbu\App\Backup\Collector::class);
         return $collector;
     }
 
@@ -136,9 +124,7 @@ class CheckTest extends \PHPUnit\Framework\TestCase
      */
     protected function getResultMock()
     {
-        $result = $this->getMockBuilder('\\phpbu\\App\\Result')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $result = $this->createMock(\phpbu\App\Result::class);
         return $result;
     }
 }

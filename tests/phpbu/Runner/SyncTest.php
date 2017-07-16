@@ -22,9 +22,7 @@ class SyncTest extends \PHPUnit\Framework\TestCase
      */
     public function testSyncSuccessful()
     {
-        $sync = $this->getMockBuilder('\\phpbu\\App\\Backup\\Sync')
-                     ->disableOriginalConstructor()
-                     ->getMock();
+        $sync = $this->createMock(\phpbu\App\Backup\Sync::class);
         $sync->expects($this->once())
              ->method('sync');
 
@@ -42,9 +40,7 @@ class SyncTest extends \PHPUnit\Framework\TestCase
      */
     public function testSyncFailing()
     {
-        $sync = $this->getMockBuilder('\\phpbu\\App\\Backup\\Sync')
-                     ->disableOriginalConstructor()
-                     ->getMock();
+        $sync = $this->createMock(\phpbu\App\Backup\Sync::class);
         $sync->expects($this->once())
              ->method('sync')
              ->will($this->throwException(new Exception));
@@ -61,9 +57,7 @@ class SyncTest extends \PHPUnit\Framework\TestCase
      */
     public function testSyncSimulation()
     {
-        $sync = $this->getMockBuilder('\\phpbu\\App\\Backup\\Sync\\Simulator')
-                     ->disableOriginalConstructor()
-                     ->getMock();
+        $sync = $this->createMock(\phpbu\App\Backup\Sync\Simulator::class);
         $sync->expects($this->once())
              ->method('simulate');
 
@@ -81,9 +75,7 @@ class SyncTest extends \PHPUnit\Framework\TestCase
      */
     protected function getTargetMock()
     {
-        $target = $this->getMockBuilder('\\phpbu\\App\\Backup\\Target')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $target = $this->createMock(\phpbu\App\Backup\Target::class);
         return $target;
     }
 
@@ -94,9 +86,7 @@ class SyncTest extends \PHPUnit\Framework\TestCase
      */
     protected function getResultMock()
     {
-        $result = $this->getMockBuilder('\\phpbu\\App\\Result')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $result = $this->createMock(\phpbu\App\Result::class);
         return $result;
     }
 }

@@ -245,9 +245,7 @@ class MailTest extends \PHPUnit\Framework\TestCase
      */
     public function getAppResultMock()
     {
-        $appResult = $this->getMockBuilder('\\phpbu\\App\\Result')
-                          ->disableOriginalConstructor()
-                          ->getMock();
+        $appResult = $this->createMock(\phpbu\App\Result::class);
         return $appResult;
     }
 
@@ -258,9 +256,7 @@ class MailTest extends \PHPUnit\Framework\TestCase
      */
     public function getBackupResultMock()
     {
-        $backup = $this->getMockBuilder('\\phpbu\\App\\Result\\Backup')
-                       ->disableOriginalConstructor()
-                       ->getMock();
+        $backup = $this->createMock(\phpbu\App\Result\Backup::class);
         return $backup;
     }
 
@@ -273,9 +269,7 @@ class MailTest extends \PHPUnit\Framework\TestCase
      */
     public function getExceptionMock($msg, $code)
     {
-        $e = $this->getMockBuilder('\\Exception')
-                  ->disableOriginalConstructor()
-                  ->getMock();
+        $e = $this->createMock(\Exception::class);
 
         $e->method('getMessage')->willReturn($msg);
         $e->method('getCode')->willReturn($code);
@@ -291,9 +285,8 @@ class MailTest extends \PHPUnit\Framework\TestCase
      */
     public function getEventMock($type, $arg)
     {
-        $e = $this->getMockBuilder('\\phpbu\\App\\Event\\' . $type)
-                  ->disableOriginalConstructor()
-                  ->getMock();
+        $e = $this->createMock('\\phpbu\\App\\Event\\' . $type);
+
         switch ($type) {
             case 'App\\End':
                 $e->method('getResult')->willReturn($arg);

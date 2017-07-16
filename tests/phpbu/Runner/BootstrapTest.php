@@ -19,9 +19,7 @@ class BootstrapTest extends \PHPUnit\Framework\TestCase
      */
     public function testBootstrapOk()
     {
-        $configuration = $this->getMockBuilder('\\phpbu\\App\\Configuration')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $configuration = $this->createMock(\phpbu\App\Configuration::class);
         $configuration->expects($this->once())
                       ->method('getBootstrap')
                       ->willReturn(PHPBU_TEST_FILES . '/misc/bootstrap.php');
@@ -39,9 +37,7 @@ class BootstrapTest extends \PHPUnit\Framework\TestCase
      */
     public function testBootstrapNoFile()
     {
-        $configuration = $this->getMockBuilder('\\phpbu\\App\\Configuration')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $configuration = $this->createMock(\phpbu\App\Configuration::class);
         $configuration->expects($this->once())
                       ->method('getBootstrap')
                       ->willReturn(PHPBU_TEST_FILES . '/misc/bootstrap_FAIL.php');

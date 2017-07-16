@@ -19,9 +19,7 @@ class EndTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetResult()
     {
-        $r = $this->getMockBuilder('\\phpbu\\App\\Result')
-                  ->disableOriginalConstructor()
-                  ->getMock();
+        $r = $this->createMock(\phpbu\App\Result::class);
 
         $end = new End($r);
 

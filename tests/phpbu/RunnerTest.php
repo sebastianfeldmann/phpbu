@@ -146,9 +146,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $cleanupRunner   = $this->createCleanerRunnerMock($runCalls);
         $cleanup         = $this->createCleanerMock();
 
-        $factory = $this->getMockBuilder('\\phpbu\\App\\Factory')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $factory = $this->createMock(\phpbu\App\Factory::class);
 
         $factory->method('createRunner')
                 ->will($this->onConsecutiveCalls(
@@ -184,9 +182,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $checkRunner     = $this->createCheckRunnerMock(false, true);
         $check           = $this->createCheckMock();
 
-        $factory = $this->getMockBuilder('\\phpbu\\App\\Factory')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $factory = $this->createMock(\phpbu\App\Factory::class);
 
         $factory->method('createRunner')
                 ->will($this->onConsecutiveCalls(
@@ -218,9 +214,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $cryptRunner     = $this->createCryptRunnerMock(1, true);
         $crypt           = $this->createCryptMock();
 
-        $factory = $this->getMockBuilder('\\phpbu\\App\\Factory')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $factory = $this->createMock(\phpbu\App\Factory::class);
 
         $factory->method('createRunner')
                 ->will($this->onConsecutiveCalls(
@@ -256,9 +250,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $syncRunner      = $this->createSyncRunnerMock(1, true);
         $sync            = $this->createSyncMock();
 
-        $factory = $this->getMockBuilder('\\phpbu\\App\\Factory')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $factory = $this->createMock(\phpbu\App\Factory::class);
 
         $factory->method('createRunner')
                 ->will($this->onConsecutiveCalls(
@@ -298,9 +290,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $cleanupRunner   = $this->createCleanerRunnerMock(1, true);
         $cleanup         = $this->createCleanerMock();
 
-        $factory = $this->getMockBuilder('\\phpbu\\App\\Factory')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $factory = $this->createMock(\phpbu\App\Factory::class);
 
         $factory->method('createRunner')
                 ->will($this->onConsecutiveCalls(
@@ -334,9 +324,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $sourceRunner    = $this->createSourceRunnerMock(true);
         $source          = $this->createSourceMock();
 
-        $factory = $this->getMockBuilder('\\phpbu\\App\\Factory')
-                        ->disableOriginalConstructor()
-                        ->getMock();
+        $factory = $this->createMock(\phpbu\App\Factory::class);
 
         $factory->method('createRunner')
                 ->will($this->onConsecutiveCalls(
@@ -357,9 +345,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createBootstrapRunnerMock()
     {
-        $bootstrapRunner = $this->getMockBuilder('\\phpbu\\App\\Runner\\Bootstrap')
-                                ->disableOriginalConstructor()
-                                ->getMock();
+        $bootstrapRunner = $this->createMock(\phpbu\App\Runner\Bootstrap::class);
         $bootstrapRunner->expects($this->once())->method('run');
 
         return $bootstrapRunner;
@@ -383,9 +369,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createSourceRunnerMock($crash = false)
     {
-        $sourceRunner = $this->getMockBuilder('\\phpbu\\App\\Runner\\Source')
-                             ->disableOriginalConstructor()
-                             ->getMock();
+        $sourceRunner = $this->createMock(\phpbu\App\Runner\Source::class);
         if ($crash) {
             $sourceRunner->expects($this->once())->method('run')->will($this->throwException(new Exception('fail')));
         } else {
@@ -402,9 +386,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createSourceMock()
     {
-        return $this->getMockBuilder('\\phpbu\\App\\Backup\\Source\\Tar')
-                    ->disableOriginalConstructor()
-                    ->getMock();
+        return $this->createMock(\phpbu\App\Backup\Source\Tar::class);
     }
 
     /**
@@ -416,9 +398,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createCheckRunnerMock($pass, $crash = false)
     {
-        $checkRunner = $this->getMockBuilder('\\phpbu\\App\\Runner\\Check')
-                            ->disableOriginalConstructor()
-                            ->getMock();
+        $checkRunner = $this->createMock(\phpbu\App\Runner\Check::class);
         if ($crash) {
             $checkRunner->expects($this->once())->method('run')->will($this->throwException(new Exception('fail')));
         } else {
@@ -435,9 +415,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createCheckMock()
     {
-        return $this->getMockBuilder('\\phpbu\\App\\Backup\\Check\\SizeMin')
-                    ->disableOriginalConstructor()
-                    ->getMock();
+        return $this->createMock(\phpbu\App\Backup\Check\SizeMin::class);
     }
 
     /**
@@ -449,9 +427,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createCryptRunnerMock($runCalls, $crash = false)
     {
-        $cryptRunner = $this->getMockBuilder('\\phpbu\\App\\Runner\\Crypter')
-                            ->disableOriginalConstructor()
-                            ->getMock();
+        $cryptRunner = $this->createMock(\phpbu\App\Runner\Crypter::class);
 
         if ($crash) {
             $cryptRunner->expects($this->once())
@@ -471,9 +447,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createCryptMock()
     {
-        return $this->getMockBuilder('\\phpbu\\App\\Backup\\Crypter\\OpenSSL')
-                    ->disableOriginalConstructor()
-                    ->getMock();
+        return $this->createMock(\phpbu\App\Backup\Crypter\OpenSSL::class);
     }
 
     /**
@@ -485,9 +459,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createSyncRunnerMock($runCalls, $crash = false)
     {
-        $syncRunner = $this->getMockBuilder('\\phpbu\\App\\Runner\\Sync')
-                           ->disableOriginalConstructor()
-                           ->getMock();
+        $syncRunner = $this->createMock(\phpbu\App\Runner\Sync::class);
 
         if ($crash) {
             $syncRunner->expects($this->once())
@@ -507,9 +479,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createSyncMock()
     {
-        return $this->getMockBuilder('\\phpbu\\App\\Backup\\Sync\\Rsync')
-                    ->disableOriginalConstructor()
-                    ->getMock();
+        return $this->createMock(\phpbu\App\Backup\Sync\Rsync::class);
     }
 
     /**
@@ -521,9 +491,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createCleanerRunnerMock($runCalls, $crash = false)
     {
-        $cleanupRunner = $this->getMockBuilder('\\phpbu\\App\\Runner\\Cleaner')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $cleanupRunner = $this->createMock(\phpbu\App\Runner\Cleaner::class);
 
         if ($crash) {
             $cleanupRunner->expects($this->once())
@@ -543,9 +511,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createCleanerMock()
     {
-        return $cleanup = $this->getMockBuilder('\\phpbu\\App\\Backup\\Cleaner\\Outdated')
-                               ->disableOriginalConstructor()
-                               ->getMock();
+        return $cleanup = $this->createMock(\phpbu\App\Backup\Cleaner\Outdated::class);
     }
 
     /**
@@ -562,9 +528,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $clean = new Configuration\Backup\Cleanup('outdated', true, []);
         $log   = new Configuration\Logger('json', []);
 
-        $configuration = $this->getMockBuilder('\\phpbu\\App\\Configuration')
-                              ->disableOriginalConstructor()
-                              ->getMock();
+        $configuration = $this->createMock(\phpbu\App\Configuration::class);
         $configuration->method('getLoggers')->willReturn([$log, $this->createLoggerMock()]);
 
         $backups = [];

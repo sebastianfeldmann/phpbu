@@ -19,9 +19,7 @@ class AllTest extends \PHPUnit\Framework\TestCase
      */
     public function testKeep()
     {
-        $file = $this->getMockBuilder('\\phpbu\\App\\Backup\\File')
-                     ->disableOriginalConstructor()
-                     ->getMock();
+        $file = $this->createMock(\phpbu\App\Backup\File::class);
 
         $keeper = new All();
         $this->assertTrue($keeper->keep($file));
