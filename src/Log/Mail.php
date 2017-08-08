@@ -184,11 +184,12 @@ class Mail implements Listener, Logger
                      . $footer
                      . '</body></html>';
             $sent    = null;
+            $state   = $allGood ? 'OK' : ($result->backupOkButSkipsOrFails() ? 'WARNING' : 'ERROR');
 
             try {
                 /** @var \Swift_Message $message */
                 $message = Swift_Message::newInstance();
-                $message->setSubject($this->subject)
+                $message->setSubject($this->subject . ' [' . $state . ']')
                         ->setFrom($this->senderMail, $this->senderName)
                         ->setTo($this->recipients)
                         ->setBody($body, 'text/html');
