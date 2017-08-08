@@ -194,7 +194,7 @@ class MailTest extends \PHPUnit\Framework\TestCase
 
         $app = $this->getAppResultMock();
         $app->expects($this->exactly(2))->method('allOk')->willReturn(false);
-        $app->expects($this->once())->method('backupOkButSkipsOrFails')->willReturn(true);
+        $app->expects($this->exactly(2))->method('backupOkButSkipsOrFails')->willReturn(true);
         $app->method('getBackups')->willReturn([$backup]);
         $app->expects($this->once())->method('getErrors')->willReturn([]);
 
@@ -227,7 +227,7 @@ class MailTest extends \PHPUnit\Framework\TestCase
 
         $app = $this->getAppResultMock();
         $app->expects($this->exactly(2))->method('allOk')->willReturn(false);
-        $app->expects($this->once())->method('backupOkButSkipsOrFails')->willReturn(false);
+        $app->expects($this->exactly(2))->method('backupOkButSkipsOrFails')->willReturn(false);
         $app->method('getBackups')->willReturn([$backup]);
         $app->expects($this->once())->method('getErrors')->willReturn([$e]);
 
