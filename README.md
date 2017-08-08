@@ -5,7 +5,7 @@
 *PHPBU* is a php framework that creates and encrypts backups, syncs your backups to other servers or cloud services
 and assists you monitor your backup creation.
 
-Get detailed information about all the features and a 'getting started' tutorial at the [PHPBU Website](https://phpbu.de).
+Get an in depth look into all the features and a short 'getting started' tutorial at the [PHPBU Website](https://phpbu.de).
 
 [![Latest Stable Version](https://poser.pugx.org/phpbu/phpbu/v/stable.svg)](https://packagist.org/packages/phpbu/phpbu)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.5-8892BF.svg)](https://php.net/)
@@ -27,6 +27,11 @@ Get detailed information about all the features and a 'getting started' tutorial
     + Percona XtraBackup
     + PostgreSQL
     + Redis
+* Compress backups
+    + bzip2
+    + gzip
+    + xz
+    + zip
 * Validate backups
     + Check min size
     + Comparing with previous backups
@@ -36,18 +41,19 @@ Get detailed information about all the features and a 'getting started' tutorial
 * Sync backups to other locations
     + Amazon s3
     + Dropbox
+    + FTP
     + rsync
     + SFTP
-    + FTP
     + Softlayer
-* Cleanup your backup location
+* Cleanup your local backup
     + Delete backups older x
     + Store only x MB of backups
     + Keep only last x backups
+    + Keep less backups for more distant past
 
 ## Requirements
 
-* PHP >= 5.5
+* PHP >= 7.0
     + ext/curl
     + ext/dom
     + ext/json
@@ -68,8 +74,8 @@ For convenience, you can move the PHAR to a directory that is in your [PATH](htt
 
     mv phpbu.phar /usr/local/bin/phpbu
     phpbu --version
-    
-Using [PHIVE](https://phar.io) to install *PHPBU*. 
+
+Using [PHIVE](https://phar.io) to install *PHPBU*.
 
     phive install phpbu
 
@@ -77,7 +83,7 @@ Installing *PHPBU* via Composer is also supported.
 
 ```json
   "require": {
-    "phpbu/phpbu": "4.0.*"
+    "phpbu/phpbu": "~5.0"
   }
 ```
 
@@ -112,7 +118,7 @@ Use the *--limit* option to execute only a subset of your configured backups.
 Use the *--simulate* option to perform a trial run without actually executing the configured backups.
 
     $ phpbu --simulate
-    
+
 ## Configuration Example
 
 Simple configuration example:
@@ -120,7 +126,7 @@ Simple configuration example:
 ```xml
   <?xml version="1.0" encoding="UTF-8"?>
   <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/4.0/phpbu.xsd"
+         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/5.0/phpbu.xsd"
          verbose="true">
     <backups>
       <backup name="myAppDB">
