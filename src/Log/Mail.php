@@ -156,7 +156,7 @@ class Mail implements Listener, Logger
 
         // create transport an mailer
         $transport    = $this->createTransport($this->transportType, $options);
-        $this->mailer = Swift_Mailer::newInstance($transport);
+        $this->mailer = new Swift_Mailer($transport);
     }
 
     /**
@@ -188,7 +188,7 @@ class Mail implements Listener, Logger
 
             try {
                 /** @var \Swift_Message $message */
-                $message = Swift_Message::newInstance();
+                $message = new Swift_Message();
                 $message->setSubject($this->subject . ' [' . $state . ']')
                         ->setFrom($this->senderMail, $this->senderName)
                         ->setTo($this->recipients)
@@ -268,7 +268,7 @@ class Mail implements Listener, Logger
             // null transport, don't send any mails
             case 'null':
                  /* @var $transport \Swift_NullTransport */
-                $transport = \Swift_NullTransport::newInstance();
+                $transport = new \Swift_NullTransport();
                 break;
 
             case 'smtp':
@@ -306,7 +306,7 @@ class Mail implements Listener, Logger
         $encryption = Arr::getValue($options, 'smtp.encryption');
 
         /* @var $transport \Swift_SmtpTransport */
-        $transport = \Swift_SmtpTransport::newInstance($host, $port);
+        $transport = new \Swift_SmtpTransport($host, $port);
 
         if ($username && $password) {
             $transport->setUsername($username)
@@ -330,9 +330,9 @@ class Mail implements Listener, Logger
             $path    = $options['sendmail.path'];
             $options = isset($options['sendmail.options']) ? ' ' . $options['sendmail.options'] : '';
             /* @var $transport \Swift_SendmailTransport */
-            return \Swift_SendmailTransport::newInstance($path . $options);
+            return new \Swift_SendmailTransport($path . $options);
         }
-        return \Swift_SendmailTransport::newInstance();
+        return new \Swift_SendmailTransport();
     }
 
     /**
