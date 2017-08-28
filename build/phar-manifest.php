@@ -25,7 +25,7 @@ foreach ($lock->packages as $package) {
 foreach ($lock->{'packages-dev'} as $package) {
     if (!in_array($package->name, [
         "aws/aws-sdk-php",
-        "dropbox/dropbox-sdk",
+        "kunalvarma05/dropbox-php-sdk",
         "phpseclib/phpseclib",
         "softlayer/objectstorage",
         "vlucas/phpdotenv"
