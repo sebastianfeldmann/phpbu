@@ -39,7 +39,7 @@
     "sebastian/environment": "~1.1",
     "sebastian/version": "~1.0",
     "sebastianfeldmann/cli": "~1.0",
-    "swiftmailer/swiftmailer": "~5.4|~6.0",
+    "swiftmailer/swiftmailer": "~5.3|~6.0",
     "symfony/event-dispatcher": "~2.6|~3.0"
   },
   "require-dev": {

@@ -291,16 +291,6 @@
         <exclude name="**/swift_required_pear.php"/>
       </fileset>
     </copy>
-    <copy todir="${basedir}/build/phar/lib/doctrine/lexer">
-      <fileset dir="${basedir}/vendor/doctrine/lexer/lib">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-    <copy todir="${basedir}/build/phar/lib/egulias/email-validator">
-      <fileset dir="${basedir}/vendor/egulias/email-validator/EmailValidator">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
 
     <copy file="${basedir}/vendor/symfony/event-dispatcher/LICENSE"
           tofile="${basedir}/build/phar/lib/symfony/event-dispatcher/LICENSE"/>
