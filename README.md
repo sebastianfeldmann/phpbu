@@ -5,16 +5,18 @@
 *PHPBU* is a php framework that creates and encrypts backups, syncs your backups to other servers or cloud services
 and assists you monitor your backup creation.
 
-Get detailed information about all the features and a 'getting started' tutorial at the [PHPBU Website](https://phpbu.de).
+Get an in depth look into all the features and a short 'getting started' tutorial at the [PHPBU Website](https://phpbu.de).
 
 [![Latest Stable Version](https://poser.pugx.org/phpbu/phpbu/v/stable.svg)](https://packagist.org/packages/phpbu/phpbu)
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.5-8892BF.svg)](https://php.net/)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.0-8892BF.svg)](https://php.net/)
 [![Downloads](https://img.shields.io/packagist/dt/phpbu/phpbu.svg?v1)](https://packagist.org/packages/phpbu/phpbu)
 [![License](https://poser.pugx.org/phpbu/phpbu/license.svg)](https://packagist.org/packages/phpbu/phpbu)
 [![Build Status](https://travis-ci.org/sebastianfeldmann/phpbu.svg?branch=master)](https://travis-ci.org/sebastianfeldmann/phpbu)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/?branch=master)
 [![PHP Website](https://img.shields.io/website-up-down-green-red/https/phpbu.de.svg)](https://phpbu.de)
+
+If you are not using php 7.0 or greater already you can still use phpbu version [4.0.10](https://phar.phpbu.de/phpbu-4.0.10.phar)
 
 ## Features
 
@@ -27,6 +29,11 @@ Get detailed information about all the features and a 'getting started' tutorial
     + Percona XtraBackup
     + PostgreSQL
     + Redis
+* Compress backups
+    + bzip2
+    + gzip
+    + xz
+    + zip
 * Validate backups
     + Check min size
     + Comparing with previous backups
@@ -36,18 +43,19 @@ Get detailed information about all the features and a 'getting started' tutorial
 * Sync backups to other locations
     + Amazon s3
     + Dropbox
+    + FTP
     + rsync
     + SFTP
-    + FTP
     + Softlayer
-* Cleanup your backup location
+* Cleanup your local backup
     + Delete backups older x
     + Store only x MB of backups
     + Keep only last x backups
+    + Keep less backups for more distant past
 
 ## Requirements
 
-* PHP >= 5.5
+* PHP >= 7.0
     + ext/curl
     + ext/dom
     + ext/json
@@ -68,8 +76,8 @@ For convenience, you can move the PHAR to a directory that is in your [PATH](htt
 
     mv phpbu.phar /usr/local/bin/phpbu
     phpbu --version
-    
-Using [PHIVE](https://phar.io) to install *PHPBU*. 
+
+Using [PHIVE](https://phar.io) to install *PHPBU*.
 
     phive install phpbu
 
@@ -77,7 +85,7 @@ Installing *PHPBU* via Composer is also supported.
 
 ```json
   "require": {
-    "phpbu/phpbu": "4.0.*"
+    "phpbu/phpbu": "~5.0"
   }
 ```
 
@@ -112,7 +120,7 @@ Use the *--limit* option to execute only a subset of your configured backups.
 Use the *--simulate* option to perform a trial run without actually executing the configured backups.
 
     $ phpbu --simulate
-    
+
 ## Configuration Example
 
 Simple configuration example:
@@ -120,7 +128,7 @@ Simple configuration example:
 ```xml
   <?xml version="1.0" encoding="UTF-8"?>
   <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/4.0/phpbu.xsd"
+         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/5.0/phpbu.xsd"
          verbose="true">
     <backups>
       <backup name="myAppDB">
