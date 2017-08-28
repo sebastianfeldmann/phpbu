@@ -12,9 +12,6 @@ if (__FILE__ == realpath($GLOBALS['_SERVER']['SCRIPT_NAME'])) {
 define('__PHPBU_PHAR__', str_replace(DIRECTORY_SEPARATOR, '/', $phar));
 define('__PHPBU_PHAR_ROOT__', 'phar://___PHAR___');
 
-// swift dependency init
-require __PHPBU_PHAR_ROOT__ . '/lib/swiftmailer/swift_required.php';
-
 spl_autoload_register(
   function ($class)
   {
@@ -48,6 +45,8 @@ if ($execute) {
     require __PHPBU_PHAR_ROOT__ . '/lib/guzzlehttp/guzzle/functions_include.php';
     require __PHPBU_PHAR_ROOT__ . '/lib/guzzlehttp/psr7/functions_include.php';
     require __PHPBU_PHAR_ROOT__ . '/lib/guzzlehttp/promises/functions_include.php';
+    // swift dependency init
+    require __PHPBU_PHAR_ROOT__ . '/lib/swiftmailer/swift_init.php';
 
     phpbu\App\Cmd::main();
 }
