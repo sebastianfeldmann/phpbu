@@ -282,12 +282,23 @@
       </fileset>
     </copy>
 
+    <!-- SWIFTMAILER -->
     <copy file="${basedir}/vendor/swiftmailer/swiftmailer/LICENSE"
           tofile="${basedir}/build/phar/lib/swiftmailer/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/swiftmailer">
       <fileset dir="${basedir}/vendor/swiftmailer/swiftmailer/lib">
         <include name="**/*.php"/>
         <exclude name="**/swift_required_pear.php"/>
+      </fileset>
+    </copy>
+    <copy todir="${basedir}/build/phar/lib/doctrine/lexer">
+      <fileset dir="${basedir}/vendor/doctrine/lexer/lib">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy todir="${basedir}/build/phar/lib/egulias/email-validator">
+      <fileset dir="${basedir}/vendor/egulias/email-validator/EmailValidator">
+        <include name="**/*.php"/>
       </fileset>
     </copy>
 
