@@ -18,6 +18,9 @@
   <!-- optional, default false -->
   <option name="removeSourceDir" value="false" />
 
+  <!-- optional, default null -->
+  <option name="throttle" value="5m" />
+
   <!-- define your custom tar executable location -->
   <option name="pathToTar" value="/path/to/custom/bin" />
 </source>

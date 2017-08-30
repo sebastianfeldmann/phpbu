@@ -80,6 +80,14 @@ class Tar extends Abstraction implements Executable
     private $removeSourceDir = false;
 
     /**
+     * Limit data throughput
+     * | pv -L ${limit}
+     *
+     * @var string
+     */
+    private $pvLimit = '';
+
+    /**
      * List of available compressors
      *
      * @var array
@@ -174,6 +182,18 @@ class Tar extends Abstraction implements Executable
     }
 
     /**
+     * Limit the data throughput.
+     *
+     * @param string $limit
+     * @return \phpbu\App\Cli\Executable\Tar
+     */
+    public function throttle(string $limit) : Tar
+    {
+        $this->pvLimit = $limit;
+        return $this;
+    }
+
+    /**
      * Does the tar handle the compression.
      *
      * @return bool
@@ -232,18 +252,27 @@ class Tar extends Abstraction implements Executable
 
         $process = new CommandLine();
         $tar     = new Cmd($this->binary);
+        $create  = $this->isThrottled() ? 'c' : 'cf';
+        $process->addCommand($tar);
 
         $this->setExcludeOptions($tar);
 
         $tar->addOptionIfNotEmpty('--force-local', $this->local, false);
         $tar->addOptionIfNotEmpty('--ignore-failed-read', $this->ignoreFailedRead, false);
         $tar->addOptionIfNotEmpty('--use-compress-program', $this->compressProgram);
-        $tar->addOption('-' . (empty($this->compressProgram) ? $this->compression : '') . 'cf');
-        $tar->addArgument($this->tarPathname);
+        $tar->addOption('-' . (empty($this->compressProgram) ? $this->compression : '') . $create);
+
+        if ($this->isThrottled()) {
+            $pv = new Cmd('pv');
+            $pv->addOption('-qL', $this->pvLimit, ' ');
+            $process->pipeOutputTo($pv);
+            $process->redirectOutputTo($this->tarPathname);
+        } else {
+            $tar->addArgument($this->tarPathname);
+        }
+
         $tar->addOption('-C', dirname($this->path), ' ');
         $tar->addArgument(basename($this->path));
-
-        $process->addCommand($tar);
 
         // delete the source data if requested
         $this->addRemoveCommand($process);
@@ -324,5 +353,15 @@ class Tar extends Abstraction implements Executable
     public static function isCompressionValid(string  $compression) : bool
     {
         return isset(self::$availableCompressions[$compression]);
+    }
+
+    /**
+     * Should output be throttled through pv.
+     *
+     * @return bool
+     */
+    public function isThrottled() : bool
+    {
+        return !empty($this->pvLimit);
     }
 }

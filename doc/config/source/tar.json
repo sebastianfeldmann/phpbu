@@ -6,6 +6,7 @@
     "ignoreFailedRead": false,
     "compressProgram": "lbzip2",
     "removeSourceDir": false,
+    "throttle": "5m",
     "pathToTar": "/path/to/custom/bin"
   }
 }

@@ -90,6 +90,13 @@ class Tar extends SimulatorExecutable implements Simulator
     private $compression = '';
 
     /**
+     * Throttle cpu usage.
+     *
+     * @var string
+     */
+    private $throttle = '';
+
+    /**
      * Path where to store the archive.
      *
      * @var string
@@ -109,6 +116,7 @@ class Tar extends SimulatorExecutable implements Simulator
         $this->path             = Util\Arr::getValue($conf, 'path', '');
         $this->excludes         = Util\Str::toList(Util\Arr::getValue($conf, 'exclude', ''));
         $this->compressProgram  = Util\Arr::getValue($conf, 'compressProgram', '');
+        $this->throttle         = Util\Arr::getValue($conf, 'throttle', '');
         $this->forceLocal       = Util\Str::toBoolean(Util\Arr::getValue($conf, 'forceLocal', ''), false);
         $this->ignoreFailedRead = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ignoreFailedRead', ''), false);
         $this->removeSourceDir  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeSourceDir', ''), false);
@@ -164,18 +172,13 @@ class Tar extends SimulatorExecutable implements Simulator
      */
     protected function createExecutable(Target $target) : Executable
     {
-        // check if tar supports requested compression
-        if ($target->shouldBeCompressed()) {
-            if (!Executable\Tar::isCompressionValid($target->getCompression()->getCommand())) {
-                $this->pathToArchive = $target->getPathnamePlain();
-            } else {
-                // compression can be handled by the tar command
-                $this->pathToArchive = $target->getPathname();
-                $this->compression   = $target->getCompression()->getCommand();
-            }
-        } else {
-            // no compression at all
+        $this->pathToArchive = $target->getPathnamePlain();
+
+        // check if archive should be compressed and tar supports requested compression
+        if ($target->shouldBeCompressed()
+            && Executable\Tar::isCompressionValid($target->getCompression()->getCommand())) {
             $this->pathToArchive = $target->getPathname();
+            $this->compression   = $target->getCompression()->getCommand();
         }
 
         $executable = new Executable\Tar($this->pathToTar);
@@ -185,6 +188,7 @@ class Tar extends SimulatorExecutable implements Simulator
                    ->forceLocal($this->forceLocal)
                    ->ignoreFailedRead($this->ignoreFailedRead)
                    ->removeSourceDirectory($this->removeSourceDir)
+                   ->throttle($this->throttle)
                    ->archiveTo($this->pathToArchive);
         // add paths to exclude
         foreach ($this->excludes as $path) {
