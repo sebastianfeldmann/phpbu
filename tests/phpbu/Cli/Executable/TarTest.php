@@ -128,6 +128,52 @@ class TarTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests Tar::getCommand
      */
+    public function testThrottle()
+    {
+        $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
+        $tar  = new Tar(PHPBU_TEST_BIN);
+        $tar->archiveDirectory($dir)
+            ->archiveTo('/tmp/foo.tar.bzip2')
+            ->useCompression('bzip2')
+            ->throttle('1m');
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar -jc -C \'' . $tarC .  '\' \'' . $tarD . '\'' .
+            ' | pv -qL \'1m\' > /tmp/foo.tar.bzip2'
+            ,
+            $tar->getCommand()
+        );
+    }
+
+    /**
+     * Tests Tar::getCommand
+     */
+    public function testThrottleAndRemoveSourceDir()
+    {
+        $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
+        $tar  = new Tar(PHPBU_TEST_BIN);
+        $tar->archiveDirectory($dir)
+            ->archiveTo('/tmp/foo.tar.bzip2')
+            ->useCompression('bzip2')
+            ->removeSourceDirectory(true)
+            ->throttle('1m');
+
+        $this->assertEquals(
+            '(' . PHPBU_TEST_BIN . '/tar -jc -C \'' . $tarC .  '\' \'' . $tarD . '\'' .
+            ' && rm -rf \'' . $dir . '\')' .
+            ' | pv -qL \'1m\' > /tmp/foo.tar.bzip2'
+            ,
+            $tar->getCommand()
+        );
+    }
+
+    /**
+     * Tests Tar::getCommand
+     */
     public function testRemoveSourceDir()
     {
         $dir  = sys_get_temp_dir();

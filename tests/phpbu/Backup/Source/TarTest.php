@@ -141,6 +141,29 @@ class TarTest extends CliTest
     }
 
     /**
+     * Tests Tar::getExecutable
+     */
+    public function testThrottle()
+    {
+        $target = $this->getTargetMock('/tmp/backup.tar');
+        $target->method('shouldBeCompressed')->willReturn(false);
+        $target->method('getPathname')->willReturn('/tmp/backup.tar');
+
+        $tar = new Tar();
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'throttle' => '1m']);
+
+        $exec = $tar->getExecutable($target);
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar -c -C \''
+            . dirname(__DIR__) . '\' \''
+            . basename(__DIR__) . '\''
+            . ' | pv -qL \'1m\' > /tmp/backup.tar',
+            $exec->getCommand()
+        );
+    }
+
+    /**
      * Tests Tar::backup
      *
      * @expectedException \phpbu\App\Exception
