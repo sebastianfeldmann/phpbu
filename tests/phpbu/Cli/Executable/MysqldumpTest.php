@@ -111,6 +111,30 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests Mysqldump::useHost
+     */
+    public function testUseHost()
+    {
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
+        $mysqldump->useHost('localhost');
+        $cmd       = $mysqldump->getCommand();
+
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --host=\'localhost\' --all-databases', $cmd);
+    }
+
+    /**
+     * Tests Mysqldump::usePort
+     */
+    public function testUsePort()
+    {
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
+        $mysqldump->usePort(1234);
+        $cmd       = $mysqldump->getCommand();
+
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --port=\'1234\' --all-databases', $cmd);
+    }
+
+    /**
      * Tests Mysqldump::getCommand
      */
     public function testTables()

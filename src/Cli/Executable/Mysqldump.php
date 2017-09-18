@@ -32,6 +32,14 @@ class Mysqldump extends Abstraction implements Executable
     private $host;
 
     /**
+     * Port to connect to
+     * --port <number>
+     *
+     * @var int
+     */
+    private $port;
+
+    /**
      * User to connect with
      * --user <username>
      *
@@ -196,6 +204,18 @@ class Mysqldump extends Abstraction implements Executable
     public function useHost(string $host) : Mysqldump
     {
         $this->host = $host;
+        return $this;
+    }
+
+    /**
+     * Set the mysql port.
+     *
+     * @param  int $port
+     * @return \phpbu\App\Cli\Executable\Mysqldump
+     */
+    public function usePort(int $port) : Mysqldump
+    {
+        $this->port = $port;
         return $this;
     }
 
@@ -393,6 +413,7 @@ class Mysqldump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('--user', $this->user);
         $cmd->addOptionIfNotEmpty('--password', $this->password);
         $cmd->addOptionIfNotEmpty('--host', $this->host);
+        $cmd->addOptionIfNotEmpty('--port', $this->port);
         $cmd->addOptionIfNotEmpty('--lock-tables', $this->lockTables, false);
         $cmd->addOptionIfNotEmpty('--single-transaction', $this->singleTransaction, false);
         $cmd->addOptionIfNotEmpty('-q', $this->quick, false);
