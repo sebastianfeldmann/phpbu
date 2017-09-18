@@ -84,6 +84,20 @@ class MysqldumpTest extends CliTest
     /**
      * Tests Mysqldump::getExecutable
      */
+    public function testPort()
+    {
+        $target    = $this->getTargetMock();
+        $mysqldump = new Mysqldump();
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'port' => '4711']);
+
+        $executable = $mysqldump->getExecutable($target);
+
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --port=\'4711\' --all-databases', $executable->getCommand());
+    }
+
+    /**
+     * Tests Mysqldump::getExecutable
+     */
     public function testFilePerTable()
     {
         $target    = $this->getTargetMock('/tmp/foo');

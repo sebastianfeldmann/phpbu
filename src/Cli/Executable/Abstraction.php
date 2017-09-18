@@ -56,10 +56,7 @@ abstract class Abstraction
      */
     public function getCommandLine() : CommandLine
     {
-        if ($this->commandLine == null) {
-            $this->commandLine = $this->createCommandLine();
-        }
-        return $this->commandLine;
+        return $this->createCommandLine();
     }
 
     /**

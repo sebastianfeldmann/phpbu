@@ -300,7 +300,7 @@ class Cmd
         $latestVersion = $this->getLatestVersion();
         if ($this->isPharOutdated($latestVersion)) {
             print 'You are not using the latest version of phpbu.' . PHP_EOL
-                . 'Use "phpunit --self-update" to install phpbu ' . $latestVersion . PHP_EOL;
+                . 'Use "phpbu --self-update" to install phpbu ' . $latestVersion . PHP_EOL;
         } else {
             print 'You are using the latest version of phpbu.' . PHP_EOL;
         }

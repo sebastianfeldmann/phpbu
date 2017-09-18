@@ -2,6 +2,7 @@
   "type": "mysqldump",
   "option": {
     "host": "myHost",
+    "port": "4711",
     "user": "myUserName",
     "password": "mySecretPassword",
     "databases": "myDB1,mydB2",
