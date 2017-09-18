@@ -3,6 +3,9 @@
   <!-- optional, default=localhost -->
   <option name="host" value="myHost" />
 
+  <!-- optional, default=none -->
+  <option name="port" value="4711" />
+
   <!-- optional, default=system user -->
   <option name="user" value="myUserName" />
 
