@@ -29,7 +29,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests Mysqldump::getCommandPrintable
      */
-    public function testDefaultPrintable()
+    public function __testDefaultPrintable()
     {
         $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $cmd       = $mysqldump->getCommandPrintable();
@@ -68,9 +68,13 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     {
         $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->credentials('foo', 'bar');
+        $original  = $mysqldump->getCommand();
         $cmd       = $mysqldump->getCommandPrintable();
+        $restored  = $mysqldump->getCommand();
 
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --user=\'foo\' --password=\'bar\' --all-databases', $original);
         $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --user=\'foo\' --password=\'******\' --all-databases', $cmd);
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --user=\'foo\' --password=\'bar\' --all-databases', $restored);
     }
 
     /**
