@@ -78,6 +78,15 @@ class Capacity extends Abstraction implements Simulator
     {
         $target->setSize('20000000');
         $result->debug('assuming backup size 20MB');
+
+        // because there is no target file on disc to read
+        // we have to deactivate the target handling
+        // so $targetFile->getMTime or $targetFile->getSize will not be called
+        if ($this->deleteTarget) {
+            $this->deleteTarget = false;
+            $result->debug('target will be deleted as well');
+            $result->debug('delete ' . $target->getPathname());
+        }
         parent::simulate($target, $collector, $result);
     }
 
