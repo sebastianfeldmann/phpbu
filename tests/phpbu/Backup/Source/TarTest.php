@@ -286,6 +286,55 @@ class TarTest extends CliTest
     /**
      * Tests Tar::backup
      */
+    public function testBackupOkOnFailedRead()
+    {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+               ->method('run')
+               ->willReturn($this->getRunnerResultMock(1, 'tar'));
+
+        $tar = new Tar($runner);
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'ignoreFailedRead' => 'true']);
+
+        $target = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
+        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+
+        $appResult = $this->getAppResultMock();
+        $appResult->expects($this->once())->method('debug');
+
+        $status = $tar->backup($target, $appResult);
+
+        $this->assertTrue($status->handledCompression());
+    }
+
+
+    /**
+     * Tests Tar::backup
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testBackupFailOnFailedRead()
+    {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+            ->method('run')
+            ->willReturn($this->getRunnerResultMock(1, 'tar'));
+
+        $tar = new Tar($runner);
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
+
+        $target = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
+        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+
+        $appResult = $this->getAppResultMock();
+        $appResult->expects($this->once())->method('debug');
+
+        $tar->backup($target, $appResult);
+    }
+
+    /**
+     * Tests Tar::backup
+     */
     public function testBackupOkUnsupportedCompression()
     {
         $runner = $this->getRunnerMock();
@@ -334,7 +383,7 @@ class TarTest extends CliTest
         $runner = $this->getRunnerMock();
         $runner->expects($this->once())
                ->method('run')
-               ->willReturn($this->getRunnerResultMock(1, 'tar'));
+               ->willReturn($this->getRunnerResultMock(2, 'tar'));
 
         $tar = new Tar($runner);
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);

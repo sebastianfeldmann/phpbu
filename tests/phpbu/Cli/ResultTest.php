@@ -48,6 +48,16 @@ class ResultTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests Result::getReturnCode
+     */
+    public function testGetReturnCode()
+    {
+        $cmd = new CommandResult('echo 1', 0, "a\nb");
+        $res = new Result($cmd);
+        $this->assertEquals(0, $res->getReturnCode());
+    }
+
+    /**
      * Tests Result::getCmd
      */
     public function testGetCmd()

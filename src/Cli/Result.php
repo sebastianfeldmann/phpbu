@@ -63,6 +63,16 @@ class Result
     }
 
     /**
+     * Returns the raw cli return code.
+     *
+     * @return int
+     */
+    public function getReturnCode() : int
+    {
+        return $this->cmdResult->getCode();
+    }
+
+    /**
      * Return the executed cli command.
      *
      * @return string
