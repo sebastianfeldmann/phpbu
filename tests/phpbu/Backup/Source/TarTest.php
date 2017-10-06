@@ -2,7 +2,9 @@
 namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\CliTest;
-use phpbu\App\Backup\Compressor;
+use SebastianFeldmann\Cli\Command\Result as CommandResult;
+use SebastianFeldmann\Cli\Command\Runner\Simple;
+use SebastianFeldmann\Cli\Processor\ProcOpen;
 
 /**
  * TarTest
@@ -264,12 +266,13 @@ class TarTest extends CliTest
      */
     public function testBackupOk()
     {
-        $runner = $this->getRunnerMock();
-        $runner->expects($this->once())
-               ->method('run')
-               ->willReturn($this->getRunnerResultMock(0, 'tar'));
+        $processor = $this->createMock(ProcOpen::class);
+        $processor->expects($this->once())
+                  ->method('run')
+                  ->willReturn(new CommandResult('tar', 0, '', '', '', [0]));
 
-        $tar = new Tar($runner);
+        $runner = new Simple($processor);
+        $tar    = new Tar($runner);
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
 
         $target = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
@@ -288,12 +291,13 @@ class TarTest extends CliTest
      */
     public function testBackupOkOnFailedRead()
     {
-        $runner = $this->getRunnerMock();
-        $runner->expects($this->once())
-               ->method('run')
-               ->willReturn($this->getRunnerResultMock(1, 'tar'));
+        $processor = $this->createMock(ProcOpen::class);
+        $processor->expects($this->once())
+                  ->method('run')
+                  ->willReturn(new CommandResult('tar', 1, '', '', '', [0, 1]));
 
-        $tar = new Tar($runner);
+        $runner = new Simple($processor);
+        $tar    = new Tar($runner);
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'ignoreFailedRead' => 'true']);
 
         $target = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
@@ -311,23 +315,23 @@ class TarTest extends CliTest
     /**
      * Tests Tar::backup
      *
-     * @expectedException \phpbu\App\Exception
+     * @expectedException \RuntimeException
      */
     public function testBackupFailOnFailedRead()
     {
-        $runner = $this->getRunnerMock();
-        $runner->expects($this->once())
-            ->method('run')
-            ->willReturn($this->getRunnerResultMock(1, 'tar'));
+        $processor = $this->createMock(ProcOpen::class);
+        $processor->expects($this->once())
+                  ->method('run')
+                  ->willReturn(new CommandResult('tar', 1, '', '', '', [0]));
 
-        $tar = new Tar($runner);
+        $runner = new Simple($processor);
+        $tar    = new Tar($runner);
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
 
         $target = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
         $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
 
         $appResult = $this->getAppResultMock();
-        $appResult->expects($this->once())->method('debug');
 
         $tar->backup($target, $appResult);
     }

@@ -38,7 +38,7 @@
     "phpunit/php-timer": "~1.0",
     "sebastian/environment": "~1.1",
     "sebastian/version": "~1.0",
-    "sebastianfeldmann/cli": "~1.0",
+    "sebastianfeldmann/cli": "~2.0",
     "swiftmailer/swiftmailer": "~5.3|~6.0",
     "symfony/event-dispatcher": "~2.6|~3.0"
   },

@@ -45,6 +45,7 @@ abstract class CliTest extends \PHPUnit\Framework\TestCase
      * @param  string $out
      * @param  string $err
      * @param  string $redirect
+     * @param  int[]  $acceptableExitCodes
      * @return \SebastianFeldmann\Cli\Command\Runner\Result
      */
     protected function getRunnerResultMock(
@@ -52,10 +53,11 @@ abstract class CliTest extends \PHPUnit\Framework\TestCase
         string $cmd,
         string $out = '',
         string $err = '',
-        string $redirect = ''
+        string $redirect = '',
+        array $acceptableExitCodes = [0]
     )
     {
-        $cmdRes = new CommandResult($cmd, $code, $out, $err, $redirect);
+        $cmdRes = new CommandResult($cmd, $code, $out, $err, $redirect, $acceptableExitCodes);
         $runRes = new RunnerResult($cmdRes);
 
         return $runRes;

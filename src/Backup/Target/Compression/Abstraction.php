@@ -72,6 +72,16 @@ abstract class Abstraction implements Compression
     }
 
     /**
+     * Return a list of acceptable exit codes.
+     *
+     * @return int[]
+     */
+    public function getAcceptableExitCodes(): array
+    {
+        return [0];
+    }
+
+    /**
      * Path getter.
      *
      * @return string
