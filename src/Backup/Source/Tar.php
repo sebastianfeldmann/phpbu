@@ -145,23 +145,11 @@ class Tar extends SimulatorExecutable implements Simulator
 
         $result->debug($tar->getCmdPrintable());
 
-        if (!$tar->isSuccessful() && !$this->onlyAcceptedWarnings($tar)) {
+        if (!$tar->isSuccessful()) {
             throw new Exception('tar failed: ' . $tar->getStdErr());
         }
 
         return $this->createStatus($target);
-    }
-
-    /**
-     * Determine if there where read errors, but the user is aware.
-     * The user has acknowledged that he accepts those warnings ba setting 'ignoreFailedRead'.
-     *
-     * @param \phpbu\App\Cli\Result $tar
-     * @return bool
-     */
-    private function onlyAcceptedWarnings(CliResult $tar) : bool
-    {
-        return $tar->getReturnCode() == 1 && $this->ignoreFailedRead;
     }
 
     /**

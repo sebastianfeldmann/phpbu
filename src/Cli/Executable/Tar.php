@@ -256,9 +256,9 @@ class Tar extends Abstraction implements Executable
         $process->addCommand($tar);
 
         $this->setExcludeOptions($tar);
+        $this->handleWarnings($tar);
 
         $tar->addOptionIfNotEmpty('--force-local', $this->local, false);
-        $tar->addOptionIfNotEmpty('--ignore-failed-read', $this->ignoreFailedRead, false);
         $tar->addOptionIfNotEmpty('--use-compress-program', $this->compressProgram);
         $tar->addOption('-' . (empty($this->compressProgram) ? $this->compression : '') . $create);
 
@@ -289,6 +289,20 @@ class Tar extends Abstraction implements Executable
     {
         foreach ($this->excludes as $path) {
             $tar->addOption('--exclude', $path);
+        }
+    }
+
+    /**
+     * Configure warning handling.
+     * With the 'ignoreFailedRead' option set, exit code '1' is also accepted since it only indicates a warning.
+     *
+     * @param \SebastianFeldmann\Cli\Command\Executable $tar
+     */
+    protected function handleWarnings(Cmd $tar)
+    {
+        if ($this->ignoreFailedRead) {
+            $tar->addOption('--ignore-failed-read');
+            $this->acceptableExitCodes = [0, 1];
         }
     }
 
