@@ -9,7 +9,6 @@ use phpbu\App\Exception;
 use phpbu\App\Util\Str;
 
 /**
- *
  * Loader for a phpbu XML configuration file.
  *
  * Example XML configuration file:
@@ -160,7 +159,7 @@ class Xml extends File implements Loader
             // search for target attribute to convert to option
             $target = $logNode->getAttribute('target');
             if (!empty($target)) {
-                $options['target'] = $this->toAbsolutePath($target);
+                $options['target'] = $this->getAdapterizedValue($this->toAbsolutePath($target));
             }
             $configuration->addLogger(new Configuration\Logger($type, $options));
         }
@@ -189,7 +188,7 @@ class Xml extends File implements Loader
     private function getBackupConfig(DOMElement $backupNode)
     {
         $stopOnFailure = Str::toBoolean($backupNode->getAttribute('stopOnFailure'), false);
-        $backupName    = $backupNode->getAttribute('name');
+        $backupName    = $this->getAdapterizedValue($backupNode->getAttribute('name'));
         $backup        = new Configuration\Backup($backupName, $stopOnFailure);
 
         $backup->setSource($this->getSource($backupNode));
@@ -242,8 +241,8 @@ class Xml extends File implements Loader
         /** @var DOMElement $targetNode */
         $targetNode = $targets->item(0);
         $compress   = $targetNode->getAttribute('compress');
-        $filename   = $targetNode->getAttribute('filename');
-        $dirname    = $targetNode->getAttribute('dirname');
+        $filename   = $this->getAdapterizedValue($targetNode->getAttribute('filename'));
+        $dirname    = $this->getAdapterizedValue($targetNode->getAttribute('dirname'));
 
         if ($dirname) {
             $dirname = $this->toAbsolutePath($dirname);
@@ -353,7 +352,7 @@ class Xml extends File implements Loader
         /** @var \DOMElement $optionNode */
         foreach ($node->getElementsByTagName('option') as $optionNode) {
             $name           = $optionNode->getAttribute('name');
-            $value          = $this->getOptionValue($optionNode->getAttribute('value'));
+            $value          = $this->getAdapterizedValue($optionNode->getAttribute('value'));
             $options[$name] = $value;
         }
         return $options;

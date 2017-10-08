@@ -1,13 +1,13 @@
 <?php
 namespace phpbu\App\Configuration\Loader;
 
+use phpbu\App\Adapter\Util;
 use phpbu\App\Configuration;
 use phpbu\App\Exception;
 use phpbu\App\Factory as AppFactory;
 use phpbu\App\Util\Cli;
 
 /**
- *
  * Base class for file based phpbu configuration.
  *
  * @package    phpbu
@@ -141,13 +141,12 @@ abstract class File
      * @param  string $value
      * @return string
      */
-    protected function getOptionValue($value)
+    protected function getAdapterizedValue($value)
     {
-        $match = [];
-        if (preg_match('#^adapter:([a-z0-9_\-]+):(.+)#i', $value, $match)) {
-            $adapter = $match[1];
-            $path    = $match[2];
-            $value   = $this->getAdapter($adapter)->getValue($path);
+        foreach (Util::getAdapterReplacements($value) as $replacement) {
+            $search  = $replacement['search'];
+            $replace = $this->getAdapter($replacement['adapter'])->getValue($replacement['path']);
+            $value   = str_replace($search, $replace, $value);
         }
         return $value;
     }

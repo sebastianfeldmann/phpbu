@@ -7,7 +7,6 @@ use phpbu\App\Exception;
 use phpbu\App\Util\Arr;
 
 /**
- *
  * Loader class for a phpbu JSON configuration file.
  *
  * Example JSON configuration file:
@@ -143,7 +142,7 @@ class Json extends File implements Loader
                 }
                 // search for target attribute to convert to option
                 if (isset($l['target'])) {
-                    $options['target'] = $this->toAbsolutePath($l['target']);
+                    $options['target'] = $this->toAbsolutePath($this->getAdapterizedValue($l['target']));
                 }
                 $configuration->addLogger(new Configuration\Logger($type, $options));
             }
@@ -175,7 +174,7 @@ class Json extends File implements Loader
      */
     private function getBackupConfig(array $json)
     {
-        $name          = Arr::getValue($json, 'name');
+        $name          = $this->getAdapterizedValue(Arr::getValue($json, 'name'));
         $stopOnFailure = Arr::getValue($json, 'stopOnFailure', false);
         $backup        = new Configuration\Backup($name, $stopOnFailure);
 
@@ -222,8 +221,8 @@ class Json extends File implements Loader
             throw new Exception('backup requires a target config');
         }
         $compress = Arr::getValue($json['target'], 'compress');
-        $filename = Arr::getValue($json['target'], 'filename');
-        $dirname  = Arr::getValue($json['target'], 'dirname');
+        $filename = $this->getAdapterizedValue(Arr::getValue($json['target'], 'filename'));
+        $dirname  = $this->getAdapterizedValue(Arr::getValue($json['target'], 'dirname'));
 
         if ($dirname) {
             $dirname = $this->toAbsolutePath($dirname);
@@ -326,7 +325,7 @@ class Json extends File implements Loader
         $options = isset($json['options']) ? $json['options'] : [];
 
         foreach ($options as $name => $value) {
-            $options[$name] = $this->getOptionValue($value);
+            $options[$name] = $this->getAdapterizedValue($value);
         }
 
         return $options;
