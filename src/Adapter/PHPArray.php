@@ -5,7 +5,7 @@ use Dotenv\Dotenv as DotenvLib;
 use phpbu\App\Adapter;
 use phpbu\App\Configuration;
 use phpbu\App\Exception;
-use phpbu\App\Util;
+use phpbu\App\Util as AppUtil;
 
 /**
  * PHPArray Adapter
@@ -42,8 +42,8 @@ class PHPArray implements Adapter
      */
     public function setup(array $conf)
     {
-        $path       = Util\Arr::getValue($conf, 'file', '.env');
-        $this->file = Util\Cli::toAbsolutePath($path, Configuration::getWorkingDirectory());
+        $path       = AppUtil\Arr::getValue($conf, 'file', '.env');
+        $this->file = AppUtil\Cli::toAbsolutePath($path, Configuration::getWorkingDirectory());
         $this->load();
     }
 
