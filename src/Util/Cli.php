@@ -158,7 +158,7 @@ abstract class Cli
         foreach ($paths as $path) {
             $command = $path . DIRECTORY_SEPARATOR . $cmd;
             $bin     = self::isExecutable($command);
-            if (null !== $bin) {
+            if (!empty($bin)) {
                 return $bin;
             }
         }
