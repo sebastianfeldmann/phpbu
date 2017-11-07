@@ -1,9 +1,10 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use Dropbox as DropboxApi;
+use Kunnu\Dropbox\DropboxApp as DropboxConfig;
+use Kunnu\Dropbox\Dropbox as DropboxApi;
+use Kunnu\Dropbox\DropboxFile;
 use phpbu\App\Result;
-use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
@@ -52,8 +53,8 @@ class Dropbox implements Simulator
      */
     public function setup(array $config)
     {
-        if (!class_exists('\\Dropbox\\Client')) {
-            throw new Exception('Dropbox sdk not loaded: use composer to install "dropbox/dropbox-sdk"');
+        if (!class_exists('\\Kunnu\\Dropbox\\Dropbox')) {
+            throw new Exception('Dropbox sdk not loaded: use composer to install "kunalvarma05/dropbox-php-sdk"');
         }
         if (!Arr::isSetAndNotEmptyString($config, 'token')) {
             throw new Exception('API access token is mandatory');
@@ -77,30 +78,15 @@ class Dropbox implements Simulator
     {
         $sourcePath  = $target->getPathname();
         $dropboxPath = $this->path . $target->getFilename();
-        $client      = new DropboxApi\Client($this->token, "phpbu/1.1.0");
-        $pathError   = DropboxApi\Path::findErrorNonRoot($dropboxPath);
-
-        if (substr(__FILE__, 0, 7) == 'phar://') {
-            DropboxApi\RootCertificates::useExternalPaths();
-        }
-
-        if ($pathError !== null) {
-            throw new Exception(sprintf('Invalid \'dropbox-path\': %s', $pathError));
-        }
-
-        $size = null;
-        if (stream_is_local($sourcePath)) {
-            $size = filesize($sourcePath);
-        }
-
+        $config      = new DropboxConfig("id", "secret", $this->token);
+        $client      = new DropboxApi($config);
         try {
-            $fp  = fopen($sourcePath, 'rb');
-            $res = $client->uploadFile($dropboxPath, DropboxApi\WriteMode::add(), $fp, $size);
-            fclose($fp);
+            $file = new DropboxFile($sourcePath);
+            $meta = $client->upload($file, $dropboxPath, ['autorename' => true]);
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }
-        $result->debug('upload: done  (' . $res['size'] . ')');
+        $result->debug('upload: done  (' . $meta->getSize() . ')');
     }
 
     /**
