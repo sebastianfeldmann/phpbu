@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\App\Runner;
+namespace phpbu\App\Configuration;
 
 /**
  * Bootstrap Runner test
@@ -12,10 +12,10 @@ namespace phpbu\App\Runner;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class BootstrapTest extends \PHPUnit\Framework\TestCase
+class BootstrapperTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests Bootstrap::run
+     * Tests Bootstrapper::run
      */
     public function testBootstrapOk()
     {
@@ -24,14 +24,14 @@ class BootstrapTest extends \PHPUnit\Framework\TestCase
                       ->method('getBootstrap')
                       ->willReturn(PHPBU_TEST_FILES . '/misc/bootstrap.php');
 
-        $runner = new Bootstrap();
+        $runner = new Bootstrapper();
         $runner->run($configuration);
 
         $this->assertTrue(defined('BOOTSTRAP_LOADED'), 'constant should be defined');
     }
 
     /**
-     * Tests Bootstrap::run
+     * Tests Bootstrapper::run
      *
      * @expectedException \phpbu\App\Exception
      */
@@ -42,7 +42,7 @@ class BootstrapTest extends \PHPUnit\Framework\TestCase
                       ->method('getBootstrap')
                       ->willReturn(PHPBU_TEST_FILES . '/misc/bootstrap_FAIL.php');
 
-        $runner = new Bootstrap();
+        $runner = new Bootstrapper();
         $runner->run($configuration);
     }
 }
