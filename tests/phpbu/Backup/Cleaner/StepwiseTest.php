@@ -68,7 +68,7 @@ class StepwiseTest extends TestCase
                 ],
                 [
                     'size'            => 100,
-                    'shouldBeDeleted' => true,
+                    'shouldBeDeleted' => false,
                     'mTime'           => $this->getMTime('13m'),
                 ],
                 [
