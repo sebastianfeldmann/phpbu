@@ -26,4 +26,15 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue($loader instanceof Json);
     }
+
+    /**
+     * Tests Factory::createLoader
+     */
+    public function testCreateLoaderNoBootstrapper()
+    {
+        $file   = PHPBU_TEST_FILES . '/conf/json/config-valid.json';
+        $loader = Factory::createLoader($file);
+
+        $this->assertTrue($loader instanceof Json);
+    }
 }

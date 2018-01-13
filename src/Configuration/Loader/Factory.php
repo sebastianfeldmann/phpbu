@@ -10,7 +10,7 @@ use phpbu\App\Configuration\Bootstrapper;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 2.1.2
  */
 abstract class Factory
@@ -39,12 +39,13 @@ abstract class Factory
      * @param  \phpbu\App\Configuration\Bootstrapper $bootstrapper
      * @return \phpbu\App\Configuration\Loader
      */
-    public static function createLoader(string $filename, Bootstrapper $bootstrapper)
+    public static function createLoader(string $filename, Bootstrapper $bootstrapper = null)
     {
+        $bs    = $bootstrapper ?? new Bootstrapper();
         $ext   = pathinfo($filename, PATHINFO_EXTENSION);
         $type  = isset(self::$extToLoaderMap[$ext]) ? self::$extToLoaderMap[$ext] : self::DEFAULT_LOADER;
         $class = '\\phpbu\\App\\Configuration\\Loader\\' . $type;
 
-        return new $class($filename, $bootstrapper);
+        return new $class($filename, $bs);
     }
 }
