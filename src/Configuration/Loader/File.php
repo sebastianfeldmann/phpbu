@@ -5,6 +5,7 @@ use phpbu\App\Adapter\Util;
 use phpbu\App\Configuration;
 use phpbu\App\Exception;
 use phpbu\App\Factory as AppFactory;
+use phpbu\App\Runner\Bootstrap;
 use phpbu\App\Util\Cli;
 
 /**
@@ -15,7 +16,7 @@ use phpbu\App\Util\Cli;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 2.1.2
  */
 abstract class File
@@ -35,13 +36,22 @@ abstract class File
     protected $adapters;
 
     /**
+     * Handling the bootstrapping.
+     *
+     * @var \phpbu\App\Configuration\Bootstrapper
+     */
+    protected $bootstrapper;
+
+    /**
      * File constructor.
      *
-     * @param string $file
+     * @param string                                $file
+     * @param \phpbu\App\Configuration\Bootstrapper $bootstrapper
      */
-    public function __construct($file)
+    public function __construct(string $file, Configuration\Bootstrapper $bootstrapper)
     {
-        $this->filename = $file;
+        $this->filename     = $file;
+        $this->bootstrapper = $bootstrapper;
     }
 
     /**
@@ -49,6 +59,7 @@ abstract class File
      *
      * @param  \phpbu\App\Factory $factory
      * @return \phpbu\App\Configuration
+     * @throws \phpbu\App\Exception
      */
     public function getConfiguration(AppFactory $factory)
     {
@@ -56,9 +67,10 @@ abstract class File
         $configuration = new Configuration();
         $configuration->setFilename($this->filename);
 
+        $this->setAppSettings($configuration);
+        $this->handleBootstrap($configuration);
         $this->setupAdapters($factory);
 
-        $this->setAppSettings($configuration);
         $this->setLoggers($configuration);
         $this->setBackups($configuration);
 
@@ -68,7 +80,8 @@ abstract class File
     /**
      * Load all available config adapters.
      *
-     * @param \phpbu\App\Factory $factory
+     * @param  \phpbu\App\Factory $factory
+     * @throws \phpbu\App\Exception
      */
     protected function setupAdapters(AppFactory $factory)
     {
@@ -123,6 +136,17 @@ abstract class File
     abstract public function setBackups(Configuration $configuration);
 
     /**
+     * Handles the bootstrap file inclusion.
+     *
+     * @param  \phpbu\App\Configuration $configuration
+     * @throws \phpbu\App\Exception
+     */
+    protected function handleBootstrap(Configuration $configuration)
+    {
+        $this->bootstrapper->run($configuration);
+    }
+
+    /**
      * Converts a path to an absolute one if necessary.
      *
      * @param  string  $path
@@ -140,6 +164,7 @@ abstract class File
      *
      * @param  string $value
      * @return string
+     * @throws \phpbu\App\Exception
      */
     protected function getAdapterizedValue($value)
     {

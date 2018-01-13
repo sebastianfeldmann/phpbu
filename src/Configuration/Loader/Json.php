@@ -70,14 +70,15 @@ class Json extends File implements Loader
     private $json;
 
     /**
-     * Constructor.
+     * Json constructor.
      *
-     * @param  string $file
+     * @param  string                                $file
+     * @param  \phpbu\App\Configuration\Bootstrapper $bootstrapper
      * @throws \phpbu\App\Exception
      */
-    public function __construct($file)
+    public function __construct(string $file, Configuration\Bootstrapper $bootstrapper)
     {
-        parent::__construct($file);
+        parent::__construct($file, $bootstrapper);
         $this->json = $this->loadJsonFile($file);
     }
 
