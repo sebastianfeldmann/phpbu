@@ -36,7 +36,6 @@ class Factory
             'env'    => '\\phpbu\\App\\Adapter\\Env',
         ],
         'runner' => [
-            'bootstrap' => '\\phpbu\\App\\Runner\\Bootstrap',
             'check'     => '\\phpbu\\App\\Runner\\Check',
             'cleaner'   => '\\phpbu\\App\\Runner\\Cleaner',
             'crypter'   => '\\phpbu\\App\\Runner\\Crypter',
