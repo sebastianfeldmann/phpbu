@@ -133,7 +133,6 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
     protected function createFactoryMock($passChecks, $backups = 1)
     {
         $runCalls        = $passChecks ? 1 : 0;
-        $bootstrapRunner = $this->createBootstrapRunnerMock();
         $logger          = $this->createLoggerMock();
         $sourceRunner    = $this->createSourceRunnerMock();
         $source          = $this->createSourceMock();
@@ -150,7 +149,6 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
 
         $factory->method('createRunner')
                 ->will($this->onConsecutiveCalls(
-                    $bootstrapRunner,
                     $sourceRunner,
                     $checkRunner,
                     $cryptRunner,
@@ -175,7 +173,6 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createFactoryMockCheckCrash()
     {
-        $bootstrapRunner = $this->createBootstrapRunnerMock();
         $logger          = $this->createLoggerMock();
         $sourceRunner    = $this->createSourceRunnerMock();
         $source          = $this->createSourceMock();
@@ -186,7 +183,6 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
 
         $factory->method('createRunner')
                 ->will($this->onConsecutiveCalls(
-                    $bootstrapRunner,
                     $sourceRunner,
                     $checkRunner
                 ));
@@ -205,7 +201,6 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createFactoryMockCryptCrash()
     {
-        $bootstrapRunner = $this->createBootstrapRunnerMock();
         $logger          = $this->createLoggerMock();
         $sourceRunner    = $this->createSourceRunnerMock();
         $source          = $this->createSourceMock();
@@ -218,7 +213,6 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
 
         $factory->method('createRunner')
                 ->will($this->onConsecutiveCalls(
-                    $bootstrapRunner,
                     $sourceRunner,
                     $checkRunner,
                     $cryptRunner
@@ -239,7 +233,6 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createFactoryMockSyncCrash()
     {
-        $bootstrapRunner = $this->createBootstrapRunnerMock();
         $logger          = $this->createLoggerMock();
         $sourceRunner    = $this->createSourceRunnerMock();
         $source          = $this->createSourceMock();
@@ -254,7 +247,6 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
 
         $factory->method('createRunner')
                 ->will($this->onConsecutiveCalls(
-                    $bootstrapRunner,
                     $sourceRunner,
                     $checkRunner,
                     $cryptRunner,
@@ -277,7 +269,6 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createFactoryMockCleanerCrash()
     {
-        $bootstrapRunner = $this->createBootstrapRunnerMock();
         $logger          = $this->createLoggerMock();
         $sourceRunner    = $this->createSourceRunnerMock();
         $source          = $this->createSourceMock();
@@ -294,7 +285,6 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
 
         $factory->method('createRunner')
                 ->will($this->onConsecutiveCalls(
-                    $bootstrapRunner,
                     $sourceRunner,
                     $checkRunner,
                     $cryptRunner,
@@ -319,7 +309,6 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createFactoryMockStopOnFailure()
     {
-        $bootstrapRunner = $this->createBootstrapRunnerMock();
         $logger          = $this->createLoggerMock();
         $sourceRunner    = $this->createSourceRunnerMock(true);
         $source          = $this->createSourceMock();
@@ -328,7 +317,6 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
 
         $factory->method('createRunner')
                 ->will($this->onConsecutiveCalls(
-                    $bootstrapRunner,
                     $sourceRunner
                 ));
 
@@ -336,19 +324,6 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $factory->expects($this->once())->method('createSource')->willReturn($source);
 
         return $factory;
-    }
-
-    /**
-     * Create bootstrap runner mock.
-     *
-     * @return \phpbu\App\Runner\Bootstrap
-     */
-    protected function createBootstrapRunnerMock()
-    {
-        $bootstrapRunner = $this->createMock(\phpbu\App\Runner\Bootstrap::class);
-        $bootstrapRunner->expects($this->once())->method('run');
-
-        return $bootstrapRunner;
     }
 
     /**

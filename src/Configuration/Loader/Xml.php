@@ -81,14 +81,15 @@ class Xml extends File implements Loader
     private $xpath;
 
     /**
-     * Constructor.
+     * Xml constructor.
      *
-     * @param  string $file
+     * @param  string                                $file
+     * @param  \phpbu\App\Configuration\Bootstrapper $bootstrapper
      * @throws \phpbu\App\Exception
      */
-    public function __construct($file)
+    public function __construct(string $file, Configuration\Bootstrapper $bootstrapper)
     {
-        parent::__construct($file);
+        parent::__construct($file, $bootstrapper);
         $this->document = $this->loadXmlFile($file);
         $this->xpath    = new DOMXPath($this->document);
     }

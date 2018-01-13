@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Configuration\Loader;
+use phpbu\App\Configuration\Bootstrapper;
 
 /**
  * Factory class for file based Configuration Loader.
@@ -34,16 +35,16 @@ abstract class Factory
     /**
      * Create a Configuration Loader based on the file to load.
      *
-     * @param  string $filename
-     * @throws \phpbu\App\Exception
+     * @param  string                                $filename
+     * @param  \phpbu\App\Configuration\Bootstrapper $bootstrapper
      * @return \phpbu\App\Configuration\Loader
      */
-    public static function createLoader($filename)
+    public static function createLoader(string $filename, Bootstrapper $bootstrapper)
     {
         $ext   = pathinfo($filename, PATHINFO_EXTENSION);
         $type  = isset(self::$extToLoaderMap[$ext]) ? self::$extToLoaderMap[$ext] : self::DEFAULT_LOADER;
         $class = '\\phpbu\\App\\Configuration\\Loader\\' . $type;
 
-        return new $class($filename);
+        return new $class($filename, $bootstrapper);
     }
 }

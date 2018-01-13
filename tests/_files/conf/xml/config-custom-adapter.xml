@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpbu bootstrap="../../misc/bootstrap.adapter.php" >
+  <adapters>
+    <adapter type="demo" name="demo" />
+  </adapters>
+  <logging>
+    <log type="json" target="backup/json.log"/>
+  </logging>
+  <backups>
+    <backup name="database">
+      <source type="mysqldump">
+        <option name="db" value="dbName"/>
+        <option name="user" value="dbUser"/>
+        <option name="password" value="adapter:demo:DB.PASSWORD"/>
+      </source>
+      <target dirname="backup/src" filename="tarball-%Y%m%d-%H%i.tar" compress="bzip2"/>
+    </backup>
+  </backups>
+</phpbu>

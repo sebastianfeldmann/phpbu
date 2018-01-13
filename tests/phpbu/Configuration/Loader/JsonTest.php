@@ -35,7 +35,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
      */
     public function testFileNotFound()
     {
-        $loader = new Json('some.json');
+        $loader = new Json('some.json', $this->getBootstrapperMock());
     }
 
     /**
@@ -46,7 +46,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     public function testFileNoJson()
     {
         $json   = PHPBU_TEST_FILES . '/conf/json/config-no-json.xml';
-        $loader = new Json($json);
+        $loader = new Json($json, $this->getBootstrapperMock());
     }
 
     /**
@@ -57,7 +57,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     public function testBackupNoBackup()
     {
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-backup.json';
-        $loader = new Json($file);
+        $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
     }
 
@@ -69,7 +69,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     public function testBackupNoTarget()
     {
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-target.json';
-        $loader = new Json($file);
+        $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
         $this->assertFalse(true, 'exception should be thrown');
     }
@@ -82,7 +82,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     public function testBackupNoSource()
     {
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-source.json';
-        $loader = new Json($file);
+        $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
     }
 
@@ -94,7 +94,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     public function testFileNoSourceType()
     {
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-source-type.json';
-        $loader = new Json($file);
+        $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
     }
 
@@ -106,7 +106,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     public function testFileNoLoggerType()
     {
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-logger-type.json';
-        $loader = new Json($file);
+        $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
     }
 
@@ -118,7 +118,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     public function testFileNoCleanupType()
     {
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-cleanup-type.json';
-        $loader = new Json($file);
+        $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
     }
 
@@ -130,7 +130,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     public function testFileNoCryptType()
     {
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-crypt-type.json';
-        $loader = new Json($file);
+        $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
     }
 
@@ -142,7 +142,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     public function testFileNoSyncType()
     {
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-sync-type.json';
-        $loader = new Json($file);
+        $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
     }
 
@@ -153,7 +153,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     {
         $dir    = PHPBU_TEST_FILES . '/conf/json';
         $file   = 'config-valid.json';
-        $loader = new Json($dir . '/' . $file);
+        $loader = new Json($dir . '/' . $file, $this->getBootstrapperMock(true));
         $config = $loader->getConfiguration(self::$factory);
 
         $this->assertEquals($dir . '/backup/bootstrap.php', $config->getBootstrap());
@@ -168,7 +168,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     {
         $dir      = PHPBU_TEST_FILES . '/conf/json';
         $file     = 'config-valid.json';
-        $loader   = new Json($dir . '/' . $file);
+        $loader   = new Json($dir . '/' . $file, $this->getBootstrapperMock());
         $conf     = $loader->getConfiguration(self::$factory);
         $backups  = $conf->getBackups();
         $backup   = $backups[0];
@@ -198,7 +198,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     public function testBackupSettingsInvalidChecks()
     {
         $json    = PHPBU_TEST_FILES . '/conf/json/config-invalid-checks.json';
-        $loader  = new Json($json);
+        $loader  = new Json($json, $this->getBootstrapperMock());
         $conf    = $loader->getConfiguration(self::$factory);
         $backups = $conf->getBackups();
         $backup  = $backups[0];
@@ -215,7 +215,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     {
         $dir     = PHPBU_TEST_FILES . '/conf/json';
         $file    = 'config-valid.json';
-        $loader  = new Json($dir . '/' . $file);
+        $loader  = new Json($dir . '/' . $file, $this->getBootstrapperMock());
         $conf    = $loader->getConfiguration(self::$factory);
         $loggers = $conf->getLoggers();
         $log1    = $loggers[0];
@@ -231,7 +231,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     public function testAppLoggingSettingsWithOption()
     {
         $file    = PHPBU_TEST_FILES . '/conf/json/config-logging.json';
-        $loader  = new Json($file);
+        $loader  = new Json($file, $this->getBootstrapperMock());
         $conf    = $loader->getConfiguration(self::$factory);
         $loggers = $conf->getLoggers();
 
@@ -247,7 +247,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     {
         Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
         $file    = PHPBU_TEST_FILES . '/conf/json/config-valid-adapter.json';
-        $loader  = new Json($file);
+        $loader  = new Json($file, $this->getBootstrapperMock());
         $conf    = $loader->getConfiguration(self::$factory);
         $backups = $conf->getBackups();
         $backup  = $backups[0];
@@ -265,7 +265,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     {
         Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
         $file    = PHPBU_TEST_FILES . '/conf/json/config-no-adapter-type.json';
-        $loader  = new Json($file);
+        $loader  = new Json($file, $this->getBootstrapperMock());
         $loader->getConfiguration(self::$factory);
     }
 
@@ -278,7 +278,22 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     {
         Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
         $file    = PHPBU_TEST_FILES . '/conf/json/config-no-adapter-name.json';
-        $loader  = new Json($file);
+        $loader  = new Json($file, $this->getBootstrapperMock());
         $loader->getConfiguration(self::$factory);
+    }
+
+    /**
+     * Return Bootstrapper mock.
+     *
+     * @param  bool $execute
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getBootstrapperMock(bool $execute = false)
+    {
+        $mock = $crypter = $this->createMock(\phpbu\App\Configuration\Bootstrapper::class);
+        if ($execute) {
+            $mock->expects($this->once())->method('run');
+        }
+        return $mock;
     }
 }

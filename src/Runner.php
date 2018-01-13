@@ -13,7 +13,7 @@ use phpbu\App\Backup\Target;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class Runner
@@ -35,7 +35,7 @@ class Runner
     /**
      * Backup failed
      *
-     * @var boolean
+     * @var bool
      */
     protected $failure;
 
@@ -72,6 +72,7 @@ class Runner
      * @param  \phpbu\App\Configuration $configuration
      * @param  \phpbu\App\Factory
      * @return \phpbu\App\Result
+     * @throws \phpbu\App\Exception
      */
     public function run(Configuration $configuration)
     {
@@ -79,7 +80,6 @@ class Runner
         $this->result        = new Result();
         $this->configuration = $configuration;
 
-        $this->setupEnvironment($configuration);
         $this->setupLoggers($configuration);
         $this->result->phpbuStart($configuration);
 
@@ -150,21 +150,10 @@ class Runner
     }
 
     /**
-     * This executes a bootstrap runner to handle ini settings and the bootstrap file inclusion.
-     *
-     * @param  \phpbu\App\Configuration $configuration
-     * @throws \phpbu\App\Exception
-     */
-    protected function setupEnvironment(Configuration $configuration)
-    {
-        $runner = $this->factory->createRunner('Bootstrap', $this->configuration->isSimulation());
-        $runner->run($configuration);
-    }
-
-    /**
      * Create and register all configured loggers.
      *
      * @param  \phpbu\App\Configuration $configuration
+     * @throws \phpbu\App\Exception
      */
     protected function setupLoggers(Configuration $configuration)
     {
@@ -251,8 +240,9 @@ class Runner
     /**
      * Execute encryption.
      *
-     * @param \phpbu\App\Configuration\Backup $backup
-     * @param \phpbu\App\Backup\Target        $target
+     * @param  \phpbu\App\Configuration\Backup $backup
+     * @param  \phpbu\App\Backup\Target        $target
+     * @throws \phpbu\App\Exception
      */
     protected function executeCrypt(Configuration\Backup $backup, Target $target)
     {
@@ -310,7 +300,7 @@ class Runner
      * @param  \phpbu\App\Configuration\Backup $backup
      * @param  \phpbu\App\Backup\Target        $target
      * @param  \phpbu\App\Backup\Collector     $collector
-     * @throws \Exception
+     * @throws \phpbu\App\Exception
      */
     protected function executeCleanup(Configuration\Backup $backup, Target $target, Collector $collector)
     {

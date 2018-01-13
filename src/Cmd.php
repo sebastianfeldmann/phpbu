@@ -33,6 +33,7 @@ namespace phpbu\App;
 
 use Phar;
 use phpbu\App\Cmd\Args;
+use phpbu\App\Configuration\Bootstrapper;
 use phpbu\App\Util\Arr;
 
 /**
@@ -199,10 +200,11 @@ class Cmd
      * @param  string             $configurationFile
      * @param  \phpbu\App\Factory $factory
      * @return \phpbu\App\Configuration
+     * @throws \phpbu\App\Exception
      */
     protected function createConfiguration(string $configurationFile, Factory $factory)
     {
-        $configLoader  = Configuration\Loader\Factory::createLoader($configurationFile);
+        $configLoader  = Configuration\Loader\Factory::createLoader($configurationFile, new Bootstrapper());
         $configuration = $configLoader->getConfiguration($factory);
 
         // command line arguments overrule the config file settings
