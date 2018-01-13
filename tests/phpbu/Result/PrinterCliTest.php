@@ -50,6 +50,8 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $result->expects($this->once())
                ->method('getErrors')
                ->willReturn([]);
+        $result->method('getBackups')
+               ->willReturn([]);
 
         $configuration = $this->createMock(\phpbu\App\Configuration::class);
         $configuration->method('getFilename')
