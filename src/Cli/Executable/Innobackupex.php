@@ -76,7 +76,7 @@ class Innobackupex extends Abstraction implements Executable
      *
      * @var array
      */
-    private $databases;
+    private $databases = [];
 
     /**
      * Constructor.
