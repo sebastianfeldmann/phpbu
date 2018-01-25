@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup;
 
+use phpbu\App\Mockery;
 use SebastianFeldmann\Cli\Command\Result as CommandResult;
 use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
 
@@ -12,10 +13,10 @@ use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-abstract class CliTest extends \PHPUnit\Framework\TestCase
+abstract class CliTest extends Mockery
 {
     /**
      * Create App\Result mock.
@@ -82,45 +83,5 @@ abstract class CliTest extends \PHPUnit\Framework\TestCase
         $cliResult->method('isSuccessful')->willReturn($code == 0);
 
         return $cliResult;
-    }
-
-    /**
-     * Create Target mock.
-     *
-     * @param  string $file
-     * @param  string $fileCompressed
-     * @return \phpbu\App\Backup\Target
-     */
-    protected function getTargetMock(string $file = '', string $fileCompressed = '')
-    {
-        $compress = !empty($fileCompressed);
-        $pathName = $compress ? $fileCompressed : $file;
-        $target = $this->createMock(\phpbu\App\Backup\Target::class);
-        $target->method('getPathnamePlain')->willReturn($file);
-        $target->method('getPathname')->willReturn($pathName);
-        $target->method('getPath')->willReturn(dirname($pathName));
-        $target->method('fileExists')->willReturn(true);
-        $target->method('shouldBeCompressed')->willReturn($compress);
-
-
-        return $target;
-    }
-
-    /**
-     * Create Compression Mock.
-     *
-     * @param  string $cmd
-     * @param  string $suffix
-     * @return \phpbu\App\Backup\Target\Compression
-     */
-    protected function getCompressionMock($cmd, $suffix)
-    {
-        $compression = $this->createMock(\phpbu\App\Backup\Target\Compression::class);
-        $compression->method('isPipeable')->willReturn(in_array($cmd, ['gzip', 'bzip2']));
-        $compression->method('getCommand')->willReturn($cmd);
-        $compression->method('getSuffix')->willReturn($suffix);
-        $compression->method('getPath')->willReturn(PHPBU_TEST_BIN);
-
-        return $compression;
     }
 }

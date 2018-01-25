@@ -13,7 +13,7 @@ use phpbu\App\Util\Cli;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.1.6
  */
 class OpenSSLTest extends CliTest
@@ -56,7 +56,7 @@ class OpenSSLTest extends CliTest
      */
     public function testPasswordAndAlgorithm()
     {
-        $target  = $this->getTargetMock('/foo/bar.txt');
+        $target  = $this->createTargetMock('/foo/bar.txt');
         $openSSL = new OpenSSL();
         $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'password' => 'fooBarBaz', 'algorithm' => 'aes-256-cbc']);
 
@@ -75,7 +75,7 @@ class OpenSSLTest extends CliTest
     {
         Configuration::setWorkingDirectory('/foo');
 
-        $target  = $this->getTargetMock('/foo/bar.txt');
+        $target  = $this->createTargetMock('/foo/bar.txt');
         $openSSL = new OpenSSL();
         $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'certFile' => '/foo/my.pem', 'algorithm' => 'aes256']);
 
@@ -97,7 +97,7 @@ class OpenSSLTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(0, 'openssl'));
 
-        $target    = $this->getTargetMock(__FILE__);
+        $target    = $this->createTargetMock(__FILE__);
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
@@ -113,7 +113,7 @@ class OpenSSLTest extends CliTest
     {
         $runner = $this->getRunnerMock();
 
-        $target    = $this->getTargetMock(__FILE__);
+        $target    = $this->createTargetMock(__FILE__);
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
@@ -134,7 +134,7 @@ class OpenSSLTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(1, 'openssl'));
 
-        $target    = $this->getTargetMock(__FILE__);
+        $target    = $this->createTargetMock(__FILE__);
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 

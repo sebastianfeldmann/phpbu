@@ -11,7 +11,7 @@ use phpbu\App\Backup\CliTest;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
 class MysqldumpTest extends CliTest
@@ -21,7 +21,7 @@ class MysqldumpTest extends CliTest
      */
     public function testDefault()
     {
-        $target    = $this->getTargetMock();
+        $target    = $this->createTargetMock();
         $mysqldump = new Mysqldump();
         $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN]);
 
@@ -53,8 +53,8 @@ class MysqldumpTest extends CliTest
      */
     public function testPipeCompression()
     {
-        $target = $this->getTargetMock('/tmp/foo.sql', '/tmp/foo.sql.gz');
-        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+        $target = $this->createTargetMock('/tmp/foo.sql', '/tmp/foo.sql.gz');
+        $target->method('getCompression')->willReturn($this->createCompressionMock('gzip', 'gz'));
 
         $mysqldump = new Mysqldump();
         $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN]);
@@ -72,7 +72,7 @@ class MysqldumpTest extends CliTest
      */
     public function testLockTables()
     {
-        $target    = $this->getTargetMock();
+        $target    = $this->createTargetMock();
         $mysqldump = new Mysqldump();
         $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'lockTables' => 'true']);
 
@@ -86,7 +86,7 @@ class MysqldumpTest extends CliTest
      */
     public function testPort()
     {
-        $target    = $this->getTargetMock();
+        $target    = $this->createTargetMock();
         $mysqldump = new Mysqldump();
         $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'port' => '4711']);
 
@@ -100,7 +100,7 @@ class MysqldumpTest extends CliTest
      */
     public function testFilePerTable()
     {
-        $target    = $this->getTargetMock('/tmp/foo');
+        $target    = $this->createTargetMock('/tmp/foo');
         $mysqldump = new Mysqldump();
         $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'filePerTable' => 'true']);
 
@@ -117,7 +117,7 @@ class MysqldumpTest extends CliTest
      */
     public function testGtidPurged()
     {
-        $target    = $this->getTargetMock('/tmp/foo');
+        $target    = $this->createTargetMock('/tmp/foo');
         $mysqldump = new Mysqldump();
         $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'gtidPurged' => 'AUTO']);
 
@@ -134,7 +134,7 @@ class MysqldumpTest extends CliTest
      */
     public function testHexBlob()
     {
-        $target    = $this->getTargetMock();
+        $target    = $this->createTargetMock();
         $mysqldump = new Mysqldump();
         $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'hexBlob' => 'true']);
 
@@ -148,7 +148,7 @@ class MysqldumpTest extends CliTest
      */
     public function testExtendedInsert()
     {
-        $target    = $this->getTargetMock();
+        $target    = $this->createTargetMock();
         $mysqldump = new Mysqldump();
         $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'extendedInsert' => 'true']);
 
@@ -167,7 +167,7 @@ class MysqldumpTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(0, 'mysqldump'));
 
-        $target    = $this->getTargetMock();
+        $target    = $this->createTargetMock();
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
@@ -185,7 +185,7 @@ class MysqldumpTest extends CliTest
     public function testSimulate()
     {
         $runner    = $this->getRunnerMock();
-        $target    = $this->getTargetMock();
+        $target    = $this->createTargetMock();
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
@@ -207,8 +207,8 @@ class MysqldumpTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(0, 'mysqldump'));
 
-        $target = $this->getTargetMock('/tmp/foo.sql', '/tmp/foo.sql.gz');
-        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+        $target = $this->createTargetMock('/tmp/foo.sql', '/tmp/foo.sql.gz');
+        $target->method('getCompression')->willReturn($this->createCompressionMock('gzip', 'gz'));
 
 
         $appResult = $this->getAppResultMock();
@@ -234,7 +234,7 @@ class MysqldumpTest extends CliTest
 
 
         $targetDir = sys_get_temp_dir() . '/foo';
-        $target    = $this->getTargetMock($targetDir);
+        $target    = $this->createTargetMock($targetDir);
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
@@ -263,7 +263,7 @@ class MysqldumpTest extends CliTest
                ->method('run')
                ->willReturn($runnerResultMock);
 
-        $target    = $this->getTargetMock($file);
+        $target    = $this->createTargetMock($file);
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 

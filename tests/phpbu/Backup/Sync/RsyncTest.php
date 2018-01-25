@@ -11,7 +11,7 @@ use phpbu\App\Backup\CliTest;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
 class RsyncTest extends CliTest
@@ -52,7 +52,7 @@ class RsyncTest extends CliTest
         $resultStub = $this->getAppResultMock();
         $resultStub->expects($this->once())
                    ->method('debug');
-        $targetStub = $this->getTargetMock('/tmp/foo.bar');
+        $targetStub = $this->createTargetMock('/tmp/foo.bar');
 
         $rsync->simulate($targetStub, $resultStub);
     }
@@ -91,7 +91,7 @@ class RsyncTest extends CliTest
         $rsync  = new Rsync();
         $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'args' => '--foo --bar']);
 
-        $target = $this->getTargetMock('/foo/bar.txt');
+        $target = $this->createTargetMock('/foo/bar.txt');
         $exec   = $rsync->getExecutable($target);
 
         $this->assertEquals(PHPBU_TEST_BIN . '/rsync --foo --bar', $exec->getCommand());
@@ -105,7 +105,7 @@ class RsyncTest extends CliTest
         $rsync  = new Rsync();
         $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'path' => '/tmp']);
 
-        $target = $this->getTargetMock('/foo/bar.txt');
+        $target = $this->createTargetMock('/foo/bar.txt');
         $exec   = $rsync->getExecutable($target);
 
         $this->assertEquals(PHPBU_TEST_BIN . '/rsync -avz \'/foo/bar.txt\' \'/tmp\'', $exec->getCommand());
@@ -121,7 +121,7 @@ class RsyncTest extends CliTest
         $rsync  = new Rsync();
         $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'path' => '/tmp', 'password' => $password]);
 
-        $target = $this->getTargetMock('/foo/bar.txt');
+        $target = $this->createTargetMock('/foo/bar.txt');
         $exec   = $rsync->getExecutable($target);
 
         $this->assertEquals($env . PHPBU_TEST_BIN . '/rsync -avz \'/foo/bar.txt\' \'/tmp\'', $exec->getCommand());
@@ -136,7 +136,7 @@ class RsyncTest extends CliTest
         $rsync  = new Rsync();
         $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'path' => '/tmp', 'passwordFile' => $file]);
 
-        $target = $this->getTargetMock('/foo/bar.txt');
+        $target = $this->createTargetMock('/foo/bar.txt');
         $exec   = $rsync->getExecutable($target);
 
         $this->assertEquals(
@@ -152,7 +152,7 @@ class RsyncTest extends CliTest
     {
         $rsync  = new Rsync();
         $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'path' => '/tmp']);
-        $target = $this->getTargetMock('/foo/bar.txt', '/foo/bar.txt.gz');
+        $target = $this->createTargetMock('/foo/bar.txt', '/foo/bar.txt.gz');
         $exec   = $rsync->getExecutable($target);
 
         $this->assertEquals(PHPBU_TEST_BIN . '/rsync -av \'/foo/bar.txt.gz\' \'/tmp\'', $exec->getCommand());
@@ -166,7 +166,7 @@ class RsyncTest extends CliTest
         $rsync = new Rsync();
         $rsync->setup(['pathToRsync' => PHPBU_TEST_BIN, 'path' => '/tmp', 'exclude' => 'fiz:buz']);
 
-        $target = $this->getTargetMock('/foo/bar.txt');
+        $target = $this->createTargetMock('/foo/bar.txt');
         $target->method('shouldBeCompressed')->willReturn(false);
 
         $exec = $rsync->getExecutable($target);
@@ -179,7 +179,7 @@ class RsyncTest extends CliTest
      */
     public function testSyncOk()
     {
-        $target    = $this->getTargetMock('/tmp/foo.bar');
+        $target    = $this->createTargetMock('/tmp/foo.bar');
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
@@ -198,7 +198,7 @@ class RsyncTest extends CliTest
         $runner = $this->getRunnerMock();
         $runner->method('run')->willReturn($this->getRunnerResultMock(1, 'rsync'));
 
-        $target    = $this->getTargetMock();
+        $target    = $this->createTargetMock();
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->exactly(2))->method('debug');
 

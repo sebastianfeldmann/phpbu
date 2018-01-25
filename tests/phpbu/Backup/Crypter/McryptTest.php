@@ -14,7 +14,7 @@ use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
 class McryptTest extends CliTest
@@ -62,7 +62,7 @@ class McryptTest extends CliTest
      */
     public function testKeyAndAlgorithm()
     {
-        $target   = $this->getTargetMock('/foo/bar.txt');
+        $target   = $this->createTargetMock('/foo/bar.txt');
         $mcrypt   = new Mcrypt();
         $mcrypt->setup(['pathToMcrypt' => PHPBU_TEST_BIN, 'key' => 'fooBarBaz', 'algorithm' => 'blowfish']);
 
@@ -79,7 +79,7 @@ class McryptTest extends CliTest
     {
         Configuration::setWorkingDirectory('/foo');
 
-        $target   = $this->getTargetMock('/foo/bar.txt');
+        $target   = $this->createTargetMock('/foo/bar.txt');
         $mcrypt   = new Mcrypt();
         $mcrypt->setup(['pathToMcrypt' => PHPBU_TEST_BIN, 'keyFile' => '/foo/my.key', 'algorithm' => 'blowfish']);
 
@@ -100,7 +100,7 @@ class McryptTest extends CliTest
         $runner = $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
         $runner->method('run')->willReturn($runnerResult);
 
-        $target    = $this->getTargetMock(__FILE__);
+        $target    = $this->createTargetMock(__FILE__);
         $appResult = $this->getAppResultMock();
 
         $appResult->expects($this->once())->method('debug');
@@ -123,7 +123,7 @@ class McryptTest extends CliTest
         $runner = $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
         $runner->method('run')->willReturn($runnerResult);
 
-        $target    = $this->getTargetMock(__FILE__);
+        $target    = $this->createTargetMock(__FILE__);
         $appResult = $this->createMock(\phpbu\App\Result::class);
 
         $appResult->expects($this->once())->method('debug');

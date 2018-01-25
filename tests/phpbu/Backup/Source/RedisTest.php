@@ -12,7 +12,7 @@ use phpbu\App\Backup\Compressor;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.1.12
  */
 class RedisTest extends CliTest
@@ -33,7 +33,7 @@ class RedisTest extends CliTest
      */
     public function testDefault()
     {
-        $target  = $this->getTargetMock('/tmp/backup.redis');
+        $target  = $this->createTargetMock('/tmp/backup.redis');
         $rdbPath = PHPBU_TEST_FILES . '/misc/dump.rdb';
         $redis   = new Redis();
         $redis->setup(['pathToRedisData' => $rdbPath, 'pathToRedisCli' => PHPBU_TEST_BIN]);
@@ -56,7 +56,7 @@ class RedisTest extends CliTest
         $runner->method('run')
                ->will($this->onConsecutiveCalls($cliResult1, $cliResult2, $cliResult3));
 
-        $target  = $this->getTargetMock('/tmp/dump.rdb');
+        $target  = $this->createTargetMock('/tmp/dump.rdb');
         $rdbPath = PHPBU_TEST_FILES . '/misc/dump.rdb';
         $redis   = new Redis($runner);
         $redis->setup(['pathToRedisData' => $rdbPath, 'pathToRedisCli' => PHPBU_TEST_BIN]);
@@ -85,7 +85,7 @@ class RedisTest extends CliTest
         $runner->method('run')
                ->will($this->onConsecutiveCalls($cliResult1, $cliResult2, $cliResult3));
 
-        $target  = $this->getTargetMock('/tmp/dump.rdb');
+        $target  = $this->createTargetMock('/tmp/dump.rdb');
         $rdbPath = PHPBU_TEST_FILES . '/misc/dump.rdb';
         $redis   = new Redis($runner);
         $redis->setup(['pathToRedisData' => $rdbPath, 'pathToRedisCli' => PHPBU_TEST_BIN]);
@@ -106,7 +106,7 @@ class RedisTest extends CliTest
         $runner->method('run')
                ->willReturn($this->getRunnerResultMock(0, 'redis', '(integer) 100000000'));
 
-        $target  = $this->getTargetMock('/tmp/dump.rdb');
+        $target  = $this->createTargetMock('/tmp/dump.rdb');
         $rdbPath = PHPBU_TEST_FILES . '/misc/dump.rdb';
         $redis   = new Redis($runner);
         $redis->setup(['pathToRedisData' => $rdbPath, 'timeout' => 2, 'pathToRedisCli' => PHPBU_TEST_BIN]);
@@ -132,7 +132,7 @@ class RedisTest extends CliTest
         $runner->method('run')
                ->will($this->onConsecutiveCalls($cliResult1, $cliResult2, $cliResult3));
 
-        $target  = $this->getTargetMock('/tmp/dump.rdb');
+        $target  = $this->createTargetMock('/tmp/dump.rdb');
         $rdbPath = PHPBU_TEST_FILES . '/misc/dump.rdb.invalid';
         $redis   = new Redis($runner);
         $redis->setup(['pathToRedisData' => $rdbPath, 'pathToRedisCli' => PHPBU_TEST_BIN]);
@@ -157,7 +157,7 @@ class RedisTest extends CliTest
         $runner->method('run')
                ->will($this->onConsecutiveCalls($cliResult1, $cliResult2));
 
-        $target  = $this->getTargetMock('/tmp/dump.rdb');
+        $target  = $this->createTargetMock('/tmp/dump.rdb');
         $rdbPath = PHPBU_TEST_FILES . '/misc/dump.rdb';
         $redis   = new Redis($runner);
         $redis->setup(['pathToRedisData' => $rdbPath, 'pathToRedisCli' => PHPBU_TEST_BIN]);

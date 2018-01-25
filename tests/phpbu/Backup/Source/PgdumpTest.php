@@ -11,7 +11,7 @@ use phpbu\App\Backup\CliTest;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
 class PgdumpTest extends CliTest
@@ -21,7 +21,7 @@ class PgdumpTest extends CliTest
      */
     public function testDefault()
     {
-        $target = $this->getTargetMock('foo.sql');
+        $target = $this->createTargetMock('foo.sql');
         $pgDump = new Pgdump();
         $pgDump->setup(['pathToPgdump' => PHPBU_TEST_BIN]);
 
@@ -38,7 +38,7 @@ class PgdumpTest extends CliTest
      */
     public function testDatabase()
     {
-        $target = $this->getTargetMock('foo.sql');
+        $target = $this->createTargetMock('foo.sql');
         $pgDump = new Pgdump();
         $pgDump->setup(['pathToPgdump' => PHPBU_TEST_BIN, 'database' => 'myDatabase']);
 
@@ -60,7 +60,7 @@ class PgdumpTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(0, 'pg_dump'));
 
-        $target    = $this->getTargetMock();
+        $target    = $this->createTargetMock();
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
@@ -83,7 +83,7 @@ class PgdumpTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(1, 'pg_dump'));
 
-        $target    = $this->getTargetMock();
+        $target    = $this->createTargetMock();
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 

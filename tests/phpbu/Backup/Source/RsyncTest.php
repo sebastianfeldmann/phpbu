@@ -11,7 +11,7 @@ use phpbu\App\Backup\CliTest;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 3.2.0
  */
 class RsyncTest extends CliTest
@@ -34,7 +34,7 @@ class RsyncTest extends CliTest
      */
     public function testDefault()
     {
-        $target = $this->getTargetMock('/tmp/backup.rsync');
+        $target = $this->createTargetMock('/tmp/backup.rsync');
 
         $rsync = new Rsync();
         $rsync->setup(['path' => __DIR__, 'pathToRsync' => PHPBU_TEST_BIN]);
@@ -52,7 +52,7 @@ class RsyncTest extends CliTest
      */
     public function testPathAndHost()
     {
-        $target = $this->getTargetMock('/tmp/backup.rsync');
+        $target = $this->createTargetMock('/tmp/backup.rsync');
 
         $rsync = new Rsync();
         $rsync->setup(['path' => '/foo/bar', 'host' => 'example.com', 'pathToRsync' => PHPBU_TEST_BIN]);
@@ -70,7 +70,7 @@ class RsyncTest extends CliTest
      */
     public function testPathHostAndName()
     {
-        $target = $this->getTargetMock('/tmp/backup.rsync');
+        $target = $this->createTargetMock('/tmp/backup.rsync');
 
         $rsync = new Rsync();
         $rsync->setup([
@@ -93,7 +93,7 @@ class RsyncTest extends CliTest
      */
     public function testCustomArgs()
     {
-        $target = $this->getTargetMock('/tmp/backup.rsync');
+        $target = $this->createTargetMock('/tmp/backup.rsync');
 
         $rsync = new Rsync();
         $rsync->setup([
@@ -114,7 +114,7 @@ class RsyncTest extends CliTest
      */
     public function testBackupOk()
     {
-        $target = $this->getTargetMock('/tmp/backup.rsync');
+        $target = $this->createTargetMock('/tmp/backup.rsync');
         $runner = $this->getRunnerMock();
         $runner->expects($this->once())
                ->method('run')
@@ -143,7 +143,7 @@ class RsyncTest extends CliTest
      */
     public function testBackupFail()
     {
-        $target = $this->getTargetMock('/tmp/backup.rsync');
+        $target = $this->createTargetMock('/tmp/backup.rsync');
         $runner = $this->getRunnerMock();
         $runner->expects($this->once())
                ->method('run')
