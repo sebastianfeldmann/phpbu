@@ -87,6 +87,16 @@ class ArgsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Test log option --restore
+     */
+    public function testGetOptionsLongRestore()
+    {
+        $args    = new Args();
+        $options = $args->getOptions(['foo', '--restore', 'bar']);
+        $this->assertTrue($options['--restore'], 'long option --restore must be set');
+    }
+
+    /**
      * Test log option --simulate
      */
     public function testGetOptionsLongSimulate()

@@ -57,6 +57,13 @@ class Configuration
     private $simulate = false;
 
     /**
+     * Show how to restore the backup
+     *
+     * @var bool
+     */
+    private $restore = false;
+
+    /**
      * List of logger configurations
      *
      * @var array
@@ -213,6 +220,26 @@ class Configuration
     public function isSimulation() : bool
     {
         return $this->simulate;
+    }
+
+    /**
+     * Restore setter.
+     *
+     * @param bool $bool
+     */
+    public function setRestore(bool $bool)
+    {
+        $this->restore = $bool;
+    }
+
+    /**
+     * Restore getter.
+     *
+     * @return bool
+     */
+    public function isRestore() : bool
+    {
+        return $this->restore;
     }
 
     /**

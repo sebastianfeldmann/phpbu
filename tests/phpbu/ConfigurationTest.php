@@ -69,6 +69,18 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests Configuration::setRestore
+     */
+    public function testRestore()
+    {
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
+        $this->assertEquals(false, $conf->isRestore());
+        $conf->setRestore(true);
+        $this->assertEquals(true, $conf->isRestore());
+    }
+
+    /**
      * Tests Configuration::setSimulate
      */
     public function testSimulate()

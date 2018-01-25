@@ -159,6 +159,9 @@ class Cmd
                 case '--version-check':
                     $this->handleVersionCheck();
                     break;
+                case '--restore':
+                    $this->arguments['restore'] = $argument;
+                    break;
                 case '--simulate':
                     $this->arguments['simulate'] = $argument;
                     break;
@@ -212,6 +215,7 @@ class Cmd
         $this->overrideConfigWithArgument($configuration, 'colors');
         $this->overrideConfigWithArgument($configuration, 'debug');
         $this->overrideConfigWithArgument($configuration, 'simulate');
+        $this->overrideConfigWithArgument($configuration, 'restore');
         $this->overrideConfigWithArgument($configuration, 'bootstrap');
 
         // check for command line limit option
@@ -365,6 +369,7 @@ Usage: phpbu [option]
   --colors               Use colors in output.
   --debug                Display debugging information during backup generation.
   --limit=<subset>       Limit backup execution to a subset.
+  --restore              Print some restore instructions.
   --simulate             Perform a trial run with no changes made.
   -h, --help             Print this usage information.
   -v, --verbose          Output more verbose information.
