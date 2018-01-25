@@ -6,8 +6,9 @@ use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Sync;
+use phpbu\App\Backup\Target;
 use phpbu\App\Log\Logger;
-use phpbu\App\Runner\Task;
+use phpbu\App\Runner\Backup\Task;
 
 /**
  * Factory
@@ -17,7 +18,7 @@ use phpbu\App\Runner\Task;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class Factory
@@ -36,11 +37,11 @@ class Factory
             'env'    => '\\phpbu\\App\\Adapter\\Env',
         ],
         'runner' => [
-            'check'     => '\\phpbu\\App\\Runner\\Check',
-            'cleaner'   => '\\phpbu\\App\\Runner\\Cleaner',
-            'crypter'   => '\\phpbu\\App\\Runner\\Crypter',
-            'source'    => '\\phpbu\\App\\Runner\\Source',
-            'sync'      => '\\phpbu\\App\\Runner\\Sync',
+            'check'     => '\\phpbu\\App\\Runner\\Backup\\Check',
+            'cleaner'   => '\\phpbu\\App\\Runner\\Backup\\Cleaner',
+            'crypter'   => '\\phpbu\\App\\Runner\\Backup\\Crypter',
+            'source'    => '\\phpbu\\App\\Runner\\Backup\\Source',
+            'sync'      => '\\phpbu\\App\\Runner\\Backup\\Sync',
         ],
         'logger'  => [
             'json'    => '\\phpbu\\App\\Log\\Json',
@@ -164,6 +165,25 @@ class Factory
         }
         $logger->setup($conf);
         return $logger;
+    }
+
+    /**
+     * Create a backup target.
+     *
+     * @param  \phpbu\App\Configuration\Backup\Target $conf
+     * @return \phpbu\App\Backup\Target
+     * @throws \phpbu\App\Exception
+     */
+    public function createTarget(Configuration\Backup\Target $conf)
+    {
+        $target = new Target($conf->dirname, $conf->filename);
+        $target->setupPath();
+        // add possible compressor
+        if (!empty($conf->compression)) {
+            $compression = Target\Compression\Factory::create($conf->compression);
+            $target->setCompression($compression);
+        }
+        return $target;
     }
 
     /**

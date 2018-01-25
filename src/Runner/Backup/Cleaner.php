@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\App\Runner;
+namespace phpbu\App\Runner\Backup;
 
 use phpbu\App\Backup\Cleaner as CleanerExe;
 use phpbu\App\Backup\Cleaner\Simulator;
@@ -15,7 +15,7 @@ use phpbu\App\Result;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
 class Cleaner extends Abstraction

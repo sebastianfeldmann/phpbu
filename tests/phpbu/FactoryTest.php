@@ -16,7 +16,7 @@ use phpbu\App\Log\Logger;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
 class FactoryTest extends \PHPUnit\Framework\TestCase
@@ -29,7 +29,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
         $factory = new Factory();
         $runner  = $factory->createRunner('source', false);
 
-        $this->assertEquals('phpbu\\App\\Runner\Source', get_class($runner), 'runner classes should match');
+        $this->assertEquals('phpbu\\App\\Runner\\Backup\\Source', get_class($runner), 'runner classes should match');
     }
 
     /**

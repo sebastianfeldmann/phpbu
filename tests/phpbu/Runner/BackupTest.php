@@ -1,5 +1,11 @@
 <?php
-namespace phpbu\App;
+namespace phpbu\App\Runner;
+
+use phpbu\App\Configuration;
+use phpbu\App\Exception;
+use phpbu\App\Listener;
+use phpbu\App\Mockery;
+use phpbu\App\Result;
 
 /**
  * Runner Test
@@ -9,13 +15,13 @@ namespace phpbu\App;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 3.1.0
  */
-class RunnerTest extends \PHPUnit\Framework\TestCase
+class BackupTest extends Mockery
 {
     /**
-     * Tests Runner::run
+     * Tests Backup::run
      */
     public function testRunAllGood()
     {
@@ -23,30 +29,31 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $configuration = $this->createConfigurationMock();
         $configuration->method('isBackupActive')->willReturn(true);
 
-        $runner         = new Runner($factory);
-        $factoryPointer = $runner->getFactory();
-        $runner->run($configuration);
+        $result = new Result();
+        $result->addListener($factory->createLogger('null'));
 
-        $this->assertEquals($factory, $factoryPointer);
+        $runner = new Backup($factory, $result);
+        $runner->run($configuration);
     }
 
     /**
-     * Tests Runner::run
+     * Tests Backup::run
      */
     public function testRunExclude()
     {
         $factory        = $this->createFactoryMock(true);
-        $runner         = new Runner($factory);
         $configuration  = $this->createConfigurationMock(2);
         $configuration->method('isBackupActive')->will($this->onConsecutiveCalls(true, false));
-        $factoryPointer = $runner->getFactory();
-        $runner->run($configuration);
 
-        $this->assertEquals($factory, $factoryPointer);
+        $result = new Result();
+        $result->addListener($factory->createLogger('null'));
+
+        $runner = new Backup($factory, $result);
+        $runner->run($configuration);
     }
 
     /**
-     * Tests Runner::run
+     * Tests Backup::run
      */
     public function testRunCheckFail()
     {
@@ -54,12 +61,15 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $configuration = $this->createConfigurationMock();
         $configuration->method('isBackupActive')->willReturn(true);
 
-        $runner = new Runner($factory);
+        $result = new Result();
+        $result->addListener($factory->createLogger('null'));
+
+        $runner = new Backup($factory, $result);
         $runner->run($configuration);
     }
 
     /**
-     * Tests Runner::run
+     * Tests Backup::run
      */
     public function testRunCheckCrash()
     {
@@ -67,12 +77,15 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $configuration = $this->createConfigurationMock();
         $configuration->method('isBackupActive')->willReturn(true);
 
-        $runner = new Runner($factory);
+        $result = new Result();
+        $result->addListener($factory->createLogger('null'));
+
+        $runner = new Backup($factory, $result);
         $runner->run($configuration);
     }
 
     /**
-     * Tests Runner::run
+     * Tests Backup::run
      */
     public function testRunCryptCrash()
     {
@@ -80,12 +93,15 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $configuration = $this->createConfigurationMock();
         $configuration->method('isBackupActive')->willReturn(true);
 
-        $runner = new Runner($factory);
+        $result = new Result();
+        $result->addListener($factory->createLogger('null'));
+
+        $runner = new Backup($factory, $result);
         $runner->run($configuration);
     }
 
     /**
-     * Tests Runner::run
+     * Tests Backup::run
      */
     public function testRunSyncCrash()
     {
@@ -93,12 +109,15 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $configuration = $this->createConfigurationMock();
         $configuration->method('isBackupActive')->willReturn(true);
 
-        $runner = new Runner($factory);
+        $result = new Result();
+        $result->addListener($factory->createLogger('null'));
+
+        $runner = new Backup($factory, $result);
         $runner->run($configuration);
     }
 
     /**
-     * Tests Runner::run
+     * Tests Backup::run
      */
     public function testRunCleanerCrash()
     {
@@ -106,12 +125,15 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $configuration = $this->createConfigurationMock();
         $configuration->method('isBackupActive')->willReturn(true);
 
-        $runner = new Runner($factory);
+        $result = new Result();
+        $result->addListener($factory->createLogger('null'));
+
+        $runner = new Backup($factory, $result);
         $runner->run($configuration);
     }
 
     /**
-     * Tests Runner::run
+     * Tests Backup::run
      */
     public function testRunStopOnFailure()
     {
@@ -119,7 +141,10 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $configuration = $this->createConfigurationMock(2);
         $configuration->method('isBackupActive')->willReturn(true);
 
-        $runner = new Runner($factory);
+        $result = new Result();
+        $result->addListener($factory->createLogger('null'));
+
+        $runner = new Backup($factory, $result);
         $runner->run($configuration);
     }
 
@@ -133,7 +158,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
     protected function createFactoryMock($passChecks, $backups = 1)
     {
         $runCalls        = $passChecks ? 1 : 0;
-        $logger          = $this->createLoggerMock();
+        $logger          = $this->createNullLogger();
         $sourceRunner    = $this->createSourceRunnerMock();
         $source          = $this->createSourceMock();
         $checkRunner     = $this->createCheckRunnerMock($passChecks);
@@ -156,6 +181,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
                     $cleanupRunner
                 ));
 
+        $factory->method('createTarget')->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.bz2'));
         $factory->expects($this->once())->method('createLogger')->willReturn($logger);
         $factory->expects($this->once())->method('createSource')->willReturn($source);
         $factory->expects($this->once())->method('createCheck')->willReturn($check);
@@ -173,7 +199,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createFactoryMockCheckCrash()
     {
-        $logger          = $this->createLoggerMock();
+        $logger          = $this->createNullLogger();
         $sourceRunner    = $this->createSourceRunnerMock();
         $source          = $this->createSourceMock();
         $checkRunner     = $this->createCheckRunnerMock(false, true);
@@ -187,6 +213,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
                     $checkRunner
                 ));
 
+        $factory->method('createTarget')->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.bz2'));
         $factory->expects($this->once())->method('createLogger')->willReturn($logger);
         $factory->expects($this->once())->method('createSource')->willReturn($source);
         $factory->expects($this->once())->method('createCheck')->willReturn($check);
@@ -201,7 +228,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createFactoryMockCryptCrash()
     {
-        $logger          = $this->createLoggerMock();
+        $logger          = $this->createNullLogger();
         $sourceRunner    = $this->createSourceRunnerMock();
         $source          = $this->createSourceMock();
         $checkRunner     = $this->createCheckRunnerMock(true);
@@ -218,6 +245,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
                     $cryptRunner
                 ));
 
+        $factory->method('createTarget')->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.bz2'));
         $factory->expects($this->once())->method('createLogger')->willReturn($logger);
         $factory->expects($this->once())->method('createSource')->willReturn($source);
         $factory->expects($this->once())->method('createCheck')->willReturn($check);
@@ -233,7 +261,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createFactoryMockSyncCrash()
     {
-        $logger          = $this->createLoggerMock();
+        $logger          = $this->createNullLogger();
         $sourceRunner    = $this->createSourceRunnerMock();
         $source          = $this->createSourceMock();
         $checkRunner     = $this->createCheckRunnerMock(true);
@@ -253,6 +281,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
                     $syncRunner
                 ));
 
+        $factory->method('createTarget')->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.bz2'));
         $factory->expects($this->once())->method('createLogger')->willReturn($logger);
         $factory->expects($this->once())->method('createSource')->willReturn($source);
         $factory->expects($this->once())->method('createCheck')->willReturn($check);
@@ -269,7 +298,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createFactoryMockCleanerCrash()
     {
-        $logger          = $this->createLoggerMock();
+        $logger          = $this->createNullLogger();
         $sourceRunner    = $this->createSourceRunnerMock();
         $source          = $this->createSourceMock();
         $checkRunner     = $this->createCheckRunnerMock(true);
@@ -292,6 +321,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
                     $cleanupRunner
                 ));
 
+        $factory->method('createTarget')->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.bz2'));
         $factory->expects($this->once())->method('createLogger')->willReturn($logger);
         $factory->expects($this->once())->method('createSource')->willReturn($source);
         $factory->expects($this->once())->method('createCheck')->willReturn($check);
@@ -309,7 +339,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      */
     protected function createFactoryMockStopOnFailure()
     {
-        $logger          = $this->createLoggerMock();
+        $logger          = $this->createNullLogger();
         $sourceRunner    = $this->createSourceRunnerMock(true);
         $source          = $this->createSourceMock();
 
@@ -320,6 +350,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
                     $sourceRunner
                 ));
 
+        $factory->method('createTarget')->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.bz2'));
         $factory->expects($this->once())->method('createLogger')->willReturn($logger);
         $factory->expects($this->once())->method('createSource')->willReturn($source);
 
@@ -327,24 +358,14 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Create logger mock.
-     *
-     * @return \phpbu\App\Log\Json
-     */
-    protected function createLoggerMock()
-    {
-        return new LoggerNull();
-    }
-
-    /**
      * Create source runner.
      *
      * @param  bool $crash
-     * @return \phpbu\App\Runner\Source
+     * @return \phpbu\App\Runner\Backup\Source
      */
     protected function createSourceRunnerMock($crash = false)
     {
-        $sourceRunner = $this->createMock(\phpbu\App\Runner\Source::class);
+        $sourceRunner = $this->createMock(\phpbu\App\Runner\Backup\Source::class);
         if ($crash) {
             $sourceRunner->expects($this->once())->method('run')->will($this->throwException(new Exception('fail')));
         } else {
@@ -369,11 +390,11 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      *
      * @param  bool $pass
      * @param  bool $crash
-     * @return \phpbu\App\Runner\Check
+     * @return \phpbu\App\Runner\Backup\Check
      */
     protected function createCheckRunnerMock($pass, $crash = false)
     {
-        $checkRunner = $this->createMock(\phpbu\App\Runner\Check::class);
+        $checkRunner = $this->createMock(\phpbu\App\Runner\Backup\Check::class);
         if ($crash) {
             $checkRunner->expects($this->once())->method('run')->will($this->throwException(new Exception('fail')));
         } else {
@@ -398,16 +419,16 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      *
      * @param  int  $runCalls
      * @param  bool $crash
-     * @return \phpbu\App\Runner\Crypter
+     * @return \phpbu\App\Runner\Backup\Crypter
      */
     protected function createCryptRunnerMock($runCalls, $crash = false)
     {
-        $cryptRunner = $this->createMock(\phpbu\App\Runner\Crypter::class);
+        $cryptRunner = $this->createMock(\phpbu\App\Runner\Backup\Crypter::class);
 
         if ($crash) {
             $cryptRunner->expects($this->once())
                         ->method('run')
-                        ->will($this->throwException(new Backup\Crypter\Exception('fail')));
+                        ->will($this->throwException(new \phpbu\App\Backup\Crypter\Exception('fail')));
         } else {
             $cryptRunner->expects($this->exactly($runCalls))->method('run');
         }
@@ -430,16 +451,16 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      *
      * @param  int  $runCalls
      * @param  bool $crash
-     * @return \phpbu\App\Runner\Sync
+     * @return \phpbu\App\Runner\Backup\Sync
      */
     protected function createSyncRunnerMock($runCalls, $crash = false)
     {
-        $syncRunner = $this->createMock(\phpbu\App\Runner\Sync::class);
+        $syncRunner = $this->createMock(\phpbu\App\Runner\Backup\Sync::class);
 
         if ($crash) {
             $syncRunner->expects($this->once())
                        ->method('run')
-                       ->will($this->throwException(new Backup\Sync\Exception('fail')));
+                       ->will($this->throwException(new \phpbu\App\Backup\Sync\Exception('fail')));
         } else {
             $syncRunner->expects($this->exactly($runCalls))->method('run');
         }
@@ -462,16 +483,16 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
      *
      * @param  int  $runCalls
      * @param  bool $crash
-     * @return \phpbu\App\Runner\Cleanup
+     * @return \phpbu\App\Runner\Backup\Cleanup
      */
     protected function createCleanerRunnerMock($runCalls, $crash = false)
     {
-        $cleanupRunner = $this->createMock(\phpbu\App\Runner\Cleaner::class);
+        $cleanupRunner = $this->createMock(\phpbu\App\Runner\Backup\Cleaner::class);
 
         if ($crash) {
             $cleanupRunner->expects($this->once())
                           ->method('run')
-                          ->will($this->throwException(new Backup\Cleaner\Exception('fail')));
+                          ->will($this->throwException(new \phpbu\App\Backup\Cleaner\Exception('fail')));
         } else {
             $cleanupRunner->expects($this->exactly($runCalls))->method('run');
         }
@@ -504,7 +525,7 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $log   = new Configuration\Logger('json', []);
 
         $configuration = $this->createMock(\phpbu\App\Configuration::class);
-        $configuration->method('getLoggers')->willReturn([$log, $this->createLoggerMock()]);
+        $configuration->method('getLoggers')->willReturn([$log, $this->createNullLogger()]);
 
         $backups = [];
         for ($i = 0; $i < $amountOfBackups; $i++) {
@@ -524,16 +545,5 @@ class RunnerTest extends \PHPUnit\Framework\TestCase
         $configuration->method('isSimulation')->willReturn(false);
 
         return $configuration;
-    }
-}
-
-class LoggerNull implements Listener
-{
-    /**
-     * Returns an array of event names this subscriber wants to listen to.
-     */
-    public static function getSubscribedEvents()
-    {
-        return [];
     }
 }

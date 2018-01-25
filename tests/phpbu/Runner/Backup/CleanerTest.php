@@ -1,7 +1,6 @@
 <?php
-namespace phpbu\App\Runner;
+namespace phpbu\App\Runner\Backup;
 
-use phpbu\App\Configuration;
 use phpbu\App\Backup\Cleaner\Exception;
 
 /**
@@ -12,7 +11,7 @@ use phpbu\App\Backup\Cleaner\Exception;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
 class CleanerTest extends \PHPUnit\Framework\TestCase

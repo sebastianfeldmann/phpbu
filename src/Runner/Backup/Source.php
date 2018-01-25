@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\App\Runner;
+namespace phpbu\App\Runner\Backup;
 
 use phpbu\App\Backup\Compressor;
 use phpbu\App\Backup\Source as SourceExe;
@@ -16,7 +16,7 @@ use phpbu\App\Result;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
 class Source extends Abstraction

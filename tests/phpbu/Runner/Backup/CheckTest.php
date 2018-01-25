@@ -1,8 +1,5 @@
 <?php
-namespace phpbu\App\Runner;
-
-use phpbu\App\Configuration;
-use phpbu\App\Backup\Check\Exception;
+namespace phpbu\App\Runner\Backup;
 
 /**
  * Check Runner test
@@ -12,7 +9,7 @@ use phpbu\App\Backup\Check\Exception;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
 class CheckTest extends \PHPUnit\Framework\TestCase

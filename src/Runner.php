@@ -1,10 +1,6 @@
 <?php
 namespace phpbu\App;
 
-use phpbu\App\Backup;
-use phpbu\App\Backup\Collector;
-use phpbu\App\Backup\Target;
-
 /**
  * Runner actually executes all backup jobs.
  *
@@ -24,27 +20,6 @@ class Runner
      * @var \phpbu\App\Factory
      */
     protected $factory;
-
-    /**
-     * Application result
-     *
-     * @var \phpbu\App\Result
-     */
-    protected $result;
-
-    /**
-     * Backup failed
-     *
-     * @var bool
-     */
-    protected $failure;
-
-    /**
-     * App Configuration
-     *
-     * @var \phpbu\App\Configuration
-     */
-    protected $configuration;
 
     /**
      * Constructor
@@ -76,86 +51,21 @@ class Runner
      */
     public function run(Configuration $configuration)
     {
-        $stop                = false;
-        $this->result        = new Result();
-        $this->configuration = $configuration;
+        $result = new Result();
+        $this->setupLoggers($configuration, $result);
 
-        $this->setupLoggers($configuration);
-        $this->result->phpbuStart($configuration);
-
-        // create backups
-        /** @var \phpbu\App\Configuration\Backup $backup */
-        foreach ($configuration->getBackups() as $backup) {
-            if ($stop) {
-                break;
-            }
-            // make sure the backup should be executed and is not excluded via the --limit option
-            if (!$configuration->isBackupActive($backup->getName())) {
-                $this->result->debug('skipping backup: ' . $backup->getName() . PHP_EOL);
-                continue;
-            }
-            // setup target and collector, reset failure state
-            $target        = $this->createTarget($backup->getTarget());
-            $collector     = new Collector($target);
-            $this->failure = false;
-
-            try {
-                /*      ___  ___  _______ ____  _____
-                 *     / _ )/ _ |/ ___/ //_/ / / / _ \
-                 *    / _  / __ / /__/ ,< / /_/ / ___/
-                 *   /____/_/ |_\___/_/|_|\____/_/
-                 */
-                $this->executeSource($backup, $target);
-
-                /*     _______ _____________ ______
-                 *    / ___/ // / __/ ___/ //_/ __/
-                 *   / /__/ _  / _// /__/ ,< _\ \
-                 *   \___/_//_/___/\___/_/|_/___/
-                 */
-                $this->executeChecks($backup, $target, $collector);
-
-                /*     __________  _____  ______
-                 *    / ___/ _ \ \/ / _ \/_  __/
-                 *   / /__/ , _/\  / ___/ / /
-                 *   \___/_/|_| /_/_/    /_/
-                 */
-                $this->executeCrypt($backup, $target);
-
-                /*      ______  ___  ___________
-                 *     / __/\ \/ / |/ / ___/ __/
-                 *    _\ \   \  /    / /___\ \
-                 *   /___/   /_/_/|_/\___/___/
-                 */
-                $this->executeSyncs($backup, $target);
-
-                /*     _______   _______   _  ____  _____
-                 *    / ___/ /  / __/ _ | / |/ / / / / _ \
-                 *   / /__/ /__/ _// __ |/    / /_/ / ___/
-                 *   \___/____/___/_/ |_/_/|_/\____/_/
-                 */
-                $this->executeCleanup($backup, $target, $collector);
-
-            } catch (\Exception $e) {
-                $this->result->debug('exception: ' . $e->getMessage());
-                $this->result->addError($e);
-                $this->result->backupFailed($backup);
-                if ($backup->stopOnFailure()) {
-                    $stop = true;
-                }
-            }
-        }
-        $this->result->phpbuEnd();
-
-        return $this->result;
+        $backupRunner = new Runner\Backup($this->factory, $result);
+        return $backupRunner->run($configuration);
     }
 
     /**
      * Create and register all configured loggers.
      *
      * @param  \phpbu\App\Configuration $configuration
+     * @param  \phpbu\App\Result        $result
      * @throws \phpbu\App\Exception
      */
-    protected function setupLoggers(Configuration $configuration)
+    protected function setupLoggers(Configuration $configuration, Result $result)
     {
         foreach ($configuration->getLoggers() as $log) {
             // this is a already fully setup Listener so just add it
@@ -167,162 +77,7 @@ class Runner
                 /** @var \phpbu\App\Listener $logger */
                 $logger = $this->factory->createLogger($log->type, $log->options);
             }
-            $this->result->addListener($logger);
-        }
-    }
-
-    /**
-     * Create a target.
-     *
-     * @param  \phpbu\App\Configuration\Backup\Target $conf
-     * @return \phpbu\App\Backup\Target
-     * @throws \phpbu\App\Exception
-     */
-    protected function createTarget(Configuration\Backup\Target $conf)
-    {
-        $target = new Target($conf->dirname, $conf->filename);
-        $target->setupPath();
-        // add possible compressor
-        if (!empty($conf->compression)) {
-            $compression = Target\Compression\Factory::create($conf->compression);
-            $target->setCompression($compression);
-        }
-        return $target;
-    }
-
-    /**
-     * Execute the backup.
-     *
-     * @param  \phpbu\App\Configuration\Backup $conf
-     * @param  \phpbu\App\Backup\Target        $target
-     * @throws \Exception
-     */
-    protected function executeSource(Configuration\Backup $conf, Target $target)
-    {
-        $this->result->backupStart($conf);
-        /* @var \phpbu\App\Runner\Source $runner */
-        $source = $this->factory->createSource($conf->getSource()->type, $conf->getSource()->options);
-        $runner = $this->factory->createRunner('source', $this->configuration->isSimulation());
-        $runner->run($source, $target, $this->result);
-        $this->result->backupEnd($conf);
-    }
-
-    /**
-     * Execute checks.
-     *
-     * @param  \phpbu\App\Configuration\Backup $backup
-     * @param  \phpbu\App\Backup\Target        $target
-     * @param  \phpbu\App\Backup\Collector     $collector
-     * @throws \Exception
-     */
-    protected function executeChecks(Configuration\Backup $backup, Target $target, Collector $collector)
-    {
-        /* @var \phpbu\App\Runner\Check $runner */
-        $runner = $this->factory->createRunner('check', $this->configuration->isSimulation());
-        foreach ($backup->getChecks() as $config) {
-            try {
-                $this->result->checkStart($config);
-                $check = $this->factory->createCheck($config->type);
-                if ($runner->run($check, $target, $config->value, $collector, $this->result)) {
-                    $this->result->checkEnd($config);
-                } else {
-                    $this->failure = true;
-                    $this->result->checkFailed($config);
-                }
-            } catch (Exception $e) {
-                $this->failure = true;
-                $this->result->addError($e);
-                $this->result->checkFailed($config);
-            }
-        }
-    }
-
-    /**
-     * Execute encryption.
-     *
-     * @param  \phpbu\App\Configuration\Backup $backup
-     * @param  \phpbu\App\Backup\Target        $target
-     * @throws \phpbu\App\Exception
-     */
-    protected function executeCrypt(Configuration\Backup $backup, Target $target)
-    {
-        if ($backup->hasCrypt()) {
-            $crypt = $backup->getCrypt();
-            try {
-                $this->result->cryptStart($crypt);
-                if ($this->failure && $crypt->skipOnFailure) {
-                    $this->result->cryptSkipped($crypt);
-                } else {
-                    /* @var \phpbu\App\Runner\Crypter $runner */
-                    $runner  = $this->factory->createRunner('crypter', $this->configuration->isSimulation());
-                    $runner->run($this->factory->createCrypter($crypt->type, $crypt->options), $target, $this->result);
-                }
-            } catch (Backup\Crypter\Exception $e) {
-                $this->failure = true;
-                $this->result->addError($e);
-                $this->result->cryptFailed($crypt);
-            }
-        }
-    }
-
-    /**
-     * Execute all syncs.
-     *
-     * @param  \phpbu\App\Configuration\Backup $backup
-     * @param  \phpbu\App\Backup\Target        $target
-     * @throws \Exception
-     */
-    protected function executeSyncs(Configuration\Backup $backup, Target $target)
-    {
-        /* @var \phpbu\App\Runner\Crypter $runner */
-        /* @var \phpbu\App\Configuration\Backup\Sync $sync */
-        $runner  = $this->factory->createRunner('sync', $this->configuration->isSimulation());
-        foreach ($backup->getSyncs() as $sync) {
-            try {
-                $this->result->syncStart($sync);
-                if ($this->failure && $sync->skipOnFailure) {
-                    $this->result->syncSkipped($sync);
-                } else {
-                    $runner->run($this->factory->createSync($sync->type, $sync->options), $target, $this->result);
-                    $this->result->syncEnd($sync);
-                }
-            } catch (Backup\Sync\Exception $e) {
-                $this->failure = true;
-                $this->result->addError($e);
-                $this->result->syncFailed($sync);
-            }
-        }
-    }
-
-    /**
-     * Execute the cleanup.
-     *
-     * @param  \phpbu\App\Configuration\Backup $backup
-     * @param  \phpbu\App\Backup\Target        $target
-     * @param  \phpbu\App\Backup\Collector     $collector
-     * @throws \phpbu\App\Exception
-     */
-    protected function executeCleanup(Configuration\Backup $backup, Target $target, Collector $collector)
-    {
-        /* @var \phpbu\App\Runner\Cleaner $runner */
-        /* @var \phpbu\App\Configuration\Backup\Cleanup $cleanup */
-        if ($backup->hasCleanup()) {
-            $cleanup = $backup->getCleanup();
-            try {
-                $runner = $this->factory->createRunner('cleaner', $this->configuration->isSimulation());
-                $this->result->cleanupStart($cleanup);
-                if ($this->failure && $cleanup->skipOnFailure) {
-                    $this->result->cleanupSkipped($cleanup);
-                } else {
-                    $cleaner = $this->factory->createCleaner($cleanup->type, $cleanup->options);
-                    $runner->run($cleaner, $target, $collector, $this->result);
-                    $this->result->cleanupEnd($cleanup);
-                }
-            } catch (Backup\Cleaner\Exception $e) {
-                $this->failure = true;
-                $this->result->addError($e);
-                $this->result->cleanupFailed($cleanup);
-            }
+            $result->addListener($logger);
         }
     }
 }
