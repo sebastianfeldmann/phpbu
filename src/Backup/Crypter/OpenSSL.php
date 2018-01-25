@@ -14,7 +14,7 @@ use phpbu\App\Util;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 2.1.6
  */
 class OpenSSL extends Abstraction implements Simulator
@@ -94,6 +94,7 @@ class OpenSSL extends Abstraction implements Simulator
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
+     * @throws \phpbu\App\Exception
      */
     protected function createExecutable(Target $target) : Executable
     {
@@ -109,6 +110,7 @@ class OpenSSL extends Abstraction implements Simulator
         }
         $executable->useAlgorithm($this->algorithm)
                    ->deleteUncrypted(!$this->keepUncrypted);
+
         return $executable;
     }
 }
