@@ -43,7 +43,7 @@ class Collector
     /**
      * Constructor
      *
-     * @param Target $target
+     * @param \phpbu\App\Backup\Target $target
      */
     public function __construct(Target $target)
     {
