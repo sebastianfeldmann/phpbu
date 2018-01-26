@@ -66,6 +66,7 @@ class Directory extends Abstraction
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
+     * @throws \phpbu\App\Exception
      */
     protected function createExecutable(Target $target) : CliExecutable
     {
@@ -84,6 +85,7 @@ class Directory extends Abstraction
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return string
+     * @throws \phpbu\App\Exception
      */
     public function getArchiveFile(Target $target) : string
     {
