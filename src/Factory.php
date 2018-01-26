@@ -8,7 +8,6 @@ use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Log\Logger;
-use phpbu\App\Runner\Backup\Task;
 
 /**
  * Factory
@@ -35,13 +34,6 @@ class Factory
             'array'  => '\\phpbu\\App\\Adapter\\PHPArray',
             'dotenv' => '\\phpbu\\App\\Adapter\\Dotenv',
             'env'    => '\\phpbu\\App\\Adapter\\Env',
-        ],
-        'runner' => [
-            'check'     => '\\phpbu\\App\\Runner\\Backup\\Check',
-            'cleaner'   => '\\phpbu\\App\\Runner\\Backup\\Cleaner',
-            'crypter'   => '\\phpbu\\App\\Runner\\Backup\\Crypter',
-            'source'    => '\\phpbu\\App\\Runner\\Backup\\Source',
-            'sync'      => '\\phpbu\\App\\Runner\\Backup\\Sync',
         ],
         'logger'  => [
             'json'    => '\\phpbu\\App\\Log\\Json',
@@ -109,24 +101,6 @@ class Factory
     }
 
     /**
-     * Runner Factory.
-     *
-     * @param  string $alias
-     * @param  bool   $isSimulation
-     * @return mixed
-     * @throws \phpbu\App\Exception
-     */
-    public function createRunner($alias, $isSimulation)
-    {
-        $runner = $this->create('runner', $alias);
-        if (!($runner instanceof Task)) {
-            throw new Exception(sprintf('Runner \'%s\' has to implement the \'Task\' interface', $alias));
-        }
-        $runner->setSimulation($isSimulation);
-        return $runner;
-    }
-
-    /**
      * Adapter Factory.
      *
      * @param  string $alias
@@ -151,7 +125,7 @@ class Factory
      * @param  string $alias
      * @param  array  $conf
      * @throws \phpbu\App\Exception
-     * @return \phpbu\App\Log\Logger
+     * @return \phpbu\App\Listener
      */
     public function createLogger($alias, $conf = [])
     {

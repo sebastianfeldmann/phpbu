@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Runner;
 
+use phpbu\App\Backup\Compressor;
 use phpbu\App\Exception;
 use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Collector;
@@ -8,7 +9,6 @@ use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Configuration;
-use phpbu\App\Factory;
 use phpbu\App\Result;
 
 /**
@@ -21,45 +21,16 @@ use phpbu\App\Result;
  * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class Backup
+class Backup extends Process
 {
-    /**
-     * @var \phpbu\App\Factory
-     */
-    private $factory;
+    use Compression;
 
     /**
      * Backup failed
      *
      * @var bool
      */
-    private $failure;
-
-    /**
-     * phpbu Result
-     *
-     * @var \phpbu\App\Result
-     */
-    private $result;
-
-    /**
-     * phpbu Configuration
-     *
-     * @var \phpbu\App\Configuration
-     */
-    private $configuration;
-
-    /**
-     * Backup constructor.
-     *
-     * @param \phpbu\App\Factory $factory
-     * @param \phpbu\App\Result  $result
-     */
-    public function __construct(Factory $factory, Result $result)
-    {
-        $this->factory = $factory;
-        $this->result  = $result;
-    }
+    protected $failure;
 
     /**
      * Execute backups.
@@ -153,8 +124,8 @@ class Backup
         $this->result->backupStart($conf);
         /* @var \phpbu\App\Runner\Source $runner */
         $source = $this->factory->createSource($conf->getSource()->type, $conf->getSource()->options);
-        $runner = $this->factory->createRunner('source', $this->configuration->isSimulation());
-        $runner->run($source, $target, $this->result);
+        $status = $source->backup($target, $this->result);
+        $this->compress($status, $target, $this->result);
         $this->result->backupEnd($conf);
     }
 
@@ -168,13 +139,11 @@ class Backup
      */
     protected function executeChecks(Configuration\Backup $backup, Target $target, Collector $collector)
     {
-        /* @var \phpbu\App\Runner\Check $runner */
-        $runner = $this->factory->createRunner('check', $this->configuration->isSimulation());
         foreach ($backup->getChecks() as $config) {
             try {
                 $this->result->checkStart($config);
                 $check = $this->factory->createCheck($config->type);
-                if ($runner->run($check, $target, $config->value, $collector, $this->result)) {
+                if ($check->pass($target, $config->value, $collector, $this->result)) {
                     $this->result->checkEnd($config);
                 } else {
                     $this->failure = true;
@@ -198,20 +167,21 @@ class Backup
     protected function executeCrypt(Configuration\Backup $backup, Target $target)
     {
         if ($backup->hasCrypt()) {
-            $crypt = $backup->getCrypt();
+            $config = $backup->getCrypt();
             try {
-                $this->result->cryptStart($crypt);
-                if ($this->failure && $crypt->skipOnFailure) {
-                    $this->result->cryptSkipped($crypt);
-                } else {
-                    /* @var \phpbu\App\Runner\Crypter $runner */
-                    $runner  = $this->factory->createRunner('crypter', $this->configuration->isSimulation());
-                    $runner->run($this->factory->createCrypter($crypt->type, $crypt->options), $target, $this->result);
+                $this->result->cryptStart($config);
+                if ($this->failure && $config->skipOnFailure) {
+                    $this->result->cryptSkipped($config);
+                    return;
                 }
+                $crypter = $this->factory->createCrypter($config->type, $config->options);
+                $crypter->crypt($target, $this->result);
+                $this->result->cryptEnd($config);
+
             } catch (Crypter\Exception $e) {
                 $this->failure = true;
                 $this->result->addError($e);
-                $this->result->cryptFailed($crypt);
+                $this->result->cryptFailed($config);
             }
         }
     }
@@ -225,22 +195,22 @@ class Backup
      */
     protected function executeSyncs(Configuration\Backup $backup, Target $target)
     {
-        /* @var \phpbu\App\Runner\Crypter $runner */
         /* @var \phpbu\App\Configuration\Backup\Sync $sync */
-        $runner  = $this->factory->createRunner('sync', $this->configuration->isSimulation());
-        foreach ($backup->getSyncs() as $sync) {
+        foreach ($backup->getSyncs() as $config) {
             try {
-                $this->result->syncStart($sync);
-                if ($this->failure && $sync->skipOnFailure) {
-                    $this->result->syncSkipped($sync);
-                } else {
-                    $runner->run($this->factory->createSync($sync->type, $sync->options), $target, $this->result);
-                    $this->result->syncEnd($sync);
+                $this->result->syncStart($config);
+                if ($this->failure && $config->skipOnFailure) {
+                    $this->result->syncSkipped($config);
+                    return;
                 }
+                $sync = $this->factory->createSync($config->type, $config->options);
+                $sync->sync($target, $this->result);
+                $this->result->syncEnd($config);
+
             } catch (Sync\Exception $e) {
                 $this->failure = true;
                 $this->result->addError($e);
-                $this->result->syncFailed($sync);
+                $this->result->syncFailed($config);
             }
         }
     }
@@ -255,25 +225,38 @@ class Backup
      */
     protected function executeCleanup(Configuration\Backup $backup, Target $target, Collector $collector)
     {
-        /* @var \phpbu\App\Runner\Cleaner $runner */
-        /* @var \phpbu\App\Configuration\Backup\Cleanup $cleanup */
+        /* @var \phpbu\App\Configuration\Backup\Cleanup $config */
         if ($backup->hasCleanup()) {
-            $cleanup = $backup->getCleanup();
+            $config = $backup->getCleanup();
             try {
-                $runner = $this->factory->createRunner('cleaner', $this->configuration->isSimulation());
-                $this->result->cleanupStart($cleanup);
-                if ($this->failure && $cleanup->skipOnFailure) {
-                    $this->result->cleanupSkipped($cleanup);
-                } else {
-                    $cleaner = $this->factory->createCleaner($cleanup->type, $cleanup->options);
-                    $runner->run($cleaner, $target, $collector, $this->result);
-                    $this->result->cleanupEnd($cleanup);
+                $this->result->cleanupStart($config);
+                if ($this->failure && $config->skipOnFailure) {
+                    $this->result->cleanupSkipped($config);
+                    return;
                 }
+                $cleaner = $this->factory->createCleaner($config->type, $config->options);
+                $cleaner->cleanup($target, $collector, $this->result);
+                $this->result->cleanupEnd($config);
+
             } catch (Cleaner\Exception $e) {
                 $this->failure = true;
                 $this->result->addError($e);
-                $this->result->cleanupFailed($cleanup);
+                $this->result->cleanupFailed($config);
             }
         }
+    }
+
+    /**
+     * Execute the compressor.
+     * Returns the path to the created archive file.
+     *
+     * @param  \phpbu\App\Backup\Compressor\Executable $compressor
+     * @param  \phpbu\App\Backup\Target                $target
+     * @param  \phpbu\App\Result                       $result
+     * @return string
+     */
+    protected function executeCompressor(Compressor\Executable $compressor, Target $target, Result $result) : string
+    {
+        return $compressor->compress($target, $result);
     }
 }

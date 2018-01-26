@@ -7,6 +7,7 @@ use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Log\Logger;
+use phpbu\App\Result\Backup;
 
 /**
  * Factory test
@@ -22,17 +23,6 @@ use phpbu\App\Log\Logger;
 class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests Factory::createRunner
-     */
-    public function testCreateRunner()
-    {
-        $factory = new Factory();
-        $runner  = $factory->createRunner('source', false);
-
-        $this->assertEquals('phpbu\\App\\Runner\\Backup\\Source', get_class($runner), 'runner classes should match');
-    }
-
-    /**
      * Tests Factory::createAdapter
      */
     public function testCreateAdapter()
@@ -41,6 +31,20 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
         $adapter = $factory->createAdapter('env', []);
 
         $this->assertEquals('phpbu\\App\\Adapter\\Env', get_class($adapter), 'adapter classes should match');
+    }
+
+    /**
+     * Tests Factory::createTarget
+     */
+    public function testCreateTarget()
+    {
+        $conf    = new Configuration\Backup\Target('foo', 'bar', 'bzip2');
+        $factory = new Factory();
+        $target  = $factory->createTarget($conf);
+
+        $this->assertEquals('phpbu\\App\\Backup\\Target', get_class($target), 'should be a target');
+        $this->assertEquals('bar.bz2', $target->getFilename());
+        $this->assertEquals('foo/bar.bz2', $target->getPathname());
     }
 
     /**

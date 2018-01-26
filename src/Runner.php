@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App;
 
+use phpbu\App\Runner\Process;
+
 /**
  * Runner actually executes all backup jobs.
  *
@@ -54,8 +56,8 @@ class Runner
         $result = new Result();
         $this->setupLoggers($configuration, $result);
 
-        $backupRunner = new Runner\Backup($this->factory, $result);
-        return $backupRunner->run($configuration);
+        $runner = $this->createRunner($configuration, $result);
+        return $runner->run($configuration);
     }
 
     /**
@@ -65,7 +67,7 @@ class Runner
      * @param  \phpbu\App\Result        $result
      * @throws \phpbu\App\Exception
      */
-    protected function setupLoggers(Configuration $configuration, Result $result)
+    private function setupLoggers(Configuration $configuration, Result $result)
     {
         foreach ($configuration->getLoggers() as $log) {
             // this is a already fully setup Listener so just add it
@@ -79,5 +81,25 @@ class Runner
             }
             $result->addListener($logger);
         }
+    }
+
+    /**
+     * Create a runner executing the requested process.
+     *
+     * @param  \phpbu\App\Configuration $configuration
+     * @param  \phpbu\App\Result        $result
+     * @return \phpbu\App\Runner\Process
+     */
+    private function createRunner(Configuration $configuration, Result $result) : Process
+    {
+        if ($configuration->isSimulation()) {
+            return new Runner\Simulate($this->factory, $result);
+        }
+
+        if ($configuration->isRestore()) {
+            return new Runner\Restore($this->factory, $result);
+        }
+
+        return new Runner\Backup($this->factory, $result);
     }
 }
