@@ -2,7 +2,6 @@
 namespace phpbu\App\Backup\Check;
 
 use phpbu\App\Result;
-use phpbu\App\Backup\Check;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Math;
@@ -21,16 +20,17 @@ use phpbu\App\Util\Math;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class SizeDiffPreviousPercent implements Check
+class SizeDiffPreviousPercent implements Simulator
 {
     /**
      * Execute check.
      *
-     * @param \phpbu\App\Backup\Target    $target
-     * @param string                      $value
-     * @param \phpbu\App\Backup\Collector $collector
-     * @param \phpbu\App\Result           $result
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  string                      $value
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @param  \phpbu\App\Result           $result
      * @return bool
+     * @throws \phpbu\App\Exception
      */
     public function pass(Target $target, $value, Collector $collector, Result $result) : bool
     {
@@ -51,5 +51,19 @@ class SizeDiffPreviousPercent implements Check
         }
 
         return $pass;
+    }
+
+    /**
+     * Simulate the check execution.
+     *
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  string                      $value
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @param  \phpbu\App\Result           $result
+     * @return bool
+     */
+    public function simulate(Target $target, $value, Collector $collector, Result $result): bool
+    {
+        $result->debug('checking size difference ' . $value . '%' . PHP_EOL);
     }
 }
