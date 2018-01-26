@@ -1,7 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\CliMockery;
+use phpbu\App\BaseMockery;
 
 /**
  * Arangodump Source Test
@@ -15,8 +16,11 @@ use phpbu\App\Backup\CliTest;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class ArangodumpTest extends CliTest
+class ArangodumpTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * Tests Arangodump::getExecutable
      */

@@ -1,9 +1,9 @@
 <?php
 namespace phpbu\App\Backup\Crypter;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\CliMockery;
+use phpbu\App\BaseMockery;
 use phpbu\App\Configuration;
-use phpbu\App\Util\Cli;
 
 /**
  * OpenSSLTest
@@ -16,8 +16,11 @@ use phpbu\App\Util\Cli;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.1.6
  */
-class OpenSSLTest extends CliTest
+class OpenSSLTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * Tests OpenSSL::setUp
      */

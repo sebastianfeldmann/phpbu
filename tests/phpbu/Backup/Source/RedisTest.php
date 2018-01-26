@@ -1,8 +1,9 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\CliMockery;
 use phpbu\App\Backup\Compressor;
+use phpbu\App\BaseMockery;
 
 /**
  * RedisTest
@@ -15,8 +16,11 @@ use phpbu\App\Backup\Compressor;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.1.12
  */
-class RedisTest extends CliTest
+class RedisTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * Tests Redis::setUp
      *

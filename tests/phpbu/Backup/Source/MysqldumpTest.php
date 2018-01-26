@@ -1,7 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\CliMockery;
+use phpbu\App\BaseMockery;
 
 /**
  * MysqldumpTest
@@ -14,8 +15,11 @@ use phpbu\App\Backup\CliTest;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class MysqldumpTest extends CliTest
+class MysqldumpTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * Tests Mysqldump::getExecutable
      */

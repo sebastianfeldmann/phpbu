@@ -1,7 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\CliMockery;
+use phpbu\App\BaseMockery;
 
 /**
  * Pgdump Test
@@ -14,8 +15,11 @@ use phpbu\App\Backup\CliTest;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class PgdumpTest extends CliTest
+class PgdumpTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * Tests Pgdump::getExecutable
      */

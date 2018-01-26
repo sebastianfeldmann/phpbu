@@ -1,7 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\CliMockery;
+use phpbu\App\BaseMockery;
 use phpbu\App\Util\Cli;
 
 /**
@@ -16,8 +17,11 @@ use phpbu\App\Util\Cli;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class XtraBackupTest extends CliTest
+class XtraBackupTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * Tests XtraBackup::getExecutable
      */

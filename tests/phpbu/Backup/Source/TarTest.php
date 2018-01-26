@@ -1,7 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\CliMockery;
+use phpbu\App\BaseMockery;
 use SebastianFeldmann\Cli\Command\Result as CommandResult;
 use SebastianFeldmann\Cli\Command\Runner\Simple;
 use SebastianFeldmann\Cli\Processor\ProcOpen;
@@ -17,8 +18,11 @@ use SebastianFeldmann\Cli\Processor\ProcOpen;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class TarTest extends CliTest
+class TarTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * Tests Tar::setUp
      *

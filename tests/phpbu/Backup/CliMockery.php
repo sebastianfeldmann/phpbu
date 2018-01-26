@@ -1,12 +1,11 @@
 <?php
 namespace phpbu\App\Backup;
 
-use phpbu\App\Mockery;
 use SebastianFeldmann\Cli\Command\Result as CommandResult;
 use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
 
 /**
- * Cli Test
+ * CliMockery trait
  *
  * @package    phpbu
  * @subpackage tests
@@ -14,9 +13,9 @@ use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       https://www.phpbu.de/
- * @since      Class available since Release 2.1.0
+ * @since      Class available since Release 5.1.0
  */
-abstract class CliTest extends Mockery
+trait CliMockery
 {
     /**
      * Create App\Result mock.

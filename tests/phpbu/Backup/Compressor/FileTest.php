@@ -1,9 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Compressor;
 
-use phpbu\App\Backup\CliTest;
-use SebastianFeldmann\Cli\Command\Result as CommandResult;
-use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
+use phpbu\App\Backup\CliMockery;
+use phpbu\App\BaseMockery;
 
 /**
  * File compressor test.
@@ -16,8 +15,11 @@ use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class FileTest extends CliTest
+class FileTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * Tests File::getExecutable
      */

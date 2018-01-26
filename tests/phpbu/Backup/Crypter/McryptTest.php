@@ -1,7 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Crypter;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\CliMockery;
+use phpbu\App\BaseMockery;
 use phpbu\App\Configuration;
 use SebastianFeldmann\Cli\Command\Result as CommandResult;
 use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
@@ -17,8 +18,11 @@ use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class McryptTest extends CliTest
+class McryptTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * @var Mcrypt
      */
