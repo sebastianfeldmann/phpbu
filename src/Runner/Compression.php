@@ -16,7 +16,7 @@ use phpbu\App\Result;
  * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-trait Compression
+abstract class Compression extends Process
 {
     /**
      * Compress the backup if the source did not handle the compression.

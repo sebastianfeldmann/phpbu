@@ -21,10 +21,8 @@ use phpbu\App\Result;
  * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class Backup extends Process
+class Backup extends Compression
 {
-    use Compression;
-
     /**
      * Backup failed
      *

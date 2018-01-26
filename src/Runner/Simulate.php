@@ -1,7 +1,11 @@
 <?php
 namespace phpbu\App\Runner;
 
-use phpbu\App\Backup;
+use phpbu\App\Backup\Source;
+use phpbu\App\Backup\Check;
+use phpbu\App\Backup\Crypter;
+use phpbu\App\Backup\Sync;
+use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Compressor;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
@@ -18,10 +22,8 @@ use phpbu\App\Result;
  * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class Simulate extends Process
+class Simulate extends Compression
 {
-    use Compression;
-
     /**
      * Execute backups.
      *
@@ -70,7 +72,7 @@ class Simulate extends Process
         /* @var \phpbu\App\Runner\Source $runner */
         $source = $this->factory->createSource($conf->getSource()->type, $conf->getSource()->options);
 
-        if ($source instanceof Backup\Source\Simulator) {
+        if ($source instanceof Source\Simulator) {
             $status = $source->simulate($target, $this->result);
             $this->compress($status, $target, $this->result);
         }
@@ -90,7 +92,7 @@ class Simulate extends Process
         foreach ($backup->getChecks() as $config) {
             $this->result->checkStart($config);
             $check = $this->factory->createCheck($config->type);
-            if ($check instanceof Backup\Check\Simulator) {
+            if ($check instanceof Check\Simulator) {
                 $check->simulate($target, $config->value, $collector, $this->result);
             }
             $this->result->checkEnd($config);
@@ -110,7 +112,7 @@ class Simulate extends Process
             $crypt = $backup->getCrypt();
             $this->result->cryptStart($crypt);
             $crypter = $this->factory->createCrypter($crypt->type, $crypt->options);
-            if ($crypter instanceof Backup\Crypter\Simulator) {
+            if ($crypter instanceof Crypter\Simulator) {
                 $crypter->simulate($target, $this->result);
             }
             $this->result->cryptEnd($crypt);
@@ -129,7 +131,7 @@ class Simulate extends Process
         /* @var \phpbu\App\Configuration\Backup\Sync $sync */
         foreach ($backup->getSyncs() as $sync) {
             $sync = $this->factory->createSync($sync->type, $sync->options);
-            if ($sync instanceof Backup\Sync\Simulator) {
+            if ($sync instanceof Sync\Simulator) {
                 $sync->simulate($target, $this->result);
             }
         }
@@ -150,7 +152,7 @@ class Simulate extends Process
             $cleanup = $backup->getCleanup();
             $cleaner = $this->factory->createCleaner($cleanup->type, $cleanup->options);
             $this->result->cleanupStart($cleanup);
-            if ($cleaner instanceof Backup\Cleaner\Simulator) {
+            if ($cleaner instanceof Cleaner\Simulator) {
                 $cleaner->simulate($target, $collector, $this->result);
             }
             $this->result->cleanupEnd($cleanup);
