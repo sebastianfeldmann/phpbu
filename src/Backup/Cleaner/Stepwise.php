@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Cleaner;
 
-use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Cleaner\Stepwise\Range;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\File;
@@ -25,7 +24,7 @@ use phpbu\App\Util\Arr;
  * @link       http://phpbu.de/
  * @since      Class available since Release 5.0.0
  */
-class Stepwise extends Abstraction implements Cleaner
+class Stepwise extends Abstraction implements Simulator
 {
     /**
      * Amount of days to keep all backups.
@@ -74,7 +73,6 @@ class Stepwise extends Abstraction implements Cleaner
      *
      * @see    \phpbu\App\Backup\Cleanup::setup()
      * @param  array $options
-     * @throws \phpbu\App\Backup\Cleaner\Exception
      */
     public function setup(array $options)
     {
