@@ -62,8 +62,9 @@ class Dropbox implements Simulator
         if (!Arr::isSetAndNotEmptyString($config, 'path')) {
             throw new Exception('dropbox path is mandatory');
         }
+        // make sure the path contains leading and trailing slashes
+        $this->path  = Str::withLeadingSlash(Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path'])));
         $this->token = $config['token'];
-        $this->path  = Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path']));
     }
 
     /**
