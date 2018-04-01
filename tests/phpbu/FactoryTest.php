@@ -38,13 +38,18 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateTarget()
     {
-        $conf    = new Configuration\Backup\Target('foo', 'bar', 'bzip2');
-        $factory = new Factory();
-        $target  = $factory->createTarget($conf);
+        $directory = sys_get_temp_dir() . '/test-dir';
+        $conf      = new Configuration\Backup\Target($directory, 'test-file', 'bzip2');
+        $factory   = new Factory();
+        $target    = $factory->createTarget($conf);
 
         $this->assertEquals('phpbu\\App\\Backup\\Target', get_class($target), 'should be a target');
-        $this->assertEquals('bar.bz2', $target->getFilename());
-        $this->assertEquals('foo/bar.bz2', $target->getPathname());
+        $this->assertEquals('test-file.bz2', $target->getFilename());
+        $this->assertEquals($directory . '/test-file.bz2', $target->getPathname());
+
+        $this->assertTrue(file_exists($directory));
+
+        rmdir($directory);
     }
 
     /**
@@ -448,7 +453,6 @@ class phpbuAppFactoryTestSource implements Source
      */
     public function backup(Target $target, Result $result) : Source\Status
     {
-        // do something fooish
         return new Source\Status();
     }
 }
@@ -477,7 +481,6 @@ class phpbuAppFactoryTestRunner
      */
     public function backup(Target $target, Result $result)
     {
-        // do something fooish
         return new Source\Status();
     }
 }
