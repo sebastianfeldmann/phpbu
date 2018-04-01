@@ -260,7 +260,7 @@ class Configuration
     /**
      * Get the list of logger configurations.
      *
-     * @return array
+     * @return \phpbu\App\Configuration\Logger[]
      */
     public function getLoggers() : array
     {
