@@ -28,8 +28,8 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetWorkingDirectory()
     {
-        Configuration::setWorkingDirectory('/foo');
-        $this->assertEquals('/foo', Configuration::getWorkingDirectory());
+        Configuration::setWorkingDirectory('/my-wd');
+        $this->assertEquals('/my-wd', Configuration::getWorkingDirectory());
     }
 
     /**
