@@ -18,6 +18,23 @@ use phpbu\App\Exception;
 class Bootstrapper
 {
     /**
+     * Path to bootstrap filename.
+     *
+     * @var string
+     */
+    private $file;
+
+    /**
+     * Bootstrapper constructor.
+     *
+     * @param string $pathToFile
+     */
+    public function __construct(string $pathToFile = '')
+    {
+        $this->file = $pathToFile;
+    }
+
+    /**
      * Execute bootstrap runner.
      *
      * @param  \phpbu\App\Configuration $configuration
@@ -25,7 +42,7 @@ class Bootstrapper
      */
     public function run(Configuration $configuration)
     {
-        $filename = $configuration->getBootstrap();
+        $filename = !empty($this->file) ? $this->file : $configuration->getBootstrap();
 
         if (!empty($filename)) {
             $pathToFile = stream_resolve_include_path($filename);

@@ -185,16 +185,13 @@ class Cmd
      */
     protected function createConfiguration(string $configurationFile, Factory $factory)
     {
-        $configLoader  = Configuration\Loader\Factory::createLoader($configurationFile, new Bootstrapper());
+        // setup bootstrapper with --bootstrap option that has precedence over the config file value
+        $bootstrapper  = new Bootstrapper(Arr::getValue($this->arguments, 'bootstrap', ''));
+        $configLoader  = Configuration\Loader\Factory::createLoader($configurationFile, $bootstrapper);
         $configuration = $configLoader->getConfiguration($factory);
 
         // command line arguments overrule the config file settings
-        $this->overrideConfigWithArgument($configuration, 'verbose');
-        $this->overrideConfigWithArgument($configuration, 'colors');
-        $this->overrideConfigWithArgument($configuration, 'debug');
-        $this->overrideConfigWithArgument($configuration, 'simulate');
-        $this->overrideConfigWithArgument($configuration, 'restore');
-        $this->overrideConfigWithArgument($configuration, 'bootstrap');
+        $this->overrideConfigWithArguments($configuration);
 
         // check for command line limit option
         $limitOption = Arr::getValue($this->arguments, 'limit');
@@ -215,14 +212,16 @@ class Cmd
      * Override configuration settings with command line arguments.
      *
      * @param \phpbu\App\Configuration $configuration
-     * @param string                   $arg
      */
-    protected function overrideConfigWithArgument(Configuration $configuration, string $arg)
+    protected function overrideConfigWithArguments(Configuration $configuration)
     {
-        $value = Arr::getValue($this->arguments, $arg);
-        if (!empty($value)) {
-            $setter = 'set' . ucfirst($arg);
-            $configuration->{$setter}($value);
+        $settingsToOverride = ['verbose', 'colors', 'debug', 'simulate', 'restore'];
+        foreach ($settingsToOverride as $arg) {
+            $value = Arr::getValue($this->arguments, $arg);
+            if (!empty($value)) {
+                $setter = 'set' . ucfirst($arg);
+                $configuration->{$setter}($value);
+            }
         }
     }
 
@@ -345,7 +344,6 @@ Usage: phpbu [option]
   --colors               Use colors in output.
   --debug                Display debugging information during backup generation.
   --limit=<subset>       Limit backup execution to a subset.
-  --restore              Print some restore instructions.
   --simulate             Perform a trial run with no changes made.
   -h, --help             Print this usage information.
   -v, --verbose          Output more verbose information.
