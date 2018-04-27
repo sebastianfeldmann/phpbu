@@ -146,7 +146,7 @@ class Openstack implements Simulator
 
         $openStack = new \OpenStack\OpenStack($options);
         $objectStoreService = $openStack->objectStoreV1(['catalogName' => $this->serviceName]);
-        $container = $this->getContainer($objectStoreService);
+        $container = $this->getContainer($objectStoreService, $result);
 
         try {
             if ($target->getSize() > $this->maxStreamUploadSize) {
