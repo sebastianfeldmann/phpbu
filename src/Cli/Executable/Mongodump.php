@@ -74,7 +74,7 @@ class Mongodump extends Abstraction implements Executable
      *
      * @var array
      */
-    private $databases;
+    private $databases = [];
 
     /**
      * List of collections to backup
@@ -82,7 +82,7 @@ class Mongodump extends Abstraction implements Executable
      *
      * @var array
      */
-    private $collections;
+    private $collections = [];
 
     /**
      * List of collections to ignore
@@ -90,7 +90,7 @@ class Mongodump extends Abstraction implements Executable
      *
      * @var array
      */
-    private $excludeCollections;
+    private $excludeCollections = [];
 
     /**
      * List of prefixes to exclude collections
@@ -98,7 +98,7 @@ class Mongodump extends Abstraction implements Executable
      *
      * @var array
      */
-    private $excludeCollectionsWithPrefix;
+    private $excludeCollectionsWithPrefix = [];
 
     /**
      * Constructor.

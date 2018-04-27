@@ -40,6 +40,7 @@ class Args
         'debug'          => true,
         'help'           => true,
         'limit='         => true,
+        'restore'        => true,
         'simulate'       => true,
         'verbose'        => true,
         'version'        => true
@@ -53,7 +54,7 @@ class Args
     public function __construct(bool $isPhar = false)
     {
         if ($isPhar) {
-            $this->longOptions['self-update']  = true;
+            $this->longOptions['self-update']   = true;
             $this->longOptions['version-check'] = true;
         }
     }
@@ -63,6 +64,7 @@ class Args
      *
      * @param  array $args
      * @return array
+     * @throws \phpbu\App\Exception
      */
     public function getOptions(array $args) : array
     {

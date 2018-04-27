@@ -131,45 +131,26 @@ class Cmd
     {
         foreach ($options as $option => $argument) {
             switch ($option) {
-                case '--bootstrap':
-                    $this->arguments['bootstrap'] = $argument;
-                    break;
-                case '--colors':
-                    $this->arguments['colors'] = $argument;
-                    break;
-                case '--configuration':
-                    $this->arguments['configuration'] = $argument;
-                    break;
-                case '--debug':
-                    $this->arguments['debug'] = $argument;
-                    break;
-                case '-h':
-                case '--help':
-                    $this->printHelp();
-                    exit(self::EXIT_SUCCESS);
-                case 'include-path':
-                    $this->arguments['include-path'] = $argument;
-                    break;
-                case '--limit':
-                    $this->arguments['limit'] = $argument;
-                    break;
-                case '--self-update':
-                    $this->handleSelfUpdate();
-                    break;
-                case '--version-check':
-                    $this->handleVersionCheck();
-                    break;
-                case '--simulate':
-                    $this->arguments['simulate'] = $argument;
-                    break;
-                case '-v':
-                case '--verbose':
-                    $this->arguments['verbose'] = true;
-                    break;
                 case '-V':
                 case '--version':
                     $this->printVersionString();
                     exit(self::EXIT_SUCCESS);
+                case '--self-update':
+                    $this->handleSelfUpdate();
+                    exit(self::EXIT_SUCCESS);
+                case '--version-check':
+                    $this->handleVersionCheck();
+                    exit(self::EXIT_SUCCESS);
+                case '-h':
+                case '--help':
+                    $this->printHelp();
+                    exit(self::EXIT_SUCCESS);
+                case '-v':
+                    $this->arguments['verbose'] = true;
+                    break;
+                default:
+                    $this->arguments[trim($option, '-')] = $argument;
+                    break;
             }
         }
     }
@@ -204,15 +185,13 @@ class Cmd
      */
     protected function createConfiguration(string $configurationFile, Factory $factory)
     {
-        $configLoader  = Configuration\Loader\Factory::createLoader($configurationFile, new Bootstrapper());
+        // setup bootstrapper with --bootstrap option that has precedence over the config file value
+        $bootstrapper  = new Bootstrapper(Arr::getValue($this->arguments, 'bootstrap', ''));
+        $configLoader  = Configuration\Loader\Factory::createLoader($configurationFile, $bootstrapper);
         $configuration = $configLoader->getConfiguration($factory);
 
         // command line arguments overrule the config file settings
-        $this->overrideConfigWithArgument($configuration, 'verbose');
-        $this->overrideConfigWithArgument($configuration, 'colors');
-        $this->overrideConfigWithArgument($configuration, 'debug');
-        $this->overrideConfigWithArgument($configuration, 'simulate');
-        $this->overrideConfigWithArgument($configuration, 'bootstrap');
+        $this->overrideConfigWithArguments($configuration);
 
         // check for command line limit option
         $limitOption = Arr::getValue($this->arguments, 'limit');
@@ -233,14 +212,16 @@ class Cmd
      * Override configuration settings with command line arguments.
      *
      * @param \phpbu\App\Configuration $configuration
-     * @param string                   $arg
      */
-    protected function overrideConfigWithArgument(Configuration $configuration, string $arg)
+    protected function overrideConfigWithArguments(Configuration $configuration)
     {
-        $value = Arr::getValue($this->arguments, $arg);
-        if (!empty($value)) {
-            $setter = 'set' . ucfirst($arg);
-            $configuration->{$setter}($value);
+        $settingsToOverride = ['verbose', 'colors', 'debug', 'simulate', 'restore'];
+        foreach ($settingsToOverride as $arg) {
+            $value = Arr::getValue($this->arguments, $arg);
+            if (!empty($value)) {
+                $setter = 'set' . ucfirst($arg);
+                $configuration->{$setter}($value);
+            }
         }
     }
 
@@ -289,7 +270,6 @@ class Cmd
         }
 
         echo 'done' . PHP_EOL;
-        exit(self::EXIT_SUCCESS);
     }
 
     /**
@@ -306,7 +286,6 @@ class Cmd
         } else {
             print 'You are using the latest version of phpbu.' . PHP_EOL;
         }
-        exit(self::EXIT_SUCCESS);
     }
 
     /**

@@ -6,8 +6,8 @@ use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Sync;
+use phpbu\App\Backup\Target;
 use phpbu\App\Log\Logger;
-use phpbu\App\Runner\Task;
 
 /**
  * Factory
@@ -17,7 +17,7 @@ use phpbu\App\Runner\Task;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class Factory
@@ -34,13 +34,6 @@ class Factory
             'array'  => '\\phpbu\\App\\Adapter\\PHPArray',
             'dotenv' => '\\phpbu\\App\\Adapter\\Dotenv',
             'env'    => '\\phpbu\\App\\Adapter\\Env',
-        ],
-        'runner' => [
-            'check'     => '\\phpbu\\App\\Runner\\Check',
-            'cleaner'   => '\\phpbu\\App\\Runner\\Cleaner',
-            'crypter'   => '\\phpbu\\App\\Runner\\Crypter',
-            'source'    => '\\phpbu\\App\\Runner\\Source',
-            'sync'      => '\\phpbu\\App\\Runner\\Sync',
         ],
         'logger'  => [
             'json'    => '\\phpbu\\App\\Log\\Json',
@@ -108,24 +101,6 @@ class Factory
     }
 
     /**
-     * Runner Factory.
-     *
-     * @param  string $alias
-     * @param  bool   $isSimulation
-     * @return mixed
-     * @throws \phpbu\App\Exception
-     */
-    public function createRunner($alias, $isSimulation)
-    {
-        $runner = $this->create('runner', $alias);
-        if (!($runner instanceof Task)) {
-            throw new Exception(sprintf('Runner \'%s\' has to implement the \'Task\' interface', $alias));
-        }
-        $runner->setSimulation($isSimulation);
-        return $runner;
-    }
-
-    /**
      * Adapter Factory.
      *
      * @param  string $alias
@@ -150,7 +125,7 @@ class Factory
      * @param  string $alias
      * @param  array  $conf
      * @throws \phpbu\App\Exception
-     * @return \phpbu\App\Log\Logger
+     * @return \phpbu\App\Listener
      */
     public function createLogger($alias, $conf = [])
     {
@@ -164,6 +139,25 @@ class Factory
         }
         $logger->setup($conf);
         return $logger;
+    }
+
+    /**
+     * Create a backup target.
+     *
+     * @param  \phpbu\App\Configuration\Backup\Target $conf
+     * @return \phpbu\App\Backup\Target
+     * @throws \phpbu\App\Exception
+     */
+    public function createTarget(Configuration\Backup\Target $conf)
+    {
+        $target = new Target($conf->dirname, $conf->filename);
+        $target->setupPath();
+        // add possible compressor
+        if (!empty($conf->compression)) {
+            $compression = Target\Compression\Factory::create($conf->compression);
+            $target->setCompression($compression);
+        }
+        return $target;
     }
 
     /**

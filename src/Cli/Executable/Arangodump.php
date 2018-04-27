@@ -76,7 +76,7 @@ class Arangodump extends Abstraction implements Executable
      *
      * @var array
      */
-    private $collections;
+    private $collections = [];
 
     /**
      * Do not ask for the username and password when connecting to the server.

@@ -1,7 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\CliMockery;
+use phpbu\App\BaseMockery;
 
 /**
  * MongodumpTest
@@ -11,17 +12,20 @@ use phpbu\App\Backup\CliTest;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class MongodumpTest extends CliTest
+class MongodumpTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * Tests Mongodump::getExecutable
      */
     public function testDefault()
     {
-        $target    = $this->getTargetMock(__FILE__);
+        $target    = $this->createTargetMock(__FILE__);
         $mongodump = new Mongodump();
         $mongodump->setup(['pathToMongodump' => PHPBU_TEST_BIN]);
 
@@ -40,7 +44,7 @@ class MongodumpTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(0, 'mongodump'));
 
-        $target    = $this->getTargetMock(__FILE__);
+        $target    = $this->createTargetMock(__FILE__);
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
@@ -63,7 +67,7 @@ class MongodumpTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(1, 'mongodump'));
 
-        $target    = $this->getTargetMock();
+        $target    = $this->createTargetMock();
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 

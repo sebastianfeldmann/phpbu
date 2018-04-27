@@ -1,7 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\CliMockery;
+use phpbu\App\BaseMockery;
 use SebastianFeldmann\Cli\Command\Result as CommandResult;
 use SebastianFeldmann\Cli\Command\Runner\Simple;
 use SebastianFeldmann\Cli\Processor\ProcOpen;
@@ -14,11 +15,14 @@ use SebastianFeldmann\Cli\Processor\ProcOpen;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class TarTest extends CliTest
+class TarTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * Tests Tar::setUp
      *
@@ -37,7 +41,7 @@ class TarTest extends CliTest
      */
     public function testDefault()
     {
-        $target = $this->getTargetMock('/tmp/backup.tar');
+        $target = $this->createTargetMock('/tmp/backup.tar');
         $target->method('shouldBeCompressed')->willReturn(false);
         $target->method('getPathname')->willReturn('/tmp/backup.tar');
 
@@ -62,7 +66,7 @@ class TarTest extends CliTest
         $tar = new Tar();
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'exclude' => './foo,./bar']);
 
-        $target = $this->getTargetMock('/tmp/backup.tar');
+        $target = $this->createTargetMock('/tmp/backup.tar');
         $target->method('shouldBeCompressed')->willReturn(false);
         $target->method('getPathname')->willReturn('/tmp/backup.tar');
 
@@ -84,7 +88,7 @@ class TarTest extends CliTest
         $tar = new Tar();
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'forceLocal' => 'true']);
 
-        $target = $this->getTargetMock('/tmp/backup.tar');
+        $target = $this->createTargetMock('/tmp/backup.tar');
         $target->method('shouldBeCompressed')->willReturn(false);
         $target->method('getPathname')->willReturn('/tmp/backup.tar');
 
@@ -106,7 +110,7 @@ class TarTest extends CliTest
         $tar = new Tar();
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'ignoreFailedRead' => 'true']);
 
-        $target = $this->getTargetMock('/tmp/backup.tar');
+        $target = $this->createTargetMock('/tmp/backup.tar');
         $target->method('shouldBeCompressed')->willReturn(false);
         $target->method('getPathname')->willReturn('/tmp/backup.tar');
 
@@ -128,7 +132,7 @@ class TarTest extends CliTest
         $tar = new Tar();
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'removeSourceDir' => 'true']);
 
-        $target = $this->getTargetMock('/tmp/backup.tar');
+        $target = $this->createTargetMock('/tmp/backup.tar');
         $target->method('shouldBeCompressed')->willReturn(false);
         $target->method('getPathname')->willReturn('/tmp/backup.tar');
 
@@ -147,7 +151,7 @@ class TarTest extends CliTest
      */
     public function testThrottle()
     {
-        $target = $this->getTargetMock('/tmp/backup.tar');
+        $target = $this->createTargetMock('/tmp/backup.tar');
         $target->method('shouldBeCompressed')->willReturn(false);
         $target->method('getPathname')->willReturn('/tmp/backup.tar');
 
@@ -181,7 +185,7 @@ class TarTest extends CliTest
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
 
         $appResult = $this->getAppResultMock();
-        $target    = $this->getTargetMock('/tmp/backup.tar');
+        $target    = $this->createTargetMock('/tmp/backup.tar');
         $target->method('shouldBeCompressed')->willReturn(false);
         $target->method('getPathname')->willReturn('/tmp/backup.tar');
 
@@ -196,8 +200,8 @@ class TarTest extends CliTest
         $tar = new Tar();
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
 
-        $compression = $this->getCompressionMock('gzip', 'gz');
-        $target      = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
+        $compression = $this->createCompressionMock('gzip', 'gz');
+        $target      = $this->createTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
         $target->method('shouldBeCompressed')->willReturn(true);
         $target->method('getCompression')->willReturn($compression);
         $target->method('getPathname')->willReturn('/tmp/backup.tar.gz');
@@ -220,8 +224,8 @@ class TarTest extends CliTest
         $tar = new Tar();
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'compressProgram' => 'lbzip2']);
 
-        $compression = $this->getCompressionMock('bzip2', 'bz2');
-        $target      = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.bz2');
+        $compression = $this->createCompressionMock('bzip2', 'bz2');
+        $target      = $this->createTargetMock('/tmp/backup.tar', '/tmp/backup.tar.bz2');
         $target->method('shouldBeCompressed')->willReturn(true);
         $target->method('getCompression')->willReturn($compression);
         $target->method('getPathname')->willReturn('/tmp/backup.tar.bz2');
@@ -244,8 +248,8 @@ class TarTest extends CliTest
         $tar = new Tar();
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
 
-        $compression = $this->getCompressionMock('zip', 'zip');
-        $target      = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.zip');
+        $compression = $this->createCompressionMock('zip', 'zip');
+        $target      = $this->createTargetMock('/tmp/backup.tar', '/tmp/backup.tar.zip');
         $target->method('shouldBeCompressed')->willReturn(true);
         $target->method('getCompression')->willReturn($compression);
         $target->method('getPathname')->willReturn('/tmp/backup.tar.zip');
@@ -275,8 +279,8 @@ class TarTest extends CliTest
         $tar    = new Tar($runner);
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
 
-        $target = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
-        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+        $target = $this->createTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
+        $target->method('getCompression')->willReturn($this->createCompressionMock('gzip', 'gz'));
 
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
@@ -300,8 +304,8 @@ class TarTest extends CliTest
         $tar    = new Tar($runner);
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'ignoreFailedRead' => 'true']);
 
-        $target = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
-        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+        $target = $this->createTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
+        $target->method('getCompression')->willReturn($this->createCompressionMock('gzip', 'gz'));
 
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
@@ -328,8 +332,8 @@ class TarTest extends CliTest
         $tar    = new Tar($runner);
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
 
-        $target = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
-        $target->method('getCompression')->willReturn($this->getCompressionMock('gzip', 'gz'));
+        $target = $this->createTargetMock('/tmp/backup.tar', '/tmp/backup.tar.gz');
+        $target->method('getCompression')->willReturn($this->createCompressionMock('gzip', 'gz'));
 
         $appResult = $this->getAppResultMock();
 
@@ -349,8 +353,8 @@ class TarTest extends CliTest
         $tar = new Tar($runner);
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
 
-        $target = $this->getTargetMock('/tmp/backup.tar', '/tmp/backup.tar.zip');
-        $target->method('getCompression')->willReturn($this->getCompressionMock('zip', 'zip'));
+        $target = $this->createTargetMock('/tmp/backup.tar', '/tmp/backup.tar.zip');
+        $target->method('getCompression')->willReturn($this->createCompressionMock('zip', 'zip'));
 
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
@@ -371,7 +375,7 @@ class TarTest extends CliTest
         $tar    = new Tar($runner);
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __FILE__]);
 
-        $target    = $this->getTargetMock('/tmp/backup.tar');
+        $target    = $this->createTargetMock('/tmp/backup.tar');
         $appResult = $this->getAppResultMock();
 
         $tar->backup($target, $appResult);
@@ -392,7 +396,7 @@ class TarTest extends CliTest
         $tar = new Tar($runner);
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__]);
 
-        $target    = $this->getTargetMock('/tmp/backup.tar');
+        $target    = $this->createTargetMock('/tmp/backup.tar');
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 

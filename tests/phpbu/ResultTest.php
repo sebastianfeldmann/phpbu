@@ -32,6 +32,17 @@ class ResultTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests Result::started
+     */
+    public function testStartIsTriggered()
+    {
+        $result     = new Result();
+        $cliPrinter = new Result\PrinterCli();
+        $result->addListener($cliPrinter);
+        $this->assertTrue(is_float($result->started()));
+    }
+
+    /**
      * Tests minimal Result life cycle.
      */
     public function testBackupMinimal()

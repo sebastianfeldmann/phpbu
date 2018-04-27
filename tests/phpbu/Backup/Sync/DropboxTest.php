@@ -29,6 +29,31 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests Dropbox::setup
+     */
+    public function testSlasherizePath()
+    {
+        $msg = 'sync backup to dropbox' . PHP_EOL
+             . '  token:    ********' . PHP_EOL
+             . '  location: /foo/';
+
+        $dropbox = new Dropbox();
+        $dropbox->setup([
+            'token' => 'this-is-no-token',
+            'path'  => 'foo'
+        ]);
+
+        $resultStub = $this->createMock(\phpbu\App\Result::class);
+        $resultStub->expects($this->once())
+                   ->method('debug')
+                   ->with($this->equalTo($msg));
+
+        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+
+        $dropbox->simulate($targetStub, $resultStub);
+    }
+
+    /**
      * Tests Dropbox::simulate
      */
     public function testSimulate()
@@ -41,7 +66,7 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
 
         $resultStub = $this->createMock(\phpbu\App\Result::class);
         $resultStub->expects($this->once())
-                   ->method('debug');
+            ->method('debug');
 
         $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
 

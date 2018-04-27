@@ -254,8 +254,8 @@ class CliTest extends \PHPUnit\Framework\TestCase
     public function testRemoveDir()
     {
         $dir         = sys_get_temp_dir();
-        $dirToDelete = $dir . '/foo';
-        $subDir      = $dirToDelete . '/bar';
+        $dirToDelete = $dir . '/delete-dir';
+        $subDir      = $dirToDelete . '/delete-sub-dir';
 
         $file        = $dirToDelete . '/fiz.txt';
         $fileInSub   = $subDir . '/baz.txt';

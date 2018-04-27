@@ -3,11 +3,12 @@ language: php
 php:
   - 7.0
   - 7.1
+  - 7.2
 
 before_script:
   - composer self-update
   - composer install --no-interaction --prefer-source
-  - wget https://phar.phpunit.de/phpunit.phar
+  - wget -O phpunit.phar https://phar.phpunit.de/phpunit-6.5.6.phar
 
 script:
   - php phpunit.phar --configuration ./build/travis-ci.phpunit.xml

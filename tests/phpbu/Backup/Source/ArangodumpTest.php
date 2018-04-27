@@ -1,7 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\CliMockery;
+use phpbu\App\BaseMockery;
 
 /**
  * Arangodump Source Test
@@ -12,17 +13,20 @@ use phpbu\App\Backup\CliTest;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class ArangodumpTest extends CliTest
+class ArangodumpTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * Tests Arangodump::getExecutable
      */
     public function testDefault()
     {
-        $target     = $this->getTargetMock('./dir/foo.dump');
+        $target     = $this->createTargetMock('./dir/foo.dump');
         $arangodump = new Arangodump();
         $arangodump->setup(['pathToArangodump' => PHPBU_TEST_BIN]);
 
@@ -37,7 +41,7 @@ class ArangodumpTest extends CliTest
      */
     public function testUser()
     {
-        $target     = $this->getTargetMock('./dir/foo.dump');
+        $target     = $this->createTargetMock('./dir/foo.dump');
         $arangodump = new Arangodump();
         $arangodump->setup(['pathToArangodump' => PHPBU_TEST_BIN, 'username' => 'root']);
 
@@ -52,7 +56,7 @@ class ArangodumpTest extends CliTest
      */
     public function testCollections()
     {
-        $target     = $this->getTargetMock('./dir/foo.dump');
+        $target     = $this->createTargetMock('./dir/foo.dump');
         $arangodump = new Arangodump();
         $arangodump->setup(['pathToArangodump' => PHPBU_TEST_BIN, 'collections' => 'collection1,collection2']);
 
@@ -73,7 +77,7 @@ class ArangodumpTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(0, 'arangodump'));
 
-        $target    = $this->getTargetMock(__FILE__);
+        $target    = $this->createTargetMock(__FILE__);
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
@@ -97,7 +101,7 @@ class ArangodumpTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(1, 'arangodump'));
 
-        $target    = $this->getTargetMock(__FILE__);
+        $target    = $this->createTargetMock(__FILE__);
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 

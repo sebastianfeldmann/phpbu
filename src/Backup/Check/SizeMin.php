@@ -2,7 +2,6 @@
 namespace phpbu\App\Backup\Check;
 
 use phpbu\App\Result;
-use phpbu\App\Backup\Check;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Str;
@@ -20,16 +19,17 @@ use phpbu\App\Util\Str;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class SizeMin implements Check
+class SizeMin implements Simulator
 {
     /**
      * Execute the check.
      *
-     * @param \phpbu\App\Backup\Target    $target
-     * @param string                      $value
-     * @param \phpbu\App\Backup\Collector $collector
-     * @param \phpbu\App\Result           $result
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  string                      $value
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @param  \phpbu\App\Result           $result
      * @return bool
+     * @throws \phpbu\App\Exception
      */
     public function pass(Target $target, $value, Collector $collector, Result $result) : bool
     {
@@ -38,5 +38,19 @@ class SizeMin implements Check
         $testSize   = Str::toBytes($value);
 
         return $testSize <= $actualSize;
+    }
+
+    /**
+     * Simulate check.
+     *
+     * @param \phpbu\App\Backup\Target    $target
+     * @param string                      $value
+     * @param \phpbu\App\Backup\Collector $collector
+     * @param \phpbu\App\Result           $result
+     * @return bool
+     */
+    public function simulate(Target $target, $value, Collector $collector, Result $result) : bool
+    {
+        $result->debug('checking size to be at least ' . $value . PHP_EOL);
     }
 }

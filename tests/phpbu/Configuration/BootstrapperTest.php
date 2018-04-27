@@ -32,6 +32,21 @@ class BootstrapperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Bootstrapper::run
+     */
+    public function testBootstrapWithOption()
+    {
+        $configuration = $this->createMock(\phpbu\App\Configuration::class);
+        $configuration->method('getBootstrap')
+                      ->willReturn(PHPBU_TEST_FILES . '/misc/bootstrap_FAIL.php');
+
+        $runner = new Bootstrapper(PHPBU_TEST_FILES . '/misc/bootstrap.option.php');
+        $runner->run($configuration);
+
+        $this->assertTrue(defined('BOOTSTRAP_OPTION_LOADED'), 'option constant should be defined');
+    }
+
+    /**
+     * Tests Bootstrapper::run
      *
      * @expectedException \phpbu\App\Exception
      */

@@ -118,6 +118,22 @@ class CollectorTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(7, count($files), '7 files should be found');
     }
 
+    /**
+     * Tests Collector::getBackupFiles
+     *
+     * @issue #135
+     */
+    public function testThreeDynamicPlaceholderDirectories()
+    {
+        $path      = $this->getTestDataDir() . '/collector/dynamic-dir/issue-135/%y/%m/%d';
+        $filename  = 'database-%Y%m%d-%H%i.sql';
+        $target    = new Target($path, $filename, strtotime('2018-03-01 13:00:12'));
+        $collector = new Collector($target);
+        $files     = $collector->getBackupFiles();
+
+        $this->assertEquals(7, count($files), '5 files should be found');
+    }
+
     public function testSkipsCurrentWhenTargetPathHasTrailingBackslash()
     {
         $path      = $this->getTestDataDir() . '/collector/static-dir/';

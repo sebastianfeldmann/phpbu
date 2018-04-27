@@ -22,10 +22,11 @@ interface Executable
     /**
      * Compress the plain target file.
      *
-     * @param \phpbu\App\Backup\Target $target
-     * @param \phpbu\App\Result        $result
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Result        $result
+     * @return string
      */
-    public function compress(Target $target, Result $result);
+    public function compress(Target $target, Result $result) : string;
 
     /**
      * Return the cli executable.

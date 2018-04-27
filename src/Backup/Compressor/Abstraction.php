@@ -61,7 +61,7 @@ abstract class Abstraction extends Cli implements Executable
      * @return string
      * @throws \phpbu\App\Exception
      */
-    public function compress(Target $target, Result $result)
+    public function compress(Target $target, Result $result) : string
     {
         if (!$this->isPathValid($this->path)) {
             throw new Exception('path to compress should be valid: ' . $this->path);

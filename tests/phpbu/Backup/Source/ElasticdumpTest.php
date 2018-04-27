@@ -1,7 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\CliMockery;
+use phpbu\App\BaseMockery;
 
 /**
  * Elasticdump Source Test
@@ -12,17 +13,20 @@ use phpbu\App\Backup\CliTest;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class ElasticdumpTest extends CliTest
+class ElasticdumpTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * Tests Elasticdump::getExecutable
      */
     public function testDefault()
     {
-        $target      = $this->getTargetMock('backup.json');
+        $target      = $this->createTargetMock('backup.json');
         $elasticdump = new Elasticdump();
         $elasticdump->setup(['pathToElasticdump' => PHPBU_TEST_BIN]);
 
@@ -37,7 +41,7 @@ class ElasticdumpTest extends CliTest
      */
     public function testUser()
     {
-        $target      = $this->getTargetMock('backup.json');
+        $target      = $this->createTargetMock('backup.json');
         $elasticdump = new Elasticdump();
         $elasticdump->setup(['pathToElasticdump' => PHPBU_TEST_BIN, 'user' => 'root']);
 
@@ -57,7 +61,7 @@ class ElasticdumpTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(0, 'elasticdump'));
 
-        $target    = $this->getTargetMock('backup.json');
+        $target    = $this->createTargetMock('backup.json');
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
@@ -81,7 +85,7 @@ class ElasticdumpTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(1, 'elasticdump'));
 
-        $target    = $this->getTargetMock('backup.json');
+        $target    = $this->createTargetMock('backup.json');
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 

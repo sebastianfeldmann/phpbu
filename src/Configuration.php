@@ -57,6 +57,13 @@ class Configuration
     private $simulate = false;
 
     /**
+     * Show how to restore the backup
+     *
+     * @var bool
+     */
+    private $restore = false;
+
+    /**
      * List of logger configurations
      *
      * @var array
@@ -216,6 +223,26 @@ class Configuration
     }
 
     /**
+     * Restore setter.
+     *
+     * @param bool $bool
+     */
+    public function setRestore(bool $bool)
+    {
+        $this->restore = $bool;
+    }
+
+    /**
+     * Restore getter.
+     *
+     * @return bool
+     */
+    public function isRestore() : bool
+    {
+        return $this->restore;
+    }
+
+    /**
      * Add a logger.
      * This accepts valid logger configs as well as valid Listener objects.
      *
@@ -233,7 +260,7 @@ class Configuration
     /**
      * Get the list of logger configurations.
      *
-     * @return array
+     * @return \phpbu\App\Configuration\Logger[]
      */
     public function getLoggers() : array
     {

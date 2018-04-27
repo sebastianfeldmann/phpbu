@@ -1,7 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\CliTest;
+use phpbu\App\Backup\CliMockery;
+use phpbu\App\BaseMockery;
 use phpbu\App\Util\Cli;
 
 /**
@@ -13,17 +14,20 @@ use phpbu\App\Util\Cli;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class XtraBackupTest extends CliTest
+class XtraBackupTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+    use CliMockery;
+
     /**
      * Tests XtraBackup::getExecutable
      */
     public function testDefault()
     {
-        $target = $this->getTargetMock('./foo.dump');
+        $target = $this->createTargetMock('./foo.dump');
 
         $xtrabackup = new XtraBackup();
         $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN]);
@@ -43,7 +47,7 @@ class XtraBackupTest extends CliTest
      */
     public function testDataDir()
     {
-        $target = $this->getTargetMock('./foo.dump');
+        $target = $this->createTargetMock('./foo.dump');
 
         $xtrabackup = new XtraBackup();
         $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN, 'dataDir' => '/x/mysql']);
@@ -63,7 +67,7 @@ class XtraBackupTest extends CliTest
      */
     public function testDatabases()
     {
-        $target = $this->getTargetMock('./foo.dump');
+        $target = $this->createTargetMock('./foo.dump');
 
         $xtrabackup = new XtraBackup();
         $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN, 'databases' => 'db1,db2,db3.table1']);
@@ -87,7 +91,7 @@ class XtraBackupTest extends CliTest
         $runner->expects($this->once())
                ->method('run')->willReturn($this->getRunnerResultMock(0, 'innobackupex'));
 
-        $target    = $this->getTargetMock();
+        $target    = $this->createTargetMock();
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 
@@ -111,7 +115,7 @@ class XtraBackupTest extends CliTest
                ->method('run')
                ->willReturn($this->getRunnerResultMock(1, 'innobackupex'));
 
-        $target    = $this->getTargetMock();
+        $target    = $this->createTargetMock();
         $appResult = $this->getAppResultMock();
         $appResult->expects($this->once())->method('debug');
 

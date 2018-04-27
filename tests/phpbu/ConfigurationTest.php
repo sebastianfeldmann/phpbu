@@ -28,8 +28,8 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetWorkingDirectory()
     {
-        Configuration::setWorkingDirectory('/foo');
-        $this->assertEquals('/foo', Configuration::getWorkingDirectory());
+        Configuration::setWorkingDirectory('/my-wd');
+        $this->assertEquals('/my-wd', Configuration::getWorkingDirectory());
     }
 
     /**
@@ -66,6 +66,18 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(false, $conf->getDebug());
         $conf->setDebug(true);
         $this->assertEquals(true, $conf->getDebug());
+    }
+
+    /**
+     * Tests Configuration::setRestore
+     */
+    public function testRestore()
+    {
+        $conf = new Configuration();
+        $conf->setFilename('/tmp/foo.xml');
+        $this->assertEquals(false, $conf->isRestore());
+        $conf->setRestore(true);
+        $this->assertEquals(true, $conf->isRestore());
     }
 
     /**

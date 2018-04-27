@@ -7,6 +7,7 @@ use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Log\Logger;
+use phpbu\App\Result\Backup;
 
 /**
  * Factory test
@@ -16,22 +17,11 @@ use phpbu\App\Log\Logger;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
 class FactoryTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests Factory::createRunner
-     */
-    public function testCreateRunner()
-    {
-        $factory = new Factory();
-        $runner  = $factory->createRunner('source', false);
-
-        $this->assertEquals('phpbu\\App\\Runner\Source', get_class($runner), 'runner classes should match');
-    }
-
     /**
      * Tests Factory::createAdapter
      */
@@ -41,6 +31,25 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
         $adapter = $factory->createAdapter('env', []);
 
         $this->assertEquals('phpbu\\App\\Adapter\\Env', get_class($adapter), 'adapter classes should match');
+    }
+
+    /**
+     * Tests Factory::createTarget
+     */
+    public function testCreateTarget()
+    {
+        $directory = sys_get_temp_dir() . '/test-dir';
+        $conf      = new Configuration\Backup\Target($directory, 'test-file', 'bzip2');
+        $factory   = new Factory();
+        $target    = $factory->createTarget($conf);
+
+        $this->assertEquals('phpbu\\App\\Backup\\Target', get_class($target), 'should be a target');
+        $this->assertEquals('test-file.bz2', $target->getFilename());
+        $this->assertEquals($directory . '/test-file.bz2', $target->getPathname());
+
+        $this->assertTrue(file_exists($directory));
+
+        rmdir($directory);
     }
 
     /**
@@ -444,7 +453,6 @@ class phpbuAppFactoryTestSource implements Source
      */
     public function backup(Target $target, Result $result) : Source\Status
     {
-        // do something fooish
         return new Source\Status();
     }
 }
@@ -473,7 +481,6 @@ class phpbuAppFactoryTestRunner
      */
     public function backup(Target $target, Result $result)
     {
-        // do something fooish
         return new Source\Status();
     }
 }
