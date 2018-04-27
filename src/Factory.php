@@ -70,6 +70,7 @@ class Factory
             'rsync'       => '\\phpbu\\App\\Backup\\Sync\\Rsync',
             'sftp'        => '\\phpbu\\App\\Backup\\Sync\\Sftp',
             'softlayer'   => '\\phpbu\\App\\Backup\\Sync\\SoftLayer',
+            'openstack'   => '\\phpbu\\App\\Backup\\Sync\\Openstack',
         ],
         'cleaner' => [
             'capacity'  => '\\phpbu\\App\\Backup\\Cleaner\\Capacity',
