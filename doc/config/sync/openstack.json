@@ -1,0 +1,12 @@
+{
+  "type": "openstack",
+  "options": {
+    "auth_url": "openstack-auth-url",
+    "region": "openstack-region",
+    "username": "identify2-username",
+    "password": "identify2-password",
+    "container_name": "openstack-container-name",
+    "service_name": "cloudFiles",
+    "path": ""
+  }
+}
