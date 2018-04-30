@@ -4,6 +4,8 @@ namespace phpbu\App\Backup\Sync;
 use Kunnu\Dropbox\DropboxApp as DropboxConfig;
 use Kunnu\Dropbox\Dropbox as DropboxApi;
 use Kunnu\Dropbox\DropboxFile;
+use phpbu\App\Backup\File\FileRemote;
+use phpbu\App\Backup\SyncClearable;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
@@ -22,6 +24,8 @@ use phpbu\App\Util\Str;
  */
 class Dropbox implements Simulator
 {
+    use SyncClearable;
+
     /**
      * API access token
      *
@@ -45,6 +49,13 @@ class Dropbox implements Simulator
     protected $path;
 
     /**
+     * Dropbox api client
+     *
+     * @var DropboxApi
+     */
+    protected $client;
+
+    /**
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::setup()
@@ -65,6 +76,8 @@ class Dropbox implements Simulator
         // make sure the path contains leading and trailing slashes
         $this->path  = Str::withLeadingSlash(Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path'])));
         $this->token = $config['token'];
+
+        $this->setUpClearable($config);
     }
 
     /**
@@ -79,11 +92,12 @@ class Dropbox implements Simulator
     {
         $sourcePath  = $target->getPathname();
         $dropboxPath = $this->path . $target->getFilename();
-        $config      = new DropboxConfig("id", "secret", $this->token);
-        $client      = new DropboxApi($config);
+        if (!$this->client) {
+            $this->connect();
+        }
         try {
             $file = new DropboxFile($sourcePath);
-            $meta = $client->upload($file, $dropboxPath, ['autorename' => true]);
+            $meta = $this->client->upload($file, $dropboxPath, ['autorename' => true]);
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }
@@ -103,5 +117,57 @@ class Dropbox implements Simulator
             . '  token:    ********' . PHP_EOL
             . '  location: ' . $this->path
         );
+    }
+
+    /**
+     * Execute the remote clean up if needed
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
+     */
+    public function cleanup(Target $target, Result $result)
+    {
+        if (!$this->cleaner) {
+            return;
+        }
+
+        $collector = new \phpbu\App\Backup\Collector\Dropbox($target, $this);
+        $this->cleaner->cleanup($target, $collector, $result);
+    }
+
+    /**
+     * Remove remote file
+     *
+     * @param FileRemote $file
+     * @return mixed
+     */
+    public function unlinkFile(FileRemote $file)
+    {
+       $this->client->delete($file->getPathname());
+    }
+
+    /**
+     * Create Dropbox api client
+     */
+    protected function connect()
+    {
+        $config       = new DropboxConfig("id", "secret", $this->token);
+        $this->client = new DropboxApi($config);
+    }
+
+    /**
+     * @return DropboxApi
+     */
+    public function getClient(): DropboxApi
+    {
+        return $this->client;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->path;
     }
 }

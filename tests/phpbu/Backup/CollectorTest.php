@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Backup;
+use phpbu\App\Backup\Collector\Local;
 
 /**
  * Collector test
@@ -23,7 +24,7 @@ class CollectorTest extends \PHPUnit\Framework\TestCase
         $path      = $this->getTestDataDir() . '/collector/static-dir';
         $filename  = 'foo-%d.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $collector = new Collector($target);
+        $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
         $this->assertEquals(4, count($files), '4 files should be found');
@@ -39,7 +40,7 @@ class CollectorTest extends \PHPUnit\Framework\TestCase
         $filename  = 'foo-%d.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
         $target->setCompression($this->getCompressionMockForCmd('zip', 'zip'));
-        $collector = new Collector($target);
+        $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
         $this->assertEquals(4, count($files), '4 files should be found');
@@ -56,7 +57,7 @@ class CollectorTest extends \PHPUnit\Framework\TestCase
         $target    = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
         $target->appendFileSuffix('tar');
         $target->setCompression($this->getCompressionMockForCmd('tar', 'gz'));
-        $collector = new Collector($target);
+        $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
         $this->assertEquals(3, count($files), '3 files should be found');
@@ -70,7 +71,7 @@ class CollectorTest extends \PHPUnit\Framework\TestCase
         $path      = $this->getTestDataDir() . '/collector/dynamic-dir/single/%m';
         $filename  = '%d.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $collector = new Collector($target);
+        $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
         $this->assertEquals(4, count($files), '4 files should be found');
@@ -84,7 +85,7 @@ class CollectorTest extends \PHPUnit\Framework\TestCase
         $path      = $this->getTestDataDir() . '/collector/dynamic-dir/single/%Y%m';
         $filename  = '%d.txt';
         $target    = new Target($path, $filename, strtotime('2014-03-17 04:30:57'));
-        $collector = new Collector($target);
+        $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
         $this->assertEquals(3, count($files), '3 files should be found');
@@ -98,7 +99,7 @@ class CollectorTest extends \PHPUnit\Framework\TestCase
         $path      = $this->getTestDataDir() . '/collector/dynamic-dir/multi/%m/%d';
         $filename  = '%H.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-        $collector = new Collector($target);
+        $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
         $this->assertEquals(8, count($files), '8 files should be found');
@@ -112,7 +113,7 @@ class CollectorTest extends \PHPUnit\Framework\TestCase
         $path      = $this->getTestDataDir() . '/collector/dynamic-dir/multi/%m/%d';
         $filename  = '%H.txt';
         $target    = new Target($path, $filename, strtotime('2014-02-02 22:30:57'));
-        $collector = new Collector($target);
+        $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
         $this->assertEquals(7, count($files), '7 files should be found');
@@ -128,7 +129,7 @@ class CollectorTest extends \PHPUnit\Framework\TestCase
         $path      = $this->getTestDataDir() . '/collector/dynamic-dir/issue-135/%y/%m/%d';
         $filename  = 'database-%Y%m%d-%H%i.sql';
         $target    = new Target($path, $filename, strtotime('2018-03-01 13:00:12'));
-        $collector = new Collector($target);
+        $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
         $this->assertEquals(7, count($files), '5 files should be found');
@@ -139,7 +140,7 @@ class CollectorTest extends \PHPUnit\Framework\TestCase
         $path      = $this->getTestDataDir() . '/collector/static-dir/';
         $filename  = 'foo-%d.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
-        $collector = new Collector($target);
+        $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
         $this->assertEquals(3, count($files), '3 files should be found');

@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Backup\Cli;
+use phpbu\App\Backup\File\FileRemote;
 use phpbu\App\Backup\Rsync as RsyncTrait;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
@@ -105,5 +106,27 @@ class Rsync extends Cli implements Simulator
                        ->exclude($this->excludes);
         }
         return $executable;
+    }
+
+    /**
+     * Execute the remote clean up if needed
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
+     */
+    public function cleanup(Target $target, Result $result)
+    {
+        // TODO: Implement cleanup() method.
+    }
+
+    /**
+     * Remove remote file
+     *
+     * @param FileRemote $file
+     * @return mixed
+     */
+    public function unlinkFile(FileRemote $file)
+    {
+        // TODO: Implement unlinkFile() method.
     }
 }

@@ -2,7 +2,7 @@
 namespace phpbu\App;
 
 use phpbu\App\Backup\Check;
-use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Collector\Local;
 use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
@@ -333,11 +333,11 @@ class phpbuAppFactoryTestCheck implements Check
      *
      * @param  \phpbu\App\Backup\Target $target
      * @param  string                   $value
-     * @param  \phpbu\App\Backup\Collector
+     * @param  \phpbu\App\Backup\Collector\Local
      * @param  \phpbu\App\Result
      * @return boolean
      */
-    public function pass(Target $target, $value, Collector $collector, Result $result) : bool
+    public function pass(Target $target, $value, Local $collector, Result $result) : bool
     {
         // do something fooish
     }

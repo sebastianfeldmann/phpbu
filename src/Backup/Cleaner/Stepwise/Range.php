@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Cleaner\Stepwise;
 
-use phpbu\App\Backup\File;
+use phpbu\App\Backup\File\File;
 
 /**
  * Range with start and end date.
@@ -74,7 +74,7 @@ class Range
     /**
      * Should this file be deleted.
      *
-     * @param  \phpbu\App\Backup\File $file
+     * @param  \phpbu\App\Backup\File\File $file
      * @return bool
      */
     public function keep(File $file) : bool

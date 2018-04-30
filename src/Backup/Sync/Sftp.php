@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use phpbu\App\Backup\File\FileRemote;
 use phpseclib;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
@@ -111,5 +112,27 @@ class Sftp extends Xtp implements Simulator
             $remoteDirs = explode('/', $this->remotePath);
         }
         return $remoteDirs;
+    }
+
+    /**
+     * Execute the remote clean up if needed
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
+     */
+    public function cleanup(Target $target, Result $result)
+    {
+        // TODO: Implement cleanup() method.
+    }
+
+    /**
+     * Remove remote file
+     *
+     * @param FileRemote $file
+     * @return mixed
+     */
+    public function unlinkFile(FileRemote $file)
+    {
+        // TODO: Implement unlinkFile() method.
     }
 }

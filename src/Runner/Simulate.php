@@ -7,7 +7,7 @@ use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Compressor;
-use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Collector\Local;
 use phpbu\App\Backup\Target;
 use phpbu\App\Configuration;
 use phpbu\App\Result;
@@ -46,7 +46,7 @@ class Simulate extends Compression
             }
             // setup target and collector
             $target    = $this->factory->createTarget($backup->getTarget());
-            $collector = new Collector($target);
+            $collector = new Local($target);
 
             $this->simulateSource($backup, $target);
             $this->simulateChecks($backup, $target, $collector);
@@ -82,12 +82,12 @@ class Simulate extends Compression
     /**
      * Simulate checks.
      *
-     * @param  \phpbu\App\Configuration\Backup $backup
-     * @param  \phpbu\App\Backup\Target        $target
-     * @param  \phpbu\App\Backup\Collector     $collector
+     * @param  \phpbu\App\Configuration\Backup   $backup
+     * @param  \phpbu\App\Backup\Target          $target
+     * @param  \phpbu\App\Backup\Collector\Local $collector
      * @throws \Exception
      */
-    protected function simulateChecks(Configuration\Backup $backup, Target $target, Collector $collector)
+    protected function simulateChecks(Configuration\Backup $backup, Target $target, Local $collector)
     {
         foreach ($backup->getChecks() as $config) {
             $this->result->checkStart($config);
@@ -140,12 +140,12 @@ class Simulate extends Compression
     /**
      * Simulate the cleanup.
      *
-     * @param  \phpbu\App\Configuration\Backup $backup
-     * @param  \phpbu\App\Backup\Target        $target
-     * @param  \phpbu\App\Backup\Collector     $collector
+     * @param  \phpbu\App\Configuration\Backup   $backup
+     * @param  \phpbu\App\Backup\Target          $target
+     * @param  \phpbu\App\Backup\Collector\Local $collector
      * @throws \phpbu\App\Exception
      */
-    protected function simulateCleanup(Configuration\Backup $backup, Target $target, Collector $collector)
+    protected function simulateCleanup(Configuration\Backup $backup, Target $target, Local $collector)
     {
         /* @var \phpbu\App\Configuration\Backup\Cleanup $cleanup */
         if ($backup->hasCleanup()) {

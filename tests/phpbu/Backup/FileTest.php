@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Backup;
+use phpbu\App\Backup\File\FileLocal;
 
 /**
  * File test
@@ -20,7 +21,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
     public function testGetFileInfo()
     {
         $spl  = $this->getFileInfo();
-        $file = new File($spl);
+        $file = new FileLocal($spl);
         $ret  = $file->getFileInfo();
 
         $this->assertEquals($spl, $ret, 'should be the same spl injected');
@@ -32,7 +33,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
     public function testGetSize()
     {
         $spl  = $this->getFileInfo();
-        $file = new File($spl);
+        $file = new FileLocal($spl);
         $size = $file->getSize();
 
         $this->assertEquals($spl->getSize(), $size, 'size should match');
@@ -44,7 +45,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
     public function testGetFilename()
     {
         $spl      = $this->getFileInfo();
-        $file     = new File($spl);
+        $file     = new FileLocal($spl);
         $filename = $file->getFilename();
 
         $this->assertEquals($spl->getFilename(), $filename);
@@ -56,7 +57,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
     public function testGetPath()
     {
         $spl  = $this->getFileInfo();
-        $file = new File($spl);
+        $file = new FileLocal($spl);
         $path = $file->getPath();
 
         $this->assertEquals($spl->getPath(), $path);
@@ -68,7 +69,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
     public function testGetPathname()
     {
         $spl  = $this->getFileInfo();
-        $file = new File($spl);
+        $file = new FileLocal($spl);
         $path = $file->getPathname();
 
         $this->assertEquals($spl->getPathname(), $path);
@@ -80,7 +81,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
     public function testGetMTime()
     {
         $spl  = $this->getFileInfo();
-        $file = new File($spl);
+        $file = new FileLocal($spl);
         $time = $file->getMTime();
 
         $this->assertEquals($spl->getMTime(), $time);
@@ -92,7 +93,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
     public function testIsWritable()
     {
         $spl      = $this->getDeletableFileInfo();
-        $file     = new File($spl);
+        $file     = new FileLocal($spl);
         $writable = $file->isWritable();
 
         unlink($spl->getPathname());
@@ -106,7 +107,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
     public function testUnink()
     {
         $spl  = $this->getDeletableFileInfo();
-        $file = new File($spl);
+        $file = new FileLocal($spl);
         $file->unlink();
 
         $existing = file_exists($spl->getPathname());
@@ -122,7 +123,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
     public function testUnlinkFail()
     {
         $spl  = $this->getDeletableFileInfo();
-        $file = new File($spl);
+        $file = new FileLocal($spl);
 
         // delete file so next unlink fails
         unlink($spl->getPathname());

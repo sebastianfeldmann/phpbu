@@ -1,7 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Cleaner;
 
-use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Collector\Collector;
+use phpbu\App\Backup\Collector\Local;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 use phpbu\App\Util\Str;
@@ -60,19 +61,19 @@ class Capacity extends Abstraction implements Simulator
         } catch (RuntimeException $e) {
             throw new Exception($e->getMessage());
         }
-        $this->deleteTarget  = isset($options['deleteTarget'])
-                             ? Str::toBoolean($options['deleteTarget'], false)
-                             : false;
-        $this->capacityRaw   = $options['size'];
+        $this->deleteTarget = isset($options['deleteTarget'])
+            ? Str::toBoolean($options['deleteTarget'], false)
+            : false;
+        $this->capacityRaw = $options['size'];
         $this->capacityBytes = $bytes;
     }
 
     /**
      * Simulate the cleanup execution.
      *
-     * @param \phpbu\App\Backup\Target    $target
-     * @param \phpbu\App\Backup\Collector $collector
-     * @param \phpbu\App\Result           $result
+     * @param \phpbu\App\Backup\Target              $target
+     * @param \phpbu\App\Backup\Collector\Collector $collector
+     * @param \phpbu\App\Result                     $result
      */
     public function simulate(Target $target, Collector $collector, Result $result)
     {
@@ -93,19 +94,19 @@ class Capacity extends Abstraction implements Simulator
     /**
      * Return list of files to delete.
      *
-     * @param  \phpbu\App\Backup\Target    $target
-     * @param  \phpbu\App\Backup\Collector $collector
-     * @return \phpbu\App\Backup\File[]
+     * @param  \phpbu\App\Backup\Target              $target
+     * @param  \phpbu\App\Backup\Collector\Collector $collector
+     * @return \phpbu\App\Backup\File\FileLocal[]
      * @throws \phpbu\App\Exception
      */
     protected function getFilesToDelete(Target $target, Collector $collector)
     {
-        $files  = $this->getDeletableBackups($target, $collector);
-        $size   = $target->getSize();
+        $files = $this->getDeletableBackups($target, $collector);
+        $size = $target->getSize();
         $delete = [];
 
         // sum up the size of all backups
-        /** @var \phpbu\App\Backup\File $file */
+        /** @var \phpbu\App\Backup\File\FileLocal $file */
         foreach ($files as $file) {
             $size += $file->getSize();
         }
@@ -117,8 +118,8 @@ class Capacity extends Abstraction implements Simulator
 
             while ($this->isCapacityExceeded($size) && count($files) > 0) {
                 // get oldest backup from list, move it to delete list
-                $file     = array_shift($files);
-                $size    -= $file->getSize();
+                $file = array_shift($files);
+                $size -= $file->getSize();
                 $delete[] = $file;
             }
         }
@@ -129,17 +130,17 @@ class Capacity extends Abstraction implements Simulator
     /**
      * Return a list of all deletable backups, including the currently created one if configured.
      *
-     * @param  \phpbu\App\Backup\Target    $target
-     * @param  \phpbu\App\Backup\Collector $collector
-     * @return \phpbu\App\Backup\File[]
+     * @param  \phpbu\App\Backup\Target              $target
+     * @param  \phpbu\App\Backup\Collector\Collector $collector
+     * @return \phpbu\App\Backup\File\FileLocal[]
      */
-    protected function getDeletableBackups(Target $target, Collector $collector) : array
+    protected function getDeletableBackups(Target $target, Collector $collector): array
     {
         $files = $collector->getBackupFiles();
         // should the currently created backup be deleted as well?
         if ($this->deleteTarget) {
-            $file          = $target->toFile();
-            $index         = date('YmdHis', $file->getMTime()) . '-' . count($files) . '-' . $file->getPathname();
+            $file = $target->toFile();
+            $index = date('YmdHis', $file->getMTime()) . '-' . count($files) . '-' . $file->getPathname();
             $files[$index] = $file;
         }
         return $files;
@@ -151,7 +152,7 @@ class Capacity extends Abstraction implements Simulator
      * @param  int|double $currentCapacity
      * @return bool
      */
-    protected function isCapacityExceeded($currentCapacity) : bool
+    protected function isCapacityExceeded($currentCapacity): bool
     {
         return $currentCapacity > $this->capacityBytes;
     }

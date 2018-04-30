@@ -1,7 +1,9 @@
 <?php
-namespace phpbu\App\Backup;
+namespace phpbu\App\Backup\Collector;
 
 use DirectoryIterator;
+use phpbu\App\Backup\File\FileLocal;
+use phpbu\App\Backup\Target;
 use SplFileInfo;
 use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
@@ -17,7 +19,7 @@ use phpbu\App\Util\Str;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Collector
+class Local extends Collector
 {
     /**
      * Backup target
@@ -36,7 +38,7 @@ class Collector
     /**
      * Collection cache
      *
-     * @var \phpbu\App\Backup\File[]
+     * @var \phpbu\App\Backup\File\FileLocal[]
      */
     protected $files;
 
@@ -53,7 +55,7 @@ class Collector
     /**
      * Get all created backups.
      *
-     * @return \phpbu\App\Backup\File[]
+     * @return \phpbu\App\Backup\File\FileLocal[]
      */
     public function getBackupFiles() : array
     {
@@ -87,7 +89,7 @@ class Collector
                 }
             }
         } else {
-            /** @var \phpbu\App\Backup\File $file */
+            /** @var \phpbu\App\Backup\File\FileLocal $file */
             $this->collectFiles($dirIterator);
         }
     }
@@ -109,7 +111,7 @@ class Collector
             }
             if (preg_match('#' . $this->fileRegex . '#i', $file->getFilename())) {
                 $index               = date('YmdHis', $file->getMTime()) . '-' . $i . '-' . $file->getPathname();
-                $this->files[$index] = new File($file->getFileInfo());
+                $this->files[$index] = new FileLocal($file->getFileInfo());
             }
         }
     }

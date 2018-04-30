@@ -19,7 +19,7 @@ class NoneTest extends \PHPUnit\Framework\TestCase
      */
     public function testKeep()
     {
-        $file = $this->createMock(\phpbu\App\Backup\File::class);
+        $file = $this->createMock(\phpbu\App\Backup\File\FileLocal::class);
 
         $keeper = new None();
         $this->assertFalse($keeper->keep($file));

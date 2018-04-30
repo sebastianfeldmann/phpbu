@@ -1,10 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Cleaner;
 
-use phpbu\App\Backup\Cleaner;
-use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Collector\Collector;
 use phpbu\App\Backup\Target;
-use phpbu\App\Result;
 use phpbu\App\Util\Str;
 use RuntimeException;
 
@@ -61,9 +59,9 @@ class Outdated extends Abstraction implements Simulator
     /**
      * Return list of files to delete.
      *
-     * @param  \phpbu\App\Backup\Target    $target
-     * @param  \phpbu\App\Backup\Collector $collector
-     * @return \phpbu\App\Backup\File[]
+     * @param  \phpbu\App\Backup\Target              $target
+     * @param  \phpbu\App\Backup\Collector\Collector $collector
+     * @return \phpbu\App\Backup\File\FileLocal[]
      */
     protected function getFilesToDelete(Target $target, Collector $collector)
     {
@@ -71,7 +69,7 @@ class Outdated extends Abstraction implements Simulator
         $files   = $collector->getBackupFiles();
         $delete  = [];
 
-        /** @var \phpbu\App\Backup\File $file */
+        /** @var \phpbu\App\Backup\File\FileLocal $file */
         foreach ($files as $file) {
             // last mod date < min date? delete!
             if ($file->getMTime() < $minTime) {

@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup;
 
+use phpbu\App\Backup\File\FileRemote;
 use phpbu\App\Result;
 
 /**
@@ -31,4 +32,20 @@ interface Sync
      * @param \phpbu\App\Result        $result
      */
     public function sync(Target $target, Result $result);
+
+    /**
+     * Execute the remote clean up if needed
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
+     */
+    public function cleanup(Target $target, Result $result);
+
+    /**
+     * Remove remote file
+     *
+     * @param FileRemote $file
+     * @return mixed
+     */
+    public function unlinkFile(FileRemote $file);
 }

@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup;
 
+use phpbu\App\Backup\File\FileLocal;
 use phpbu\App\Exception;
 use phpbu\App\Util\Str;
 
@@ -390,11 +391,11 @@ class Target
     /**
      * Return as backup file object.
      *
-     * @return \phpbu\App\Backup\File
+     * @return \phpbu\App\Backup\File\FileLocal
      */
-    public function toFile() : File
+    public function toFile() : FileLocal
     {
-        return new File(new \SplFileInfo($this->getPathname()));
+        return new FileLocal(new \SplFileInfo($this->getPathname()));
     }
 
     /**

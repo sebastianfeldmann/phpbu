@@ -1,5 +1,5 @@
 <?php
-namespace phpbu\App\Backup;
+namespace phpbu\App\Backup\File;
 
 use SplFileInfo;
 use phpbu\App\Exception;
@@ -15,7 +15,7 @@ use phpbu\App\Exception;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class File
+class FileLocal implements File
 {
     /**
      * FileInfo
@@ -49,7 +49,7 @@ class File
      *
      * @return integer
      */
-    public function getSize()
+    public function getSize(): int
     {
         return $this->fileInfo->getSize();
     }
@@ -59,7 +59,7 @@ class File
      *
      * @return string
      */
-    public function getFilename()
+    public function getFilename(): string
     {
         return $this->fileInfo->getFilename();
     }
@@ -69,7 +69,7 @@ class File
      *
      * @return string
      */
-    public function getPathname()
+    public function getPathname(): string
     {
         return $this->fileInfo->getPathname();
     }
@@ -89,7 +89,7 @@ class File
      *
      * @return integer
      */
-    public function getMTime()
+    public function getMTime(): int
     {
         return $this->fileInfo->getMTime();
     }
@@ -99,7 +99,7 @@ class File
      *
      * @return boolean
      */
-    public function isWritable()
+    public function isWritable(): bool
     {
         return $this->fileInfo->isWritable();
     }

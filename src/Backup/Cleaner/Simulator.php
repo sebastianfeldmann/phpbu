@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup\Cleaner;
 
 use phpbu\App\Backup\Cleaner;
-use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Collector\Collector;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 
@@ -22,9 +22,9 @@ interface Simulator extends Cleaner
     /**
      * Simulate the cleanup execution.
      *
-     * @param \phpbu\App\Backup\Target    $target
-     * @param \phpbu\App\Backup\Collector $collector
-     * @param \phpbu\App\Result           $result
+     * @param \phpbu\App\Backup\Target              $target
+     * @param \phpbu\App\Backup\Collector\Collector $collector
+     * @param \phpbu\App\Result                     $result
      */
     public function simulate(Target $target, Collector $collector, Result $result);
 }

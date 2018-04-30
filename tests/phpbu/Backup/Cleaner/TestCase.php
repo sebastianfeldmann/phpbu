@@ -58,7 +58,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
     protected function getFileMock($size, $shouldBeDeleted, $mTime, $writable)
     {
         /* @var $fileStub \PHPUnit\Framework\MockObject */
-        $fileStub = $this->createMock(\phpbu\App\Backup\File::class);
+        $fileStub = $this->createMock(\phpbu\App\Backup\File\FileLocal::class);
         $fileStub->method('getMTime')->willReturn($mTime);
         $fileStub->method('getSize')->willReturn($size);
         $fileStub->method('isWritable')->willReturn($writable);
