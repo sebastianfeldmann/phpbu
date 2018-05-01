@@ -21,6 +21,8 @@ use phpbu\App\Util\Str;
  */
 abstract class Xtp implements Simulator
 {
+    use Clearable;
+
     /**
      * Host to connect to
      *
@@ -102,7 +104,8 @@ abstract class Xtp implements Simulator
             . '  host:     ' . $this->host . PHP_EOL
             . '  user:     ' . $this->user . PHP_EOL
             . '  password:  ********' . PHP_EOL
-            . '  path:     ' . $this->remotePath
+            . '  path:     ' . $this->remotePath . PHP_EOL
+            . $this->getSimulateInfo()
         );
     }
 }
