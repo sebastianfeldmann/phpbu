@@ -6,7 +6,7 @@ use OpenStack\ObjectStore\v1\Models\Container;
 use OpenStack\ObjectStore\v1\Models\StorageObject;
 use phpbu\App\Exception;
 
-class OpenStack extends FileRemote
+class OpenStack extends Remote
 {
     /**
      * @var Container

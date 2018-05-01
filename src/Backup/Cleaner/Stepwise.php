@@ -2,10 +2,8 @@
 namespace phpbu\App\Backup\Cleaner;
 
 use phpbu\App\Backup\Cleaner\Stepwise\Range;
-use phpbu\App\Backup\Collector\Collector;
-use phpbu\App\Backup\Collector\Local;
-use phpbu\App\Backup\File\File;
-use phpbu\App\Backup\File\FileLocal;
+use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\File;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
 
@@ -122,9 +120,9 @@ class Stepwise extends Abstraction implements Simulator
     /**
      * Return list of files to delete.
      *
-     * @param  \phpbu\App\Backup\Target              $target
-     * @param  \phpbu\App\Backup\Collector\Collector $collector
-     * @return \phpbu\App\Backup\File\FileLocal[]
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @return \phpbu\App\Backup\File\Local[]
      * @throws \phpbu\App\Exception
      */
     protected function getFilesToDelete(Target $target, Collector $collector)
@@ -147,7 +145,7 @@ class Stepwise extends Abstraction implements Simulator
     /**
      * Get matching range for given file.
      *
-     * @param  \phpbu\App\Backup\File\File $file
+     * @param  \phpbu\App\Backup\File $file
      * @return \phpbu\App\Backup\Cleaner\Stepwise\Range
      * @throws \phpbu\App\Backup\Cleaner\Exception
      */

@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup\Cleaner\Stepwise\Keeper;
 
 use phpbu\App\Backup\Cleaner\Stepwise\Keeper;
-use phpbu\App\Backup\File\File;
+use phpbu\App\Backup\File;
 
 /**
  * Keep one backup per date group class
@@ -27,7 +27,7 @@ class OnePerGroup implements Keeper
     /**
      * List of groups containing the files.
      *
-     * @var \phpbu\App\Backup\File\FileLocal[]
+     * @var \phpbu\App\Backup\File\Local[]
      */
     private $groups = [];
 
@@ -44,7 +44,7 @@ class OnePerGroup implements Keeper
     /**
      * Decides if given file should be kept.
      *
-     * @param  \phpbu\App\Backup\File\File $file
+     * @param  \phpbu\App\Backup\File $file
      * @return bool
      */
     public function keep(File $file) : bool

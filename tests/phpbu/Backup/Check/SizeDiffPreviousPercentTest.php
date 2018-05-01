@@ -60,13 +60,13 @@ class SizeDiffPreviousPercentTest extends \PHPUnit\Framework\TestCase
      * Create a list of File stubs
      *
      * @param  array $sizes Size in byte the stubs will return on getSize()
-     * @return \phpbu\App\Backup\File\FileLocal[]
+     * @return \phpbu\App\Backup\File\Local[]
      */
     protected function getFileListMock(array $sizes)
     {
         $list = [];
         foreach ($sizes as $i => $size) {
-            $fileStub = $this->createMock(\phpbu\App\Backup\File\FileLocal::class);
+            $fileStub = $this->createMock(\phpbu\App\Backup\File\Local::class);
             $fileStub->method('getSize')->willReturn($size);
             $list['201401' . str_pad($i + 1, 2, '0', STR_PAD_LEFT)] = $fileStub;
         }

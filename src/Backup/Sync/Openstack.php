@@ -8,7 +8,6 @@ use GuzzleHttp\Client;
 use OpenStack\Common\Transport\HandlerStack;
 use OpenStack\Common\Transport\Utils;
 use OpenStack\Identity\v2\Service;
-use phpbu\App\Backup\SyncClearable;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 use phpbu\App\Util\Arr;
@@ -28,7 +27,7 @@ use phpbu\App\Util\Str;
  */
 class Openstack implements Simulator
 {
-    use SyncClearable;
+    use Clearable;
 
     /**
      * OpenStack identify url
@@ -175,6 +174,8 @@ class Openstack implements Simulator
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }
+        // run remote cleanup
+        $this->cleanup($target, $result);
         $result->debug('upload: done');
     }
 
@@ -192,6 +193,8 @@ class Openstack implements Simulator
             . '  key:      ' . $this->username . PHP_EOL
             . '  password:    ********' . PHP_EOL
             . '  container: ' . $this->containerName
+            . '  path: "' . $this->path . '"' . PHP_EOL
+            . $this->getSimulateInfo()
         );
     }
 

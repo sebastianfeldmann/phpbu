@@ -2,7 +2,8 @@
 namespace phpbu\App\Backup\Collector;
 
 use DirectoryIterator;
-use phpbu\App\Backup\File\FileLocal;
+use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\File\Local as FileLocal;
 use phpbu\App\Backup\Target;
 use SplFileInfo;
 use phpbu\App\Util\Arr;
@@ -38,7 +39,7 @@ class Local extends Collector
     /**
      * Collection cache
      *
-     * @var \phpbu\App\Backup\File\FileLocal[]
+     * @var \phpbu\App\Backup\File\Local[]
      */
     protected $files;
 
@@ -55,7 +56,7 @@ class Local extends Collector
     /**
      * Get all created backups.
      *
-     * @return \phpbu\App\Backup\File\FileLocal[]
+     * @return \phpbu\App\Backup\File\Local[]
      */
     public function getBackupFiles() : array
     {
@@ -89,7 +90,7 @@ class Local extends Collector
                 }
             }
         } else {
-            /** @var \phpbu\App\Backup\File\FileLocal $file */
+            /** @var \phpbu\App\Backup\File\Local $file */
             $this->collectFiles($dirIterator);
         }
     }

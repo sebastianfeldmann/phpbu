@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Cleaner;
 
-use phpbu\App\Backup\Collector\Collector;
+use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 
@@ -22,9 +22,9 @@ abstract class Abstraction
      * Cleanup your backup directory.
      *
      * @see    \phpbu\App\Backup\Cleanup::cleanup()
-     * @param  \phpbu\App\Backup\Target              $target
-     * @param  \phpbu\App\Backup\Collector\Collector $collector
-     * @param  \phpbu\App\Result                     $result
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @param  \phpbu\App\Result           $result
      * @throws \phpbu\App\Backup\Cleaner\Exception
      */
     public function cleanup(Target $target, Collector $collector, Result $result)
@@ -41,9 +41,9 @@ abstract class Abstraction
     /**
      * Simulate the cleanup execution.
      *
-     * @param \phpbu\App\Backup\Target              $target
-     * @param \phpbu\App\Backup\Collector\Collector $collector
-     * @param \phpbu\App\Result                     $result
+     * @param \phpbu\App\Backup\Target    $target
+     * @param \phpbu\App\Backup\Collector $collector
+     * @param \phpbu\App\Result           $result
      */
     public function simulate(Target $target, Collector $collector, Result $result)
     {
@@ -55,9 +55,9 @@ abstract class Abstraction
     /**
      * Return list of files to delete.
      *
-     * @param  \phpbu\App\Backup\Target          $target
-     * @param  \phpbu\App\Backup\Collector\Collector $collector
-     * @return \phpbu\App\Backup\File\File[]
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @return \phpbu\App\Backup\File[]
      * @throws \phpbu\App\Exception
      */
     abstract protected function getFilesToDelete(Target $target, Collector $collector);

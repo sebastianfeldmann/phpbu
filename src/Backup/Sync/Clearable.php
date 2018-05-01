@@ -1,10 +1,11 @@
 <?php
-namespace phpbu\App\Backup;
+namespace phpbu\App\Backup\Sync;
 
+use phpbu\App\Backup\Cleaner;
 use phpbu\App\Configuration\Backup\Cleanup;
 use phpbu\App\Factory;
 
-trait SyncClearable
+trait Clearable
 {
     /**
      * @var Cleanup
@@ -38,5 +39,17 @@ trait SyncClearable
             // creating cleaner
             $this->cleaner = (new Factory())->createCleaner($this->cleanupConfig->type, $this->cleanupConfig->options);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getSimulateInfo(): string
+    {
+        if ($this->cleaner) {
+            return "  sync cleanup: {$this->cleanupConfig->type}" . PHP_EOL;
+        }
+
+        return '';
     }
 }

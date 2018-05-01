@@ -1,8 +1,7 @@
 <?php
 
-namespace phpbu\App\Backup\Collector;
+namespace phpbu\App\Backup;
 
-use phpbu\App\Backup\Target;
 use phpbu\App\Util\Str;
 
 abstract class Collector
@@ -24,7 +23,7 @@ abstract class Collector
     /**
      * Collection cache
      *
-     * @var \phpbu\App\Backup\File\File[]
+     * @var \phpbu\App\Backup\File[]
      */
     protected $files;
 
@@ -43,7 +42,7 @@ abstract class Collector
     /**
      * Get all created backups.
      *
-     * @return \phpbu\App\Backup\File\File[]
+     * @return \phpbu\App\Backup\File[]
      */
     abstract public function getBackupFiles() : array;
 }

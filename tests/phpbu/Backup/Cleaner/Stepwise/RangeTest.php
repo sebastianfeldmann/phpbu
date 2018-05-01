@@ -37,7 +37,7 @@ class RangeTest extends \PHPUnit\Framework\TestCase
      */
     public function testKeep()
     {
-        $fileMock = $this->createMock(\phpbu\App\Backup\File\FileLocal::class);
+        $fileMock = $this->createMock(\phpbu\App\Backup\File\Local::class);
         $range    = new Range(10, 5, new Keeper\All());
         $this->assertTrue($range->keep($fileMock));
     }

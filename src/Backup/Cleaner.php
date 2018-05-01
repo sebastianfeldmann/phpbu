@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\App\Backup;
 
-use phpbu\App\Backup\Collector\Collector;
+use phpbu\App\Backup\Collector;
 use phpbu\App\Result;
 
 /**

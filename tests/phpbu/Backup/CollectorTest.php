@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Backup;
+
 use phpbu\App\Backup\Collector\Local;
 
 /**

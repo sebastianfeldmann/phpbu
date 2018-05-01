@@ -1,6 +1,6 @@
 <?php
 
-namespace phpbu\App\Backup\File;
+namespace phpbu\App\Backup;
 
 interface File
 {

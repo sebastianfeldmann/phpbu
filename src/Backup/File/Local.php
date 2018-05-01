@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\File;
 
+use phpbu\App\Backup\File;
 use SplFileInfo;
 use phpbu\App\Exception;
 
@@ -15,7 +16,7 @@ use phpbu\App\Exception;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class FileLocal implements File
+class Local implements File
 {
     /**
      * FileInfo

@@ -1,8 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Cleaner;
 
-use phpbu\App\Backup\Collector\Collector;
-use phpbu\App\Backup\Collector\Local;
+use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 use phpbu\App\Util\Str;
@@ -71,9 +70,9 @@ class Capacity extends Abstraction implements Simulator
     /**
      * Simulate the cleanup execution.
      *
-     * @param \phpbu\App\Backup\Target              $target
-     * @param \phpbu\App\Backup\Collector\Collector $collector
-     * @param \phpbu\App\Result                     $result
+     * @param \phpbu\App\Backup\Target    $target
+     * @param \phpbu\App\Backup\Collector $collector
+     * @param \phpbu\App\Result           $result
      */
     public function simulate(Target $target, Collector $collector, Result $result)
     {
@@ -94,9 +93,9 @@ class Capacity extends Abstraction implements Simulator
     /**
      * Return list of files to delete.
      *
-     * @param  \phpbu\App\Backup\Target              $target
-     * @param  \phpbu\App\Backup\Collector\Collector $collector
-     * @return \phpbu\App\Backup\File\FileLocal[]
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @return \phpbu\App\Backup\File\Local[]
      * @throws \phpbu\App\Exception
      */
     protected function getFilesToDelete(Target $target, Collector $collector)
@@ -106,7 +105,7 @@ class Capacity extends Abstraction implements Simulator
         $delete = [];
 
         // sum up the size of all backups
-        /** @var \phpbu\App\Backup\File\FileLocal $file */
+        /** @var \phpbu\App\Backup\File\Local $file */
         foreach ($files as $file) {
             $size += $file->getSize();
         }
@@ -130,9 +129,9 @@ class Capacity extends Abstraction implements Simulator
     /**
      * Return a list of all deletable backups, including the currently created one if configured.
      *
-     * @param  \phpbu\App\Backup\Target              $target
-     * @param  \phpbu\App\Backup\Collector\Collector $collector
-     * @return \phpbu\App\Backup\File\FileLocal[]
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @return \phpbu\App\Backup\File\Local[]
      */
     protected function getDeletableBackups(Target $target, Collector $collector): array
     {

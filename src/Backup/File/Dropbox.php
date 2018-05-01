@@ -5,7 +5,7 @@ use Kunnu\Dropbox\Dropbox as DropboxApi;
 use Kunnu\Dropbox\Exceptions\DropboxClientException;
 use Kunnu\Dropbox\Models\FileMetadata;
 
-class Dropbox extends FileRemote
+class Dropbox extends Remote
 {
     /**
      * @var DropboxApi

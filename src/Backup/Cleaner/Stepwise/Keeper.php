@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Cleaner\Stepwise;
 
-use phpbu\App\Backup\File\File;
+use phpbu\App\Backup\File;
 
 /**
  * Keeper interface.
@@ -19,7 +19,7 @@ interface Keeper
     /**
      * Decides if given file should be kept.
      *
-     * @param  \phpbu\App\Backup\File\File $file
+     * @param  \phpbu\App\Backup\File $file
      * @return bool
      */
     public function keep(File $file) : bool;

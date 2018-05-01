@@ -2,9 +2,10 @@
 
 namespace phpbu\App\Backup\File;
 
+use phpbu\App\Backup\File;
 use phpbu\App\Backup\Sync;
 
-class FileRemote implements File
+class Remote implements File
 {
     /**
      * Sync class

@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use phpbu\App\Backup\File\FileRemote;
+use phpbu\App\Backup\File\Remote;
 use phpseclib;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;

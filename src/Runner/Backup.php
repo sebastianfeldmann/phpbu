@@ -204,8 +204,6 @@ class Backup extends Compression
                 $sync = $this->factory->createSync($config->type, $config->options);
                 $sync->sync($target, $this->result);
                 $this->result->syncEnd($config);
-                // TODO: fire remote clean up event
-                $sync->cleanup($target, $this->result);
             } catch (Sync\Exception $e) {
                 $this->failure = true;
                 $this->result->addError($e);

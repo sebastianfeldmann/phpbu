@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Collector;
 
 use Kunnu\Dropbox\Dropbox as DropboxApi;
+use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 
 class Dropbox extends Collector
@@ -35,7 +36,7 @@ class Dropbox extends Collector
     /**
      * Get all created backups.
      *
-     * @return \phpbu\App\Backup\File\File[]
+     * @return \phpbu\App\Backup\File[]
      */
     public function getBackupFiles(): array
     {

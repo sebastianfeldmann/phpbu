@@ -3,6 +3,7 @@
 namespace phpbu\App\Backup\Collector;
 
 use OpenStack\ObjectStore\v1\Models\Container;
+use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Sync\Openstack as OpenStackSync;
 use OpenStack\ObjectStore\v1\Models\StorageObject;
 use phpbu\App\Backup\Target;
@@ -38,7 +39,7 @@ class OpenStack extends Collector
     /**
      * Get all created backups.
      *
-     * @return \phpbu\App\Backup\File\File[]
+     * @return \phpbu\App\Backup\File[]
      */
     public function getBackupFiles(): array
     {

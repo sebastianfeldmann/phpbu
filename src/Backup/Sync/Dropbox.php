@@ -4,7 +4,6 @@ namespace phpbu\App\Backup\Sync;
 use Kunnu\Dropbox\DropboxApp as DropboxConfig;
 use Kunnu\Dropbox\Dropbox as DropboxApi;
 use Kunnu\Dropbox\DropboxFile;
-use phpbu\App\Backup\SyncClearable;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
@@ -23,7 +22,7 @@ use phpbu\App\Util\Str;
  */
 class Dropbox implements Simulator
 {
-    use SyncClearable;
+    use Clearable;
 
     /**
      * API access token
@@ -101,6 +100,8 @@ class Dropbox implements Simulator
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }
+        // run remote cleanup
+        $this->cleanup($target, $result);
         $result->debug('upload: done  (' . $meta->getSize() . ')');
     }
 
@@ -115,7 +116,8 @@ class Dropbox implements Simulator
         $result->debug(
             'sync backup to dropbox' . PHP_EOL
             . '  token:    ********' . PHP_EOL
-            . '  location: ' . $this->path
+            . '  location: ' . $this->path . PHP_EOL
+            . $this->getSimulateInfo()
         );
     }
 

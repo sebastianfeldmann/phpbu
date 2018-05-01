@@ -2,10 +2,8 @@
 namespace phpbu\App\Backup\Cleaner;
 
 use phpbu\App\Backup\Cleaner;
-use phpbu\App\Backup\Collector\Collector;
-use phpbu\App\Backup\Collector\Local;
+use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
-use phpbu\App\Result;
 
 /**
  * Cleanup backup directory.
@@ -53,9 +51,9 @@ class Quantity extends Abstraction implements Cleaner
     /**
      * Return list of files to delete.
      *
-     * @param  \phpbu\App\Backup\Target          $target
-     * @param  \phpbu\App\Backup\Collector\Collector $collector
-     * @return \phpbu\App\Backup\File\FileLocal[]
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @return \phpbu\App\Backup\File\Local[]
      * @throws \phpbu\App\Exception
      */
     protected function getFilesToDelete(Target $target, Collector $collector)
