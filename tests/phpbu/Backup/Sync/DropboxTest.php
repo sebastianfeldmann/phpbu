@@ -35,7 +35,7 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
     {
         $msg = 'sync backup to dropbox' . PHP_EOL
              . '  token:    ********' . PHP_EOL
-             . '  location: /foo/';
+             . '  location: /foo/' . PHP_EOL;
 
         $dropbox = new Dropbox();
         $dropbox->setup([
