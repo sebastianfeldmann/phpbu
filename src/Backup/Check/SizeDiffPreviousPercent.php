@@ -65,5 +65,6 @@ class SizeDiffPreviousPercent implements Simulator
     public function simulate(Target $target, $value, Collector $collector, Result $result): bool
     {
         $result->debug('checking size difference ' . $value . '%' . PHP_EOL);
+        return true;
     }
 }
