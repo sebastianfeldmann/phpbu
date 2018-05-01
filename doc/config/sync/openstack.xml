@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sync type="openstack">
+    <!-- mandatory -->
+    <option name="auth_url" value="openstack-auth-url" />
+
+    <!-- mandatory -->
+    <option name="region" value="openstack-region" />
+
+    <!-- mandatory -->
+    <option name="username" value="identify2-username" />
+
+    <!-- mandatory -->
+    <option name="password" value="identify2-password" />
+
+    <!-- mandatory -->
+    <option name="container_name" value="backups_container" />
+
+    <!-- optional, default swift -->
+    <option name="service_name" value="swift" />
+
+    <!-- optional, default empty string -->
+    <option name="path" value="" />
+</sync>
