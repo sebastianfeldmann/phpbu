@@ -116,6 +116,6 @@ class Sftp extends Xtp implements Simulator
                 }
             }
         }
-        return $remoteDirs;
+        return array_filter($remoteDirs);
     }
 }
