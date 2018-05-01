@@ -8,7 +8,6 @@ use GuzzleHttp\Client;
 use OpenStack\Common\Transport\HandlerStack;
 use OpenStack\Common\Transport\Utils;
 use OpenStack\Identity\v2\Service;
-use phpbu\App\Backup\File\FileRemote;
 use phpbu\App\Backup\SyncClearable;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
@@ -97,19 +96,12 @@ class Openstack implements Simulator
     }
 
     /**
-     * @return Container
-     */
-    public function getContainer(): Container
-    {
-        return $this->container;
-    }
-
-    /**
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::setup()
      * @param  array $config
      * @throws \phpbu\App\Backup\Sync\Exception
+     * @throws \phpbu\App\Exception
      */
     public function setup(array $config)
     {
@@ -156,6 +148,7 @@ class Openstack implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @param  \phpbu\App\Result        $result
      * @throws \phpbu\App\Backup\Sync\Exception
+     * @throws \OpenStack\Common\Error\BadResponseError
      */
     public function sync(Target $target, Result $result)
     {
@@ -214,23 +207,8 @@ class Openstack implements Simulator
             return;
         }
 
-        $collector = new \phpbu\App\Backup\Collector\OpenStack($target, $this);
+        $collector = new \phpbu\App\Backup\Collector\OpenStack($target, $this->container, $this->path);
         $this->cleaner->cleanup($target, $collector, $result);
-    }
-
-    /**
-     * Remove remote file
-     *
-     * @param FileRemote $file
-     * @return void
-     */
-    public function unlinkFile(FileRemote $file)
-    {
-        try {
-            $this->getContainer()->getObject($file->getPathname())->delete();
-        } catch (\OpenStack\Common\Error\BadResponseError $exception) {
-            //
-        }
     }
 
     /**

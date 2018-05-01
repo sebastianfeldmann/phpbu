@@ -40,12 +40,4 @@ interface Sync
      * @param \phpbu\App\Result        $result
      */
     public function cleanup(Target $target, Result $result);
-
-    /**
-     * Remove remote file
-     *
-     * @param FileRemote $file
-     * @return mixed
-     */
-    public function unlinkFile(FileRemote $file);
 }

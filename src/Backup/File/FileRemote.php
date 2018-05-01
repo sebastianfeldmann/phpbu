@@ -42,30 +42,6 @@ class FileRemote implements File
     protected $lastModified;
 
     /**
-     * FileRemote constructor.
-     *
-     * @param array $attributes
-     * @param Sync  $sync
-     */
-    public function __construct(array $attributes, Sync $sync)
-    {
-        $this->sync = $sync;
-
-        if (isset($attributes['name'])) {
-            $this->filename = $attributes['name'];
-        }
-        if (isset($attributes['size'])) {
-            $this->size = $attributes['size'];
-        }
-        if (isset($attributes['pathname'])) {
-            $this->pathname = $attributes['pathname'];
-        }
-        if (isset($attributes['last_modified'])) {
-            $this->lastModified = $attributes['last_modified'];
-        }
-    }
-
-    /**
      * Return the filesize.
      *
      * @return integer
@@ -122,6 +98,6 @@ class FileRemote implements File
      */
     public function unlink()
     {
-        $this->sync->unlinkFile($this);
+        throw new \phpbu\App\Exception("Method must be overrided in proper file class");
     }
 }

@@ -118,15 +118,4 @@ class Rsync extends Cli implements Simulator
     {
         // TODO: Implement cleanup() method.
     }
-
-    /**
-     * Remove remote file
-     *
-     * @param FileRemote $file
-     * @return mixed
-     */
-    public function unlinkFile(FileRemote $file)
-    {
-        // TODO: Implement unlinkFile() method.
-    }
 }

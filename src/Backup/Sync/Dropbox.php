@@ -4,7 +4,6 @@ namespace phpbu\App\Backup\Sync;
 use Kunnu\Dropbox\DropboxApp as DropboxConfig;
 use Kunnu\Dropbox\Dropbox as DropboxApi;
 use Kunnu\Dropbox\DropboxFile;
-use phpbu\App\Backup\File\FileRemote;
 use phpbu\App\Backup\SyncClearable;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
@@ -61,6 +60,7 @@ class Dropbox implements Simulator
      * @see    \phpbu\App\Backup\Sync::setup()
      * @param  array $config
      * @throws \phpbu\App\Backup\Sync\Exception
+     * @throws \phpbu\App\Exception
      */
     public function setup(array $config)
     {
@@ -131,19 +131,8 @@ class Dropbox implements Simulator
             return;
         }
 
-        $collector = new \phpbu\App\Backup\Collector\Dropbox($target, $this);
+        $collector = new \phpbu\App\Backup\Collector\Dropbox($target, $this->client, $this->path);
         $this->cleaner->cleanup($target, $collector, $result);
-    }
-
-    /**
-     * Remove remote file
-     *
-     * @param FileRemote $file
-     * @return mixed
-     */
-    public function unlinkFile(FileRemote $file)
-    {
-       $this->client->delete($file->getPathname());
     }
 
     /**
@@ -153,21 +142,5 @@ class Dropbox implements Simulator
     {
         $config       = new DropboxConfig("id", "secret", $this->token);
         $this->client = new DropboxApi($config);
-    }
-
-    /**
-     * @return DropboxApi
-     */
-    public function getClient(): DropboxApi
-    {
-        return $this->client;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPath(): string
-    {
-        return $this->path;
     }
 }

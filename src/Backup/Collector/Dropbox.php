@@ -1,16 +1,15 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
-use phpbu\App\Backup\File\FileRemote;
-use phpbu\App\Backup\Sync\Dropbox as DropboxSync;
+use Kunnu\Dropbox\Dropbox as DropboxApi;
 use phpbu\App\Backup\Target;
 
 class Dropbox extends Collector
 {
     /**
-     * @var DropboxSync
+     * @var DropboxApi
      */
-    protected $sync;
+    protected $client;
 
     /**
      * OpenStack remote path
@@ -23,11 +22,13 @@ class Dropbox extends Collector
      * OpenStack constructor.
      *
      * @param \phpbu\App\Backup\Target $target
-     * @param DropboxSync            $sync
+     * @param DropboxApi               $client
+     * @param string                   $path
      */
-    public function __construct(Target $target, DropboxSync $sync)
+    public function __construct(Target $target, DropboxApi $client, string $path)
     {
-        $this->sync = $sync;
+        $this->client = $client;
+        $this->path = $path;
         $this->setUp($target);
     }
 
@@ -38,7 +39,7 @@ class Dropbox extends Collector
      */
     public function getBackupFiles(): array
     {
-        $items = $this->sync->getClient()->listFolder($this->sync->getPath(), ['limit' => 100]);
+        $items = $this->client->listFolder($this->path, ['limit' => 100]);
         foreach ($items->getItems() as $item) {
             // skip directories
             if ($item instanceof \Kunnu\Dropbox\Models\FolderMetadata) {
@@ -46,17 +47,11 @@ class Dropbox extends Collector
             }
             /** @var \Kunnu\Dropbox\Models\FileMetadata $item */
             // skip currently created backup
-            if ($item->getPathDisplay() == $this->sync->getPath() . $this->target->getFilename()) {
+            if ($item->getPathDisplay() == $this->path . $this->target->getFilename()) {
                 continue;
             }
             if (preg_match('#' . $this->fileRegex . '#i', $item->getName())) {
-                $attributes = [
-                    'name' => $item->getName(),
-                    'pathname' => $item->getPathDisplay(),
-                    'size' => (int)$item->getSize(),
-                    'last_modified' => strtotime($item->getClientModified()),
-                ];
-                $this->files[] = new FileRemote($attributes, $this->sync);
+                $this->files[] = new \phpbu\App\Backup\File\Dropbox($this->client, $item);
             }
         }
 

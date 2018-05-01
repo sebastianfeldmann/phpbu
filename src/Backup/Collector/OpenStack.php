@@ -2,27 +2,36 @@
 
 namespace phpbu\App\Backup\Collector;
 
+use OpenStack\ObjectStore\v1\Models\Container;
 use phpbu\App\Backup\Sync\Openstack as OpenStackSync;
 use OpenStack\ObjectStore\v1\Models\StorageObject;
-use phpbu\App\Backup\File\FileRemote;
 use phpbu\App\Backup\Target;
 
 class OpenStack extends Collector
 {
     /**
-     * @var OpenStackSync
+     * @var Container
      */
-    protected $sync;
+    protected $container;
+
+    /**
+     * Path where to search for backup files
+     *
+     * @var string
+     */
+    protected $path;
 
     /**
      * OpenStack constructor.
      *
      * @param \phpbu\App\Backup\Target $target
-     * @param OpenStackSync            $sync
+     * @param Container                $container
+     * @param string                   $path
      */
-    public function __construct(Target $target, OpenStackSync $sync)
+    public function __construct(Target $target, Container $container, string $path)
     {
-        $this->sync = $sync;
+        $this->container = $container;
+        $this->path = $path;
         $this->setUp($target);
     }
 
@@ -34,7 +43,7 @@ class OpenStack extends Collector
     public function getBackupFiles(): array
     {
         // get all objects matching our path prefix
-        $objects = $this->sync->getContainer()->listObjects(['prefix' => $this->sync->getPath()]);
+        $objects = $this->container->listObjects(['prefix' => $this->path]);
         /** @var StorageObject $object */
         foreach ($objects as $object) {
             // skip directories
@@ -42,17 +51,11 @@ class OpenStack extends Collector
                 continue;
             }
             // skip currently created backup
-            if ($object->name == $this->sync->getPath() . $this->target->getFilename()) {
+            if ($object->name == $this->path . $this->target->getFilename()) {
                 continue;
             }
             if (preg_match('#' . $this->fileRegex . '#i', basename($object->name))) {
-                $attributes = [
-                    'name' => basename($object->name),
-                    'pathname' => $object->name,
-                    'size' => (int)$object->contentLength,
-                    'last_modified' => $object->lastModified->getTimestamp(),
-                ];
-                $this->files[] = new FileRemote($attributes, $this->sync);
+                $this->files[] = new \phpbu\App\Backup\File\OpenStack($this->container, $object);
             }
         }
 
