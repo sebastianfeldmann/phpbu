@@ -104,12 +104,18 @@ class Sftp extends Xtp implements Simulator
      *
      * @return array
      */
-    private function getRemoteDirectoryList() : array
+    public function getRemoteDirectoryList() : array
     {
         $remoteDirs = [];
         if ('' !== $this->remotePath) {
             $remoteDirs = explode('/', $this->remotePath);
+            // if path is absolute, fix first part of array that was empty string
+            if (substr($this->remotePath, 0, 1) === '/') {
+                if (isset($remoteDirs[0])) {
+                    $remoteDirs[0] = '/';
+                }
+            }
         }
-        return $remoteDirs;
+        return array_filter($remoteDirs);
     }
 }

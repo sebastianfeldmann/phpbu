@@ -109,4 +109,19 @@ class SftpTest extends \PHPUnit\Framework\TestCase
             'path' => '/foo'
         ]);
     }
+
+    /**
+     * Tests absolute path
+     */
+    public function testSetUpPathWithAbsolutePath()
+    {
+        $sftp = new Sftp();
+        $sftp->setup([
+            'host'     => 'example.com',
+            'user'     => 'user.name',
+            'password' => 'secret',
+            'path'     => '/foo',
+        ]);
+        $this->assertEquals(['/', 'foo'], $sftp->getRemoteDirectoryList());
+    }
 }
