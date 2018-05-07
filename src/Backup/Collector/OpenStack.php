@@ -1,5 +1,4 @@
 <?php
-
 namespace phpbu\App\Backup\Collector;
 
 use OpenStack\ObjectStore\v1\Models\Container;

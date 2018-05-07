@@ -1,5 +1,4 @@
 <?php
-
 namespace phpbu\App\Backup;
 
 use phpbu\App\Util\Str;

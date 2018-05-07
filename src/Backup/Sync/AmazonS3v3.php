@@ -19,6 +19,30 @@ use phpbu\App\Backup\Target;
  */
 class AmazonS3v3 extends AmazonS3
 {
+    use Clearable;
+
+    /**
+     * Amazon S3 client.
+     *
+     * @var S3Client;
+     */
+    protected $client;
+
+    /**
+     * Configure the sync.
+     *
+     * @see    \phpbu\App\Backup\Sync::setup()
+     * @param  array $config
+     * @throws \phpbu\App\Backup\Sync\Exception
+     * @throws \phpbu\App\Exception
+     */
+    public function setup(array $config)
+    {
+        parent::setup($config);
+
+        $this->setUpClearable($config);
+    }
+
     /**
      * Execute the sync.
      *
@@ -29,7 +53,7 @@ class AmazonS3v3 extends AmazonS3
      */
     public function sync(Target $target, Result $result)
     {
-        $s3 = new S3Client([
+        $this->client = new S3Client([
             'region'  => $this->region,
             'version' => '2006-03-01',
             'credentials' => [
@@ -38,17 +62,48 @@ class AmazonS3v3 extends AmazonS3
             ]
         ]);
 
-        if (!$s3->doesBucketExist($this->bucket)) {
+        if (!$this->client->doesBucketExist($this->bucket)) {
             $result->debug('create s3 bucket');
-            $this->createBucket($s3);
+            $this->createBucket($this->client);
         }
 
         try {
-            $this->upload($target, $s3);
+            $this->upload($target, $this->client);
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }
+        // run remote cleanup
+        $this->cleanup($target, $result);
         $result->debug('upload: done');
+    }
+
+    /**
+     * Execute the remote clean up if needed
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
+     */
+    public function cleanup(Target $target, Result $result)
+    {
+        if (!$this->cleaner) {
+            return;
+        }
+
+        $collector = new \phpbu\App\Backup\Collector\AmazonS3v3($target, $this->client, $this->bucket, $this->path);
+        $this->cleaner->cleanup($target, $collector, $result);
+    }
+
+    /**
+     * Simulate the sync execution.
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
+     */
+    public function simulate(Target $target, Result $result)
+    {
+        parent::simulate($target, $result);
+
+        $this->simulateRemoteCleanup($target, $result);
     }
 
     /**
