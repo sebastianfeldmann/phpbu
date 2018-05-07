@@ -51,7 +51,7 @@ class Sftp extends Collector
             if ($fileInfo['filename'] == $this->target->getFilename()) {
                 continue;
             }
-            if (preg_match('#' . $this->fileRegex . '#i', $fileInfo['filename'])) {
+            if ($this->isFilenameMatch($fileInfo['filename'])) {
                 $this->files[] = new \phpbu\App\Backup\File\Sftp($this->sftp, $fileInfo, $this->path);
             }
         }

@@ -7,6 +7,18 @@ use phpbu\App\Configuration\Backup\Cleanup;
 use phpbu\App\Factory;
 use phpbu\App\Result;
 
+/**
+ * Clearable trait
+ *
+ * @package    phpbu
+ * @subpackage Sync
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @author     Vitaly Baev <hello@vitalybaev.ru>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
+ * @link       http://phpbu.de/
+ * @since      Class available since Release 5.1.0
+ */
 trait Clearable
 {
     /**

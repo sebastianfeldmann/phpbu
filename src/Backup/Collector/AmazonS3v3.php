@@ -64,7 +64,7 @@ class AmazonS3v3 extends Collector
             if ($object['Key'] == $this->path . $this->target->getFilename()) {
                 continue;
             }
-            if (preg_match('#' . $this->fileRegex . '#i', basename($object['Key']))) {
+            if ($this->isFilenameMatch(basename($object['Key']))) {
                 $this->files[] = new \phpbu\App\Backup\File\AmazonS3v3($this->client, $this->bucket, $object);
             }
         }

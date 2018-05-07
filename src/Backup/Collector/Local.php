@@ -110,7 +110,7 @@ class Local extends Collector
             if ($file->getPathname() == $this->target->getPathname()) {
                 continue;
             }
-            if (preg_match('#' . $this->fileRegex . '#i', $file->getFilename())) {
+            if ($this->isFilenameMatch($file->getFilename())) {
                 $index               = date('YmdHis', $file->getMTime()) . '-' . $i . '-' . $file->getPathname();
                 $this->files[$index] = new FileLocal($file->getFileInfo());
             }

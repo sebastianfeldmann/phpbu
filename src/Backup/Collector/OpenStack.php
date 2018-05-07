@@ -54,7 +54,7 @@ class OpenStack extends Collector
             if ($object->name == $this->path . $this->target->getFilename()) {
                 continue;
             }
-            if (preg_match('#' . $this->fileRegex . '#i', basename($object->name))) {
+            if ($this->isFilenameMatch(basename($object->name))) {
                 $this->files[] = new \phpbu\App\Backup\File\OpenStack($this->container, $object);
             }
         }

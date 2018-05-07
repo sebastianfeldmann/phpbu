@@ -39,6 +39,17 @@ abstract class Collector
     }
 
     /**
+     * Returns true if filename matches the target regex
+     *
+     * @param string $filename
+     * @return bool
+     */
+    protected function isFilenameMatch(string $filename): bool
+    {
+        return preg_match('#'.$this->fileRegex . '#i', $filename);
+    }
+
+    /**
      * Get all created backups.
      *
      * @return \phpbu\App\Backup\File[]

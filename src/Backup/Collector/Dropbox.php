@@ -51,7 +51,7 @@ class Dropbox extends Collector
             if ($item->getPathDisplay() == $this->path . $this->target->getFilename()) {
                 continue;
             }
-            if (preg_match('#' . $this->fileRegex . '#i', $item->getName())) {
+            if ($this->isFilenameMatch($item->getName())) {
                 $this->files[] = new \phpbu\App\Backup\File\Dropbox($this->client, $item);
             }
         }
