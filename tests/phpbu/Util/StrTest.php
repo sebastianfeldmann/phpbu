@@ -221,6 +221,16 @@ class StrTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Test has trailing slash.
+     */
+    public function testHasTrailingSlash()
+    {
+        $this->assertEquals(false, Str::hasTrailingSlash('foo'));
+        $this->assertEquals(false, Str::hasTrailingSlash('/foo/bar'));
+        $this->assertEquals(true, Str::hasTrailingSlash('baz/'));
+    }
+
+    /**
      * Test with trailing slash.
      */
     public function testWithTrailingSlash()
@@ -239,6 +249,16 @@ class StrTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('foo/bar', Str::withoutTrailingSlash('foo/bar/'), 'should be foo/bar');
         $this->assertEquals('baz', Str::withoutTrailingSlash('baz'), 'should be baz');
         $this->assertEquals('/', Str::withoutTrailingSlash('/'), '/ should be stay /');
+    }
+
+    /**
+     * Test has leading slash.
+     */
+    public function testHasLeadingSlash()
+    {
+        $this->assertEquals(false, Str::hasLeadingSlash('foo'));
+        $this->assertEquals(false, Str::hasLeadingSlash('foo/bar/'));
+        $this->assertEquals(true,  Str::hasLeadingSlash('/baz'));
     }
 
     /**

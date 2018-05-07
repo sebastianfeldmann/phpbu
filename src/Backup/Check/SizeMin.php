@@ -52,5 +52,6 @@ class SizeMin implements Simulator
     public function simulate(Target $target, $value, Collector $collector, Result $result) : bool
     {
         $result->debug('checking size to be at least ' . $value . PHP_EOL);
+        return true;
     }
 }

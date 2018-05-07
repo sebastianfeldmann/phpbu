@@ -110,6 +110,20 @@ class Mail implements Listener, Logger
     private $sendOnlyOnError = false;
 
     /**
+     * Send mails on simulation runs.
+     *
+     * @var bool
+     */
+    private $sendSimulating = true;
+
+    /**
+     * Is current execution a simulation.
+     *
+     * @var bool
+     */
+    private $isSimulation = false;
+
+    /**
      * Returns an array of event names this subscriber wants to listen to.
      *
      * The array keys are event names and the value can be:
@@ -148,11 +162,13 @@ class Mail implements Listener, Logger
         $mails                 = $options['recipients'];
         $server                = gethostname();
         $this->sendOnlyOnError = Str::toBoolean(Arr::getValue($options, 'sendOnlyOnError'), false);
+        $this->sendSimulating  = Str::toBoolean(Arr::getValue($options, 'sendOnSimulation'), true);
         $this->subject         = Arr::getValue($options, 'subject', 'PHPBU backup report from ' . $server);
         $this->senderMail      = Arr::getValue($options, 'sender.mail', 'phpbu@' . $server);
         $this->senderName      = Arr::getValue($options, 'sender.name');
         $this->transportType   = Arr::getValue($options, 'transport', 'mail');
         $this->recipients      = array_map('trim', explode(';', $mails));
+        $this->isSimulation    = Arr::getValue($options, '__simulate__', false);
 
         // create transport an mailer
         $transport    = $this->createTransport($this->transportType, $options);
@@ -168,9 +184,8 @@ class Mail implements Listener, Logger
     public function onPhpbuEnd(Event\App\End $event)
     {
         $result  = $event->getResult();
-        $allGood = $result->allOk();
 
-        if (!$this->sendOnlyOnError || !$allGood) {
+        if ($this->shouldMailBeSend($result)) {
             $header  = $this->getHeaderHtml();
             $status  = $this->getStatusHtml($result);
             $errors  = $this->getErrorHtml($result);
@@ -184,7 +199,7 @@ class Mail implements Listener, Logger
                      . $footer
                      . '</body></html>';
             $sent    = null;
-            $state   = $allGood ? 'OK' : ($result->backupOkButSkipsOrFails() ? 'WARNING' : 'ERROR');
+            $state   = $result->allOk() ? 'OK' : ($result->backupOkButSkipsOrFails() ? 'WARNING' : 'ERROR');
 
             try {
                 /** @var \Swift_Message $message */
@@ -285,6 +300,21 @@ class Mail implements Listener, Logger
                 throw new Exception(sprintf('mail transport not supported: \'%s\'', $type));
         }
         return $transport;
+    }
+
+    /**
+     * Should a mail be send.
+     *
+     * @param  \phpbu\App\Result $result
+     * @return bool
+     */
+    protected function shouldMailBeSend(Result $result) : bool
+    {
+        // send mails if
+        // there is an error or send error only is inactive
+        // and
+        // simulation settings do not prevent sending
+        return (!$this->sendOnlyOnError || !$result->allOk()) && ($this->sendSimulating || !$this->isSimulation);
     }
 
     /**

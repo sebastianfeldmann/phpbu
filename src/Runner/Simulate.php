@@ -1,13 +1,13 @@
 <?php
 namespace phpbu\App\Runner;
 
-use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Check;
-use phpbu\App\Backup\Crypter;
-use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Cleaner;
-use phpbu\App\Backup\Compressor;
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Compressor;
+use phpbu\App\Backup\Crypter;
+use phpbu\App\Backup\Source;
+use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Configuration;
 use phpbu\App\Result;
@@ -69,7 +69,6 @@ class Simulate extends Compression
     protected function simulateSource(Configuration\Backup $conf, Target $target)
     {
         $this->result->backupStart($conf);
-        /* @var \phpbu\App\Runner\Source $runner */
         $source = $this->factory->createSource($conf->getSource()->type, $conf->getSource()->options);
 
         if ($source instanceof Source\Simulator) {
@@ -115,6 +114,7 @@ class Simulate extends Compression
             if ($crypter instanceof Crypter\Simulator) {
                 $crypter->simulate($target, $this->result);
             }
+            $target->setCrypter($crypter);
             $this->result->cryptEnd($crypt);
         }
     }

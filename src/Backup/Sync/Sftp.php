@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use phpbu\App\Util\Str;
 use phpseclib;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
@@ -77,7 +78,7 @@ class Sftp extends Xtp implements Simulator
      * @return \phpseclib\Net\SFTP
      * @throws \phpbu\App\Backup\Sync\Exception
      */
-    private function login() : phpseclib\Net\SFTP
+    protected function login() : phpseclib\Net\SFTP
     {
         // silence phpseclib
         $old  = error_reporting(0);
@@ -107,8 +108,13 @@ class Sftp extends Xtp implements Simulator
     private function getRemoteDirectoryList() : array
     {
         $remoteDirs = [];
-        if ('' !== $this->remotePath) {
+        if (!empty($this->remotePath)) {
             $remoteDirs = explode('/', $this->remotePath);
+            // fix empty first array element for absolute path
+            if (Str::hasLeadingSlash($this->remotePath)) {
+                $remoteDirs[0] = '/';
+            }
+            $remoteDirs = array_filter($remoteDirs);
         }
         return $remoteDirs;
     }
