@@ -35,6 +35,7 @@ trait BaseMockery
         $compress = !empty($fileCompressed);
         $pathName = $compress ? $fileCompressed : $file;
         $target   = $this->createMock(\phpbu\App\Backup\Target::class);
+        $target->method('getFilename')->willReturn(basename($pathName));
         $target->method('getPathnamePlain')->willReturn($file);
         $target->method('getPathname')->willReturn($pathName);
         $target->method('getPath')->willReturn(dirname($pathName));

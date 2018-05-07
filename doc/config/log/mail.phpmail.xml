@@ -6,6 +6,9 @@
   <!-- optional default=false -->
   <option name="sendOnlyOnError" value="true" />
 
+  <!-- optional default=true -->
+  <option name="sendOnSimulation" value="false" />
+
   <!-- optional default=PHPBU Backup Report from $HOSTNAME -->
   <option name="subject" value="My Backup Report Subject" />
 

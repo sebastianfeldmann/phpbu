@@ -120,7 +120,6 @@ class Backup extends Compression
     protected function executeSource(Configuration\Backup $conf, Target $target)
     {
         $this->result->backupStart($conf);
-        /* @var \phpbu\App\Runner\Source $runner */
         $source = $this->factory->createSource($conf->getSource()->type, $conf->getSource()->options);
         $status = $source->backup($target, $this->result);
         $this->compress($status, $target, $this->result);
@@ -174,6 +173,7 @@ class Backup extends Compression
                 }
                 $crypter = $this->factory->createCrypter($config->type, $config->options);
                 $crypter->crypt($target, $this->result);
+                $target->setCrypter($crypter);
                 $this->result->cryptEnd($config);
 
             } catch (Crypter\Exception $e) {
@@ -222,8 +222,8 @@ class Backup extends Compression
      */
     protected function executeCleanup(Configuration\Backup $backup, Target $target, Local $collector)
     {
-        /* @var \phpbu\App\Configuration\Backup\Cleanup $config */
         if ($backup->hasCleanup()) {
+            /* @var \phpbu\App\Configuration\Backup\Cleanup $config */
             $config = $backup->getCleanup();
             try {
                 $this->result->cleanupStart($config);

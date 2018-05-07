@@ -70,14 +70,16 @@ class Runner
     private function setupLoggers(Configuration $configuration, Result $result)
     {
         foreach ($configuration->getLoggers() as $log) {
-            // this is a already fully setup Listener so just add it
+            // log is a already fully setup Listener so just use it
             if ($log instanceof Listener) {
                 $logger = $log;
             } else {
-                // this is a configuration blueprint for a logger, so create and add it
-                /** @var \phpbu\App\Configuration\Logger $log */
+                // put some system configuration values into the logger configuration
+                $system  = ['__simulate__' => $configuration->isSimulation()];
+                $options = array_merge($log->options, $system);
+                // log is a configuration blueprint for a logger, so create it
                 /** @var \phpbu\App\Listener $logger */
-                $logger = $this->factory->createLogger($log->type, $log->options);
+                $logger = $this->factory->createLogger($log->type, $options);
             }
             $result->addListener($logger);
         }

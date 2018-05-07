@@ -1,6 +1,10 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use phpbu\App\Result;
+use phpseclib;
+use phpbu\App\BaseMockery;
+
 /**
  * SftpTest
  *
@@ -14,6 +18,8 @@ namespace phpbu\App\Backup\Sync;
  */
 class SftpTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+
     /**
      * Tests Sftp::setUp
      */
@@ -43,7 +49,7 @@ class SftpTest extends \PHPUnit\Framework\TestCase
             'path'     => 'foo'
         ]);
 
-        $resultStub = $this->createMock(\phpbu\App\Result::class);
+        $resultStub = $this->createMock(Result::class);
         $resultStub->expects($this->once())
                    ->method('debug');
 
@@ -108,5 +114,61 @@ class SftpTest extends \PHPUnit\Framework\TestCase
             'user' => 'user.name',
             'path' => '/foo'
         ]);
+    }
+
+    /**
+     * Tests absolute path
+     */
+    public function testSetUpPathWithAbsolutePath()
+    {
+        $secLibMock = $this->createPHPSecLibSftpMock();
+        $target     = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $result     = $this->getResultMock(5);
+
+        $sftp = $this->createPartialMock(Sftp::class, ['login']);
+        $sftp->method('login')->willReturn($secLibMock);
+
+        $sftp->setup([
+            'host'     => 'example.com',
+            'user'     => 'user.name',
+            'password' => 'secret',
+            'path'     => '/foo',
+        ]);
+
+        $sftp->sync($target, $result);
+    }
+
+    /**
+     * Create a app result mock
+     *
+     * @return \phpseclib\Net\SFTP
+     */
+    private function createPHPSecLibSftpMock()
+    {
+        $secLib = $this->createMock(phpseclib\Net\SFTP::class);
+
+        $secLib->expects($this->exactly(2))
+               ->method('is_dir')
+               ->withConsecutive(['/'], ['foo'])
+               ->will($this->onConsecutiveCalls(true, false));
+        $secLib->method('chdir')->willReturn(true);
+        $secLib->expects($this->once())->method('mkdir')->with('foo')->willReturn(true);
+        $secLib->method('put')->willReturn(true);
+
+        return $secLib;
+    }
+
+    /**
+     * Create a app result mock
+     *
+     * @param  int $expectedDebugCalls
+     * @return \phpbu\App\Result
+     */
+    private function getResultMock(int $expectedDebugCalls)
+    {
+        $result = $this->createMock(Result::class);
+        $result->expects($this->exactly($expectedDebugCalls))->method('debug');
+
+        return $result;
     }
 }

@@ -115,6 +115,7 @@ class Simulate extends Compression
             if ($crypter instanceof Crypter\Simulator) {
                 $crypter->simulate($target, $this->result);
             }
+            $target->setCrypter($crypter);
             $this->result->cryptEnd($crypt);
         }
     }

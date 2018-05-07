@@ -192,6 +192,17 @@ class Str
     }
 
     /**
+     * Determine if the path has a trailing slash.
+     *
+     * @param  string $string
+     * @return bool
+     */
+    public static function hasTrailingSlash(string $string) : bool
+    {
+        return substr($string, -1) === '/';
+    }
+
+    /**
      * Adds trailing slash to a string/path if not already there.
      *
      * @param  string $string
@@ -199,7 +210,7 @@ class Str
      */
     public static function withTrailingSlash($string)
     {
-        return $string . (substr($string, -1) !== '/' ? '/' : '');
+        return $string . (self::hasTrailingSlash($string) ? '' : '/');
     }
 
     /**
@@ -210,7 +221,18 @@ class Str
      */
     public static function withoutTrailingSlash($string)
     {
-        return strlen($string) > 1 && substr($string, -1) === '/' ? substr($string, 0, -1) : $string;
+        return strlen($string) > 1 && self::hasTrailingSlash($string) ? substr($string, 0, -1) : $string;
+    }
+
+    /**
+     * Determine if the path has a leading slash.
+     *
+     * @param  string $string
+     * @return bool
+     */
+    public static function hasLeadingSlash(string $string) : bool
+    {
+        return substr($string, 0,1) === '/';
     }
 
     /**
@@ -221,7 +243,7 @@ class Str
      */
     public static function withLeadingSlash($string)
     {
-        return (substr($string, 0, 1) !== '/' ? '/' : '') . $string;
+        return (self::hasLeadingSlash($string) ? '' : '/') . $string;
     }
 
     /**
@@ -232,7 +254,7 @@ class Str
      */
     public static function withoutLeadingSlash($string)
     {
-        return substr($string, 0, 1) === '/' ? substr($string, 1) : $string;
+        return self::hasLeadingSlash($string) ? substr($string, 1) : $string;
     }
 
     /**
