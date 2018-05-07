@@ -3,7 +3,6 @@ namespace phpbu\App\Backup\Sync;
 
 use phpseclib;
 use phpbu\App\Result;
-use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
@@ -84,15 +83,15 @@ abstract class Xtp implements Simulator
         if (!Arr::isSetAndNotEmptyString($config, 'password')) {
             throw new Exception('option \'password\' is missing');
         }
-        $path             = Arr::getValue($config, 'path', '');
-        $this->host       = $config['host'];
-        $this->user       = $config['user'];
-        $this->password   = $config['password'];
+        $path = Arr::getValue($config, 'path', '');
+        $this->host = $config['host'];
+        $this->user = $config['user'];
+        $this->password = $config['password'];
         $this->remotePath = Str::withoutTrailingSlash(Str::replaceDatePlaceholders($path));
     }
 
     /**
-     * Simulate the sync execution.
+     * Simulate the sync execution
      *
      * @param \phpbu\App\Backup\Target $target
      * @param \phpbu\App\Result        $result
@@ -105,7 +104,8 @@ abstract class Xtp implements Simulator
             . '  user:     ' . $this->user . PHP_EOL
             . '  password:  ********' . PHP_EOL
             . '  path:     ' . $this->remotePath . PHP_EOL
-            . $this->getSimulateInfo()
         );
+
+        $this->simulateRemoteCleanup($target, $result);
     }
 }

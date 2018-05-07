@@ -194,8 +194,9 @@ class Openstack implements Simulator
             . '  password:    ********' . PHP_EOL
             . '  container: ' . $this->containerName
             . '  path: "' . $this->path . '"' . PHP_EOL
-            . $this->getSimulateInfo()
         );
+
+        $this->simulateRemoteCleanup($target, $result);
     }
 
     /**

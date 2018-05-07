@@ -117,8 +117,9 @@ class Dropbox implements Simulator
             'sync backup to dropbox' . PHP_EOL
             . '  token:    ********' . PHP_EOL
             . '  location: ' . $this->path . PHP_EOL
-            . $this->getSimulateInfo()
         );
+
+        $this->simulateRemoteCleanup($target, $result);
     }
 
     /**

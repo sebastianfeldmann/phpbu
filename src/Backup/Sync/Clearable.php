@@ -2,8 +2,10 @@
 namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Backup\Cleaner;
+use phpbu\App\Backup\Target;
 use phpbu\App\Configuration\Backup\Cleanup;
 use phpbu\App\Factory;
+use phpbu\App\Result;
 
 trait Clearable
 {
@@ -42,14 +44,13 @@ trait Clearable
     }
 
     /**
-     * @return string
+     * @param Target $target
+     * @param Result $result
      */
-    public function getSimulateInfo(): string
+    public function simulateRemoteCleanup(Target $target, Result $result)
     {
         if ($this->cleaner) {
-            return "  sync cleanup: {$this->cleanupConfig->type}" . PHP_EOL;
+            $result->debug("  sync cleanup: {$this->cleanupConfig->type}" . PHP_EOL);
         }
-
-        return '';
     }
 }
