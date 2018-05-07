@@ -2,7 +2,6 @@
 namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Backup\Cli;
-use phpbu\App\Backup\File\Remote;
 use phpbu\App\Backup\Rsync as RsyncTrait;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;

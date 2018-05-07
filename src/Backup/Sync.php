@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\App\Backup;
 
-use phpbu\App\Backup\File\Remote;
+
 use phpbu\App\Result;
 
 /**

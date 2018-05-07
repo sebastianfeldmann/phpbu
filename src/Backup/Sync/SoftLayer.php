@@ -1,9 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use phpbu\App\Backup\File\Remote;
 use phpbu\App\Result;
-use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
