@@ -78,11 +78,11 @@ class TarTest extends \PHPUnit\Framework\TestCase
         $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->ignoreFailedRead(true);
 
-        $this->assertEquals([0, 1], $tar->getAcceptableExitCodes());
         $this->assertEquals(
             PHPBU_TEST_BIN . '/tar --ignore-failed-read -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommand()
         );
+        $this->assertEquals([0, 1], $tar->getAcceptableExitCodes());
     }
 
     /**
