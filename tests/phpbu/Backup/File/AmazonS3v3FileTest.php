@@ -37,10 +37,10 @@ class AmazonS3v3FileTest extends \PHPUnit\Framework\TestCase
             'LastModified' => '2018-05-08 14:14:54.0 +00:00',
         ];
         $file = new AmazonS3v3($amazonS3, 'test', $metadata);
-        $this->assertAttributeEquals('dump.tar.gz', 'filename', $file);
-        $this->assertAttributeEquals('dump.tar.gz', 'pathname', $file);
-        $this->assertAttributeEquals(102102, 'size', $file);
-        $this->assertAttributeEquals(1525788894, 'lastModified', $file);
+        $this->assertEquals('dump.tar.gz', $file->getFilename());
+        $this->assertEquals('dump.tar.gz', $file->getPathname());
+        $this->assertEquals(102102, $file->getSize());
+        $this->assertEquals(1525788894, $file->getMTime());
         $this->assertAttributeEquals('test', 'bucket', $file);
 
         $file->unlink();

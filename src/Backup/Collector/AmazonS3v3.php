@@ -55,7 +55,7 @@ class AmazonS3v3 extends Collector
             'Delimiter' => '/',
         ]);
 
-        if (!$result['Contents'] || !is_array($result['Contents'])) {
+        if (!isset($result['Contents']) || !$result['Contents'] || !is_array($result['Contents'])) {
             return [];
         }
 
