@@ -34,16 +34,6 @@ class AmazonS3v3 extends Remote
     }
 
     /**
-     * Return whether the file is writable or not.
-     *
-     * @return boolean
-     */
-    public function isWritable(): bool
-    {
-        return true;
-    }
-
-    /**
      * Deletes the file.
      *
      * @throws \phpbu\App\Exception
@@ -55,7 +45,7 @@ class AmazonS3v3 extends Remote
                 'Bucket' => $this->bucket,
                 'Key' => $this->pathname,
             ]);
-        } catch (\OpenStack\Common\Error\BadResponseError $exception) {
+        } catch (\Exception $exception) {
             throw new Exception($exception->getMessage());
         }
     }

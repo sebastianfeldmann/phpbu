@@ -1,5 +1,4 @@
 <?php
-
 namespace phpbu\App\Backup\File;
 
 use OpenStack\ObjectStore\v1\Models\Container;
@@ -16,25 +15,16 @@ class OpenStack extends Remote
     /**
      * OpenStack constructor.
      *
-     * @param Container $container
+     * @param Container     $container
+     * @param StorageObject $object
      */
-    public function __construct(Container $container, StorageObject $object)
+    public function __construct($container, $object)
     {
         $this->container = $container;
         $this->filename = basename($object->name);
         $this->pathname = $object->name;
         $this->size = (int)$object->contentLength;
         $this->lastModified = $object->lastModified->getTimestamp();
-    }
-
-    /**
-     * Return whether the file is writable or not.
-     *
-     * @return boolean
-     */
-    public function isWritable(): bool
-    {
-        return true;
     }
 
     /**
