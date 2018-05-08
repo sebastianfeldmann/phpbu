@@ -35,7 +35,7 @@ class Ftp extends Xtp implements Simulator
      *
      * @var bool
      */
-    protected $passiveMode;
+    protected $passive;
 
     /**
      * Setup the Ftp sync.
@@ -48,7 +48,7 @@ class Ftp extends Xtp implements Simulator
     {
         parent::setup($config);
 
-        $this->passiveMode = Str::toBoolean(Arr::getValue($config, 'passive_mode', ''), false);
+        $this->passive = Str::toBoolean(Arr::getValue($config, 'passive', ''), false);
         $this->setUpClearable($config);
     }
 
@@ -89,7 +89,7 @@ class Ftp extends Xtp implements Simulator
             'username' => $this->user,
             'password' => $this->password,
             'root'     => $this->remotePath,
-            'passive'  => $this->passiveMode,
+            'passive'  => $this->passive,
             'timeout'  => 30,
         ]), new Config([
             'disable_asserts' => true,
