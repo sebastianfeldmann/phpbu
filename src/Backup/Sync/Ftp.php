@@ -1,9 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use League\Flysystem\Config;
-use League\Flysystem\Filesystem;
-use League\Flysystem\Adapter\Ftp as FtpAdapter;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
@@ -24,11 +21,11 @@ class Ftp extends Xtp implements Simulator
     use Clearable;
 
     /**
-     * FlySystem instance
+     * FTP connection stream
      *
-     * @var Filesystem
+     * @var resource
      */
-    protected $flySystem;
+    protected $ftpConnection;
 
     /**
      * Determine should ftp connects via passive mode.
@@ -46,6 +43,10 @@ class Ftp extends Xtp implements Simulator
      */
     public function setup(array $config)
     {
+        $path = Arr::getValue($config, 'path', '');
+        if ('/' === substr($path, 0, 1)) {
+            throw new Exception('absolute path is not allowed');
+        }
         parent::setup($config);
 
         $this->passive = Str::toBoolean(Arr::getValue($config, 'passive', ''), false);
@@ -84,34 +85,58 @@ class Ftp extends Xtp implements Simulator
      */
     public function sync(Target $target, Result $result)
     {
-        $this->flySystem = new Filesystem(new FtpAdapter([
-            'host'     => $this->host,
-            'username' => $this->user,
-            'password' => $this->password,
-            'root'     => $this->remotePath,
-            'passive'  => $this->passive,
-            'timeout'  => 30,
-        ]), new Config([
-            'disable_asserts' => true,
-        ]));
-
         // silence ftp errors
         $old  = error_reporting(0);
-
-        try {
-            if ($this->flySystem->has($target->getFilename())) {
-                $this->flySystem->update($target->getFilename(), file_get_contents($target->getPathname()));
-            } else {
-                $this->flySystem->write($target->getFilename(), file_get_contents($target->getPathname()));
-            }
-        } catch (\Exception $exception) {
-            throw new Exception($exception->getMessage());
+        if (!$this->ftpConnection = ftp_connect($this->host)) {
+            throw new Exception(
+                sprintf(
+                    'Unable to connect to ftp server %s',
+                    $this->host
+                )
+            );
         }
 
-        // run remote cleanup
-        $this->cleanup($target, $result);
+        if (!ftp_login($this->ftpConnection, $this->user, $this->password)) {
+            error_reporting($old);
+            throw new Exception(
+                sprintf(
+                    'authentication failed for %s@%s%s',
+                    $this->user,
+                    $this->host,
+                    empty($this->password) ? '' : ' with password ****'
+                )
+            );
+        }
+
+        // Set passive mode if needed
+        ftp_pasv($this->ftpConnection, $this->passive);
+
+        $remoteFilename = $target->getFilename();
+        $localFile      = $target->getPathname();
+
+        if ('' !== $this->remotePath) {
+            $remoteDirs = explode('/', $this->remotePath);
+            foreach ($remoteDirs as $dir) {
+                if (!ftp_chdir($this->ftpConnection, $dir)) {
+                    $result->debug(sprintf('creating remote dir \'%s\'', $dir));
+                    ftp_mkdir($this->ftpConnection, $dir);
+                    ftp_chdir($this->ftpConnection, $dir);
+                } else {
+                    $result->debug(sprintf('change to remote dir \'%s\'', $dir));
+                }
+            }
+        }
+        $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
+
+        if (!ftp_put($this->ftpConnection, $remoteFilename, $localFile, FTP_BINARY)) {
+            $error = error_get_last();
+            $message = $error['message'];
+            throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $message));
+        }
 
         error_reporting($old);
+
+        $this->cleanup($target, $result);
     }
 
     /**
@@ -126,7 +151,7 @@ class Ftp extends Xtp implements Simulator
             return;
         }
 
-        $collector = new \phpbu\App\Backup\Collector\Ftp($target, $this->flySystem);
+        $collector = new \phpbu\App\Backup\Collector\Ftp($target, $this->ftpConnection);
         $this->cleaner->cleanup($target, $collector, $result);
     }
 }

@@ -1,42 +1,33 @@
 <?php
 namespace phpbu\App\Backup\File;
 
-use League\Flysystem\FileNotFoundException;
-use League\Flysystem\Filesystem;
-
 class Ftp extends Remote
 {
     /**
-     * @var Filesystem
+     * @var resource
      */
-    private $flySystem;
+    private $ftpConnection;
 
     /**
      * Ftp constructor.
      *
-     * @param Filesystem $flySystem
-     * @param array      $metadata
+     * @param resource $ftpConnection
+     * @param string   $filename
      */
-    public function __construct(Filesystem $flySystem, array $metadata)
+    public function __construct($ftpConnection, string $filename)
     {
-        $this->flySystem = $flySystem;
-        $this->filename     = $metadata['basename'];
-        $this->size         = $metadata['size'];
-        $this->pathname     = $metadata['path'];
-        $this->lastModified = $this->flySystem->getTimestamp($this->pathname);
+        $this->ftpConnection = $ftpConnection;
+        $this->filename      = $filename;
+        $this->pathname      = $filename;
+        $this->size          = ftp_size($ftpConnection, $filename);
+        $this->lastModified  = ftp_mdtm($ftpConnection, $filename);
     }
 
     /**
      * Deletes the file.
-     *
-     * @throws \phpbu\App\Exception
      */
     public function unlink()
     {
-        try {
-            $this->flySystem->delete($this->pathname);
-        } catch (FileNotFoundException $e) {
-            throw new \phpbu\App\Exception($e->getMessage());
-        }
+        ftp_delete($this->ftpConnection, $this->filename);
     }
 }

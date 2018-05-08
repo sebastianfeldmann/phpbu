@@ -1,31 +1,27 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
-use League\Flysystem\Filesystem;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 
 class Ftp extends Collector
 {
     /**
-     * @var Filesystem
+     * FTP connection stream
+     *
+     * @var resource
      */
-    private $flySystem;
-
-    /**
-     * @var string
-     */
-    private $path;
+    private $ftpConnection;
 
     /**
      * Ftp constructor.
      *
      * @param \phpbu\App\Backup\Target     $target
-     * @param \League\Flysystem\Filesystem $flySystem
+     * @param resource                     $ftpConnection
      */
-    public function __construct(Target $target, Filesystem $flySystem)
+    public function __construct(Target $target, $ftpConnection)
     {
-        $this->flySystem = $flySystem;
+        $this->ftpConnection = $ftpConnection;
         $this->setUp($target);
     }
 
@@ -36,17 +32,13 @@ class Ftp extends Collector
      */
     public function getBackupFiles(): array
     {
-        $files = $this->flySystem->listContents();
-        foreach ($files as $file) {
-            if ($file['type'] != 'file') {
+        $files = ftp_nlist($this->ftpConnection, '.');
+        foreach ($files as $filename) {
+            if ($filename == $this->target->getFilename()) {
                 continue;
             }
-            // skip currently created backup
-            if ($file['basename'] == $this->target->getFilename()) {
-                continue;
-            }
-            if ($this->isFilenameMatch($file['basename'])) {
-                $this->files[] = new \phpbu\App\Backup\File\Ftp($this->flySystem, $file);
+            if ($this->isFilenameMatch($filename)) {
+                $this->files[] = new \phpbu\App\Backup\File\Ftp($this->ftpConnection, $filename);
             }
         }
         return $this->files;
