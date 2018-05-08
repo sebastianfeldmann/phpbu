@@ -8,13 +8,6 @@ use phpbu\App\Backup\Sync;
 class Remote implements File
 {
     /**
-     * Sync class
-     *
-     * @var Sync
-     */
-    protected $sync;
-
-    /**
      * File size
      *
      * @var int
