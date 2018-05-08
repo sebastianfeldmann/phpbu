@@ -96,21 +96,4 @@ class FtpTest extends \PHPUnit\Framework\TestCase
             'path' => 'foo'
         ]);
     }
-
-    /**
-     * Tests Ftp::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
-     * @expectedExceptionMessage absolute path is not allowed
-     */
-    public function testSetUpPathWithRootSlash()
-    {
-        $ftp = new Ftp();
-        $ftp->setup([
-            'host'     => 'example.com',
-            'user'     => 'user.name',
-            'password' => 'password',
-            'path'     => '/foo'
-        ]);
-    }
 }
