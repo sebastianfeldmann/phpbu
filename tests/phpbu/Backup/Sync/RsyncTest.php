@@ -159,7 +159,10 @@ class RsyncTest extends \PHPUnit\Framework\TestCase
         $target = $this->createTargetMock('/foo/bar.txt', '/foo/bar.txt.gz');
         $exec   = $rsync->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/rsync -av \'/foo/bar.txt.gz\' \'/tmp\'', $exec->getCommand());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/rsync -av \'/foo/bar.txt.gz\' \'/tmp\'',
+            $exec->getCommand()
+        );
     }
 
     /**
@@ -175,7 +178,10 @@ class RsyncTest extends \PHPUnit\Framework\TestCase
 
         $exec = $rsync->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/rsync -avz --exclude=\'fiz\' --exclude=\'buz\' \'/foo/bar.txt\' \'/tmp\'', $exec->getCommand());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/rsync -avz --exclude=\'fiz\' --exclude=\'buz\' \'/foo/bar.txt\' \'/tmp\'',
+            $exec->getCommand()
+        );
     }
 
     /**

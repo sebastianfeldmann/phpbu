@@ -179,7 +179,8 @@ class PgdumpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             PHPBU_TEST_BIN
-              . '/pg_dump -w --dbname=\'phpbu\' --exclude-schema=\'fiz\' --exclude-schema=\'baz\' --file=\'/tmp/foo\'',
+            . '/pg_dump -w --dbname=\'phpbu\' --exclude-schema=\'fiz\' '
+            . '--exclude-schema=\'baz\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -194,7 +195,9 @@ class PgdumpTest extends \PHPUnit\Framework\TestCase
         $pgdump->dumpDatabase('phpbu')->dumpTables(['fiz', 'baz'])->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --table=\'fiz\' --table=\'baz\' --file=\'/tmp/foo\'',
+            PHPBU_TEST_BIN
+            . '/pg_dump -w --dbname=\'phpbu\' --table=\'fiz\' '
+            . '--table=\'baz\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -210,7 +213,8 @@ class PgdumpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             PHPBU_TEST_BIN
-              . '/pg_dump -w --dbname=\'phpbu\' --exclude-table=\'fiz\' --exclude-table=\'baz\' --file=\'/tmp/foo\'',
+            . '/pg_dump -w --dbname=\'phpbu\' --exclude-table=\'fiz\' '
+            . '--exclude-table=\'baz\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -226,8 +230,8 @@ class PgdumpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             PHPBU_TEST_BIN
-              . '/pg_dump -w --dbname=\'phpbu\' --exclude-table-data=\'fiz\' '
-              . '--exclude-table-data=\'baz\' --file=\'/tmp/foo\'',
+            . '/pg_dump -w --dbname=\'phpbu\' --exclude-table-data=\'fiz\' '
+            . '--exclude-table-data=\'baz\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }

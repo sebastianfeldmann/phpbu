@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Cli\Executable;
+
 use phpbu\App\Backup\Target\Compression;
 
 /**
@@ -267,9 +268,9 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             '(' . PHPBU_TEST_BIN . '/mysqldump --all-databases --no-data'
-              . ' && '
-              . PHPBU_TEST_BIN . '/mysqldump --all-databases --ignore-table=\'foo\' --ignore-table=\'bar\''
-              . ' --skip-add-drop-table --no-create-db --no-create-info)',
+            . ' && '
+            . PHPBU_TEST_BIN . '/mysqldump --all-databases --ignore-table=\'foo\' --ignore-table=\'bar\''
+            . ' --skip-add-drop-table --no-create-db --no-create-info)',
             $mysqldump->getCommand()
         );
     }

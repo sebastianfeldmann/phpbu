@@ -145,7 +145,7 @@ class AmazonS3v3 extends AmazonS3
         $s3->registerStreamWrapper();
         $source = $this->getFileHandle($target->getPathname(), 'r');
         $stream = $this->getFileHandle('s3://' . $this->bucket . '/' . $this->getUploadPath($target), 'w');
-        while(!feof($source)) {
+        while (!feof($source)) {
             fwrite($stream, fread($source, 4096));
         }
         fclose($stream);

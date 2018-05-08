@@ -22,7 +22,10 @@ class MongodumpTest extends \PHPUnit\Framework\TestCase
         $mongo = new Mongodump(PHPBU_TEST_BIN);
         $mongo->dumpToDirectory('./dump');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\'', $mongo->getCommand());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\'',
+            $mongo->getCommand()
+        );
     }
 
     /**
@@ -44,7 +47,10 @@ class MongodumpTest extends \PHPUnit\Framework\TestCase
         $mongo = new Mongodump(PHPBU_TEST_BIN);
         $mongo->dumpToDirectory('./dump')->credentials('root');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --username \'root\'', $mongo->getCommand());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --username \'root\'',
+            $mongo->getCommand()
+        );
     }
 
     /**
@@ -99,7 +105,7 @@ class MongodumpTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             PHPBU_TEST_BIN . '/mongodump --out \'./dump'
-              . '\' --collection \'collection1\' --collection \'collection2\'',
+            . '\' --collection \'collection1\' --collection \'collection2\'',
             $mongo->getCommand()
         );
     }
@@ -112,7 +118,10 @@ class MongodumpTest extends \PHPUnit\Framework\TestCase
         $mongo = new Mongodump(PHPBU_TEST_BIN);
         $mongo->dumpToDirectory('./dump')->useIpv6(true);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --ipv6', $mongo->getCommand());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --ipv6',
+            $mongo->getCommand()
+        );
     }
 
     /**

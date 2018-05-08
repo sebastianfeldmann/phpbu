@@ -232,7 +232,7 @@ class Str
      */
     public static function hasLeadingSlash(string $string) : bool
     {
-        return substr($string, 0,1) === '/';
+        return substr($string, 0, 1) === '/';
     }
 
     /**

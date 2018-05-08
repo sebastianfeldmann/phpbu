@@ -27,10 +27,10 @@ class OnePerGroupTest extends \PHPUnit\Framework\TestCase
 
         $file4 = $this->createMock(\phpbu\App\Backup\File\Local::class);
 
-        $file1->method('getMTime')->willReturn(mktime(4, 10 ,0, 3, 12, 2017));
-        $file2->method('getMTime')->willReturn(mktime(5, 10 ,0, 3, 12, 2017));
-        $file3->method('getMTime')->willReturn(mktime(6, 10 ,0, 3, 12, 2017));
-        $file4->method('getMTime')->willReturn(mktime(6, 10 ,0, 3, 13, 2017));
+        $file1->method('getMTime')->willReturn(mktime(4, 10, 0, 3, 12, 2017));
+        $file2->method('getMTime')->willReturn(mktime(5, 10, 0, 3, 12, 2017));
+        $file3->method('getMTime')->willReturn(mktime(6, 10, 0, 3, 12, 2017));
+        $file4->method('getMTime')->willReturn(mktime(6, 10, 0, 3, 13, 2017));
 
         $keeper = new OnePerGroup('Ymd');
         $this->assertTrue($keeper->keep($file1));

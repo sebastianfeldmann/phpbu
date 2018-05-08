@@ -51,7 +51,8 @@ abstract class Abstraction
      * @param string $cmd
      * @param string $path
      */
-    protected function setup(string $cmd, string $path = '') {
+    protected function setup(string $cmd, string $path = '')
+    {
         $this->cmd    = $cmd;
         $this->binary = Cli::detectCmdLocation($cmd, $path, Cli::getCommandLocations($this->cmd));
     }

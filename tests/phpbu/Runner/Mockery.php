@@ -57,7 +57,9 @@ trait Mockery
         $check   = $this->createCheckMock();
         $check->method('pass')->will($this->throwException(new \phpbu\App\Exception));
 
-        $factory->expects($this->once())->method('createTarget')->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.gz'));
+        $factory->expects($this->once())
+                ->method('createTarget')
+                ->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.gz'));
         $factory->expects($this->once())->method('createSource')->willReturn($source);
         $factory->expects($this->once())->method('createCheck')->willReturn($check);
 
@@ -76,7 +78,9 @@ trait Mockery
         $crypt   = $this->createCryptMock(false);
         $factory = $this->createMock(\phpbu\App\Factory::class);
 
-        $factory->expects($this->once())->method('createTarget')->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.gz'));
+        $factory->expects($this->once())
+                ->method('createTarget')
+                ->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.gz'));
         $factory->expects($this->once())->method('createSource')->willReturn($source);
         $factory->expects($this->once())->method('createCheck')->willReturn($check);
         $factory->expects($this->once())->method('createCrypter')->willReturn($crypt);
@@ -97,7 +101,9 @@ trait Mockery
         $sync    = $this->createSyncMock(false);
         $factory = $this->createMock(\phpbu\App\Factory::class);
 
-        $factory->expects($this->once())->method('createTarget')->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.gz'));
+        $factory->expects($this->once())
+                ->method('createTarget')
+                ->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.gz'));
         $factory->expects($this->once())->method('createSource')->willReturn($source);
         $factory->expects($this->once())->method('createCheck')->willReturn($check);
         $factory->expects($this->once())->method('createCrypter')->willReturn($crypt);
@@ -120,7 +126,8 @@ trait Mockery
         $cleanup = $this->createCleanerMock(false);
         $factory = $this->createMock(\phpbu\App\Factory::class);
 
-        $factory->method('createTarget')->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.gz'));
+        $factory->method('createTarget')
+                ->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.gz'));
         $factory->expects($this->once())->method('createSource')->willReturn($source);
         $factory->expects($this->once())->method('createCheck')->willReturn($check);
         $factory->expects($this->once())->method('createCrypter')->willReturn($crypt);
@@ -139,9 +146,13 @@ trait Mockery
     {
         $factory = $this->createMock(\phpbu\App\Factory::class);
         $source  = $this->createSourceMock($this->createStatusMock());
-        $source->expects($this->once())->method('backup')->will($this->throwException(new \phpbu\App\Exception()));
+        $source->expects($this->once())
+               ->method('backup')
+               ->will($this->throwException(new \phpbu\App\Exception()));
 
-        $factory->expects($this->once())->method('createTarget')->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.gz'));
+        $factory->expects($this->once())
+                ->method('createTarget')
+                ->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.gz'));
         $factory->expects($this->once())->method('createSource')->willReturn($source);
 
         return $factory;

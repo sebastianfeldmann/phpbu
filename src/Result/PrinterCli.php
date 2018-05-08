@@ -560,7 +560,11 @@ class PrinterCli implements Listener
                 'fg-red',
                 sprintf(
                     "FAILURE!" . PHP_EOL .
-                    'Backups: %d, failed Checks: %d, failed Crypts: %d, failed Syncs: %d, failed Cleanups: %d.' . PHP_EOL,
+                    'Backups: %d, '
+                    . 'failed Checks: %d, '
+                    . 'failed Crypts: %d, '
+                    . 'failed Syncs: %d, '
+                    . 'failed Cleanups: %d.' . PHP_EOL,
                     count($result->getBackups()),
                     $result->checksFailedCount(),
                     $result->cryptsFailedCount(),

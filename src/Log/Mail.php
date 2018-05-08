@@ -468,7 +468,7 @@ class Mail implements Listener, Logger
                 if ($backup->allOk()) {
                     $color  = TPL::getSnippet('cStatusOK');
                     $status = 'OK';
-                } elseif($backup->okButSkipsOrFails()) {
+                } elseif ($backup->okButSkipsOrFails()) {
                     $color  = TPL::getSnippet('cStatusWARN');
                     $status = 'WARNING';
                 } else {

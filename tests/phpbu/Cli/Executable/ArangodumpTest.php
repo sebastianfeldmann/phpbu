@@ -67,7 +67,8 @@ class ArangodumpTest extends \PHPUnit\Framework\TestCase
      */
     public function testEndpoint()
     {
-        $expected = PHPBU_TEST_BIN . '/arangodump --server.endpoint \'tcp://example.com:8529\' --output-directory \'./dump\'';
+        $expected = PHPBU_TEST_BIN
+                  . '/arangodump --server.endpoint \'tcp://example.com:8529\' --output-directory \'./dump\'';
         $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->useEndpoint('tcp://example.com:8529')->dumpTo('./dump');
 
