@@ -18,6 +18,13 @@ use phpbu\App\Util\Arr;
 class Ftp extends Xtp implements Simulator
 {
     /**
+     * Determine should ftp connects via passive mode.
+     *
+     * @var bool
+     */
+    protected $passiveMode;
+
+    /**
      * Setup the Ftp sync.
      *
      * @param  array $config
@@ -30,6 +37,8 @@ class Ftp extends Xtp implements Simulator
             throw new Exception('absolute path is not allowed');
         }
         parent::setup($config);
+
+        $this->passiveMode = Str::toBoolean(Arr::getValue($config, 'passive_mode', ''), false);
     }
 
     /**
@@ -86,6 +95,9 @@ class Ftp extends Xtp implements Simulator
                 )
             );
         }
+
+        // Set passive mode if needed
+        ftp_pasv($ftpConnection, $this->passiveMode);
 
         $remoteFilename = $target->getFilename();
         $localFile      = $target->getPathname();

@@ -11,4 +11,7 @@
 
   <!-- optional, default=none -->
   <option name="path" value="somedir/somesubdir" />
+
+  <!-- optional, default=false -->
+  <option name="passive_mode" value="true" />
 </sync>
