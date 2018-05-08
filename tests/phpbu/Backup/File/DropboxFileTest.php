@@ -32,10 +32,10 @@ class DropboxFileTest extends \PHPUnit\Framework\TestCase
             ->with('backups/dump.tar.gz');
 
         $file = new \phpbu\App\Backup\File\Dropbox($dropboxClientStub, $dropboxFileMetadataStub);
-        $this->assertAttributeEquals('dump.tar.gz', 'filename', $file);
-        $this->assertAttributeEquals('backups/dump.tar.gz', 'pathname', $file);
-        $this->assertAttributeEquals(102102, 'size', $file);
-        $this->assertAttributeEquals(1525788894, 'lastModified', $file);
+        $this->assertEquals('dump.tar.gz', $file->getFilename());
+        $this->assertEquals('backups/dump.tar.gz', $file->getPathname());
+        $this->assertEquals(102102, $file->getSize());
+        $this->assertEquals(1525788894, $file->getMTime());
 
         $file->unlink();
     }

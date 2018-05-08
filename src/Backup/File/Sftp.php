@@ -18,6 +18,7 @@ class Sftp extends Remote
      *
      * @param \phpseclib\Net\SFTP $sftp
      * @param array               $fileInfo
+     * @param string              $remotePath
      */
     public function __construct(\phpseclib\Net\SFTP $sftp, array $fileInfo, string $remotePath)
     {
@@ -30,8 +31,6 @@ class Sftp extends Remote
 
     /**
      * Deletes the file.
-     *
-     * @throws \phpbu\App\Exception
      */
     public function unlink()
     {
