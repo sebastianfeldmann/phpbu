@@ -39,4 +39,18 @@ class SizeMinTest extends \PHPUnit\Framework\TestCase
             'size of stub should be smaller 2048'
         );
     }
+
+    /**
+     * Tests SiezeMin::simulate
+     */
+    public function testSimulate()
+    {
+        $resultStub    = $this->createMock(\phpbu\App\Result::class);
+        $resultStub->expects($this->once())->method('debug');
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
+        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
+
+        $check = new SizeMin();
+        $check->simulate($targetStub, '5000', $collectorStub, $resultStub);
+    }
 }
