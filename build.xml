@@ -129,7 +129,7 @@
       </fileset>
     </copy>
     <copy todir="${basedir}/build/phar/lib/collect">
-      <fileset dir="${basedir}/vendor/tightenco/collect/src/Illuminate">
+      <fileset dir="${basedir}/vendor/tightenco/collect/src">
         <include name="**/*.php"/>
       </fileset>
     </copy>
