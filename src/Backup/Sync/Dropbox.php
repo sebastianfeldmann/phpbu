@@ -4,6 +4,7 @@ namespace phpbu\App\Backup\Sync;
 use Kunnu\Dropbox\DropboxApp as DropboxConfig;
 use Kunnu\Dropbox\Dropbox as DropboxApi;
 use Kunnu\Dropbox\DropboxFile;
+use phpbu\App\Backup\Collector;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
@@ -22,6 +23,8 @@ use phpbu\App\Util\Str;
  */
 class Dropbox implements Simulator
 {
+    use Clearable;
+
     /**
      * API access token
      *
@@ -45,11 +48,19 @@ class Dropbox implements Simulator
     protected $path;
 
     /**
+     * Dropbox api client
+     *
+     * @var DropboxApi
+     */
+    protected $client;
+
+    /**
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::setup()
      * @param  array $config
      * @throws \phpbu\App\Backup\Sync\Exception
+     * @throws \phpbu\App\Exception
      */
     public function setup(array $config)
     {
@@ -65,6 +76,8 @@ class Dropbox implements Simulator
         // make sure the path contains leading and trailing slashes
         $this->path  = Str::withLeadingSlash(Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path'])));
         $this->token = $config['token'];
+
+        $this->setUpClearable($config);
     }
 
     /**
@@ -79,14 +92,17 @@ class Dropbox implements Simulator
     {
         $sourcePath  = $target->getPathname();
         $dropboxPath = $this->path . $target->getFilename();
-        $config      = new DropboxConfig("id", "secret", $this->token);
-        $client      = new DropboxApi($config);
+        if (!$this->client) {
+            $this->connect();
+        }
         try {
             $file = new DropboxFile($sourcePath);
-            $meta = $client->upload($file, $dropboxPath, ['autorename' => true]);
+            $meta = $this->client->upload($file, $dropboxPath, ['autorename' => true]);
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }
+        // run remote cleanup
+        $this->cleanup($target, $result);
         $result->debug('upload: done  (' . $meta->getSize() . ')');
     }
 
@@ -101,7 +117,29 @@ class Dropbox implements Simulator
         $result->debug(
             'sync backup to dropbox' . PHP_EOL
             . '  token:    ********' . PHP_EOL
-            . '  location: ' . $this->path
+            . '  location: ' . $this->path . PHP_EOL
         );
+
+        $this->simulateRemoteCleanup($target, $result);
+    }
+
+    /**
+     * Creates collector for Dropbox
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Backup\Collector
+     */
+    protected function createCollector(Target $target): Collector
+    {
+        return new \phpbu\App\Backup\Collector\Dropbox($target, $this->client, $this->path);
+    }
+
+    /**
+     * Create Dropbox api client
+     */
+    protected function connect()
+    {
+        $config       = new DropboxConfig("id", "secret", $this->token);
+        $this->client = new DropboxApi($config);
     }
 }

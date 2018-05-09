@@ -1,9 +1,6 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Process;
-use phpbu\App\Util\Cli;
-
 /**
  * Binary using credentials not safe for printing.
  *

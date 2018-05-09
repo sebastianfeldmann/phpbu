@@ -122,7 +122,7 @@ class Stepwise extends Abstraction implements Simulator
      *
      * @param  \phpbu\App\Backup\Target    $target
      * @param  \phpbu\App\Backup\Collector $collector
-     * @return \phpbu\App\Backup\File[]
+     * @return \phpbu\App\Backup\File\Local[]
      * @throws \phpbu\App\Exception
      */
     protected function getFilesToDelete(Target $target, Collector $collector)

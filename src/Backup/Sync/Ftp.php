@@ -1,8 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use phpbu\App\Backup\Collector;
 use phpbu\App\Result;
-use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
@@ -19,11 +19,28 @@ use phpbu\App\Util\Str;
  */
 class Ftp extends Xtp implements Simulator
 {
+    use Clearable;
+
+    /**
+     * FTP connection stream
+     *
+     * @var resource
+     */
+    protected $ftpConnection;
+
+    /**
+     * Determine should ftp connects via passive mode.
+     *
+     * @var bool
+     */
+    protected $passive;
+
     /**
      * Setup the Ftp sync.
      *
      * @param  array $config
      * @throws \phpbu\App\Backup\Sync\Exception
+     * @throws \phpbu\App\Exception
      */
     public function setup(array $config)
     {
@@ -32,6 +49,9 @@ class Ftp extends Xtp implements Simulator
             throw new Exception('absolute path is not allowed');
         }
         parent::setup($config);
+
+        $this->passive = Str::toBoolean(Arr::getValue($config, 'passive', ''), false);
+        $this->setUpClearable($config);
     }
 
     /**
@@ -68,7 +88,7 @@ class Ftp extends Xtp implements Simulator
     {
         // silence ftp errors
         $old  = error_reporting(0);
-        if (!$ftpConnection = ftp_connect($this->host)) {
+        if (!$this->ftpConnection = ftp_connect($this->host)) {
             throw new Exception(
                 sprintf(
                     'Unable to connect to ftp server %s',
@@ -77,7 +97,7 @@ class Ftp extends Xtp implements Simulator
             );
         }
 
-        if (!ftp_login($ftpConnection, $this->user, $this->password)) {
+        if (!ftp_login($this->ftpConnection, $this->user, $this->password)) {
             error_reporting($old);
             throw new Exception(
                 sprintf(
@@ -89,16 +109,19 @@ class Ftp extends Xtp implements Simulator
             );
         }
 
+        // Set passive mode if needed
+        ftp_pasv($this->ftpConnection, $this->passive);
+
         $remoteFilename = $target->getFilename();
         $localFile      = $target->getPathname();
 
         if ('' !== $this->remotePath) {
             $remoteDirs = explode('/', $this->remotePath);
             foreach ($remoteDirs as $dir) {
-                if (!ftp_chdir($ftpConnection, $dir)) {
+                if (!ftp_chdir($this->ftpConnection, $dir)) {
                     $result->debug(sprintf('creating remote dir \'%s\'', $dir));
-                    ftp_mkdir($ftpConnection, $dir);
-                    ftp_chdir($ftpConnection, $dir);
+                    ftp_mkdir($this->ftpConnection, $dir);
+                    ftp_chdir($this->ftpConnection, $dir);
                 } else {
                     $result->debug(sprintf('change to remote dir \'%s\'', $dir));
                 }
@@ -106,12 +129,25 @@ class Ftp extends Xtp implements Simulator
         }
         $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
 
-        if (!ftp_put($ftpConnection, $remoteFilename, $localFile, FTP_BINARY)) {
+        if (!ftp_put($this->ftpConnection, $remoteFilename, $localFile, FTP_BINARY)) {
             $error = error_get_last();
             $message = $error['message'];
             throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $message));
         }
 
         error_reporting($old);
+
+        $this->cleanup($target, $result);
+    }
+
+    /**
+     * Creates collector for FTP
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Backup\Collector
+     */
+    protected function createCollector(Target $target): Collector
+    {
+        return new \phpbu\App\Backup\Collector\Ftp($target, $this->ftpConnection);
     }
 }

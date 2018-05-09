@@ -2,11 +2,13 @@
 namespace phpbu\App\Backup\Sync;
 
 use GuzzleHttp\Psr7\Stream;
+use OpenStack\ObjectStore\v1\Models\Container;
 use OpenStack\ObjectStore\v1\Service as ObjectStoreService;
 use GuzzleHttp\Client;
 use OpenStack\Common\Transport\HandlerStack;
 use OpenStack\Common\Transport\Utils;
 use OpenStack\Identity\v2\Service;
+use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 use phpbu\App\Util\Arr;
@@ -26,6 +28,8 @@ use phpbu\App\Util\Str;
  */
 class Openstack implements Simulator
 {
+    use Clearable;
+
     /**
      * OpenStack identify url
      *
@@ -79,11 +83,25 @@ class Openstack implements Simulator
     protected $path = '';
 
     /**
+     * @var Container
+     */
+    protected $container;
+
+    /**
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->path;
+    }
+
+    /**
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::setup()
      * @param  array $config
      * @throws \phpbu\App\Backup\Sync\Exception
+     * @throws \phpbu\App\Exception
      */
     public function setup(array $config)
     {
@@ -104,6 +122,8 @@ class Openstack implements Simulator
             $this->path = Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path']));
             $this->path = substr($this->path, 0, 1) == '/' ? substr($this->path, 1) : $this->path;
         }
+
+        $this->setUpClearable($config);
     }
 
     /**
@@ -128,25 +148,13 @@ class Openstack implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @param  \phpbu\App\Result        $result
      * @throws \phpbu\App\Backup\Sync\Exception
+     * @throws \OpenStack\Common\Error\BadResponseError
      */
     public function sync(Target $target, Result $result)
     {
-        $httpClient = new Client([
-            'base_uri' => Utils::normalizeUrl($this->authUrl),
-            'handler'  => HandlerStack::create(),
-        ]);
-
-        $options = [
-            'authUrl'         => $this->authUrl,
-            'region'          => $this->region,
-            'username'        => $this->username,
-            'password'        => $this->password,
-            'identityService' => Service::factory($httpClient),
-        ];
-
-        $openStack = new \OpenStack\OpenStack($options);
-        $objectStoreService = $openStack->objectStoreV1(['catalogName' => $this->serviceName]);
-        $container = $this->getContainer($objectStoreService, $result);
+        if (!$this->container) {
+            $this->connect($result);
+        }
 
         try {
             if ($target->getSize() > $this->maxStreamUploadSize) {
@@ -155,18 +163,20 @@ class Openstack implements Simulator
                     'name'   => $this->getUploadPath($target),
                     'stream' => new Stream(fopen($target->getPathname(), 'r')),
                 ];
-                $container->createLargeObject($uploadOptions);
+                $this->container->createLargeObject($uploadOptions);
             } else {
                 // create an object
                 $uploadOptions = [
                     'name' => $this->getUploadPath($target),
                     'content' => file_get_contents($target->getPathname()),
                 ];
-                $container->createObject($uploadOptions);
+                $this->container->createObject($uploadOptions);
             }
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }
+        // run remote cleanup
+        $this->cleanup($target, $result);
         $result->debug('upload: done');
     }
 
@@ -184,15 +194,30 @@ class Openstack implements Simulator
             . '  key:      ' . $this->username . PHP_EOL
             . '  password:    ********' . PHP_EOL
             . '  container: ' . $this->containerName
+            . '  path: "' . $this->path . '"' . PHP_EOL
         );
+
+        $this->simulateRemoteCleanup($target, $result);
+    }
+
+    /**
+     * Creates collector for OpenStack
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Backup\Collector
+     */
+    protected function createCollector(Target $target): Collector
+    {
+        return new \phpbu\App\Backup\Collector\OpenStack($target, $this->container, $this->path);
     }
 
     /**
      * @param ObjectStoreService $service
+     * @param Result             $result
      * @return \OpenStack\ObjectStore\v1\Models\Container
      * @throws \OpenStack\Common\Error\BadResponseError
      */
-    protected function getContainer(ObjectStoreService $service, Result $result)
+    protected function getOrCreateContainer(ObjectStoreService $service, Result $result)
     {
         if (!$service->containerExists($this->containerName)) {
             $result->debug('create container');
@@ -210,5 +235,30 @@ class Openstack implements Simulator
     public function getUploadPath(Target $target)
     {
         return $this->path . $target->getFilename();
+    }
+
+    /**
+     * @param Result $result
+     * @return void
+     * @throws \OpenStack\Common\Error\BadResponseError
+     */
+    protected function connect(Result $result)
+    {
+        $httpClient = new Client([
+            'base_uri' => Utils::normalizeUrl($this->authUrl),
+            'handler' => HandlerStack::create(),
+        ]);
+
+        $options = [
+            'authUrl' => $this->authUrl,
+            'region' => $this->region,
+            'username' => $this->username,
+            'password' => $this->password,
+            'identityService' => Service::factory($httpClient),
+        ];
+
+        $openStack = new \OpenStack\OpenStack($options);
+        $objectStoreService = $openStack->objectStoreV1(['catalogName' => $this->serviceName]);
+        $this->container = $this->getOrCreateContainer($objectStoreService, $result);
     }
 }

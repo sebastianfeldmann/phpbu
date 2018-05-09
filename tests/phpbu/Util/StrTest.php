@@ -258,7 +258,7 @@ class StrTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertEquals(false, Str::hasLeadingSlash('foo'));
         $this->assertEquals(false, Str::hasLeadingSlash('foo/bar/'));
-        $this->assertEquals(true,  Str::hasLeadingSlash('/baz'));
+        $this->assertEquals(true, Str::hasLeadingSlash('/baz'));
     }
 
     /**

@@ -55,8 +55,7 @@ trait CliMockery
         string $err = '',
         string $redirect = '',
         array $acceptableExitCodes = [0]
-    )
-    {
+    ) {
         $cmdRes = new CommandResult($cmd, $code, $out, $err, $redirect, $acceptableExitCodes);
         $runRes = new RunnerResult($cmdRes);
 

@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup;
 
+use phpbu\App\Backup\Collector\Local;
 use phpbu\App\Result;
 
 /**
@@ -19,11 +20,11 @@ interface Check
     /**
      * Checks the created backup.
      *
-     * @param  \phpbu\App\Backup\Target    $target
-     * @param  string                      $value
-     * @param  \phpbu\App\Backup\Collector $collector
-     * @param  \phpbu\App\Result           $result
+     * @param  \phpbu\App\Backup\Target          $target
+     * @param  string                            $value
+     * @param  \phpbu\App\Backup\Collector\Local $collector
+     * @param  \phpbu\App\Result                 $result
      * @return bool
      */
-    public function pass(Target $target, $value, Collector $collector, Result $result) : bool;
+    public function pass(Target $target, $value, Local $collector, Result $result) : bool;
 }

@@ -5,7 +5,6 @@ use phpbu\App\Adapter\Util;
 use phpbu\App\Configuration;
 use phpbu\App\Exception;
 use phpbu\App\Factory as AppFactory;
-use phpbu\App\Runner\Bootstrap;
 use phpbu\App\Util\Cli;
 
 /**

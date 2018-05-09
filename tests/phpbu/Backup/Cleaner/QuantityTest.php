@@ -61,7 +61,7 @@ class QuantityTest extends TestCase
             ]
         );
         $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $collectorStub->expects($this->once())
@@ -90,7 +90,7 @@ class QuantityTest extends TestCase
             ]
         );
         $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $collectorStub->expects($this->once())
@@ -118,7 +118,7 @@ class QuantityTest extends TestCase
             ]
         );
         $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $collectorStub->expects($this->once())
@@ -142,7 +142,7 @@ class QuantityTest extends TestCase
             ]
         );
         $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $collectorStub->expects($this->once())

@@ -80,6 +80,7 @@ abstract class Compression extends Process
      * @param  \phpbu\App\Backup\Target $target
      * @param  \phpbu\App\Result        $result
      * @param  string                   $dataToCompress
+     * @throws \phpbu\App\Exception
      */
     protected function compressFile(Target $target, Result $result, $dataToCompress)
     {
@@ -96,5 +97,9 @@ abstract class Compression extends Process
      * @param  \phpbu\App\Result                       $result
      * @return string
      */
-    abstract protected function executeCompressor(Compressor\Executable $compressor, Target $target, Result $result) : string;
+    abstract protected function executeCompressor(
+        Compressor\Executable $compressor,
+        Target $target,
+        Result $result
+    ) : string;
 }

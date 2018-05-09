@@ -126,7 +126,7 @@ class Factory
      * @param  string $alias
      * @param  array  $conf
      * @throws \phpbu\App\Exception
-     * @return \phpbu\App\Listener
+     * @return \phpbu\App\Log\Logger
      */
     public function createLogger($alias, $conf = [])
     {

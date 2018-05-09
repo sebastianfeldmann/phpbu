@@ -52,8 +52,8 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             PHPBU_TEST_BIN . '/tar -cf \'/tmp/backup.tar\' -C \''
-              . dirname(__DIR__) . '\' \''
-              . basename(__DIR__) . '\'',
+            . dirname(__DIR__) . '\' \''
+            . basename(__DIR__) . '\'',
             $exec->getCommand()
         );
     }
@@ -118,8 +118,8 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             PHPBU_TEST_BIN . '/tar --ignore-failed-read -cf \'/tmp/backup.tar\' -C \''
-              . dirname(__DIR__) . '\' \''
-              . basename(__DIR__) . '\'',
+            . dirname(__DIR__) . '\' \''
+            . basename(__DIR__) . '\'',
             $exec->getCommand()
         );
     }
@@ -140,8 +140,8 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             '(' . PHPBU_TEST_BIN . '/tar -cf \'/tmp/backup.tar\' -C \''
-              . dirname(__DIR__) . '\' \'' . basename(__DIR__)
-              . '\' && rm -rf \'' . __DIR__ . '\')',
+            . dirname(__DIR__) . '\' \'' . basename(__DIR__)
+            . '\' && rm -rf \'' . __DIR__ . '\')',
             $exec->getCommand()
         );
     }
@@ -210,8 +210,8 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             PHPBU_TEST_BIN . '/tar -zcf \'/tmp/backup.tar.gz\' -C \''
-              . dirname(__DIR__) . '\' \''
-              . basename(__DIR__) . '\'',
+            . dirname(__DIR__) . '\' \''
+            . basename(__DIR__) . '\'',
             $exec->getCommand()
         );
     }
@@ -259,8 +259,8 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             PHPBU_TEST_BIN . '/tar -cf \'/tmp/backup.tar\' -C \''
-              . dirname(__DIR__) . '\' \''
-              . basename(__DIR__) . '\'',
+            . dirname(__DIR__) . '\' \''
+            . basename(__DIR__) . '\'',
             $exec->getCommand()
         );
     }

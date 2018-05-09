@@ -20,7 +20,7 @@ class SizeMinTest extends \PHPUnit\Framework\TestCase
     public function testPass()
     {
         $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
         $targetStub->method('getSize')->willReturn(1030);
 
@@ -38,5 +38,19 @@ class SizeMinTest extends \PHPUnit\Framework\TestCase
             $check->pass($targetStub, '2k', $collectorStub, $resultStub),
             'size of stub should be smaller 2048'
         );
+    }
+
+    /**
+     * Tests SiezeMin::simulate
+     */
+    public function testSimulate()
+    {
+        $resultStub    = $this->createMock(\phpbu\App\Result::class);
+        $resultStub->expects($this->once())->method('debug');
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
+        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
+
+        $check = new SizeMin();
+        $check->simulate($targetStub, '5000', $collectorStub, $resultStub);
     }
 }

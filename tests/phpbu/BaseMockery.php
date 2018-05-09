@@ -95,6 +95,7 @@ trait BaseMockery
     /**
      * Create source mock.
      *
+     * @param $status
      * @return \phpbu\App\Backup\Source\Tar
      */
     protected function createSourceMock($status)
@@ -109,6 +110,7 @@ trait BaseMockery
     /**
      * Create check mock.
      *
+     * @param bool $pass
      * @return \phpbu\App\Backup\Check\SizeMin
      */
     protected function createCheckMock($pass = true)
@@ -152,6 +154,7 @@ trait BaseMockery
     /**
      * Create cleaner mock.
      *
+     * @param bool $success
      * @return \phpbu\App\Backup\Cleaner\Outdated
      */
     protected function createCleanerMock($success = true)

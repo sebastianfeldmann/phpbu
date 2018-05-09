@@ -245,6 +245,7 @@ class Tar extends Abstraction implements Executable
      * Tar CommandLine generator.
      *
      * @return \SebastianFeldmann\Cli\CommandLine
+     * @throws \phpbu\App\Exception
      */
     protected function createCommandLine() : CommandLine
     {

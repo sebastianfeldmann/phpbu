@@ -188,7 +188,7 @@ class Innobackupex extends Abstraction implements Executable
 
         if (!empty($this->include)) {
             $cmdDump->addOption('--include', $this->include);
-        } else if (count($this->databases)) {
+        } elseif (count($this->databases)) {
             $cmdDump->addOption('--databases', implode(' ', $this->databases));
         }
 

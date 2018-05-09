@@ -1,14 +1,6 @@
 <?php
 namespace phpbu\App;
 
-use phpbu\App\Backup\Check;
-use phpbu\App\Backup\Collector;
-use phpbu\App\Backup\Crypter;
-use phpbu\App\Backup\Source;
-use phpbu\App\Backup\Target;
-use phpbu\App\Log\Logger;
-use phpbu\App\Result\Backup;
-
 /**
  * Factory test
  *
@@ -58,11 +50,11 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
     public function testCreateSource()
     {
         // register dummy source, all default sources have system dependencies like cli binaries
-        Factory::register('source', 'dummy', '\\phpbu\\App\\phpbuAppFactoryTestSource');
+        Factory::register('source', 'dummy', '\\phpbu\\App\\Backup\\Source\\FakeSource');
         $factory = new Factory();
         $source  = $factory->createSource('dummy', []);
 
-        $this->assertEquals('phpbu\\App\\phpbuAppFactoryTestSource', get_class($source), 'classes should match');
+        $this->assertEquals('phpbu\\App\\Backup\\Source\\FakeSource', get_class($source), 'classes should match');
     }
 
     /**
@@ -92,12 +84,12 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateCrypter()
     {
-        Factory::register('crypter', 'dummy', '\\phpbu\\App\\phpbuAppFactoryTestCrypter');
+        Factory::register('crypter', 'dummy', '\\phpbu\\App\\Backup\\Crypter\\FakeCrypter');
 
         $factory = new Factory();
-        $crypter = $factory->createCrypter('dummy', ['algorithm' => 'blowfish', 'key' => 'fooBarBaz']);
+        $crypter = $factory->createCrypter('dummy', []);
 
-        $this->assertEquals('phpbu\\App\\phpbuAppFactoryTestCrypter', get_class($crypter), 'classes should match');
+        $this->assertEquals('phpbu\\App\\Backup\\Crypter\\FakeCrypter', get_class($crypter), 'classes should match');
     }
 
     /**
@@ -140,12 +132,16 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testRegisterCheckOk()
     {
-        Factory::register('check', 'dummy', '\\phpbu\\App\\phpbuAppFactoryTestCheck');
+        Factory::register('check', 'dummy', '\\phpbu\\App\\Backup\\Check\\FakeCheck');
 
         $factory = new Factory();
         $dummy   = $factory->createCheck('dummy');
 
-        $this->assertEquals('phpbu\\App\\phpbuAppFactoryTestCheck', get_class($dummy), 'Factory should create dummy object');
+        $this->assertEquals(
+            'phpbu\\App\\Backup\\Check\\FakeCheck',
+            get_class($dummy),
+            'Factory should create dummy object'
+        );
     }
 
     /**
@@ -155,7 +151,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testRegisterInvalidType()
     {
-        Factory::register('invalid', 'dummy', '\\phpbu\\App\\phpbuAppFactoryTestCheck');
+        Factory::register('invalid', 'dummy', '\\phpbu\\App\\PhpbuAppFactoryTestCheck');
 
         $this->assertFalse(true, 'Exception should be thrown');
     }
@@ -167,7 +163,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateAdapterThatIsNone()
     {
-        Factory::register('adapter', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+        Factory::register('adapter', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
         $factory->createAdapter('nothing');
@@ -182,7 +178,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateSourceThatIsNone()
     {
-        Factory::register('source', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+        Factory::register('source', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
         $factory->createSource('nothing');
@@ -197,7 +193,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateCrypterThatIsNone()
     {
-        Factory::register('crypter', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+        Factory::register('crypter', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
         $factory->createCrypter('nothing');
@@ -212,7 +208,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateLoggerThatIsNone()
     {
-        Factory::register('logger', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+        Factory::register('logger', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
         $factory->createLogger('nothing');
@@ -227,7 +223,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateLoggerThatIsLoggerButNoListener()
     {
-        Factory::register('logger', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestLoggerButNoListener', true);
+        Factory::register('logger', 'nothing', '\\phpbu\\App\\Log\\FakeLoggerNoListener', true);
 
         $factory = new Factory();
         $factory->createLogger('nothing');
@@ -242,7 +238,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateCleanerThatIsNone()
     {
-        Factory::register('cleaner', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+        Factory::register('cleaner', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
         $factory->createCleaner('nothing');
@@ -257,7 +253,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateSyncThatIsNone()
     {
-        Factory::register('sync', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+        Factory::register('sync', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
         $factory->createSync('nothing');
@@ -272,7 +268,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateCheckThatIsNone()
     {
-        Factory::register('check', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+        Factory::register('check', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
         $factory->createCheck('nothing');
@@ -287,7 +283,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testCreateRunnerThatIsNone()
     {
-        Factory::register('runner', 'nothing', '\\phpbu\\App\\phpbuAppFactoryTestNothing', true);
+        Factory::register('runner', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
         $factory->createRunner('nothing', false);
@@ -302,7 +298,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testRegisterExistingCheck()
     {
-        Factory::register('check', 'sizemin', '\\phpbu\\App\\phpbuAppFactoryTestCheck');
+        Factory::register('check', 'sizemin', '\\phpbu\\App\\Backup\\Check\\FakeCheck');
 
         $this->assertFalse(true, 'Exception should be thrown');
     }
@@ -314,173 +310,15 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
      */
     public function testRegisterExistingCheckForce()
     {
-        Factory::register('check', 'sizemin', '\\phpbu\\App\\phpbuAppFactoryTestCheck', true);
+        Factory::register('check', 'sizemin', '\\phpbu\\App\\Backup\\Check\\FakeCheck', true);
 
         $factory = new Factory();
         $dummy   = $factory->createCheck('sizemin');
 
-        $this->assertEquals(get_class($dummy), 'phpbu\\App\\phpbuAppFactoryTestCheck', 'Factory should create dummy object');
-    }
-}
-
-/**
- * Class phpbuAppFactoryTestObject
- */
-class phpbuAppFactoryTestCheck implements Check
-{
-    /**
-     * Checks the created backup.
-     *
-     * @param  \phpbu\App\Backup\Target $target
-     * @param  string                   $value
-     * @param  \phpbu\App\Backup\Collector
-     * @param  \phpbu\App\Result
-     * @return boolean
-     */
-    public function pass(Target $target, $value, Collector $collector, Result $result) : bool
-    {
-        // do something fooish
-    }
-}
-
-/**
- * Class phpbuAppFactoryTestNothing
- */
-class phpbuAppFactoryTestNothing
-{
-    /**
-     * Do nothing.
-     */
-    public function doNothing()
-    {
-        // do something fooish
-    }
-}
-
-/**
- * Class phpbuAppFactoryTestNothing
- */
-class phpbuAppFactoryTestCrypter implements Crypter
-{
-    /**
-     * Do nothing.
-     */
-    public function doNothing()
-    {
-        // do something fooish
-    }
-
-    /**
-     * Setup the Crypter.
-     *
-     * @param array $options
-     */
-    public function setup(array $options = [])
-    {
-        // do something fooish
-    }
-
-    /**
-     * Checks the created backup.
-     *
-     * @param  \phpbu\App\Backup\Target $target
-     * @param  \phpbu\App\Result
-     * @throws \phpbu\App\Exception
-     */
-    public function crypt(Target $target, Result $result)
-    {
-        // do something fooish
-    }
-
-    /**
-     * Return the encrypted file suffix.
-     *
-     * @return string
-     */
-    public function getSuffix()
-    {
-        return 'mc';
-    }
-}
-
-/**
- * Class phpbuAppFactoryTestNothing
- */
-class phpbuAppFactoryTestLoggerButNoListener implements Logger
-{
-    /**
-     * Setup the logger.
-     *
-     * @param array $options
-     */
-    public function setup(array $options)
-    {
-        // do something fooish
-    }
-
-    /**
-     * Returns an array of event names this subscriber wants to listen to.
-     *
-     * @return array
-     */
-    public static function getSubscribedEvents()
-    {
-        return array();
-    }
-}
-
-/**
- * Class phpbuAppFactoryTestObject
- */
-class phpbuAppFactoryTestSource implements Source
-{
-    /**
-     * Setup the source.
-     *
-     * @param array $conf
-     */
-    public function setup(array $conf = [])
-    {
-        // do something fooish
-    }
-
-    /**
-     * Runner the backup
-     *
-     * @param  \phpbu\App\Backup\Target $target
-     * @param  \phpbu\App\Result $result
-     * @return \phpbu\App\Backup\Source\Status
-     */
-    public function backup(Target $target, Result $result) : Source\Status
-    {
-        return new Source\Status();
-    }
-}
-
-/**
- * Class phpbuAppFactoryTestObject
- */
-class phpbuAppFactoryTestRunner
-{
-    /**
-     * Setup the source.
-     *
-     * @param array $conf
-     */
-    public function setup(array $conf = [])
-    {
-        // do something fooish
-    }
-
-    /**
-     * Runner the backup
-     *
-     * @param  \phpbu\App\Backup\Target $target
-     * @param  \phpbu\App\Result $result
-     * @return \phpbu\App\Backup\Source\Status
-     */
-    public function backup(Target $target, Result $result)
-    {
-        return new Source\Status();
+        $this->assertEquals(
+            get_class($dummy),
+            'phpbu\\App\\Backup\\Check\\FakeCheck',
+            'Factory should create dummy object'
+        );
     }
 }

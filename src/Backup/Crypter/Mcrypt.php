@@ -3,7 +3,6 @@ namespace phpbu\App\Backup\Crypter;
 
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
-use phpbu\App\Result;
 use phpbu\App\Util;
 
 /**

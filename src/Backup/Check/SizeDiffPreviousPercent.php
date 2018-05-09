@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup\Check;
 
 use phpbu\App\Result;
-use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Collector\Local;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Math;
 
@@ -25,14 +25,14 @@ class SizeDiffPreviousPercent implements Simulator
     /**
      * Execute check.
      *
-     * @param  \phpbu\App\Backup\Target    $target
-     * @param  string                      $value
-     * @param  \phpbu\App\Backup\Collector $collector
-     * @param  \phpbu\App\Result           $result
+     * @param  \phpbu\App\Backup\Target          $target
+     * @param  string                            $value
+     * @param  \phpbu\App\Backup\Collector\Local $collector
+     * @param  \phpbu\App\Result                 $result
      * @return bool
      * @throws \phpbu\App\Exception
      */
-    public function pass(Target $target, $value, Collector $collector, Result $result) : bool
+    public function pass(Target $target, $value, Local $collector, Result $result) : bool
     {
         // throws App\Exception if file doesn't exist
         $backupSize   = $target->getSize();
@@ -56,13 +56,13 @@ class SizeDiffPreviousPercent implements Simulator
     /**
      * Simulate the check execution.
      *
-     * @param  \phpbu\App\Backup\Target    $target
-     * @param  string                      $value
-     * @param  \phpbu\App\Backup\Collector $collector
-     * @param  \phpbu\App\Result           $result
+     * @param  \phpbu\App\Backup\Target          $target
+     * @param  string                            $value
+     * @param  \phpbu\App\Backup\Collector\Local $collector
+     * @param  \phpbu\App\Result                 $result
      * @return bool
      */
-    public function simulate(Target $target, $value, Collector $collector, Result $result): bool
+    public function simulate(Target $target, $value, Local $collector, Result $result): bool
     {
         $result->debug('checking size difference ' . $value . '%' . PHP_EOL);
         return true;

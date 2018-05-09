@@ -20,7 +20,7 @@ class SizeDiffPreviousPercentTest extends \PHPUnit\Framework\TestCase
     public function testPass()
     {
         $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $collectorStub->expects($this->once())
                       ->method('getBackupFiles')
                       ->willReturn($this->getFileListMock([100, 500, 1000]));
@@ -41,10 +41,10 @@ class SizeDiffPreviousPercentTest extends \PHPUnit\Framework\TestCase
     public function testFail()
     {
         $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $collectorStub->expects($this->once())
-                              ->method('getBackupFiles')
-                              ->willReturn($this->getFileListMock([100, 500, 1000]));
+                      ->method('getBackupFiles')
+                      ->willReturn($this->getFileListMock([100, 500, 1000]));
         $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
         $targetStub->method('getSize')->willReturn(1060);
 
@@ -57,16 +57,30 @@ class SizeDiffPreviousPercentTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests SizeDiffPreviousPercent::simulate
+     */
+    public function testSimulate()
+    {
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
+        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
+        $resultStub    = $this->createMock(\phpbu\App\Result::class);
+        $resultStub->expects($this->once())->method('debug');
+
+        $check = new SizeDiffPreviousPercent();
+        $check->simulate($targetStub, '10', $collectorStub, $resultStub);
+    }
+
+    /**
      * Create a list of File stubs
      *
      * @param  array $sizes Size in byte the stubs will return on getSize()
-     * @return \phpbu\App\Backup\File[]
+     * @return \phpbu\App\Backup\File\Local[]
      */
     protected function getFileListMock(array $sizes)
     {
         $list = [];
         foreach ($sizes as $i => $size) {
-            $fileStub = $this->createMock(\phpbu\App\Backup\File::class);
+            $fileStub = $this->createMock(\phpbu\App\Backup\File\Local::class);
             $fileStub->method('getSize')->willReturn($size);
             $list['201401' . str_pad($i + 1, 2, '0', STR_PAD_LEFT)] = $fileStub;
         }

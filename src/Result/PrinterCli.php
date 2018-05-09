@@ -1,12 +1,10 @@
 <?php
 namespace phpbu\App\Result;
 
-use InvalidArgumentException;
 use phpbu\App\Event;
 use phpbu\App\Listener;
 use phpbu\App\Result;
 use phpbu\App\Util;
-use phpbu\App\Version;
 use PHP_Timer;
 use SebastianBergmann\Environment\Console;
 use SebastianBergmann\Environment\Runtime;
@@ -562,7 +560,11 @@ class PrinterCli implements Listener
                 'fg-red',
                 sprintf(
                     "FAILURE!" . PHP_EOL .
-                    'Backups: %d, failed Checks: %d, failed Crypts: %d, failed Syncs: %d, failed Cleanups: %d.' . PHP_EOL,
+                    'Backups: %d, '
+                    . 'failed Checks: %d, '
+                    . 'failed Crypts: %d, '
+                    . 'failed Syncs: %d, '
+                    . 'failed Cleanups: %d.' . PHP_EOL,
                     count($result->getBackups()),
                     $result->checksFailedCount(),
                     $result->cryptsFailedCount(),

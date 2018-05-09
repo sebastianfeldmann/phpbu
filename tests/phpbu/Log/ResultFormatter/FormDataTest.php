@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Log\ResultFormatter;
+
 use function GuzzleHttp\Psr7\parse_query;
 
 /**

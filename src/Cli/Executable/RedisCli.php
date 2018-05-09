@@ -80,7 +80,7 @@ class RedisCli extends Abstraction implements Executable
      */
     public function runCommand(string $command) : RedisCli
     {
-        if(!isset($this->availableCommands[$command])) {
+        if (!isset($this->availableCommands[$command])) {
             throw new Exception('Unknown redis-cli command');
         }
         $this->command = $command;

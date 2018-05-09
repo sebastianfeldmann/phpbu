@@ -3,7 +3,6 @@ namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\CliMockery;
 use phpbu\App\BaseMockery;
-use phpbu\App\Util\Cli;
 
 /**
  * XtraBackup Source Test

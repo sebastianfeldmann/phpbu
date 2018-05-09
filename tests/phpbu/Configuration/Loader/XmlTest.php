@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Configuration\Loader;
+
 use phpbu\App\Configuration\Bootstrapper;
 use phpbu\App\Factory;
 

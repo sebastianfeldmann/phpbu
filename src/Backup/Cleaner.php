@@ -27,9 +27,9 @@ interface Cleaner
     /**
      * Cleanup you backup location
      *
-     * @param  \phpbu\App\Backup\Target    $target
-     * @param  \phpbu\App\Backup\Collector $collector
-     * @param  \phpbu\App\Result           $result
+     * @param  \phpbu\App\Backup\Target          $target
+     * @param  \phpbu\App\Backup\Collector       $collector
+     * @param  \phpbu\App\Result                 $result
      * @return void
      */
     public function cleanup(Target $target, Collector $collector, Result $result);

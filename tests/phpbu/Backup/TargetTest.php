@@ -58,8 +58,11 @@ class TargetTest extends \PHPUnit\Framework\TestCase
             $target = new Target($path, $filename);
             $target->setupPath();
         } catch (\Exception $e) {
-            chmod($target->getPath(), 0755);
-            rmdir($target->getPath());
+            if (isset($target)) {
+                chmod($target->getPath(), 0755);
+                rmdir($target->getPath());
+            }
+
             throw $e;
         }
     }
@@ -108,7 +111,7 @@ class TargetTest extends \PHPUnit\Framework\TestCase
 
         $this->assertTrue($target->hasChangingPath(), 'path should be recognized as changing');
         $this->assertEquals(3, $target->countChangingPathElements(), '2 changing path elements should be found');
-        $this->assertEquals(['%Y', 'foo', '%m'],$target->getChangingPathElements());
+        $this->assertEquals(['%Y', 'foo', '%m'], $target->getChangingPathElements());
     }
 
     /**

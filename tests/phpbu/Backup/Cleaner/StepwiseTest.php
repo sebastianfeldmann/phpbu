@@ -79,7 +79,7 @@ class StepwiseTest extends TestCase
             ]
         );
         $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
@@ -115,7 +115,7 @@ class StepwiseTest extends TestCase
             ]
         );
         $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $collectorStub->expects($this->once())->method('getBackupFiles')->willReturn($fileList);
