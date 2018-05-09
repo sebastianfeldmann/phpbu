@@ -56,7 +56,7 @@ class Factory
     public static function getClassName($name)
     {
         if (!isset(self::$availableCompressors[$name])) {
-            throw new Exception('Invalid compressor: ' .$name);
+            throw new Exception('Invalid compressor: ' . $name);
         }
         $class = self::$availableCompressors[$name];
         return '\\phpbu\\App\\Backup\\Target\\Compression\\' . $class;

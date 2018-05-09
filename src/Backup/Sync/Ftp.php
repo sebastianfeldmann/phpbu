@@ -87,7 +87,7 @@ class Ftp extends Xtp implements Simulator
     public function sync(Target $target, Result $result)
     {
         // silence ftp errors
-        $old  = error_reporting(0);
+        $old = error_reporting(0);
         if (!$this->ftpConnection = ftp_connect($this->host)) {
             throw new Exception(
                 sprintf(
