@@ -96,4 +96,13 @@ class CompressionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('gz', $gzip->getSuffix());
         $this->assertEquals('gzip', $gzip->getCommand());
     }
+
+    /**
+     * Tests Copressor::getAcceptableExitCodes
+     */
+    public function testGetAcceptableExitCodes()
+    {
+        $gzip = Compression\Factory::create('/usr/local/bin/gzip');
+        $this->assertEquals([0], $gzip->getAcceptableExitCodes());
+    }
 }
