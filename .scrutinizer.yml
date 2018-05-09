@@ -1,2 +1,9 @@
 tools:
   external_code_coverage: true
+coding_style:
+  php:
+    spaces:
+      around_operators:
+        concatenation: true
+      other:
+        after_type_cast: true
