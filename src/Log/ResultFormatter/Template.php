@@ -133,7 +133,7 @@ class Template extends Abstraction implements ResultFormatter
         $markup = '';
         /* @var $e \Exception */
         foreach ($errors as $e) {
-            $data   = [
+            $data = [
                 'class'   => get_class($e),
                 'message' => $e->getMessage(),
                 'file'    => $e->getFile(),
@@ -156,7 +156,7 @@ class Template extends Abstraction implements ResultFormatter
         $markup = '';
         /* @var $b \phpbu\App\Result\Backup */
         foreach ($backups as $b) {
-            $data   = [
+            $data = [
                 'name'           => $b->getName(),
                 'status'         => $b->allOk() ? 0 : 1,
                 'checkCount'     => $b->checkCount(),

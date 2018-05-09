@@ -183,7 +183,7 @@ class Mail implements Listener, Logger
      */
     public function onPhpbuEnd(Event\App\End $event)
     {
-        $result  = $event->getResult();
+        $result = $event->getResult();
 
         if ($this->shouldMailBeSend($result)) {
             $header  = $this->getHeaderHtml();
@@ -191,7 +191,7 @@ class Mail implements Listener, Logger
             $errors  = $this->getErrorHtml($result);
             $info    = $this->getInfoHtml($result);
             $footer  = $this->getFooterHtml();
-            $body    = '<html><body '. TPL::getSnippet('sBody') . '>'
+            $body    = '<html><body ' . TPL::getSnippet('sBody') . '>'
                      . $header
                      . $status
                      . $errors
@@ -410,7 +410,7 @@ class Mail implements Listener, Logger
             $this->numCleanups,
             Str::appendPluralS('cleanup', $this->numCleanups)
         );
-        $html = '<table ' . sprintf(TPL::getSnippet('sTableStatus'), $color) .'>' .
+        $html = '<table ' . sprintf(TPL::getSnippet('sTableStatus'), $color) . '>' .
                  '<tr><td>' .
                   '<span ' . TPL::getSnippet('sTableStatusText') . '>' . date('Y-m-d H:i') . '</span>' .
                   '<h1 ' . TPL::getSnippet('sTableStatusHead') . '>' . $status . '</h1>' .
@@ -478,7 +478,7 @@ class Mail implements Listener, Logger
                 $html .= '<tr>' .
                           '<td ' . sprintf(TPL::getSnippet('sTableBackupStatusColumn'), $color) . ' colspan="4">' .
                           sprintf('backup <em>%s</em>', $backup->getName()) .
-                          ' <span ' . TPL::getSnippet('sTableBackupStatusText') . '>' . $status .'</span>'.
+                          ' <span ' . TPL::getSnippet('sTableBackupStatusText') . '>' . $status . '</span>'.
                           '</td>' .
                          '</tr>' .
                          '<tr>' .

@@ -112,7 +112,7 @@ class Mcrypt extends Abstraction implements Simulator
      */
     protected function createExecutable(Target $target) : Executable
     {
-        $executable = new Executable\Mcrypt((string)$this->pathToMcrypt);
+        $executable = new Executable\Mcrypt((string) $this->pathToMcrypt);
         $executable->useAlgorithm($this->algorithm)
                    ->useKey($this->key)
                    ->useKeyFile($this->keyFile)

@@ -35,7 +35,7 @@ class OpenStack extends Remote
         $this->container    = $container;
         $this->filename     = basename($object->name);
         $this->pathname     = $object->name;
-        $this->size         = (int)$object->contentLength;
+        $this->size         = (int) $object->contentLength;
         $this->lastModified = $object->lastModified->getTimestamp();
     }
 
