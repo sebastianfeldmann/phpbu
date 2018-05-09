@@ -3,6 +3,7 @@ namespace phpbu\App\Backup\Sync;
 
 use Aws\S3\S3Client;
 use Aws\S3\MultipartUploader;
+use phpbu\App\Backup\Collector;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 
@@ -78,19 +79,14 @@ class AmazonS3v3 extends AmazonS3
     }
 
     /**
-     * Execute the remote clean up if needed
+     * Creates collector for Amazon S3
      *
      * @param \phpbu\App\Backup\Target $target
-     * @param \phpbu\App\Result        $result
+     * @return \phpbu\App\Backup\Collector
      */
-    public function cleanup(Target $target, Result $result)
+    protected function createCollector(Target $target): Collector
     {
-        if (!$this->cleaner) {
-            return;
-        }
-
-        $collector = new \phpbu\App\Backup\Collector\AmazonS3v3($target, $this->client, $this->bucket, $this->path);
-        $this->cleaner->cleanup($target, $collector, $result);
+        return new \phpbu\App\Backup\Collector\AmazonS3v3($target, $this->client, $this->bucket, $this->path);
     }
 
     /**

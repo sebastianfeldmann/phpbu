@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use OpenStack\Common\Transport\HandlerStack;
 use OpenStack\Common\Transport\Utils;
 use OpenStack\Identity\v2\Service;
+use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 use phpbu\App\Util\Arr;
@@ -200,19 +201,14 @@ class Openstack implements Simulator
     }
 
     /**
-     * Execute the remote clean up if needed
+     * Creates collector for OpenStack
      *
      * @param \phpbu\App\Backup\Target $target
-     * @param \phpbu\App\Result        $result
+     * @return \phpbu\App\Backup\Collector
      */
-    public function cleanup(Target $target, Result $result)
+    protected function createCollector(Target $target): Collector
     {
-        if (!$this->cleaner) {
-            return;
-        }
-
-        $collector = new \phpbu\App\Backup\Collector\OpenStack($target, $this->container, $this->path);
-        $this->cleaner->cleanup($target, $collector, $result);
+        return new \phpbu\App\Backup\Collector\OpenStack($target, $this->container, $this->path);
     }
 
     /**

@@ -22,7 +22,7 @@ use phpbu\App\Result;
 trait Clearable
 {
     /**
-     * @var Cleanup
+     * @var Cleaner
      */
     protected $cleanupConfig;
 
@@ -56,6 +56,28 @@ trait Clearable
     }
 
     /**
+     * Execute the remote clean up if needed
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Result        $result
+     * @throws \phpbu\App\Exception
+     */
+    public function cleanup(Target $target, Result $result)
+    {
+        if (!$this->cleaner) {
+            return;
+        }
+
+        if (!method_exists($this, 'createCollector')) {
+            throw new \phpbu\App\Exception('"createCollector" method must be implemented in Sync class that uses Clearable');
+        }
+        $collector = $this->createCollector($target);
+        $this->cleaner->cleanup($target, $collector, $result);
+    }
+
+    /**
+     * Simulate remote cleanup.
+     *
      * @param Target $target
      * @param Result $result
      */
