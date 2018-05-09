@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Collector;
+
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Str;
 
@@ -28,41 +29,44 @@ class OpenStackCollectorTest extends \PHPUnit\Framework\TestCase
 
         $openStackContainerStub = $this->createMock(\OpenStack\ObjectStore\v1\Models\Container::class);
 
-        $remotePath = '/backups/';
+        $remotePath     = '/backups/';
         $openStackFiles = [
             [
-                'content_type' => 'application/directory',
-                'pathname' => $remotePath . 'test_dir',
-                'size' => 0,
+                'content_type'  => 'application/directory',
+                'pathname'      => $remotePath . 'test_dir',
+                'size'          => 0,
                 'last_modified' => '2018-05-08 14:14:54.0 +00:00',
             ],
             [
-                'content_type' => 'text/plain',
-                'pathname' => $remotePath . $target->getFilename(),
-                'size' => 100,
+                'content_type'  => 'text/plain',
+                'pathname'      => $remotePath . $target->getFilename(),
+                'size'          => 100,
                 'last_modified' => '2018-05-08 14:14:54.0 +00:00',
             ],
             [
-                'content_type' => 'text/plain',
-                'pathname' => $remotePath . 'foo-2000-12-01-12_00.txt',
-                'size' => 100,
+                'content_type'  => 'text/plain',
+                'pathname'      => $remotePath . 'foo-2000-12-01-12_00.txt',
+                'size'          => 100,
                 'last_modified' => '2018-05-08 14:14:54.0 +00:00',
             ],
             [
-                'content_type' => 'text/plain',
-                'pathname' => $remotePath . 'not-matching-2000-12-01-12_00.txt',
-                'size' => 100,
+                'content_type'  => 'text/plain',
+                'pathname'      => $remotePath . 'not-matching-2000-12-01-12_00.txt',
+                'size'          => 100,
                 'last_modified' => '2018-05-08 14:14:54.0 +00:00',
             ],
         ];
-        $openStackFiles = array_map(function ($item) {
-            return $this->createOpenStackFileStub($item);
-        }, $openStackFiles);
+        $openStackFiles = array_map(
+            function ($item) {
+                return $this->createOpenStackFileStub($item);
+            },
+            $openStackFiles
+        );
 
         $openStackContainerStub->expects($this->once())
-            ->method('listObjects')
-            ->with(['prefix' => $remotePath])
-            ->willReturn($this->getOpenStackFilesGenerator($openStackFiles));
+                               ->method('listObjects')
+                               ->with(['prefix' => $remotePath])
+                               ->willReturn($this->getOpenStackFilesGenerator($openStackFiles));
 
         $collector = new \phpbu\App\Backup\Collector\OpenStack($target, $openStackContainerStub, $remotePath);
         $this->assertAttributeEquals($openStackContainerStub, 'container', $collector);
@@ -81,14 +85,15 @@ class OpenStackCollectorTest extends \PHPUnit\Framework\TestCase
      *
      * @param array $data
      * @return \stdClass
+     * @throws \Exception
      */
     private function createOpenStackFileStub(array $data)
     {
-        $file = new \stdClass();
-        $file->contentType = $data['content_type'];
-        $file->name = $data['pathname'];
+        $file                = new \stdClass();
+        $file->contentType   = $data['content_type'];
+        $file->name          = $data['pathname'];
         $file->contentLength = $data['size'];
-        $file->lastModified = new \DateTimeImmutable($data['last_modified']);
+        $file->lastModified  = new \DateTimeImmutable($data['last_modified']);
         return $file;
     }
 
@@ -98,7 +103,8 @@ class OpenStackCollectorTest extends \PHPUnit\Framework\TestCase
      * @param $files
      * @return \Generator
      */
-    private function getOpenStackFilesGenerator($files) {
+    private function getOpenStackFilesGenerator($files)
+    {
         foreach ($files as $file) {
             yield $file;
         }

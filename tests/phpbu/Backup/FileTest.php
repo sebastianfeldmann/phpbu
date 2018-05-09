@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Backup;
+
 use phpbu\App\Backup\File\Local;
 
 /**
@@ -8,6 +9,7 @@ use phpbu\App\Backup\File\Local;
  * @package    phpbu
  * @subpackage tests
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @author     Vitaly Baev <hello@vitalybaev.ru>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://www.phpbu.de/

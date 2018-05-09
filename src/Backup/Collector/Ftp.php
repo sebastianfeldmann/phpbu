@@ -4,6 +4,18 @@ namespace phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 
+/**
+ * Sftp class.
+ *
+ * @package    phpbu
+ * @subpackage Backup
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @author     Vitaly Baev <hello@vitalybaev.ru>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
+ * @link       http://phpbu.de/
+ * @since      Class available since Release 5.1.0
+ */
 class Ftp extends Collector
 {
     /**
@@ -30,7 +42,7 @@ class Ftp extends Collector
      *
      * @return \phpbu\App\Backup\File[]
      */
-    public function getBackupFiles(): array
+    public function getBackupFiles() : array
     {
         $files = ftp_nlist($this->ftpConnection, '.');
         foreach ($files as $filename) {

@@ -58,9 +58,9 @@ class DropboxCollectorTest extends \PHPUnit\Framework\TestCase
         $dropboxFileListResult->method('getItems')->willReturn($dropboxFileList);
 
         $dropboxClientStub->expects($this->once())
-            ->method('listFolder')
-            ->with($remotePath, ['limit' => 100])
-            ->willReturn($dropboxFileListResult);
+                          ->method('listFolder')
+                          ->with($remotePath, ['limit' => 100])
+                          ->willReturn($dropboxFileListResult);
 
         $collector = new \phpbu\App\Backup\Collector\Dropbox($target, $dropboxClientStub, $remotePath);
         $this->assertAttributeEquals($dropboxClientStub, 'client', $collector);

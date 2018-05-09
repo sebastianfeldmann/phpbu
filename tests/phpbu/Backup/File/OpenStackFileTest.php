@@ -17,22 +17,22 @@ class OpenStackFileTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreateFileWithCorrectProperties()
     {
-        $storageObjectLastModified = new \DateTimeImmutable('2018-05-08 14:14:54.0 +00:00');
-        $storageObject = $this->createMock(\OpenStack\ObjectStore\v1\Models\StorageObject::class);
+        $storageObjectLastModified    = new \DateTimeImmutable('2018-05-08 14:14:54.0 +00:00');
+        $storageObject                = $this->createMock(\OpenStack\ObjectStore\v1\Models\StorageObject::class);
         $storageObject->name          = 'path/dump.tar.gz';
         $storageObject->filename      = 'dump.tar.gz';
         $storageObject->contentLength = 102102;
         $storageObject->lastModified  = $storageObjectLastModified;
         $storageObject->expects($this->once())
-            ->method('delete');
+                      ->method('delete');
 
         $container = $this->createMock(\OpenStack\ObjectStore\v1\Models\Container::class);
         $container->expects($this->once())
-            ->method('getObject')
-            ->with('path/dump.tar.gz')
-            ->willReturn($storageObject);
+                  ->method('getObject')
+                  ->with('path/dump.tar.gz')
+                  ->willReturn($storageObject);
 
-        $file = new \phpbu\App\Backup\File\OpenStack($container, $storageObject);
+        $file = new OpenStack($container, $storageObject);
         $this->assertEquals('dump.tar.gz', $file->getFilename());
         $this->assertEquals('path/dump.tar.gz', $file->getPathname());
         $this->assertEquals(102102, $file->getSize());

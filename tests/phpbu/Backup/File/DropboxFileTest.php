@@ -28,10 +28,10 @@ class DropboxFileTest extends \PHPUnit\Framework\TestCase
 
         $dropboxClientStub = $this->createMock(\Kunnu\Dropbox\Dropbox::class);
         $dropboxClientStub->expects($this->once())
-            ->method('delete')
-            ->with('backups/dump.tar.gz');
+                          ->method('delete')
+                          ->with('backups/dump.tar.gz');
 
-        $file = new \phpbu\App\Backup\File\Dropbox($dropboxClientStub, $dropboxFileMetadataStub);
+        $file = new Dropbox($dropboxClientStub, $dropboxFileMetadataStub);
         $this->assertEquals('dump.tar.gz', $file->getFilename());
         $this->assertEquals('backups/dump.tar.gz', $file->getPathname());
         $this->assertEquals(102102, $file->getSize());

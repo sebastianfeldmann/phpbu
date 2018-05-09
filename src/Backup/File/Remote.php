@@ -4,7 +4,19 @@ namespace phpbu\App\Backup\File;
 
 use phpbu\App\Backup\File;
 
-class Remote implements File
+/**
+ * Remote file class.
+ *
+ * @package    phpbu
+ * @subpackage Backup
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @author     Vitaly Baev <hello@vitalybaev.ru>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
+ * @link       http://phpbu.de/
+ * @since      Class available since Release 5.1.0
+ */
+abstract class Remote implements File
 {
     /**
      * File size
@@ -89,8 +101,5 @@ class Remote implements File
      *
      * @throws \phpbu\App\Exception
      */
-    public function unlink()
-    {
-        throw new \phpbu\App\Exception("Method must be overrided in proper file class");
-    }
+    abstract public function unlink();
 }

@@ -28,9 +28,9 @@ class AmazonS3v3CollectorTest extends \PHPUnit\Framework\TestCase
         $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
 
         $amazonS3 = $this->getMockBuilder(\Aws\S3\S3Client::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['listObjects'])
-            ->getMock();
+                         ->disableOriginalConstructor()
+                         ->setMethods(['listObjects'])
+                         ->getMock();
 
         $amazonS3Contents = [
             'Contents' => [
@@ -52,15 +52,18 @@ class AmazonS3v3CollectorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
 
-        // Firstly mock listObjects without wrong or non existed Contents key to determine it return empty array of files
+        // Firstly mock listObjects without wrong or non existed contents key to
+        // make sure it returns empty array of files
         $amazonS3->expects($this->exactly(4))
             ->method('listObjects')
             ->with([
-                'Bucket' => 'test',
-                'Prefix' => '',
+                'Bucket'    => 'test',
+                'Prefix'    => '',
                 'Delimiter' => '/',
             ])
-            ->will($this->onConsecutiveCalls(null, ['Contents' => false], ['Contents' => true], $amazonS3Contents));
+            ->will(
+                $this->onConsecutiveCalls(null, ['Contents' => false], ['Contents' => true], $amazonS3Contents)
+            );
 
         $collector = new \phpbu\App\Backup\Collector\AmazonS3v3($target, $amazonS3, 'test', '');
         $this->assertAttributeEquals($amazonS3, 'client', $collector);

@@ -10,7 +10,7 @@ use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
 
 /**
- * Collector
+ * Local collector class.
  *
  * @package    phpbu
  * @subpackage Backup

@@ -23,19 +23,19 @@ use phpbu\App\Result;
 trait Clearable
 {
     /**
-     * @var Cleanup
+     * @var \phpbu\App\Configuration\Backup\Cleanup
      */
     protected $cleanupConfig;
 
     /**
-     * @var Cleaner
+     * @var \phpbu\App\Backup\Cleaner
      */
     protected $cleaner;
 
     /**
      * Check sync clean configuration entities and set up a proper cleaner
      *
-     * @param array $options
+     * @param  array $options
      * @throws \phpbu\App\Exception
      */
     public function setUpClearable(array $options)

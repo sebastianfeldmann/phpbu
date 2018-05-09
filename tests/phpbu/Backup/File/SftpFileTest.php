@@ -22,16 +22,17 @@ class SftpFileTest extends \PHPUnit\Framework\TestCase
     {
         $phpSecLibStub = $this->createMock(\phpseclib\Net\SFTP::class);
         $phpSecLibStub->expects($this->once())
-            ->method('delete')
-            ->with('/backups/dump.tar.gz');
+                      ->method('delete')
+                      ->with('/backups/dump.tar.gz');
 
         $remotePath = '/backups';
-        $fileInfo = [
+        $fileInfo   = [
             'filename' => 'dump.tar.gz',
             'size'     => 102102,
             'mtime'    => 1525788894,
         ];
-        $file = new \phpbu\App\Backup\File\Sftp($phpSecLibStub, $fileInfo, $remotePath);
+
+        $file = new Sftp($phpSecLibStub, $fileInfo, $remotePath);
         $this->assertEquals('dump.tar.gz', $file->getFilename());
         $this->assertEquals('/backups/dump.tar.gz', $file->getPathname());
         $this->assertEquals(102102, $file->getSize());

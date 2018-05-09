@@ -5,6 +5,18 @@ use Kunnu\Dropbox\Dropbox as DropboxApi;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 
+/**
+ * Dropbox class.
+ *
+ * @package    phpbu
+ * @subpackage Backup
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @author     Vitaly Baev <hello@vitalybaev.ru>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
+ * @link       http://phpbu.de/
+ * @since      Class available since Release 5.1.0
+ */
 class Dropbox extends Collector
 {
     /**
@@ -29,7 +41,7 @@ class Dropbox extends Collector
     public function __construct(Target $target, DropboxApi $client, string $path)
     {
         $this->client = $client;
-        $this->path = $path;
+        $this->path   = $path;
         $this->setUp($target);
     }
 
@@ -38,7 +50,7 @@ class Dropbox extends Collector
      *
      * @return \phpbu\App\Backup\File[]
      */
-    public function getBackupFiles(): array
+    public function getBackupFiles() : array
     {
         $items = $this->client->listFolder($this->path, ['limit' => 100]);
         foreach ($items->getItems() as $item) {

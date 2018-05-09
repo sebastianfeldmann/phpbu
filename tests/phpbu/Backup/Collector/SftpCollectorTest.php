@@ -23,13 +23,11 @@ class SftpCollectorTest extends \PHPUnit\Framework\TestCase
      */
     public function testCollector()
     {
-        $path      = '/collector/static-dir/';
-        $filename  = 'foo-%Y-%m-%d-%H_%i.txt';
-        $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
-
-        $secLib = $this->createMock(\phpseclib\Net\SFTP::class);
-
-        $remotePath = '/backups';
+        $path           = '/collector/static-dir/';
+        $filename       = 'foo-%Y-%m-%d-%H_%i.txt';
+        $target         = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
+        $secLib         = $this->createMock(\phpseclib\Net\SFTP::class);
+        $remotePath     = '/backups';
         $secLibFileList = [
             '.' => [
                 'type'     => 2, // directory
@@ -62,9 +60,9 @@ class SftpCollectorTest extends \PHPUnit\Framework\TestCase
         ];
 
         $secLib->expects($this->once())
-            ->method('_list')
-            ->with($remotePath)
-            ->willReturn($secLibFileList);
+               ->method('_list')
+               ->with($remotePath)
+               ->willReturn($secLibFileList);
 
         $collector = new \phpbu\App\Backup\Collector\Sftp($target, $secLib, $remotePath);
         $this->assertAttributeEquals($secLib, 'sftp', $collector);

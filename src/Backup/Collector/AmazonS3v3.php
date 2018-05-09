@@ -3,12 +3,25 @@ namespace phpbu\App\Backup\Collector;
 
 use Aws\S3\S3Client;
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\File\AmazonS3v3 as AwsFile;
 use phpbu\App\Backup\Target;
 
+/**
+ * AmazonS3v3 class.
+ *
+ * @package    phpbu
+ * @subpackage Backup
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @author     Vitaly Baev <hello@vitalybaev.ru>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
+ * @link       http://phpbu.de/
+ * @since      Class available since Release 5.1.0
+ */
 class AmazonS3v3 extends Collector
 {
     /**
-     * @var S3Client
+     * @var \Aws\S3\S3Client
      */
     protected $client;
 
@@ -38,7 +51,7 @@ class AmazonS3v3 extends Collector
     {
         $this->client = $client;
         $this->bucket = $bucket;
-        $this->path = ltrim($path, '/');
+        $this->path   = ltrim($path, '/');
         $this->setUp($target);
     }
 
@@ -47,11 +60,11 @@ class AmazonS3v3 extends Collector
      *
      * @return \phpbu\App\Backup\File[]
      */
-    public function getBackupFiles(): array
+    public function getBackupFiles() : array
     {
         $result = $this->client->listObjects([
-            'Bucket' => $this->bucket,
-            'Prefix' => $this->path,
+            'Bucket'    => $this->bucket,
+            'Prefix'    => $this->path,
             'Delimiter' => '/',
         ]);
 
@@ -65,7 +78,7 @@ class AmazonS3v3 extends Collector
                 continue;
             }
             if ($this->isFilenameMatch(basename($object['Key']))) {
-                $this->files[] = new \phpbu\App\Backup\File\AmazonS3v3($this->client, $this->bucket, $object);
+                $this->files[] = new AwsFile($this->client, $this->bucket, $object);
             }
         }
 

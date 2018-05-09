@@ -2,9 +2,16 @@
 namespace phpbu\App\Backup\File;
 
 /**
- * File Sftp class
+ * Sftp file class.
  *
- * @package phpbu\App\Backup\File
+ * @package    phpbu
+ * @subpackage Backup
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @author     Vitaly Baev <hello@vitalybaev.ru>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
+ * @link       http://phpbu.de/
+ * @since      Class available since Release 5.1.0
  */
 class Sftp extends Remote
 {
