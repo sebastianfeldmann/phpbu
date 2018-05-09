@@ -40,10 +40,7 @@ class Sftp extends Collector
     public function getBackupFiles(): array
     {
         $list = $this->sftp->_list($this->path);
-        foreach ($list as $filename => $fileInfo) {
-            if (in_array($filename, ['.', '..'])) {
-                continue;
-            }
+        foreach ($list as $fileInfo) {
             if ($fileInfo['type'] === 2) {
                 continue;
             }
