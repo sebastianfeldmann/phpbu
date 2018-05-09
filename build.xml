@@ -51,7 +51,7 @@
       <arg value="--standard=PSR2"/>
       <arg value="--extensions=php"/>
       <arg path="${basedir}/src"/>
-      <arg path="${basedir}/tests"/>
+      <arg path="${basedir}/tests/phpbu"/>
     </exec>
   </target>
 
@@ -62,7 +62,7 @@
       <arg value="--standard=PSR2"/>
       <arg value="--extensions=php"/>
       <arg path="${basedir}/src"/>
-      <arg path="${basedir}/tests"/>
+      <arg path="${basedir}/tests/phpbu"/>
     </exec>
   </target>
 
@@ -202,7 +202,7 @@
       </fileset>
     </copy>
 
-    <!-- AMAZON AWS GUZZLE -->
+    <!-- GUZZLE (AWS / OPENSTACK) -->
     <copy file="${basedir}/vendor/guzzlehttp/guzzle/LICENSE"
           tofile="${basedir}/build/phar/lib/guzzlehttp/guzzle/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/guzzlehttp/guzzle">
@@ -249,6 +249,7 @@
       </fileset>
     </copy>
 
+    <!-- PHPUNIT LIBS -->
     <copy file="${basedir}/vendor/phpunit/php-timer/LICENSE" tofile="${basedir}/build/phar/lib/php-timer/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/php-timer">
       <fileset dir="${basedir}/vendor/phpunit/php-timer/src">
@@ -274,6 +275,7 @@
       </fileset>
     </copy>
 
+    <!-- SOFTLAYER -->
     <copy file="${basedir}/vendor/softlayer/objectstorage/COPYING"
           tofile="${basedir}/build/phar/lib/softlayer-os/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/softlayer-os">
@@ -292,10 +294,30 @@
       </fileset>
     </copy>
 
+    <!-- SYMFONY LIBS -->
     <copy file="${basedir}/vendor/symfony/event-dispatcher/LICENSE"
           tofile="${basedir}/build/phar/lib/symfony/event-dispatcher/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/symfony/event-dispatcher">
       <fileset dir="${basedir}/vendor/symfony/event-dispatcher">
+        <include name="**/*.php"/>
+        <exclude name="**/Test*"/>
+      </fileset>
+    </copy>
+
+    <!-- OPENSTACK -->
+    <copy file="${basedir}/vendor/php-opencloud/openstack/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-opencloud/openstack/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-opencloud/openstack">
+      <fileset dir="${basedir}/vendor/php-opencloud/openstack/src">
+        <include name="**/*.php"/>
+        <exclude name="**/Test*"/>
+      </fileset>
+    </copy>
+
+    <copy file="${basedir}/vendor/justinrainbow/json-schema/LICENSE"
+          tofile="${basedir}/build/phar/lib/justinrainbow/json-schema/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/justinrainbow/json-schema">
+      <fileset dir="${basedir}/vendor/justinrainbow/json-schema/src">
         <include name="**/*.php"/>
         <exclude name="**/Test*"/>
       </fileset>
