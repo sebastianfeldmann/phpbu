@@ -4,7 +4,7 @@ namespace phpbu\App\Runner;
 use phpbu\App\Backup\Compressor;
 use phpbu\App\Exception;
 use phpbu\App\Backup\Cleaner;
-use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Collector\Local;
 use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
@@ -57,7 +57,7 @@ class Backup extends Compression
             }
             // setup target and collector, reset failure state
             $target        = $this->factory->createTarget($backup->getTarget());
-            $collector     = new Collector($target);
+            $collector     = new Local($target);
             $this->failure = false;
 
             try {
@@ -129,12 +129,12 @@ class Backup extends Compression
     /**
      * Execute checks.
      *
-     * @param  \phpbu\App\Configuration\Backup $backup
-     * @param  \phpbu\App\Backup\Target        $target
-     * @param  \phpbu\App\Backup\Collector     $collector
+     * @param  \phpbu\App\Configuration\Backup   $backup
+     * @param  \phpbu\App\Backup\Target          $target
+     * @param  \phpbu\App\Backup\Collector\Local $collector
      * @throws \Exception
      */
-    protected function executeChecks(Configuration\Backup $backup, Target $target, Collector $collector)
+    protected function executeChecks(Configuration\Backup $backup, Target $target, Local $collector)
     {
         foreach ($backup->getChecks() as $config) {
             try {
@@ -204,7 +204,6 @@ class Backup extends Compression
                 $sync = $this->factory->createSync($config->type, $config->options);
                 $sync->sync($target, $this->result);
                 $this->result->syncEnd($config);
-
             } catch (Sync\Exception $e) {
                 $this->failure = true;
                 $this->result->addError($e);
@@ -216,12 +215,12 @@ class Backup extends Compression
     /**
      * Execute the cleanup.
      *
-     * @param  \phpbu\App\Configuration\Backup $backup
-     * @param  \phpbu\App\Backup\Target        $target
-     * @param  \phpbu\App\Backup\Collector     $collector
+     * @param  \phpbu\App\Configuration\Backup   $backup
+     * @param  \phpbu\App\Backup\Target          $target
+     * @param  \phpbu\App\Backup\Collector\Local $collector
      * @throws \phpbu\App\Exception
      */
-    protected function executeCleanup(Configuration\Backup $backup, Target $target, Collector $collector)
+    protected function executeCleanup(Configuration\Backup $backup, Target $target, Local $collector)
     {
         if ($backup->hasCleanup()) {
             /* @var \phpbu\App\Configuration\Backup\Cleanup $config */

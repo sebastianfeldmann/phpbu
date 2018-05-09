@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
-use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;

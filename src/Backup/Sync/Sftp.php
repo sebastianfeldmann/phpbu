@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use phpbu\App\Backup\Collector;
 use phpbu\App\Util\Str;
 use phpseclib;
 use phpbu\App\Result;
@@ -19,6 +20,26 @@ use phpbu\App\Backup\Target;
  */
 class Sftp extends Xtp implements Simulator
 {
+    /**
+     * @var phpseclib\Net\SFTP
+     */
+    protected $sftp;
+
+    /**
+     * (non-PHPDoc)
+     *
+     * @see    \phpbu\App\Backup\Sync::setup()
+     * @param  array $config
+     * @throws \phpbu\App\Backup\Sync\Exception
+     * @throws \phpbu\App\Exception
+     */
+    public function setup(array $config)
+    {
+        parent::setup($config);
+
+        $this->setUpClearable($config);
+    }
+
     /**
      * Check for required loaded libraries or extensions.
      *
@@ -51,25 +72,28 @@ class Sftp extends Xtp implements Simulator
      */
     public function sync(Target $target, Result $result)
     {
-        $sftp           = $this->login();
+        $this->sftp     = $this->login();
         $remoteFilename = $target->getFilename();
         $localFile      = $target->getPathname();
 
         foreach ($this->getRemoteDirectoryList() as $dir) {
-            if (!$sftp->is_dir($dir)) {
+            if (!$this->sftp->is_dir($dir)) {
                 $result->debug(sprintf('creating remote dir \'%s\'', $dir));
-                $sftp->mkdir($dir);
+                $this->sftp->mkdir($dir);
             }
             $result->debug(sprintf('change to remote dir \'%s\'', $dir));
-            $sftp->chdir($dir);
+            $this->sftp->chdir($dir);
         }
 
         $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
-        $result->debug(sprintf('last error \'%s\'', $sftp->getLastSFTPError()));
+        $result->debug(sprintf('last error \'%s\'', $this->sftp->getLastSFTPError()));
 
-        if (!$sftp->put($remoteFilename, $localFile, phpseclib\Net\SFTP::SOURCE_LOCAL_FILE)) {
-            throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $sftp->getLastSFTPError()));
+        if (!$this->sftp->put($remoteFilename, $localFile, phpseclib\Net\SFTP::SOURCE_LOCAL_FILE)) {
+            throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $this->sftp->getLastSFTPError()));
         }
+
+        // run remote cleanup
+        $this->cleanup($target, $result);
     }
 
     /**
@@ -117,5 +141,16 @@ class Sftp extends Xtp implements Simulator
             $remoteDirs = array_filter($remoteDirs);
         }
         return $remoteDirs;
+    }
+
+    /**
+     * Creates collector for SFTP
+     *
+     * @param \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Backup\Collector
+     */
+    protected function createCollector(Target $target): Collector
+    {
+        return new \phpbu\App\Backup\Collector\Sftp($target, $this->sftp, $this->remotePath);
     }
 }

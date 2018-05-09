@@ -58,8 +58,11 @@ class TargetTest extends \PHPUnit\Framework\TestCase
             $target = new Target($path, $filename);
             $target->setupPath();
         } catch (\Exception $e) {
-            chmod($target->getPath(), 0755);
-            rmdir($target->getPath());
+            if (isset($target)) {
+                chmod($target->getPath(), 0755);
+                rmdir($target->getPath());
+            }
+
             throw $e;
         }
     }

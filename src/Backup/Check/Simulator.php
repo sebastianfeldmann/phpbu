@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup\Check;
 
 use phpbu\App\Backup\Check;
-use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Collector\Local;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 
@@ -22,11 +22,11 @@ interface Simulator extends Check
     /**
      * Simulate the check execution.
      *
-     * @param  \phpbu\App\Backup\Target    $target
-     * @param  string                      $value
-     * @param  \phpbu\App\Backup\Collector $collector
-     * @param  \phpbu\App\Result           $result
+     * @param  \phpbu\App\Backup\Target          $target
+     * @param  string                            $value
+     * @param  \phpbu\App\Backup\Collector\Local $collector
+     * @param  \phpbu\App\Result                 $result
      * @return bool
      */
-    public function simulate(Target $target, $value, Collector $collector, Result $result) : bool;
+    public function simulate(Target $target, $value, Local $collector, Result $result) : bool;
 }

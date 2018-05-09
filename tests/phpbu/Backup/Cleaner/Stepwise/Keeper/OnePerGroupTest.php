@@ -19,13 +19,13 @@ class OnePerGroupTest extends \PHPUnit\Framework\TestCase
      */
     public function testKeep()
     {
-        $file1 = $this->createMock(\phpbu\App\Backup\File::class);
+        $file1 = $this->createMock(\phpbu\App\Backup\File\Local::class);
 
-        $file2 = $this->createMock(\phpbu\App\Backup\File::class);
+        $file2 = $this->createMock(\phpbu\App\Backup\File\Local::class);
 
-        $file3 = $this->createMock(\phpbu\App\Backup\File::class);
+        $file3 = $this->createMock(\phpbu\App\Backup\File\Local::class);
 
-        $file4 = $this->createMock(\phpbu\App\Backup\File::class);
+        $file4 = $this->createMock(\phpbu\App\Backup\File\Local::class);
 
         $file1->method('getMTime')->willReturn(mktime(4, 10 ,0, 3, 12, 2017));
         $file2->method('getMTime')->willReturn(mktime(5, 10 ,0, 3, 12, 2017));

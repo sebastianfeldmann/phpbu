@@ -60,10 +60,10 @@ class Capacity extends Abstraction implements Simulator
         } catch (RuntimeException $e) {
             throw new Exception($e->getMessage());
         }
-        $this->deleteTarget  = isset($options['deleteTarget'])
-                             ? Str::toBoolean($options['deleteTarget'], false)
-                             : false;
-        $this->capacityRaw   = $options['size'];
+        $this->deleteTarget = isset($options['deleteTarget'])
+            ? Str::toBoolean($options['deleteTarget'], false)
+            : false;
+        $this->capacityRaw = $options['size'];
         $this->capacityBytes = $bytes;
     }
 
@@ -95,17 +95,17 @@ class Capacity extends Abstraction implements Simulator
      *
      * @param  \phpbu\App\Backup\Target    $target
      * @param  \phpbu\App\Backup\Collector $collector
-     * @return \phpbu\App\Backup\File[]
+     * @return \phpbu\App\Backup\File\Local[]
      * @throws \phpbu\App\Exception
      */
     protected function getFilesToDelete(Target $target, Collector $collector)
     {
-        $files  = $this->getDeletableBackups($target, $collector);
-        $size   = $target->getSize();
+        $files = $this->getDeletableBackups($target, $collector);
+        $size = $target->getSize();
         $delete = [];
 
         // sum up the size of all backups
-        /** @var \phpbu\App\Backup\File $file */
+        /** @var \phpbu\App\Backup\File\Local $file */
         foreach ($files as $file) {
             $size += $file->getSize();
         }
@@ -117,8 +117,8 @@ class Capacity extends Abstraction implements Simulator
 
             while ($this->isCapacityExceeded($size) && count($files) > 0) {
                 // get oldest backup from list, move it to delete list
-                $file     = array_shift($files);
-                $size    -= $file->getSize();
+                $file = array_shift($files);
+                $size -= $file->getSize();
                 $delete[] = $file;
             }
         }
@@ -131,15 +131,15 @@ class Capacity extends Abstraction implements Simulator
      *
      * @param  \phpbu\App\Backup\Target    $target
      * @param  \phpbu\App\Backup\Collector $collector
-     * @return \phpbu\App\Backup\File[]
+     * @return \phpbu\App\Backup\File\Local[]
      */
-    protected function getDeletableBackups(Target $target, Collector $collector) : array
+    protected function getDeletableBackups(Target $target, Collector $collector): array
     {
         $files = $collector->getBackupFiles();
         // should the currently created backup be deleted as well?
         if ($this->deleteTarget) {
-            $file          = $target->toFile();
-            $index         = date('YmdHis', $file->getMTime()) . '-' . count($files) . '-' . $file->getPathname();
+            $file = $target->toFile();
+            $index = date('YmdHis', $file->getMTime()) . '-' . count($files) . '-' . $file->getPathname();
             $files[$index] = $file;
         }
         return $files;
@@ -151,7 +151,7 @@ class Capacity extends Abstraction implements Simulator
      * @param  int|double $currentCapacity
      * @return bool
      */
-    protected function isCapacityExceeded($currentCapacity) : bool
+    protected function isCapacityExceeded($currentCapacity): bool
     {
         return $currentCapacity > $this->capacityBytes;
     }
