@@ -106,15 +106,4 @@ class Rsync extends Cli implements Simulator
         }
         return $executable;
     }
-
-    /**
-     * Execute the remote clean up if needed
-     *
-     * @param \phpbu\App\Backup\Target $target
-     * @param \phpbu\App\Result        $result
-     */
-    public function cleanup(Target $target, Result $result)
-    {
-        // TODO: Implement cleanup() method.
-    }
 }
