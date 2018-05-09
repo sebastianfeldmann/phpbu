@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Adapter;
 
-use Dotenv\Dotenv as DotenvLib;
 use phpbu\App\Adapter;
 use phpbu\App\Configuration;
 use phpbu\App\Exception;

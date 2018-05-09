@@ -3,7 +3,6 @@
 namespace phpbu\App\Backup\File;
 
 use phpbu\App\Backup\File;
-use phpbu\App\Backup\Sync;
 
 class Remote implements File
 {

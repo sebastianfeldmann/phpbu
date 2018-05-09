@@ -77,7 +77,6 @@ abstract class Abstraction
      * Return the command line to execute.
      *
      * @return string
-     * @throws \phpbu\App\Exception
      */
     public function getCommand() : string
     {

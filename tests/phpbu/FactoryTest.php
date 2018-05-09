@@ -7,7 +7,6 @@ use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Log\Logger;
-use phpbu\App\Result\Backup;
 
 /**
  * Factory test

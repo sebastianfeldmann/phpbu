@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup;
 
-use phpbu\App\Backup\Collector;
 use phpbu\App\Result;
 
 /**
@@ -29,7 +28,7 @@ interface Cleaner
      * Cleanup you backup location
      *
      * @param  \phpbu\App\Backup\Target          $target
-     * @param  \phpbu\App\Backup\Collector\Local $collector
+     * @param  \phpbu\App\Backup\Collector       $collector
      * @param  \phpbu\App\Result                 $result
      * @return void
      */

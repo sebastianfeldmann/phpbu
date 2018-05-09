@@ -217,6 +217,7 @@ class Openstack implements Simulator
 
     /**
      * @param ObjectStoreService $service
+     * @param Result             $result
      * @return \OpenStack\ObjectStore\v1\Models\Container
      * @throws \OpenStack\Common\Error\BadResponseError
      */

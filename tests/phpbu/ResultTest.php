@@ -2,7 +2,6 @@
 namespace phpbu\App;
 
 use phpbu\App\Backup\Check\Exception;
-use phpbu\App\Configuration;
 
 /**
  * Version test

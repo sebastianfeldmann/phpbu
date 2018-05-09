@@ -183,7 +183,7 @@ class CliTest extends \PHPUnit\Framework\TestCase
     /**
      * Data provider testIsAbsolutePathWindows.
      *
-     * @return return array
+     * @return array
      */
     public function providerWindowsPaths()
     {

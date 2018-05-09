@@ -1,12 +1,10 @@
 <?php
 namespace phpbu\App\Result;
 
-use InvalidArgumentException;
 use phpbu\App\Event;
 use phpbu\App\Listener;
 use phpbu\App\Result;
 use phpbu\App\Util;
-use phpbu\App\Version;
 use PHP_Timer;
 use SebastianBergmann\Environment\Console;
 use SebastianBergmann\Environment\Runtime;

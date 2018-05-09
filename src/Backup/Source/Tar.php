@@ -3,7 +3,6 @@ namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
-use phpbu\App\Cli\Result as CliResult;
 use phpbu\App\Exception;
 use phpbu\App\Result;
 use phpbu\App\Util;

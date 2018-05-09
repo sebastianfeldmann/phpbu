@@ -2,7 +2,6 @@
 namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\CliMockery;
-use phpbu\App\Backup\Compressor;
 use phpbu\App\BaseMockery;
 
 /**
