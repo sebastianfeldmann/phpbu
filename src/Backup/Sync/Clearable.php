@@ -22,7 +22,7 @@ use phpbu\App\Result;
 trait Clearable
 {
     /**
-     * @var Cleaner
+     * @var Cleanup
      */
     protected $cleanupConfig;
 
