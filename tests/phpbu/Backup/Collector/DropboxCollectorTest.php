@@ -28,9 +28,8 @@ class DropboxCollectorTest extends \PHPUnit\Framework\TestCase
         $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
 
         $dropboxClientStub = $this->createMock(\Kunnu\Dropbox\Dropbox::class);
-
-        $remotePath = '/backups/';
-        $dropboxFileList = [
+        $remotePath        = '/backups/';
+        $dropboxFileList   = [
             [
                 'name' => $target->getFilename(),
                 'pathname' => $remotePath . $target->getFilename(),
@@ -50,9 +49,16 @@ class DropboxCollectorTest extends \PHPUnit\Framework\TestCase
                 'last_modified' => 1525788894,
             ],
         ];
-        $dropboxFileList = array_map(function ($item) {
-            return $this->createDropboxFileStub($item);
-        }, $dropboxFileList);
+
+        $dropboxFileList = array_map(
+            function ($item) {
+                return $this->createDropboxFileStub($item);
+            },
+            $dropboxFileList
+        );
+
+        // add a folder as well
+        $dropboxFileList[] = $this->createMock(\Kunnu\Dropbox\Models\FolderMetadata::class);
 
         $dropboxFileListResult = $this->createMock(\Kunnu\Dropbox\Models\MetadataCollection::class);
         $dropboxFileListResult->method('getItems')->willReturn($dropboxFileList);
@@ -62,7 +68,7 @@ class DropboxCollectorTest extends \PHPUnit\Framework\TestCase
                           ->with($remotePath, ['limit' => 100])
                           ->willReturn($dropboxFileListResult);
 
-        $collector = new \phpbu\App\Backup\Collector\Dropbox($target, $dropboxClientStub, $remotePath);
+        $collector = new Dropbox($target, $dropboxClientStub, $remotePath);
         $this->assertAttributeEquals($dropboxClientStub, 'client', $collector);
         $this->assertAttributeEquals($remotePath, 'path', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);
@@ -77,8 +83,8 @@ class DropboxCollectorTest extends \PHPUnit\Framework\TestCase
     /**
      * Creates Dropbox file metadata class mock
      *
-     * @param array $data
-     * @return \PHPUnit\Framework\MockObject\MockObject
+     * @param  array $data
+     * @return \Kunnu\Dropbox\Models\FileMetadata
      */
     private function createDropboxFileStub(array $data)
     {
