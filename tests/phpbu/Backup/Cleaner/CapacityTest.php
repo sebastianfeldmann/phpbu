@@ -177,4 +177,33 @@ class CapacityTest extends TestCase
 
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }
+
+    /**
+     * Tests Capacity::simulate
+     */
+    public function testSimulateDeleteTarget()
+    {
+        $fileList      = $this->getFileMockList(
+            [
+                // should be deleted but not called because of simulation
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+                ['size' => 100, 'shouldBeDeleted' => false],
+            ]
+        );
+        $resultStub    = $this->createMock(\phpbu\App\Result::class);
+        $resultStub->expects($this->exactly(4))
+                   ->method('debug');
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
+        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
+
+        $collectorStub->method('getBackupFiles')->willReturn($fileList);
+        $targetStub->method('getSize')->willReturn(100);
+
+        $cleaner = new Capacity();
+        $cleaner->setup(['size' => '400B', 'deleteTarget' => 'true']);
+
+        $cleaner->simulate($targetStub, $collectorStub, $resultStub);
+    }
 }

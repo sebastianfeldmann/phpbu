@@ -4,6 +4,7 @@ namespace phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
+use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
 use RuntimeException;
 
@@ -60,10 +61,8 @@ class Capacity extends Abstraction implements Simulator
         } catch (RuntimeException $e) {
             throw new Exception($e->getMessage());
         }
-        $this->deleteTarget = isset($options['deleteTarget'])
-            ? Str::toBoolean($options['deleteTarget'], false)
-            : false;
-        $this->capacityRaw = $options['size'];
+        $this->deleteTarget  = Str::toBoolean(Arr::getValue($options, 'deleteTarget', 'false'), false);
+        $this->capacityRaw   = $options['size'];
         $this->capacityBytes = $bytes;
     }
 
@@ -100,8 +99,8 @@ class Capacity extends Abstraction implements Simulator
      */
     protected function getFilesToDelete(Target $target, Collector $collector)
     {
-        $files = $this->getDeletableBackups($target, $collector);
-        $size = $target->getSize();
+        $files  = $this->getDeletableBackups($target, $collector);
+        $size   = $target->getSize();
         $delete = [];
 
         // sum up the size of all backups
@@ -138,8 +137,8 @@ class Capacity extends Abstraction implements Simulator
         $files = $collector->getBackupFiles();
         // should the currently created backup be deleted as well?
         if ($this->deleteTarget) {
-            $file = $target->toFile();
-            $index = date('YmdHis', $file->getMTime()) . '-' . count($files) . '-' . $file->getPathname();
+            $file          = $target->toFile();
+            $index         = date('YmdHis', $file->getMTime()) . '-' . count($files) . '-' . $file->getPathname();
             $files[$index] = $file;
         }
         return $files;
