@@ -3,8 +3,7 @@ namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Arr;
-use phpbu\App\Util\Str;
+use phpbu\App\Util;
 use ObjectStorage_Http_Client;
 use ObjectStorage;
 
@@ -71,7 +70,7 @@ class SoftLayer implements Simulator
         }
         // check for mandatory options
         foreach (['user', 'secret', 'container', 'host', 'path'] as $option) {
-            if (!Arr::isSetAndNotEmptyString($config, $option)) {
+            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
                 throw new Exception('SoftLayer ' . $option . ' is mandatory');
             }
         }
@@ -80,8 +79,8 @@ class SoftLayer implements Simulator
         $this->secret    = $config['secret'];
         $this->container = $config['container'];
         $this->host      = $config['host'];
-        $this->path      = Str::withLeadingSlash(
-            Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path']))
+        $this->path      = Util\Path::withLeadingSlash(
+            Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path']))
         );
     }
 

@@ -42,7 +42,7 @@ class Dotenv implements Adapter
     public function setup(array $conf)
     {
         $path         = AppUtil\Arr::getValue($conf, 'file', '.env');
-        $this->file   = AppUtil\Cli::toAbsolutePath($path, Configuration::getWorkingDirectory());
+        $this->file   = AppUtil\Path::toAbsolutePath($path, Configuration::getWorkingDirectory());
         $this->dotenv = new DotenvLib(dirname($this->file), basename($this->file));
         $this->dotenv->load();
     }

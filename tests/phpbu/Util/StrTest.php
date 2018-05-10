@@ -20,79 +20,6 @@ class StrTest extends \PHPUnit\Framework\TestCase
     static protected $time;
 
     /**
-     * Tests Str::isContainingPlaceholders
-     */
-    public function testIsContainingPlaceholders()
-    {
-        $string = 'my.name-%Y%m%d.suf';
-        $bool   = Str::isContainingPlaceholder($string);
-        $this->assertTrue($bool, 'should contain placeholder');
-
-        $string = 'my.name.suf';
-        $bool   = Str::isContainingPlaceholder($string);
-        $this->assertFalse($bool, 'should not contain placeholder');
-    }
-
-    /**
-     * Tests multiple date replacements in one string.
-     */
-    public function testReplaceMultipleDatePlaceholder()
-    {
-        $string   = 'my.name-%Y%m%d.suf';
-        $replaced = Str::replaceDatePlaceholders($string);
-        $expected = 'my.name-' . date('Y') . date('m') . date('d') . '.suf';
-
-        $this->assertEquals($expected, $replaced, 'all date placeholder should be replaced');
-    }
-
-    /**
-     * @dataProvider providerDatePlaceholder
-     * @param        $placeholder
-     * @param        $expected
-     */
-    public function testReplaceDatePlaceholder($placeholder, $expected)
-    {
-        $string   = 'my-%' . $placeholder . '.zip';
-        $expected = 'my-' . $expected . '.zip';
-        $time     = self::getTime();
-        $replaced = Str::replaceDatePlaceholders($string, $time);
-        $this->assertEquals($expected, $replaced, sprintf('date placeholder %s should be replaced', $placeholder));
-    }
-
-    /**
-     * Data provider date placeholder
-     *
-     * @return array
-     */
-    public function providerDatePlaceholder()
-    {
-        $time = self::getTime();
-        return [
-            ['Y', date('Y', $time)],
-            ['y', date('y', $time)],
-            ['d', date('d', $time)],
-            ['m', date('m', $time)],
-            ['H', date('H', $time)],
-            ['i', date('i', $time)],
-            ['s', date('s', $time)],
-            ['w', date('w', $time)],
-            ['W', date('W', $time)],
-        ];
-    }
-
-    /**
-     * Tests Str::replaceTargetPlaceholders
-     */
-    public function testReplaceTargetPlaceholder()
-    {
-        $target   = '/foo/bar.txt';
-        $replaced = Str::replaceTargetPlaceholders('1-%TARGET_DIR% 2-%TARGET_FILE%', $target);
-        $expected = '1-/foo 2-/foo/bar.txt';
-
-        $this->assertEquals($expected, $replaced, 'all target placeholder should be replaced');
-    }
-
-    /**
      * Test toBoolean with matching values.
      */
     public function testToBooleanMatch()
@@ -221,68 +148,6 @@ class StrTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Test has trailing slash.
-     */
-    public function testHasTrailingSlash()
-    {
-        $this->assertEquals(false, Str::hasTrailingSlash('foo'));
-        $this->assertEquals(false, Str::hasTrailingSlash('/foo/bar'));
-        $this->assertEquals(true, Str::hasTrailingSlash('baz/'));
-    }
-
-    /**
-     * Test with trailing slash.
-     */
-    public function testWithTrailingSlash()
-    {
-        $this->assertEquals('foo/', Str::withTrailingSlash('foo'), 'should be foo/');
-        $this->assertEquals('foo/bar/', Str::withTrailingSlash('foo/bar'), 'should be foo/bar/');
-        $this->assertEquals('baz/', Str::withTrailingSlash('baz/'), 'should be baz/');
-    }
-
-    /**
-     * Test without trailing slash.
-     */
-    public function testWithoutTrailingSlash()
-    {
-        $this->assertEquals('foo', Str::withoutTrailingSlash('foo/'), 'should be foo');
-        $this->assertEquals('foo/bar', Str::withoutTrailingSlash('foo/bar/'), 'should be foo/bar');
-        $this->assertEquals('baz', Str::withoutTrailingSlash('baz'), 'should be baz');
-        $this->assertEquals('/', Str::withoutTrailingSlash('/'), '/ should be stay /');
-    }
-
-    /**
-     * Test has leading slash.
-     */
-    public function testHasLeadingSlash()
-    {
-        $this->assertEquals(false, Str::hasLeadingSlash('foo'));
-        $this->assertEquals(false, Str::hasLeadingSlash('foo/bar/'));
-        $this->assertEquals(true, Str::hasLeadingSlash('/baz'));
-    }
-
-    /**
-     * Test with trailing slash.
-     */
-    public function testWithLeadingSlash()
-    {
-        $this->assertEquals('/foo', Str::withLeadingSlash('foo'), 'should be /foo');
-        $this->assertEquals('/foo/bar', Str::withLeadingSlash('foo/bar'), 'should be /foo/bar');
-        $this->assertEquals('/baz', Str::withLeadingSlash('/baz'), 'should be baz/');
-    }
-
-    /**
-     * Test without trailing slash.
-     */
-    public function testWithoutLeadingSlash()
-    {
-        $this->assertEquals('foo', Str::withoutLeadingSlash('/foo'), 'should be foo');
-        $this->assertEquals('foo/bar', Str::withoutLeadingSlash('/foo/bar'), 'should be foo/bar');
-        $this->assertEquals('baz', Str::withoutLeadingSlash('baz'), 'should be baz');
-        $this->assertEquals('', Str::withoutLeadingSlash('/'), 'slash should be removed');
-    }
-
-    /**
      * Tests Str::appendPluralS
      */
     public function testAppendPluralS()
@@ -296,19 +161,5 @@ class StrTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('backups', $b);
         $this->assertEquals('backup', $c);
         $this->assertEquals('class\'s', $d);
-    }
-
-    /**
-     * Return local test time.
-     * Not changing in one test run.
-     *
-     * @return integer
-     */
-    protected function getTime()
-    {
-        if (!self::$time) {
-            self::$time = time();
-        }
-        return self::$time;
     }
 }

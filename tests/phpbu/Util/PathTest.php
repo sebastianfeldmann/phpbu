@@ -1,0 +1,254 @@
+<?php
+namespace phpbu\App\Util;
+
+/**
+ * String utility test
+ *
+ * @package    phpbu
+ * @subpackage tests
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
+ * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
+ * @link       http://www.phpbu.de/
+ * @since      Class available since Release 1.0.0
+ */
+class PathTest extends \PHPUnit\Framework\TestCase
+{
+    /**
+     * @var integer
+     */
+    static protected $time;
+
+    /**
+     * Tests Str::isContainingPlaceholders
+     */
+    public function testIsContainingPlaceholders()
+    {
+        $string = 'my.name-%Y%m%d.suf';
+        $bool   = Path::isContainingPlaceholder($string);
+        $this->assertTrue($bool, 'should contain placeholder');
+
+        $string = 'my.name.suf';
+        $bool   = Path::isContainingPlaceholder($string);
+        $this->assertFalse($bool, 'should not contain placeholder');
+    }
+
+    /**
+     * Tests multiple date replacements in one string.
+     */
+    public function testReplaceMultipleDatePlaceholder()
+    {
+        $string   = 'my.name-%Y%m%d.suf';
+        $replaced = Path::replaceDatePlaceholders($string);
+        $expected = 'my.name-' . date('Y') . date('m') . date('d') . '.suf';
+
+        $this->assertEquals($expected, $replaced, 'all date placeholder should be replaced');
+    }
+
+    /**
+     * @dataProvider providerDatePlaceholder
+     * @param        $placeholder
+     * @param        $expected
+     */
+    public function testReplaceDatePlaceholder($placeholder, $expected)
+    {
+        $string   = 'my-%' . $placeholder . '.zip';
+        $expected = 'my-' . $expected . '.zip';
+        $time     = self::getTime();
+        $replaced = Path::replaceDatePlaceholders($string, $time);
+        $this->assertEquals($expected, $replaced, sprintf('date placeholder %s should be replaced', $placeholder));
+    }
+
+    /**
+     * Data provider date placeholder
+     *
+     * @return array
+     */
+    public function providerDatePlaceholder()
+    {
+        $time = self::getTime();
+        return [
+            ['Y', date('Y', $time)],
+            ['y', date('y', $time)],
+            ['d', date('d', $time)],
+            ['m', date('m', $time)],
+            ['H', date('H', $time)],
+            ['i', date('i', $time)],
+            ['s', date('s', $time)],
+            ['w', date('w', $time)],
+            ['W', date('W', $time)],
+        ];
+    }
+
+    /**
+     * Tests Str::replaceTargetPlaceholders
+     */
+    public function testReplaceTargetPlaceholder()
+    {
+        $target   = '/foo/bar.txt';
+        $replaced = Path::replaceTargetPlaceholders('1-%TARGET_DIR% 2-%TARGET_FILE%', $target);
+        $expected = '1-/foo 2-/foo/bar.txt';
+
+        $this->assertEquals($expected, $replaced, 'all target placeholder should be replaced');
+    }
+
+    /**
+     * Test has trailing slash.
+     */
+    public function testHasTrailingSlash()
+    {
+        $this->assertEquals(false, Path::hasTrailingSlash('foo'));
+        $this->assertEquals(false, Path::hasTrailingSlash('/foo/bar'));
+        $this->assertEquals(true, Path::hasTrailingSlash('baz/'));
+    }
+
+    /**
+     * Test with trailing slash.
+     */
+    public function testWithTrailingSlash()
+    {
+        $this->assertEquals('foo/', Path::withTrailingSlash('foo'), 'should be foo/');
+        $this->assertEquals('foo/bar/', Path::withTrailingSlash('foo/bar'), 'should be foo/bar/');
+        $this->assertEquals('baz/', Path::withTrailingSlash('baz/'), 'should be baz/');
+    }
+
+    /**
+     * Test without trailing slash.
+     */
+    public function testWithoutTrailingSlash()
+    {
+        $this->assertEquals('foo', Path::withoutTrailingSlash('foo/'), 'should be foo');
+        $this->assertEquals('foo/bar', Path::withoutTrailingSlash('foo/bar/'), 'should be foo/bar');
+        $this->assertEquals('baz', Path::withoutTrailingSlash('baz'), 'should be baz');
+        $this->assertEquals('/', Path::withoutTrailingSlash('/'), '/ should be stay /');
+    }
+
+    /**
+     * Test has leading slash.
+     */
+    public function testHasLeadingSlash()
+    {
+        $this->assertEquals(false, Path::hasLeadingSlash('foo'));
+        $this->assertEquals(false, Path::hasLeadingSlash('foo/bar/'));
+        $this->assertEquals(true, Path::hasLeadingSlash('/baz'));
+    }
+
+    /**
+     * Test with trailing slash.
+     */
+    public function testWithLeadingSlash()
+    {
+        $this->assertEquals('/foo', Path::withLeadingSlash('foo'), 'should be /foo');
+        $this->assertEquals('/foo/bar', Path::withLeadingSlash('foo/bar'), 'should be /foo/bar');
+        $this->assertEquals('/baz', Path::withLeadingSlash('/baz'), 'should be baz/');
+    }
+
+    /**
+     * Test without trailing slash.
+     */
+    public function testWithoutLeadingSlash()
+    {
+        $this->assertEquals('foo', Path::withoutLeadingSlash('/foo'), 'should be foo');
+        $this->assertEquals('foo/bar', Path::withoutLeadingSlash('/foo/bar'), 'should be foo/bar');
+        $this->assertEquals('baz', Path::withoutLeadingSlash('baz'), 'should be baz');
+        $this->assertEquals('', Path::withoutLeadingSlash('/'), 'slash should be removed');
+    }
+
+    /**
+     * Tests Cli::isAbsolutePath
+     */
+    public function testIsAbsolutePathTrue()
+    {
+        $path = '/foo/bar';
+        $res  = Path::isAbsolutePath($path);
+
+        $this->assertTrue($res, 'should be detected as absolute path');
+    }
+
+    /**
+     * Tests Cli::isAbsolutePath
+     */
+    public function testIsAbsolutePathFalse()
+    {
+        $path = '../foo/bar';
+        $res  = Path::isAbsolutePath($path);
+
+        $this->assertFalse($res, 'should not be detected as absolute path');
+    }
+
+    /**
+     * Tests Cli::isAbsolutePath
+     */
+    public function testIsAbsolutePathStream()
+    {
+        $path = 'php://foo/bar';
+        $res  = Path::isAbsolutePath($path);
+
+        $this->assertTrue($res, 'should not be detected as absolute path');
+    }
+
+    /**
+     * Tests Cli::isAbsolutePathWindows
+     *
+     * @dataProvider providerWindowsPaths
+     *
+     * @param string  $path
+     * @param boolean $expected
+     */
+    public function testIsAbsolutePathWindows($path, $expected)
+    {
+        $res = Path::isAbsoluteWindowsPath($path);
+
+        $this->assertEquals($expected, $res, 'should be detected as expected');
+    }
+
+    /**
+     * Tests Cli::toAbsolutePath
+     */
+    public function testToAbsolutePathAlreadyAbsolute()
+    {
+        $res = Path::toAbsolutePath('/foo/bar', '');
+
+        $this->assertEquals('/foo/bar', $res, 'should be detected as absolute');
+    }
+
+    /**
+     * Data provider testIsAbsolutePathWindows.
+     *
+     * @return array
+     */
+    public function providerWindowsPaths()
+    {
+        return [
+            ['C:\foo', true],
+            ['\\foo\\bar', true],
+            ['..\\foo', false],
+        ];
+    }
+
+    /**
+     * Tests Cli::toAbsolutePath
+     */
+    public function testToAbsolutePathWIthIncludePath()
+    {
+        $filesDir = PHPBU_TEST_FILES . '/conf/xml';
+        set_include_path(get_include_path() . PATH_SEPARATOR . $filesDir);
+        $res = Path::toAbsolutePath('config-valid.xml', '', true);
+
+        $this->assertEquals($filesDir . '/config-valid.xml', $res);
+    }
+
+    /**
+     * Return local test time.
+     * Not changing in one test run.
+     *
+     * @return integer
+     */
+    protected function getTime()
+    {
+        if (!self::$time) {
+            self::$time = time();
+        }
+        return self::$time;
+    }
+}

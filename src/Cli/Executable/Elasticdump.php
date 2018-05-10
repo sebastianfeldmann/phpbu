@@ -3,7 +3,7 @@ namespace phpbu\App\Cli\Executable;
 
 use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
-use phpbu\App\Util\Str;
+use phpbu\App\Util;
 use SebastianFeldmann\Cli\CommandLine;
 use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
@@ -193,7 +193,7 @@ class Elasticdump extends Abstraction implements Executable
             $url .= $parsed['path'];
         }
 
-        $url = Str::withTrailingSlash($url);
+        $url = Util\Path::withTrailingSlash($url);
 
         if ($index !== null) {
             $url .= $index;

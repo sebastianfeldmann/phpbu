@@ -38,11 +38,12 @@ class PHPArray implements Adapter
      *
      * @param  array $conf
      * @return void
+     * @throws \phpbu\App\Exception
      */
     public function setup(array $conf)
     {
         $path       = AppUtil\Arr::getValue($conf, 'file', '.env');
-        $this->file = AppUtil\Cli::toAbsolutePath($path, Configuration::getWorkingDirectory());
+        $this->file = AppUtil\Path::toAbsolutePath($path, Configuration::getWorkingDirectory());
         $this->load();
     }
 

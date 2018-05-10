@@ -3,8 +3,7 @@ namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Arr;
-use phpbu\App\Util\Str;
+use phpbu\App\Util;
 
 /**
  * Amazon S3 Sync base class
@@ -109,11 +108,11 @@ abstract class AmazonS3 implements Simulator
         $this->key             = $config['key'];
         $this->secret          = $config['secret'];
         $this->bucket          = $config['bucket'];
-        $this->bucketTTL       = Arr::getValue($config, 'bucketTTL');
+        $this->bucketTTL       = Util\Arr::getValue($config, 'bucketTTL');
         $this->region          = $config['region'];
-        $this->path            = Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path']));
-        $this->acl             = Arr::getValue($config, 'acl', 'private');
-        $this->multiPartUpload = Str::toBoolean(Arr::getValue($config, 'useMultiPartUpload'), false);
+        $this->path            = Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path']));
+        $this->acl             = Util\Arr::getValue($config, 'acl', 'private');
+        $this->multiPartUpload = Util\Str::toBoolean(Util\Arr::getValue($config, 'useMultiPartUpload'), false);
     }
 
     /**
@@ -125,7 +124,7 @@ abstract class AmazonS3 implements Simulator
     protected function validateConfig(array $config)
     {
         foreach (['key', 'secret', 'bucket', 'region', 'path'] as $option) {
-            if (!Arr::isSetAndNotEmptyString($config, $option)) {
+            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
                 throw new Exception('AWS S3 ' . $option . ' is mandatory');
             }
         }
@@ -163,6 +162,7 @@ abstract class AmazonS3 implements Simulator
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return bool
+     * @throws \phpbu\App\Exception
      */
     protected function useMultiPartUpload(Target $target)
     {

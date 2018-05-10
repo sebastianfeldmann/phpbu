@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup\Collector;
 
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Str;
+use phpbu\App\Util\Path;
 
 /**
  * OpenStack Collector test
@@ -68,11 +68,11 @@ class OpenStackTest extends \PHPUnit\Framework\TestCase
                                ->with(['prefix' => $remotePath])
                                ->willReturn($this->getOpenStackFilesGenerator($openStackFiles));
 
-        $collector = new \phpbu\App\Backup\Collector\OpenStack($target, $openStackContainerStub, $remotePath);
+        $collector = new OpenStack($target, $openStackContainerStub, $remotePath);
         $this->assertAttributeEquals($openStackContainerStub, 'container', $collector);
         $this->assertAttributeEquals($remotePath, 'path', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(Str::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
+        $this->assertAttributeEquals(Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
         $this->assertAttributeEquals([], 'files', $collector);
 
         $files = $collector->getBackupFiles();

@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup\Collector;
 
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Str;
+use phpbu\App\Util\Path;
 
 /**
  * Dropbox Collector test
@@ -72,7 +72,7 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
         $this->assertAttributeEquals($dropboxClientStub, 'client', $collector);
         $this->assertAttributeEquals($remotePath, 'path', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(Str::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
+        $this->assertAttributeEquals(Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
         $this->assertAttributeEquals([], 'files', $collector);
 
         $files = $collector->getBackupFiles();

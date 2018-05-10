@@ -63,6 +63,6 @@ abstract class Abstraction extends Cli
      */
     protected function toAbsolutePath(string $path, string $default = '')
     {
-        return !empty($path) ? Util\Cli::toAbsolutePath($path, Configuration::getWorkingDirectory()) : $default;
+        return !empty($path) ? Util\Path::toAbsolutePath($path, Configuration::getWorkingDirectory()) : $default;
     }
 }

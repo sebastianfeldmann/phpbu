@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup\Collector;
 
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Str;
+use phpbu\App\Util\Path;
 
 /**
  * SFTP Collector test
@@ -64,11 +64,11 @@ class SftpTest extends \PHPUnit\Framework\TestCase
                ->with($remotePath)
                ->willReturn($secLibFileList);
 
-        $collector = new \phpbu\App\Backup\Collector\Sftp($target, $secLib, $remotePath);
+        $collector = new Sftp($target, $secLib, $remotePath);
         $this->assertAttributeEquals($secLib, 'sftp', $collector);
         $this->assertAttributeEquals($remotePath, 'path', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(Str::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
+        $this->assertAttributeEquals(Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
         $this->assertAttributeEquals([], 'files', $collector);
 
         $files = $collector->getBackupFiles();

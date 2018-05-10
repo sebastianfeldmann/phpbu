@@ -7,8 +7,7 @@ use Kunnu\Dropbox\DropboxFile;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Arr;
-use phpbu\App\Util\Str;
+use phpbu\App\Util;
 
 /**
  * Dropbox
@@ -67,15 +66,17 @@ class Dropbox implements Simulator
         if (!class_exists('\\Kunnu\\Dropbox\\Dropbox')) {
             throw new Exception('Dropbox sdk not loaded: use composer to install "kunalvarma05/dropbox-php-sdk"');
         }
-        if (!Arr::isSetAndNotEmptyString($config, 'token')) {
+        if (!Util\Arr::isSetAndNotEmptyString($config, 'token')) {
             throw new Exception('API access token is mandatory');
         }
-        if (!Arr::isSetAndNotEmptyString($config, 'path')) {
+        if (!Util\Arr::isSetAndNotEmptyString($config, 'path')) {
             throw new Exception('dropbox path is mandatory');
         }
         // make sure the path contains leading and trailing slashes
-        $this->path  = Str::withLeadingSlash(Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path'])));
         $this->token = $config['token'];
+        $this->path  = Util\Path::withLeadingSlash(
+            Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path']))
+        );
 
         $this->setUpClearable($config);
     }

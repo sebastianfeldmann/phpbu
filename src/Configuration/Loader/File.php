@@ -5,7 +5,7 @@ use phpbu\App\Adapter\Util;
 use phpbu\App\Configuration;
 use phpbu\App\Exception;
 use phpbu\App\Factory as AppFactory;
-use phpbu\App\Util\Cli;
+use phpbu\App\Util\Path as PathUtil;
 
 /**
  * Base class for file based phpbu configuration.
@@ -154,7 +154,7 @@ abstract class File
      */
     protected function toAbsolutePath($path, $useIncludePath = false)
     {
-        return Cli::toAbsolutePath($path, dirname($this->filename), $useIncludePath);
+        return PathUtil::toAbsolutePath($path, dirname($this->filename), $useIncludePath);
     }
 
     /**

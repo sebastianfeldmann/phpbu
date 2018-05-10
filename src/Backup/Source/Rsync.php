@@ -67,7 +67,7 @@ class Rsync extends SimulatorExecutable implements Simulator
         $executable = new Executable\Rsync($this->pathToRsync);
         if (!empty($this->args)) {
             $executable->useArgs(
-                Util\Str::replaceTargetPlaceholders(
+                Util\Path::replaceTargetPlaceholders(
                     $this->args,
                     $target->getPathnamePlain()
                 )

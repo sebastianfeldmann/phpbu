@@ -5,10 +5,8 @@ use DirectoryIterator;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\File\Local as FileLocal;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Cli;
+use phpbu\App\Util;
 use SplFileInfo;
-use phpbu\App\Util\Arr;
-use phpbu\App\Util\Str;
 
 /**
  * Local collector class.
@@ -63,7 +61,7 @@ class Local extends Collector
     {
         if (null === $this->files) {
             // create regex to match only created backup files
-            $this->fileRegex = Str::datePlaceholdersToRegex($this->target->getFilenameRaw());
+            $this->fileRegex = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
             $this->files     = [];
             // collect all matching backup files
             $this->collect($this->target->getPathThatIsNotChanging());
@@ -80,7 +78,7 @@ class Local extends Collector
     {
         $dirIterator = new DirectoryIterator($path);
         // collect all matching sub directories and get all the backup files
-        $depth = Cli::getPathDepth($path);
+        $depth = Util\Path::getPathDepth($path);
         if ($depth < $this->target->getPathDepth()) {
             foreach ($dirIterator as $file) {
                 if ($file->isDot()) {
@@ -139,7 +137,7 @@ class Local extends Collector
     protected function isMatchingDirectory(string $dir, int $depth)
     {
         $dirTarget = $this->target->getPathElementAtIndex($depth);
-        $dirRegex  = Str::datePlaceholdersToRegex($dirTarget);
+        $dirRegex  = Util\Path::datePlaceholdersToRegex($dirTarget);
         return preg_match('#' . $dirRegex . '#i', $dir);
     }
 }

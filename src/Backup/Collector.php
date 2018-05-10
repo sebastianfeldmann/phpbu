@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\App\Backup;
 
-use phpbu\App\Util\Str;
+use phpbu\App\Util;
 
 /**
  * Collector class.
@@ -45,8 +45,8 @@ abstract class Collector
      */
     public function setUp(Target $target)
     {
-        $this->target = $target;
-        $this->fileRegex = Str::datePlaceholdersToRegex($target->getFilenameRaw());
+        $this->target    = $target;
+        $this->fileRegex = Util\Path::datePlaceholdersToRegex($target->getFilenameRaw());
         $this->files     = [];
     }
 

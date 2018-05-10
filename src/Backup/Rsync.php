@@ -103,7 +103,7 @@ trait Rsync
             if (!Util\Arr::isSetAndNotEmptyString($conf, 'path')) {
                 throw new Exception('option \'path\' is missing');
             }
-            $this->path         = Util\Str::replaceDatePlaceholders($conf['path']);
+            $this->path         = Util\Path::replaceDatePlaceholders($conf['path']);
             $this->user         = Util\Arr::getValue($conf, 'user', '');
             $this->host         = Util\Arr::getValue($conf, 'host', '');
             $this->password     = Util\Arr::getValue($conf, 'password', '');

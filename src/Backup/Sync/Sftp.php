@@ -2,10 +2,10 @@
 namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Backup\Collector;
-use phpbu\App\Util\Str;
-use phpseclib;
-use phpbu\App\Result;
 use phpbu\App\Backup\Target;
+use phpbu\App\Result;
+use phpbu\App\Util;
+use phpseclib;
 
 /**
  * Sftp sync
@@ -135,7 +135,7 @@ class Sftp extends Xtp implements Simulator
         if (!empty($this->remotePath)) {
             $remoteDirs = explode('/', $this->remotePath);
             // fix empty first array element for absolute path
-            if (Str::hasLeadingSlash($this->remotePath)) {
+            if (Util\Path::hasLeadingSlash($this->remotePath)) {
                 $remoteDirs[0] = '/';
             }
             $remoteDirs = array_filter($remoteDirs);
@@ -151,6 +151,6 @@ class Sftp extends Xtp implements Simulator
      */
     protected function createCollector(Target $target): Collector
     {
-        return new \phpbu\App\Backup\Collector\Sftp($target, $this->sftp, $this->remotePath);
+        return new Collector\Sftp($target, $this->sftp, $this->remotePath);
     }
 }

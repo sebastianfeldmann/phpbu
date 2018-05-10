@@ -4,8 +4,7 @@ namespace phpbu\App\Backup\Sync;
 use phpseclib;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Arr;
-use phpbu\App\Util\Str;
+use phpbu\App\Util;
 
 /**
  * Sftp sync
@@ -74,20 +73,20 @@ abstract class Xtp implements Simulator
     public function setup(array $config)
     {
         $this->checkRequirements();
-        if (!Arr::isSetAndNotEmptyString($config, 'host')) {
+        if (!Util\Arr::isSetAndNotEmptyString($config, 'host')) {
             throw new Exception('option \'host\' is missing');
         }
-        if (!Arr::isSetAndNotEmptyString($config, 'user')) {
+        if (!Util\Arr::isSetAndNotEmptyString($config, 'user')) {
             throw new Exception('option \'user\' is missing');
         }
-        if (!Arr::isSetAndNotEmptyString($config, 'password')) {
+        if (!Util\Arr::isSetAndNotEmptyString($config, 'password')) {
             throw new Exception('option \'password\' is missing');
         }
-        $path = Arr::getValue($config, 'path', '');
+        $path = Util\Arr::getValue($config, 'path', '');
         $this->host = $config['host'];
         $this->user = $config['user'];
         $this->password = $config['password'];
-        $this->remotePath = Str::withoutTrailingSlash(Str::replaceDatePlaceholders($path));
+        $this->remotePath = Util\Path::withoutTrailingSlash(Util\Path::replaceDatePlaceholders($path));
     }
 
     /**

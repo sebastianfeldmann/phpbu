@@ -17,64 +17,6 @@ use RuntimeException;
 class Str
 {
     /**
-     * Date placeholder replacement.
-     * Replaces %{somevalue} with date({somevalue}).
-     *
-     * @param  string               $string
-     * @param  mixed <integer|null> $time
-     * @return string
-     */
-    public static function replaceDatePlaceholders($string, $time = null)
-    {
-        $time = $time === null ? time() : $time;
-        return preg_replace_callback(
-            '#%([a-zA-Z])#',
-            function($match) use ($time) {
-                return date($match[1], $time);
-            },
-            $string
-        );
-    }
-
-    /**
-     * Does a given string contain a date placeholder.
-     *
-     * @param  string $string
-     * @return bool
-     */
-    public static function isContainingPlaceholder($string)
-    {
-        return false !== strpos($string, '%');
-    }
-
-    /**
-     * Replaces %TARGET_DIR% and %TARGET_FILE% in given string.
-     *
-     * @param  string $string
-     * @param  string $target
-     * @return string
-     */
-    public static function replaceTargetPlaceholders($string, $target)
-    {
-        $targetDir  = dirname($target);
-        $search     = ['%TARGET_DIR%', '%TARGET_FILE%'];
-        $replace    = [$targetDir, $target];
-        return str_replace($search, $replace, $string);
-    }
-
-    /**
-     * Create a regex that matches the raw path considering possible date placeholders.
-     *
-     * @param  string $stringWithDatePlaceholders
-     * @return string
-     */
-    public static function datePlaceholdersToRegex($stringWithDatePlaceholders)
-    {
-        $regex = preg_quote($stringWithDatePlaceholders, '#');
-        return preg_replace('#%[a-z]#i', '[0-9a-z]+', $regex);
-    }
-
-    /**
      * Converts a given value to boolean.
      *
      * @param  string $value
@@ -189,72 +131,6 @@ class Str
             $list = array_map('trim', $list);
         }
         return $list;
-    }
-
-    /**
-     * Determine if the path has a trailing slash.
-     *
-     * @param  string $string
-     * @return bool
-     */
-    public static function hasTrailingSlash(string $string) : bool
-    {
-        return substr($string, -1) === '/';
-    }
-
-    /**
-     * Adds trailing slash to a string/path if not already there.
-     *
-     * @param  string $string
-     * @return string
-     */
-    public static function withTrailingSlash($string)
-    {
-        return $string . (self::hasTrailingSlash($string) ? '' : '/');
-    }
-
-    /**
-     * Removes the trailing slash from a string/path.
-     *
-     * @param  string $string
-     * @return string
-     */
-    public static function withoutTrailingSlash($string)
-    {
-        return strlen($string) > 1 && self::hasTrailingSlash($string) ? substr($string, 0, -1) : $string;
-    }
-
-    /**
-     * Determine if the path has a leading slash.
-     *
-     * @param  string $string
-     * @return bool
-     */
-    public static function hasLeadingSlash(string $string) : bool
-    {
-        return substr($string, 0, 1) === '/';
-    }
-
-    /**
-     * Adds leading slash to a string/path if not already there.
-     *
-     * @param  string $string
-     * @return string
-     */
-    public static function withLeadingSlash($string)
-    {
-        return (self::hasLeadingSlash($string) ? '' : '/') . $string;
-    }
-
-    /**
-     * Removes the leading slash from a string/path.
-     *
-     * @param  string $string
-     * @return string
-     */
-    public static function withoutLeadingSlash($string)
-    {
-        return self::hasLeadingSlash($string) ? substr($string, 1) : $string;
     }
 
     /**

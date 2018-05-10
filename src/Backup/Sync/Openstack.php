@@ -11,8 +11,7 @@ use OpenStack\Identity\v2\Service;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
-use phpbu\App\Util\Arr;
-use phpbu\App\Util\Str;
+use phpbu\App\Util;
 
 /**
  * OpenStack Swift Sync
@@ -117,9 +116,9 @@ class Openstack implements Simulator
         $this->username      = $config['username'];
         $this->password      = $config['password'];
         $this->containerName = $config['container_name'];
-        $this->serviceName   = Arr::getValue($config, 'service_name', 'swift');
-        if (Arr::getValue($config, 'path')) {
-            $this->path = Str::withTrailingSlash(Str::replaceDatePlaceholders($config['path']));
+        $this->serviceName   = Util\Arr::getValue($config, 'service_name', 'swift');
+        if (Util\Arr::getValue($config, 'path')) {
+            $this->path = Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path']));
             $this->path = substr($this->path, 0, 1) == '/' ? substr($this->path, 1) : $this->path;
         }
 
@@ -135,7 +134,7 @@ class Openstack implements Simulator
     protected function validateConfig(array $config)
     {
         foreach (['auth_url', 'region', 'username', 'password', 'container_name'] as $option) {
-            if (!Arr::isSetAndNotEmptyString($config, $option)) {
+            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
                 throw new Exception($option . ' is mandatory');
             }
         }
@@ -208,7 +207,7 @@ class Openstack implements Simulator
      */
     protected function createCollector(Target $target): Collector
     {
-        return new \phpbu\App\Backup\Collector\OpenStack($target, $this->container, $this->path);
+        return new Collector\OpenStack($target, $this->container, $this->path);
     }
 
     /**
@@ -246,14 +245,14 @@ class Openstack implements Simulator
     {
         $httpClient = new Client([
             'base_uri' => Utils::normalizeUrl($this->authUrl),
-            'handler' => HandlerStack::create(),
+            'handler'  => HandlerStack::create(),
         ]);
 
         $options = [
-            'authUrl' => $this->authUrl,
-            'region' => $this->region,
-            'username' => $this->username,
-            'password' => $this->password,
+            'authUrl'         => $this->authUrl,
+            'region'          => $this->region,
+            'username'        => $this->username,
+            'password'        => $this->password,
             'identityService' => Service::factory($httpClient),
         ];
 

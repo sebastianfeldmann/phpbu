@@ -3,8 +3,7 @@ namespace phpbu\App\Backup;
 
 use phpbu\App\Backup\File\Local;
 use phpbu\App\Exception;
-use phpbu\App\Util\Cli;
-use phpbu\App\Util\Str;
+use phpbu\App\Util;
 
 /**
  * Backup Target class.
@@ -151,11 +150,11 @@ class Target
         $this->pathRaw         = $path;
         $this->pathNotChanging = $path;
 
-        if (Str::isContainingPlaceholder($path)) {
+        if (Util\Path::isContainingPlaceholder($path)) {
             $this->pathIsChanging = true;
             $this->detectPathNotChanging($path);
             // replace potential date placeholder
-            $path = Str::replaceDatePlaceholders($path, $time);
+            $path = Util\Path::replaceDatePlaceholders($path, $time);
         }
 
         $this->path = $path;
@@ -192,12 +191,12 @@ class Target
         $partsNotChanging     = [];
         $foundChangingElement = false;
 
-        foreach (Cli::getDirectoryList($path) as $depth => $dir) {
+        foreach (Util\Path::getDirectoryList($path) as $depth => $dir) {
             $this->pathElements[] = $dir;
 
             // already found placeholder or found one right now
             // path isn't static anymore so don't add directory to path not changing
-            if ($foundChangingElement || Str::isContainingPlaceholder($dir)) {
+            if ($foundChangingElement || Util\Path::isContainingPlaceholder($dir)) {
                 $foundChangingElement = true;
                 continue;
             }
@@ -218,9 +217,9 @@ class Target
     public function setFile($file, $time = null)
     {
         $this->filenameRaw = $file;
-        if (Str::isContainingPlaceholder($file)) {
+        if (Util\Path::isContainingPlaceholder($file)) {
             $this->filenameIsChanging = true;
-            $file                     = Str::replaceDatePlaceholders($file, $time);
+            $file                     = Util\Path::replaceDatePlaceholders($file, $time);
         }
         $this->filename = $file;
     }
