@@ -130,7 +130,7 @@ class Ftp extends Xtp implements Simulator
         $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
 
         if (!ftp_put($this->ftpConnection, $remoteFilename, $localFile, FTP_BINARY)) {
-            $error = error_get_last();
+            $error   = error_get_last();
             $message = $error['message'];
             throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $message));
         }
