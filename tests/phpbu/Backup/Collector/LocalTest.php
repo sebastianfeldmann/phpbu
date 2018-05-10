@@ -1,10 +1,10 @@
 <?php
-namespace phpbu\App\Backup;
+namespace phpbu\App\Backup\Collector;
 
-use phpbu\App\Backup\Collector\Local;
+use phpbu\App\Backup\Target;
 
 /**
- * Collector test
+ * Local test
  *
  * @package    phpbu
  * @subpackage tests
@@ -14,7 +14,7 @@ use phpbu\App\Backup\Collector\Local;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class CollectorTest extends \PHPUnit\Framework\TestCase
+class LocalTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test the Backup collector with no dynamic directory
@@ -121,6 +121,20 @@ class CollectorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Test the Backup collector with dynamic directories in the beginning and static at the end
+     */
+    public function testMixedStaticEnd()
+    {
+        $path      = $this->getTestDataDir() . '/collector/mixed-dir/static-end/%m/foo';
+        $filename  = 'dump.txt';
+        $target    = new Target($path, $filename, strtotime('2014-03-02 22:30:57'));
+        $collector = new Local($target);
+        $files     = $collector->getBackupFiles();
+
+        $this->assertEquals(2, count($files), '2 files should be found');
+    }
+
+    /**
      * Tests Collector::getBackupFiles
      *
      * @issue #135
@@ -170,6 +184,6 @@ class CollectorTest extends \PHPUnit\Framework\TestCase
      */
     protected function getTestDataDir()
     {
-        return realpath(__DIR__ . '/../../_files');
+        return realpath(__DIR__ . '/../../../_files');
     }
 }

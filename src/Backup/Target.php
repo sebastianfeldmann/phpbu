@@ -3,6 +3,7 @@ namespace phpbu\App\Backup;
 
 use phpbu\App\Backup\File\Local;
 use phpbu\App\Exception;
+use phpbu\App\Util\Cli;
 use phpbu\App\Util\Str;
 
 /**
@@ -47,11 +48,11 @@ class Target
     private $pathNotChanging;
 
     /**
-     * List of directories containing date placeholders
+     * List of all path elements.
      *
      * @var string[]
      */
-    private $pathElementsChanging = [];
+    private $pathElements = [];
 
     /**
      * Backup filename.
@@ -142,46 +143,70 @@ class Target
      *
      * @param  string $path
      * @param  int    $time
-     * @throws \phpbu\App\Exception
      */
     public function setPath($path, $time = null)
     {
-        $this->pathRaw = $path;
+        // remove trailing slashes
+        $path                  = rtrim($path, DIRECTORY_SEPARATOR);
+        $this->pathRaw         = $path;
+        $this->pathNotChanging = $path;
+
         if (Str::isContainingPlaceholder($path)) {
             $this->pathIsChanging = true;
-            $this->detectChangingPathElements($path);
+            $this->detectPathNotChanging($path);
             // replace potential date placeholder
             $path = Str::replaceDatePlaceholders($path, $time);
-        } else {
-            $this->pathNotChanging = $path;
         }
-        $this->path = rtrim($path, DIRECTORY_SEPARATOR);
+
+        $this->path = $path;
     }
 
     /**
-     * Find path elements that can change because of placeholder usage.
+     * Return path element at given index.
+     *
+     * @param  int $index
+     * @return string
+     */
+    public function getPathElementAtIndex(int $index) : string
+    {
+        return $this->pathElements[$index];
+    }
+
+    /**
+     * Return the full target path depth.
+     *
+     * @return int
+     */
+    public function getPathDepth() : int
+    {
+        return count($this->pathElements);
+    }
+
+    /**
+     * Find path elements that can't change because of placeholder usage.
      *
      * @param string $path
      */
-    private function detectChangingPathElements(string $path)
+    private function detectPathNotChanging(string $path)
     {
-        // path should be absolute so we remove the root slash to prevent empty first element
-        $dirs = explode('/', substr($path, 1));
+        $partsNotChanging     = [];
+        $foundChangingElement = false;
 
-        // check all path elements for placeholders
-        // this is important to effectively generate search regex to collect backups
-        $this->pathNotChanging = '';
-        $foundChangingElement  = false;
-        foreach ($dirs as $d) {
+        foreach (Cli::getDirectoryList($path) as $depth => $dir) {
+            $this->pathElements[] = $dir;
+
             // already found placeholder or found one right now
-            // if not add directory to not changing part of the path
-            if ($foundChangingElement || Str::isContainingPlaceholder($d)) {
-                $this->pathElementsChanging[] = $d;
-                $foundChangingElement         = true;
-            } else {
-                $this->pathNotChanging .= DIRECTORY_SEPARATOR . $d;
+            // path isn't static anymore so don't add directory to path not changing
+            if ($foundChangingElement || Str::isContainingPlaceholder($dir)) {
+                $foundChangingElement = true;
+                continue;
+            }
+            // do not add the / element leading slash will be re-added later
+            if ($dir !== '/') {
+                $partsNotChanging[] = $dir;
             }
         }
+        $this->pathNotChanging = DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $partsNotChanging);
     }
 
     /**
@@ -437,26 +462,6 @@ class Target
     public function getPathThatIsNotChanging() : string
     {
         return $this->pathNotChanging;
-    }
-
-    /**
-     * Changing path elements getter.
-     *
-     * @return array
-     */
-    public function getChangingPathElements() : array
-    {
-        return $this->pathElementsChanging;
-    }
-
-    /**
-     * Return amount of changing path elements.
-     *
-     * @return int
-     */
-    public function countChangingPathElements() : int
-    {
-        return count($this->pathElementsChanging);
     }
 
     /**

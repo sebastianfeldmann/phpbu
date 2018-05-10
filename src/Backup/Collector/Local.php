@@ -5,6 +5,7 @@ use DirectoryIterator;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\File\Local as FileLocal;
 use phpbu\App\Backup\Target;
+use phpbu\App\Util\Cli;
 use SplFileInfo;
 use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
@@ -65,7 +66,7 @@ class Local extends Collector
             $this->fileRegex = Str::datePlaceholdersToRegex($this->target->getFilenameRaw());
             $this->files     = [];
             // collect all matching backup files
-            $this->collect($this->target->getPathThatIsNotChanging(), 0);
+            $this->collect($this->target->getPathThatIsNotChanging());
         }
         return $this->files;
     }
@@ -74,23 +75,22 @@ class Local extends Collector
      * Recursive backup collecting.
      *
      * @param string $path
-     * @param int    $depth
      */
-    protected function collect(string $path, int $depth)
+    protected function collect(string $path)
     {
         $dirIterator = new DirectoryIterator($path);
         // collect all matching sub directories and get all the backup files
-        if ($depth < $this->target->countChangingPathElements()) {
+        $depth = Cli::getPathDepth($path);
+        if ($depth < $this->target->getPathDepth()) {
             foreach ($dirIterator as $file) {
                 if ($file->isDot()) {
                     continue;
                 }
                 if ($this->isValidDirectory($file, $depth)) {
-                    $this->collect($file->getPathname(), $depth + 1);
+                    $this->collect($file->getPathname());
                 }
             }
         } else {
-            /** @var \phpbu\App\Backup\File\Local $file */
             $this->collectFiles($dirIterator);
         }
     }
@@ -138,7 +138,7 @@ class Local extends Collector
      */
     protected function isMatchingDirectory(string $dir, int $depth)
     {
-        $dirTarget = Arr::getValue($this->target->getChangingPathElements(), $depth);
+        $dirTarget = $this->target->getPathElementAtIndex($depth);
         $dirRegex  = Str::datePlaceholdersToRegex($dirTarget);
         return preg_match('#' . $dirRegex . '#i', $dir);
     }

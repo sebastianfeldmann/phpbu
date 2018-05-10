@@ -274,6 +274,32 @@ abstract class Cli
     }
 
     /**
+     * Return list of directories in a given path.
+     *
+     * @param  string $path
+     * @return array
+     */
+    public static function getDirectoryList(string $path) : array
+    {
+        $parts = explode('/', $path);
+        if (Str::hasLeadingSlash($path)) {
+            $parts[0] = '/';
+        }
+        return array_filter($parts);
+    }
+
+    /**
+     * Returns directory depth of a given path.
+     *
+     * @param  string $path
+     * @return int
+     */
+    public static function getPathDepth(string $path) : int
+    {
+        return count(self::getDirectoryList($path));
+    }
+
+    /**
      * Formats a buffer with a specified ANSI color sequence if colors are enabled.
      *
      * @author Sebastian Bergmann <sebastian@phpunit.de>

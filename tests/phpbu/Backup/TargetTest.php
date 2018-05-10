@@ -97,7 +97,6 @@ class TargetTest extends \PHPUnit\Framework\TestCase
         $target   = new Target($path, $filename);
 
         $this->assertTrue($target->hasChangingPath(), 'path should be recognized as changing');
-        $this->assertEquals(2, $target->countChangingPathElements(), '2 changing path elements should be found');
     }
 
     /**
@@ -110,8 +109,6 @@ class TargetTest extends \PHPUnit\Framework\TestCase
         $target   = new Target($path, $filename);
 
         $this->assertTrue($target->hasChangingPath(), 'path should be recognized as changing');
-        $this->assertEquals(3, $target->countChangingPathElements(), '2 changing path elements should be found');
-        $this->assertEquals(['%Y', 'foo', '%m'], $target->getChangingPathElements());
     }
 
     /**
@@ -124,7 +121,6 @@ class TargetTest extends \PHPUnit\Framework\TestCase
         $target   = new Target($path, $filename);
 
         $this->assertFalse($target->hasChangingPath(), 'path should be recognized as not changing');
-        $this->assertEquals(0, $target->countChangingPathElements(), 'no changing path elements should be found');
     }
 
     /**
@@ -174,18 +170,6 @@ class TargetTest extends \PHPUnit\Framework\TestCase
         $target->appendFileSuffix('tar');
 
         $this->assertEquals('2014-test-01.txt.tar', $target->getFilename());
-    }
-
-    /**
-     * Tests Target::getChangingPathElements
-     */
-    public function testGetChangingPathElements()
-    {
-        $path     = '/tmp/foo/%Y/%m';
-        $filename = 'foo.txt';
-        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
-
-        $this->assertEquals(array('%Y', '%m'), $target->getChangingPathElements());
     }
 
     /**
