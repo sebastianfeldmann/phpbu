@@ -16,7 +16,7 @@ use phpbu\App\Util\Str;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class OpenStackCollectorTest extends \PHPUnit\Framework\TestCase
+class OpenStackTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test OpenStack collector

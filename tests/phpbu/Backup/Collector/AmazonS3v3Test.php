@@ -16,7 +16,7 @@ use phpbu\App\Util\Str;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class AmazonS3v3CollectorTest extends \PHPUnit\Framework\TestCase
+class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test Amazon S3 collector

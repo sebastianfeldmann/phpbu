@@ -16,7 +16,7 @@ use phpbu\App\Util\Str;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class SftpCollectorTest extends \PHPUnit\Framework\TestCase
+class SftpTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test SFTP collector
