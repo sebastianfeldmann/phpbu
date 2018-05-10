@@ -150,6 +150,9 @@ class LocalTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(7, count($files), '5 files should be found');
     }
 
+    /**
+     * Tests Local::getBackupFiles
+     */
     public function testSkipsCurrentWhenTargetPathHasTrailingBackslash()
     {
         $path      = $this->getTestDataDir() . '/collector/static-dir/';
