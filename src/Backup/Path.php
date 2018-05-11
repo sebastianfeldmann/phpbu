@@ -21,35 +21,35 @@ trait Path
      *
      * @var string
      */
-    private $path;
+    protected $path;
 
     /**
      * Path to the backup with potential date placeholders like %d.
      *
      * @var string
      */
-    private $pathRaw;
+    protected $pathRaw;
 
     /**
      * Indicates if the path changes over time.
      *
      * @var bool
      */
-    private $pathIsChanging = false;
+    protected $pathIsChanging = false;
 
     /**
      * Part of the path without placeholders
      *
      * @var string
      */
-    private $pathNotChanging;
+    protected $pathNotChanging;
 
     /**
      * List of all path elements.
      *
      * @var string[]
      */
-    private $pathElements = [];
+    protected $pathElements = [];
 
     /**
      * Directory setter.
@@ -100,7 +100,7 @@ trait Path
      *
      * @param string $path
      */
-    private function detectPathNotChanging(string $path)
+    protected function detectPathNotChanging(string $path)
     {
         $partsNotChanging     = [];
         $foundChangingElement = false;

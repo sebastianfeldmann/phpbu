@@ -4,7 +4,6 @@ namespace phpbu\App\Backup\Collector;
 use Aws\S3\S3Client;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\File\AmazonS3v3 as AwsFile;
-use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
 
@@ -22,8 +21,6 @@ use phpbu\App\Util;
  */
 class AmazonS3v3 extends Collector
 {
-    use Path;
-
     /**
      * @var \Aws\S3\S3Client
      */
@@ -74,7 +71,7 @@ class AmazonS3v3 extends Collector
             if ($object['Key'] == $this->getPrefix() . $this->target->getFilename()) {
                 continue;
             }
-            if ($this->isFileMatch($object['Key'], Util\Path::withoutLeadingSlash($this->pathRaw))) {
+            if ($this->isFileMatch($object['Key'])) {
                 $this->files[] = new AwsFile($this->client, $this->bucket, $object);
             }
         }

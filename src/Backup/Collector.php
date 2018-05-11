@@ -17,6 +17,8 @@ use phpbu\App\Util;
  */
 abstract class Collector
 {
+    use Path;
+
     /**
      * Backup target
      *
@@ -53,12 +55,12 @@ abstract class Collector
     /**
      * Return true if target full path matches file and path regex.
      *
-     * @param string $targetPath
-     * @param string $rawPath
+     * @param string $targetPath Full path to the remote file to check
      * @return bool
      */
-    protected function isFileMatch(string $targetPath, string $rawPath): bool
+    protected function isFileMatch(string $targetPath): bool
     {
+        $rawPath = Util\Path::withoutLeadingSlash($this->pathRaw);
         $pathRegex = Util\Path::datePlaceholdersToRegex($rawPath);
         $pathRegex .= $pathRegex ? '/' : '';
         $fileRegex = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
