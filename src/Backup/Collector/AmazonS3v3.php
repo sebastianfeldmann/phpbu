@@ -92,6 +92,7 @@ class AmazonS3v3 extends Collector
     {
         $path = $path ?: $this->path;
         $prefix = Util\Path::withoutLeadingSlash($path);
-        return Util\Path::withTrailingSlash($prefix);
+        $prefix = $prefix ? Util\Path::withTrailingSlash($prefix) : '';
+        return $prefix;
     }
 }
