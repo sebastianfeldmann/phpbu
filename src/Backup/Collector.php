@@ -51,6 +51,20 @@ abstract class Collector
     }
 
     /**
+     * Return true if target full path matches file and path regex.
+     *
+     * @param string $targetPath
+     * @param string $rawPath
+     * @return bool
+     */
+    protected function isFileMatch(string $targetPath, string $rawPath): bool
+    {
+        $pathRegex = Util\Path::datePlaceholdersToRegex($rawPath);
+        $fileRegex = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
+        return preg_match('#'.$pathRegex . '/' . $fileRegex . '$#i', $targetPath);
+    }
+
+    /**
      * Returns true if filename matches the target regex
      *
      * @param string $filename

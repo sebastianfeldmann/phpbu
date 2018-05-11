@@ -131,16 +131,7 @@ class Sftp extends Xtp implements Simulator
      */
     private function getRemoteDirectoryList() : array
     {
-        $remoteDirs = [];
-        if (!empty($this->remotePath)) {
-            $remoteDirs = explode('/', $this->remotePath);
-            // fix empty first array element for absolute path
-            if (Util\Path::hasLeadingSlash($this->remotePath)) {
-                $remoteDirs[0] = '/';
-            }
-            $remoteDirs = array_filter($remoteDirs);
-        }
-        return $remoteDirs;
+        return Util\Path::getDirectoryListFromAbsolutePath($this->remotePath);
     }
 
     /**

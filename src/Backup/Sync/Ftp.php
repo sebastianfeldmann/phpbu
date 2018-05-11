@@ -5,6 +5,7 @@ use phpbu\App\Backup\Collector;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
+use phpbu\App\Util\Path;
 use phpbu\App\Util\Str;
 
 /**
@@ -116,7 +117,7 @@ class Ftp extends Xtp implements Simulator
         $localFile      = $target->getPathname();
 
         if ('' !== $this->remotePath) {
-            $remoteDirs = explode('/', $this->remotePath);
+            $remoteDirs = Path::getDirectoryListFromPath($this->remotePath);
             foreach ($remoteDirs as $dir) {
                 if (!ftp_chdir($this->ftpConnection, $dir)) {
                     $result->debug(sprintf('creating remote dir \'%s\'', $dir));

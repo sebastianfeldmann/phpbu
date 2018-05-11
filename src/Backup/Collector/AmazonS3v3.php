@@ -4,7 +4,9 @@ namespace phpbu\App\Backup\Collector;
 use Aws\S3\S3Client;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\File\AmazonS3v3 as AwsFile;
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
+use phpbu\App\Util;
 
 /**
  * AmazonS3v3 class.
@@ -20,6 +22,8 @@ use phpbu\App\Backup\Target;
  */
 class AmazonS3v3 extends Collector
 {
+    use Path;
+
     /**
      * @var \Aws\S3\S3Client
      */
@@ -33,25 +37,19 @@ class AmazonS3v3 extends Collector
     protected $bucket;
 
     /**
-     * AmazonS3 remote path
-     *
-     * @var string
-     */
-    protected $path;
-
-    /**
      * OpenStack constructor.
      *
      * @param \phpbu\App\Backup\Target $target
      * @param S3Client                 $client
      * @param string                   $bucket
      * @param string                   $path
+     * @param int                      $time
      */
-    public function __construct(Target $target, S3Client $client, string $bucket, string $path)
+    public function __construct(Target $target, S3Client $client, string $bucket, string $path, int $time)
     {
         $this->client = $client;
         $this->bucket = $bucket;
-        $this->path   = ltrim($path, '/');
+        $this->setPath($path, $time);
         $this->setUp($target);
     }
 
@@ -64,8 +62,7 @@ class AmazonS3v3 extends Collector
     {
         $result = $this->client->listObjects([
             'Bucket'    => $this->bucket,
-            'Prefix'    => $this->path,
-            'Delimiter' => '/',
+            'Prefix'    => $this->getPrefix($this->pathNotChanging),
         ]);
 
         if (!isset($result['Contents']) || !$result['Contents'] || !is_array($result['Contents'])) {
@@ -74,14 +71,27 @@ class AmazonS3v3 extends Collector
 
         foreach ($result['Contents'] as $object) {
             // skip currently created backup
-            if ($object['Key'] == $this->path . $this->target->getFilename()) {
+            if ($object['Key'] == $this->getPrefix() . $this->target->getFilename()) {
                 continue;
             }
-            if ($this->isFilenameMatch(basename($object['Key']))) {
+            if ($this->isFileMatch($object['Key'], Util\Path::withoutLeadingSlash($this->pathRaw))) {
                 $this->files[] = new AwsFile($this->client, $this->bucket, $object);
             }
         }
 
         return $this->files;
+    }
+
+    /**
+     * Return prefix for querying remote files and folders
+     *
+     * @param string|null $path
+     * @return string
+     */
+    protected function getPrefix($path = null): string
+    {
+        $path = $path ?: $this->path;
+        $prefix = Util\Path::withoutLeadingSlash($path);
+        return Util\Path::withTrailingSlash($prefix);
     }
 }

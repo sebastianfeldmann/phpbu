@@ -61,6 +61,20 @@ abstract class AmazonS3 implements Simulator
     protected $path;
 
     /**
+     * AWS remote raw path / object key
+     *
+     * @var string
+     */
+    protected $pathRaw;
+
+    /**
+     * Unix timestamp of generating path from placeholder.
+     *
+     * @var int
+     */
+    protected $time;
+
+    /**
      * AWS acl
      * 'private' by default
      *
@@ -105,12 +119,14 @@ abstract class AmazonS3 implements Simulator
         // check for mandatory options
         $this->validateConfig($config);
 
+        $this->time            = time();
         $this->key             = $config['key'];
         $this->secret          = $config['secret'];
         $this->bucket          = $config['bucket'];
         $this->bucketTTL       = Util\Arr::getValue($config, 'bucketTTL');
         $this->region          = $config['region'];
-        $this->path            = Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path']));
+        $this->path            = Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path'], $this->time));
+        $this->pathRaw         = $config['path'];
         $this->acl             = Util\Arr::getValue($config, 'acl', 'private');
         $this->multiPartUpload = Util\Str::toBoolean(Util\Arr::getValue($config, 'useMultiPartUpload'), false);
     }
