@@ -27,14 +27,14 @@ class AmazonS3v3 extends Collector
     protected $client;
 
     /**
-     * AmazonS3 bucket name
+     * Amazon S3 bucket name
      *
      * @var string
      */
     protected $bucket;
 
     /**
-     * OpenStack constructor.
+     * Amazon S3 constructor.
      *
      * @param \phpbu\App\Backup\Target $target
      * @param S3Client                 $client
