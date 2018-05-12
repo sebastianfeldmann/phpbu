@@ -18,25 +18,11 @@ use phpbu\App\Util;
 abstract class Collector
 {
     /**
-     * Absolute path to the directory where to store the backup.
+     * Path class.
      *
-     * @var string
+     * @var Path
      */
     protected $path;
-
-    /**
-     * Path to the backup with potential date placeholders like %d.
-     *
-     * @var string
-     */
-    protected $pathRaw;
-
-    /**
-     * Part of the path without placeholders
-     *
-     * @var string
-     */
-    protected $pathNotChanging;
 
     /**
      * Backup target
@@ -79,7 +65,7 @@ abstract class Collector
      */
     protected function isFileMatch(string $targetPath): bool
     {
-        $rawPath = Util\Path::withoutLeadingSlash($this->pathRaw);
+        $rawPath = Util\Path::withoutLeadingSlash($this->path->getPathRaw());
         $pathRegex = Util\Path::datePlaceholdersToRegex($rawPath);
         $pathRegex .= $pathRegex ? '/' : '';
         $fileRegex = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
@@ -98,50 +84,11 @@ abstract class Collector
     }
 
     /**
-     * Directory setter.
-     *
-     * @param  string $path
-     * @param  int    $time
+     * @return Path
      */
-    protected function setPath($path, $time = null)
+    public function getPath(): Path
     {
-        // remove trailing slashes
-        $path                  = rtrim($path, DIRECTORY_SEPARATOR);
-        $this->pathRaw         = $path;
-        $this->pathNotChanging = $path;
-
-        if (Util\Path::isContainingPlaceholder($path)) {
-            $this->detectPathNotChanging($path);
-            // replace potential date placeholder
-            $path = Util\Path::replaceDatePlaceholders($path, $time);
-        }
-
-        $this->path = $path;
-    }
-
-    /**
-     * Find path elements that can't change because of placeholder usage.
-     *
-     * @param string $path
-     */
-    protected function detectPathNotChanging(string $path)
-    {
-        $partsNotChanging     = [];
-        $foundChangingElement = false;
-
-        foreach (Util\Path::getDirectoryListFromAbsolutePath($path) as $depth => $dir) {
-            // already found placeholder or found one right now
-            // path isn't static anymore so don't add directory to path not changing
-            if ($foundChangingElement || Util\Path::isContainingPlaceholder($dir)) {
-                $foundChangingElement = true;
-                continue;
-            }
-            // do not add the / element leading slash will be re-added later
-            if ($dir !== '/') {
-                $partsNotChanging[] = $dir;
-            }
-        }
-        $this->pathNotChanging = DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $partsNotChanging);
+        return $this->path;
     }
 
     /**

@@ -67,7 +67,6 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
 
         $collector = new AmazonS3v3($target, $amazonS3, 'test', '', $time);
         $this->assertAttributeEquals($amazonS3, 'client', $collector);
-        $this->assertAttributeEquals('', 'path', $collector);
         $this->assertAttributeEquals('test', 'bucket', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);
         $this->assertAttributeEquals(Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);

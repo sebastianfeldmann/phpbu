@@ -4,6 +4,7 @@ namespace phpbu\App\Backup\Collector;
 use Aws\S3\S3Client;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\File\AmazonS3v3 as AwsFile;
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
 
@@ -46,7 +47,7 @@ class AmazonS3v3 extends Collector
     {
         $this->client = $client;
         $this->bucket = $bucket;
-        $this->setPath($path, $time);
+        $this->path   = new Path($path, $time);
         $this->setUp($target);
     }
 
@@ -59,7 +60,7 @@ class AmazonS3v3 extends Collector
     {
         $result = $this->client->listObjects([
             'Bucket'    => $this->bucket,
-            'Prefix'    => $this->getPrefix($this->pathNotChanging),
+            'Prefix'    => $this->getPrefix($this->path->getPathThatIsNotChanging()),
         ]);
 
         if (!isset($result['Contents']) || !$result['Contents'] || !is_array($result['Contents'])) {
@@ -87,7 +88,7 @@ class AmazonS3v3 extends Collector
      */
     protected function getPrefix($path = null): string
     {
-        $path = $path ?: $this->path;
+        $path = $path ?: $this->path->getPathThatIsNotChanging();
         $prefix = Util\Path::withoutLeadingSlash($path);
         $prefix = $prefix ? Util\Path::withTrailingSlash($prefix) : '';
         return $prefix;
