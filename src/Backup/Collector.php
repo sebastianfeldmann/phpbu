@@ -17,7 +17,26 @@ use phpbu\App\Util;
  */
 abstract class Collector
 {
-    use Path;
+    /**
+     * Absolute path to the directory where to store the backup.
+     *
+     * @var string
+     */
+    protected $path;
+
+    /**
+     * Path to the backup with potential date placeholders like %d.
+     *
+     * @var string
+     */
+    protected $pathRaw;
+
+    /**
+     * Part of the path without placeholders
+     *
+     * @var string
+     */
+    protected $pathNotChanging;
 
     /**
      * Backup target
@@ -76,6 +95,53 @@ abstract class Collector
     protected function isFilenameMatch(string $filename): bool
     {
         return preg_match('#' . $this->fileRegex . '#i', $filename);
+    }
+
+    /**
+     * Directory setter.
+     *
+     * @param  string $path
+     * @param  int    $time
+     */
+    protected function setPath($path, $time = null)
+    {
+        // remove trailing slashes
+        $path                  = rtrim($path, DIRECTORY_SEPARATOR);
+        $this->pathRaw         = $path;
+        $this->pathNotChanging = $path;
+
+        if (Util\Path::isContainingPlaceholder($path)) {
+            $this->detectPathNotChanging($path);
+            // replace potential date placeholder
+            $path = Util\Path::replaceDatePlaceholders($path, $time);
+        }
+
+        $this->path = $path;
+    }
+
+    /**
+     * Find path elements that can't change because of placeholder usage.
+     *
+     * @param string $path
+     */
+    protected function detectPathNotChanging(string $path)
+    {
+        $partsNotChanging     = [];
+        $foundChangingElement = false;
+
+        foreach (Util\Path::getDirectoryListFromAbsolutePath($path) as $depth => $dir) {
+            // already found placeholder or found one right now
+            // path isn't static anymore so don't add directory to path not changing
+            if ($foundChangingElement || Util\Path::isContainingPlaceholder($dir)) {
+                $foundChangingElement = true;
+                continue;
+            }
+            // do not add the / element leading slash will be re-added later
+            if ($dir !== '/') {
+                $partsNotChanging[] = $dir;
+            }
+        }
+        $this->pathNotChanging = DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $partsNotChanging);
     }
 
     /**
