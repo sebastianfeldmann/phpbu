@@ -47,7 +47,7 @@ class AmazonS3v3 extends Collector
     {
         $this->client = $client;
         $this->bucket = $bucket;
-        $this->path   = new Path($path, $time);
+        $this->path   = new Path($path, $time, false, true);
         $this->setUp($target);
     }
 
@@ -69,7 +69,7 @@ class AmazonS3v3 extends Collector
 
         foreach ($result['Contents'] as $object) {
             // skip currently created backup
-            if ($object['Key'] == $this->getPrefix() . $this->target->getFilename()) {
+            if ($object['Key'] == $this->getPrefix($this->path->getPath()) . $this->target->getFilename()) {
                 continue;
             }
             if ($this->isFileMatch($object['Key'])) {

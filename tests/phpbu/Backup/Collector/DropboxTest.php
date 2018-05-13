@@ -29,7 +29,7 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
         $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
 
         $dropboxClientStub = $this->createMock(\Kunnu\Dropbox\Dropbox::class);
-        $remotePath        = '/backups/';
+        $remotePath        = 'backups/';
         $dropboxFileList   = [
             [
                 'name' => $target->getFilename(),
@@ -66,11 +66,11 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
 
         $dropboxClientStub->expects($this->once())
                           ->method('listFolder')
-                          ->with(Util\Path::withoutTrailingSlash($remotePath), ['limit' => 100, 'recursive' => true])
+                          ->with('backups/', ['limit' => 100, 'recursive' => true])
                           ->willReturn($dropboxFileListResult);
 
         $time = time();
-        $pathObject = new Path($remotePath, $time);
+        $pathObject = new Path($remotePath, $time, false, true);
         $collector = new Dropbox($target, $dropboxClientStub, $remotePath, $time);
         $this->assertAttributeEquals($dropboxClientStub, 'client', $collector);
         $this->assertAttributeEquals($pathObject, 'path', $collector);

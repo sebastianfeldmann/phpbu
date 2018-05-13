@@ -83,8 +83,8 @@ class SoftLayer implements Simulator
     /**
      * Make sure all mandatory keys are present in given config.
      *
-     * @param  array $config
-     * @param  array $keys
+     * @param  array    $config
+     * @param  string[] $keys
      * @throws Exception
      */
     protected function validateConfig(array $config, array $keys)

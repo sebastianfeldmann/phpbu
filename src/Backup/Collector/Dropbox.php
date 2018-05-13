@@ -5,7 +5,6 @@ use Kunnu\Dropbox\Dropbox as DropboxApi;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util;
 
 /**
  * Dropbox class.
@@ -44,7 +43,7 @@ class Dropbox extends Collector
     public function __construct(Target $target, DropboxApi $client, string $path, int $time)
     {
         $this->client = $client;
-        $this->path   = new Path($path, $time);
+        $this->path   = new Path($path, $time, false, true);
         $this->setUp($target);
     }
 
@@ -55,7 +54,10 @@ class Dropbox extends Collector
      */
     public function getBackupFiles() : array
     {
-        $items = $this->client->listFolder($this->path->getPathThatIsNotChanging(), ['limit' => 100, 'recursive' => true]);
+        $items = $this->client->listFolder($this->path->getPathThatIsNotChanging(), [
+            'limit' => 100,
+            'recursive' => true,
+        ]);
         foreach ($items->getItems() as $item) {
             // skip directories
             if ($item instanceof \Kunnu\Dropbox\Models\FolderMetadata) {
@@ -63,7 +65,7 @@ class Dropbox extends Collector
             }
             /** @var \Kunnu\Dropbox\Models\FileMetadata $item */
             // skip currently created backup
-            if ($item->getPathDisplay() == Util\Path::withTrailingSlash($this->path) . $this->target->getFilename()) {
+            if ($item->getPathDisplay() == $this->path->getPath() . $this->target->getFilename()) {
                 continue;
             }
             if ($this->isFileMatch($item->getPathDisplay())) {

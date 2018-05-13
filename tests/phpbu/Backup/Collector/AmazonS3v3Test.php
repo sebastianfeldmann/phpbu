@@ -68,7 +68,7 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
         $path = new Path('', $time);
 
         $collector = new AmazonS3v3($target, $amazonS3, 'test', '', $time);
-        $this->assertEquals($path, $collector->getPath());
+        $this->assertEquals((string) $path, (string) $collector->getPath());
         $this->assertAttributeEquals($amazonS3, 'client', $collector);
         $this->assertAttributeEquals('test', 'bucket', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);

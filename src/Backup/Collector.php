@@ -67,8 +67,8 @@ abstract class Collector
     {
         $rawPath = Util\Path::withoutLeadingSlash($this->path->getPathRaw());
         $pathRegex = Util\Path::datePlaceholdersToRegex($rawPath);
-        $pathRegex .= $pathRegex ? '/' : '';
         $fileRegex = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
+        $targetPath = Util\Path::withoutLeadingSlash($targetPath);
         return preg_match('#' . $pathRegex . $fileRegex . '$#i', $targetPath);
     }
 

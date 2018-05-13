@@ -60,24 +60,61 @@ class Path
     private $time;
 
     /**
+     * Whether leading slash is needed or not
+     *
+     * @var bool
+     */
+    private $leadingSlash;
+
+    /**
+     * Whether trailing slash is needed or not
+     *
+     * @var bool
+     */
+    private $trailingSlash;
+
+    /**
      * Path constructor.
      *
      * @param string   $path
      * @param int|null $time
+     * @param bool     $leadingSlash
+     * @param bool     $trailingSlash
      */
-    public function __construct(string $path, $time = null)
+    public function __construct(string $path, $time = null, $leadingSlash = true, $trailingSlash = false)
     {
-        // remove trailing slashes
-        $path                  = rtrim($path, DIRECTORY_SEPARATOR);
-        $this->pathRaw         = $path;
-        $this->pathNotChanging = $path;
-        $this->time            = $time;
+        $this->leadingSlash  = $leadingSlash;
+        $this->trailingSlash = $trailingSlash;
+        $this->pathRaw       = $path;
+        $this->time          = $time;
 
-        if (Util\Path::isContainingPlaceholder($path)) {
+        $this->setUp();
+    }
+
+    /**
+     * Updates path according to provided parameters.
+     */
+    private function setUp()
+    {
+        if ($this->leadingSlash) {
+            $this->pathRaw = Util\Path::withLeadingSlash($this->pathRaw);
+        } else {
+            $this->pathRaw = Util\Path::withoutLeadingSlash($this->pathRaw);
+        }
+        if ($this->trailingSlash) {
+            $this->pathRaw = Util\Path::withTrailingSlash($this->pathRaw);
+        } else {
+            $this->pathRaw = Util\Path::withoutTrailingSlash($this->pathRaw);
+        }
+
+        $path = $this->pathRaw;
+        if (Util\Path::isContainingPlaceholder($this->pathRaw)) {
             $this->pathIsChanging = true;
-            $this->detectPathNotChanging($path);
+            $this->detectPathNotChanging($this->pathRaw);
             // replace potential date placeholder
-            $path = Util\Path::replaceDatePlaceholders($path, $this->time);
+            $path = Util\Path::replaceDatePlaceholders($this->pathRaw, $this->time);
+        } else {
+            $this->pathNotChanging = $path;
         }
 
         $this->path = $path;
