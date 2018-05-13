@@ -49,6 +49,9 @@ class Ftp extends Xtp
         if ('/' === substr($path, 0, 1)) {
             throw new Exception('absolute path is not allowed');
         }
+        if (!Arr::isSetAndNotEmptyString($config, 'password')) {
+            throw new Exception('option \'password\' is missing');
+        }
         parent::setup($config);
 
         $this->passive = Str::toBoolean(Arr::getValue($config, 'passive', ''), false);

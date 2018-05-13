@@ -61,8 +61,9 @@ class FtpTest extends \PHPUnit\Framework\TestCase
     {
         $ftp = new Ftp();
         $ftp->setup([
-            'user' => 'user.name',
-            'path' => 'foo'
+            'user'     => 'user.name',
+            'password' => '12345',
+            'path'     => 'foo',
         ]);
     }
 
@@ -76,8 +77,9 @@ class FtpTest extends \PHPUnit\Framework\TestCase
     {
         $ftp = new Ftp();
         $ftp->setup([
-            'host' => 'example.com',
-            'path' => 'foo'
+            'host'     => 'example.com',
+            'password' => 'user',
+            'path'     => 'foo',
         ]);
     }
 

@@ -117,6 +117,24 @@ class SftpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests Sftp::setUp
+     */
+    public function testSetUpWithPrivateKey()
+    {
+        $sftp = new Sftp();
+        $sftp->setup([
+            'host'                 => 'example.com',
+            'user'                 => 'user.name',
+            'private_key'          => '/foo',
+            'private_key_password' => '12345',
+            'path'                 => '/foo'
+        ]);
+
+        $this->assertAttributeEquals('/foo', 'privateKey', $sftp);
+        $this->assertAttributeEquals('12345', 'privateKeyPassword', $sftp);
+    }
+
+    /**
      * Tests absolute path
      */
     public function testSetUpPathWithAbsolutePath()

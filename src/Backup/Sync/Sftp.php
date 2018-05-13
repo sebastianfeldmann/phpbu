@@ -26,6 +26,16 @@ class Sftp extends Xtp
     protected $sftp;
 
     /**
+     * @var string
+     */
+    protected $privateKey;
+
+    /**
+     * @var string
+     */
+    protected $privateKeyPassword;
+
+    /**
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::setup()
@@ -35,7 +45,13 @@ class Sftp extends Xtp
      */
     public function setup(array $config)
     {
+        if (!Util\Arr::isSetAndNotEmptyString($config, 'password') && !Util\Arr::isSetAndNotEmptyString($config, 'private_key')) {
+            throw new Exception('\'password\' or \'private_key\' must be presented');
+        }
         parent::setup($config);
+
+        $this->privateKey = Util\Arr::getValue($config, 'private_key', '');
+        $this->privateKeyPassword = Util\Arr::getValue($config, 'private_key_password', '');
 
         $this->setUpClearable($config);
     }
@@ -107,7 +123,16 @@ class Sftp extends Xtp
         // silence phpseclib
         $old  = error_reporting(0);
         $sftp = new phpseclib\Net\SFTP($this->host);
-        if (!$sftp->login($this->user, $this->password)) {
+        if ($this->privateKey) {
+            $auth = new phpseclib\Crypt\RSA();
+            $auth->loadKey(file_get_contents($this->privateKey));
+            if ($this->privateKeyPassword) {
+                $auth->setPassword($this->privateKeyPassword);
+            }
+        } else {
+            $auth = $this->password;
+        }
+        if (!$sftp->login($this->user, $auth)) {
             error_reporting($old);
             throw new Exception(
                 sprintf(
