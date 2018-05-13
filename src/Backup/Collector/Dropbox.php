@@ -3,7 +3,9 @@ namespace phpbu\App\Backup\Collector;
 
 use Kunnu\Dropbox\Dropbox as DropboxApi;
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
+use phpbu\App\Util;
 
 /**
  * Dropbox class.
@@ -25,9 +27,9 @@ class Dropbox extends Collector
     protected $client;
 
     /**
-     * OpenStack remote path
+     * Dropbox remote path
      *
-     * @var string
+     * @var Path
      */
     protected $path;
 
@@ -37,11 +39,12 @@ class Dropbox extends Collector
      * @param \phpbu\App\Backup\Target $target
      * @param DropboxApi               $client
      * @param string                   $path
+     * @param int                      $time
      */
-    public function __construct(Target $target, DropboxApi $client, string $path)
+    public function __construct(Target $target, DropboxApi $client, string $path, int $time)
     {
         $this->client = $client;
-        $this->path   = $path;
+        $this->path   = new Path($path, $time);
         $this->setUp($target);
     }
 
@@ -52,7 +55,7 @@ class Dropbox extends Collector
      */
     public function getBackupFiles() : array
     {
-        $items = $this->client->listFolder($this->path, ['limit' => 100]);
+        $items = $this->client->listFolder($this->path->getPathThatIsNotChanging(), ['limit' => 100, 'recursive' => true]);
         foreach ($items->getItems() as $item) {
             // skip directories
             if ($item instanceof \Kunnu\Dropbox\Models\FolderMetadata) {
@@ -60,10 +63,10 @@ class Dropbox extends Collector
             }
             /** @var \Kunnu\Dropbox\Models\FileMetadata $item */
             // skip currently created backup
-            if ($item->getPathDisplay() == $this->path . $this->target->getFilename()) {
+            if ($item->getPathDisplay() == Util\Path::withTrailingSlash($this->path) . $this->target->getFilename()) {
                 continue;
             }
-            if ($this->isFilenameMatch($item->getName())) {
+            if ($this->isFileMatch($item->getPathDisplay())) {
                 $this->files[] = new \phpbu\App\Backup\File\Dropbox($this->client, $item);
             }
         }

@@ -1,8 +1,9 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Path;
+use phpbu\App\Util;
 
 /**
  * Dropbox Collector test
@@ -65,14 +66,16 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
 
         $dropboxClientStub->expects($this->once())
                           ->method('listFolder')
-                          ->with($remotePath, ['limit' => 100])
+                          ->with(Util\Path::withoutTrailingSlash($remotePath), ['limit' => 100, 'recursive' => true])
                           ->willReturn($dropboxFileListResult);
 
-        $collector = new Dropbox($target, $dropboxClientStub, $remotePath);
+        $time = time();
+        $pathObject = new Path($remotePath, $time);
+        $collector = new Dropbox($target, $dropboxClientStub, $remotePath, $time);
         $this->assertAttributeEquals($dropboxClientStub, 'client', $collector);
-        $this->assertAttributeEquals($remotePath, 'path', $collector);
+        $this->assertAttributeEquals($pathObject, 'path', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
+        $this->assertAttributeEquals(Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
         $this->assertAttributeEquals([], 'files', $collector);
 
         $files = $collector->getBackupFiles();

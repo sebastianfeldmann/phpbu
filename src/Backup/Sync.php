@@ -20,6 +20,13 @@ use phpbu\App\Util;
 abstract class Sync implements Simulator
 {
     /**
+     * Unix timestamp of generating path from placeholder.
+     *
+     * @var int
+     */
+    protected $time;
+
+    /**
      * Setup the Sync object with all xml options.
      *
      * @param array $options

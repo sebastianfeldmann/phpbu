@@ -69,13 +69,6 @@ abstract class AmazonS3 extends SyncInterface
     protected $pathRaw;
 
     /**
-     * Unix timestamp of generating path from placeholder.
-     *
-     * @var int
-     */
-    protected $time;
-
-    /**
      * AWS acl
      * 'private' by default
      *

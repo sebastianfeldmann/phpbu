@@ -5,6 +5,7 @@ use Kunnu\Dropbox\DropboxApp as DropboxConfig;
 use Kunnu\Dropbox\Dropbox as DropboxApi;
 use Kunnu\Dropbox\DropboxFile;
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Sync as SyncInterface;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
@@ -43,7 +44,7 @@ class Dropbox extends SyncInterface
     /**
      * Remote path
      *
-     * @var string
+     * @var Path
      */
     protected $path;
 
@@ -71,11 +72,9 @@ class Dropbox extends SyncInterface
         // check for mandatory options
         $this->validateConfig($config, ['token', 'path']);
 
-        // make sure the path contains leading and trailing slashes
         $this->token = $config['token'];
-        $this->path  = Util\Path::withLeadingSlash(
-            Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path']))
-        );
+        // make sure the path contains leading and trailing slashes
+        $this->path  = new Path(Util\Path::withLeadingSlash($config['path']), $this->time);
 
         $this->setUpClearable($config);
     }
@@ -90,8 +89,9 @@ class Dropbox extends SyncInterface
      */
     public function sync(Target $target, Result $result)
     {
+        $this->time  = time();
         $sourcePath  = $target->getPathname();
-        $dropboxPath = $this->path . $target->getFilename();
+        $dropboxPath = Util\Path::withTrailingSlash($this->path->getPath()) . $target->getFilename();
         if (!$this->client) {
             $this->connect();
         }
@@ -117,7 +117,7 @@ class Dropbox extends SyncInterface
         $result->debug(
             'sync backup to dropbox' . PHP_EOL
             . '  token:    ********' . PHP_EOL
-            . '  location: ' . $this->path . PHP_EOL
+            . '  location: ' . $this->path->getPath() . PHP_EOL
         );
 
         $this->simulateRemoteCleanup($target, $result);
@@ -131,7 +131,7 @@ class Dropbox extends SyncInterface
      */
     protected function createCollector(Target $target): Collector
     {
-        return new \phpbu\App\Backup\Collector\Dropbox($target, $this->client, $this->path);
+        return new \phpbu\App\Backup\Collector\Dropbox($target, $this->client, $this->path->getPathRaw(), $this->time);
     }
 
     /**
