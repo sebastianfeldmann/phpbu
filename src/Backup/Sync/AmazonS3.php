@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use phpbu\App\Backup\Sync;
+use phpbu\App\Backup\Sync as SyncInterface;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
@@ -17,7 +17,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-abstract class AmazonS3 extends Sync
+abstract class AmazonS3 extends SyncInterface
 {
     /**
      * AWS key

@@ -5,7 +5,7 @@ use Kunnu\Dropbox\DropboxApp as DropboxConfig;
 use Kunnu\Dropbox\Dropbox as DropboxApi;
 use Kunnu\Dropbox\DropboxFile;
 use phpbu\App\Backup\Collector;
-use phpbu\App\Backup\Sync;
+use phpbu\App\Backup\Sync as SyncInterface;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
@@ -21,7 +21,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.1
  */
-class Dropbox extends Sync
+class Dropbox extends SyncInterface
 {
     use Clearable;
 

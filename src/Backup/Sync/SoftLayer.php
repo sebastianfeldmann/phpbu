@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use phpbu\App\Backup\Sync;
+use phpbu\App\Backup\Sync as SyncInterface;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
@@ -20,7 +20,7 @@ use ObjectStorage;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class SoftLayer extends Sync
+class SoftLayer extends SyncInterface
 {
     /**
      * SoftLayer user

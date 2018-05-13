@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use phpbu\App\Backup\Sync;
+use phpbu\App\Backup\Sync as SyncInterface;
 use phpseclib;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
@@ -18,7 +18,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-abstract class Xtp extends Sync
+abstract class Xtp extends SyncInterface
 {
     use Clearable;
 

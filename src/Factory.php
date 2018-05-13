@@ -5,7 +5,6 @@ use phpbu\App\Backup\Check;
 use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Source;
-use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Log\Logger;
 

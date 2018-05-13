@@ -9,7 +9,7 @@ use OpenStack\Common\Transport\HandlerStack;
 use OpenStack\Common\Transport\Utils;
 use OpenStack\Identity\v2\Service;
 use phpbu\App\Backup\Collector;
-use phpbu\App\Backup\Sync;
+use phpbu\App\Backup\Sync as SyncInterface;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 use phpbu\App\Util;
@@ -26,7 +26,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 5.1
  */
-class Openstack extends Sync
+class Openstack extends SyncInterface
 {
     use Clearable;
 
