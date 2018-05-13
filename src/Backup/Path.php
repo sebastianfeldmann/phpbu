@@ -170,4 +170,14 @@ class Path
     {
         return $this->pathNotChanging;
     }
+
+    /**
+     * Return path when casted to string.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->path;
+    }
 }

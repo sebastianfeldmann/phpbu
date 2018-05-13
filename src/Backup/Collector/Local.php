@@ -64,7 +64,7 @@ class Local extends Collector
             $this->fileRegex = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
             $this->files     = [];
             // collect all matching backup files
-            $this->collect($this->target->getPathThatIsNotChanging());
+            $this->collect($this->target->getPath()->getPathThatIsNotChanging());
         }
         return $this->files;
     }
@@ -79,7 +79,7 @@ class Local extends Collector
         $dirIterator = new DirectoryIterator($path);
         // collect all matching sub directories and get all the backup files
         $depth = Util\Path::getPathDepth($path);
-        if ($depth < $this->target->getPathDepth()) {
+        if ($depth < $this->target->getPath()->getPathDepth()) {
             foreach ($dirIterator as $file) {
                 if ($file->isDot()) {
                     continue;
@@ -136,7 +136,7 @@ class Local extends Collector
      */
     protected function isMatchingDirectory(string $dir, int $depth)
     {
-        $dirTarget = $this->target->getPathElementAtIndex($depth);
+        $dirTarget = $this->target->getPath()->getPathElementAtIndex($depth);
         $dirRegex  = Util\Path::datePlaceholdersToRegex($dirTarget);
         return preg_match('#' . $dirRegex . '#i', $dir);
     }
