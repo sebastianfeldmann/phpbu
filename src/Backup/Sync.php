@@ -1,7 +1,10 @@
 <?php
 namespace phpbu\App\Backup;
 
+use phpbu\App\Backup\Sync\Exception;
+use phpbu\App\Backup\Sync\Simulator;
 use phpbu\App\Result;
+use phpbu\App\Util;
 
 /**
  * Sync
@@ -14,14 +17,14 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-interface Sync
+abstract class Sync implements Simulator
 {
     /**
      * Setup the Sync object with all xml options.
      *
      * @param array $options
      */
-    public function setup(array $options);
+    abstract public function setup(array $options);
 
     /**
      * Execute the Sync
@@ -30,5 +33,21 @@ interface Sync
      * @param \phpbu\App\Backup\Target $target
      * @param \phpbu\App\Result        $result
      */
-    public function sync(Target $target, Result $result);
+    abstract public function sync(Target $target, Result $result);
+
+    /**
+     * Make sure all mandatory keys are present in given config.
+     *
+     * @param  array $config
+     * @param  array $keys
+     * @throws Exception
+     */
+    protected function validateConfig(array $config, array $keys)
+    {
+        foreach ($keys as $option) {
+            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
+                throw new Exception($option . ' is mandatory');
+            }
+        }
+    }
 }

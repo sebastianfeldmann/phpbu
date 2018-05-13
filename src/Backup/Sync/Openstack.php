@@ -9,6 +9,7 @@ use OpenStack\Common\Transport\HandlerStack;
 use OpenStack\Common\Transport\Utils;
 use OpenStack\Identity\v2\Service;
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 use phpbu\App\Util;
@@ -25,7 +26,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 5.1
  */
-class Openstack implements Simulator
+class Openstack extends Sync
 {
     use Clearable;
 
@@ -109,7 +110,7 @@ class Openstack implements Simulator
         }
 
         // check for mandatory options
-        $this->validateConfig($config);
+        $this->validateConfig($config, ['auth_url', 'region', 'username', 'password', 'container_name']);
 
         $this->authUrl       = $config['auth_url'];
         $this->region        = $config['region'];
@@ -123,21 +124,6 @@ class Openstack implements Simulator
         }
 
         $this->setUpClearable($config);
-    }
-
-    /**
-     * Make sure all mandatory keys are present in given config.
-     *
-     * @param  array $config
-     * @throws \phpbu\App\Backup\Sync\Exception
-     */
-    protected function validateConfig(array $config)
-    {
-        foreach (['auth_url', 'region', 'username', 'password', 'container_name'] as $option) {
-            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
-                throw new Exception($option . ' is mandatory');
-            }
-        }
     }
 
     /**

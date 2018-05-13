@@ -1,8 +1,9 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Path;
+use phpbu\App\Util;
 
 /**
  * Amazon S3v3 Collector test
@@ -64,12 +65,14 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
             ->will(
                 $this->onConsecutiveCalls(null, ['Contents' => false], ['Contents' => true], $amazonS3Contents)
             );
+        $path = new Path('', $time);
 
         $collector = new AmazonS3v3($target, $amazonS3, 'test', '', $time);
+        $this->assertEquals($path, $collector->getPath());
         $this->assertAttributeEquals($amazonS3, 'client', $collector);
         $this->assertAttributeEquals('test', 'bucket', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
+        $this->assertAttributeEquals(Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
         $this->assertAttributeEquals([], 'files', $collector);
 
         $this->assertEquals([], $collector->getBackupFiles());

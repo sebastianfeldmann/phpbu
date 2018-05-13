@@ -18,7 +18,7 @@ use phpbu\App\Util\Str;
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
  */
-class Ftp extends Xtp implements Simulator
+class Ftp extends Xtp
 {
     use Clearable;
 

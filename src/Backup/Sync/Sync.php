@@ -1,12 +1,11 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 
 /**
- * Simulator interface.
+ * Sync interface.
  *
  * @package    phpbu
  * @subpackage Backup
@@ -14,15 +13,23 @@ use phpbu\App\Result;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
- * @since      Class available since Release 3.0.0
+ * @since      Class available since Release 5.1.0
  */
-interface Simulator extends \phpbu\App\Backup\Sync\Sync
+interface Sync
 {
     /**
-     * Simulate the sync execution.
+     * Setup the Sync object with all xml options.
+     *
+     * @param array $options
+     */
+    public function setup(array $options);
+
+    /**
+     * Execute the Sync
+     * Copy your backup to another location
      *
      * @param \phpbu\App\Backup\Target $target
      * @param \phpbu\App\Result        $result
      */
-    public function simulate(Target $target, Result $result);
+    public function sync(Target $target, Result $result);
 }

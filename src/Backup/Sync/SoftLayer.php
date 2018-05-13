@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use phpbu\App\Backup\Sync;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
@@ -19,7 +20,7 @@ use ObjectStorage;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class SoftLayer implements Simulator
+class SoftLayer extends Sync
 {
     /**
      * SoftLayer user
@@ -69,11 +70,7 @@ class SoftLayer implements Simulator
             throw new Exception('SoftLayer SDK not loaded: use composer to install "softlayer/objectstorage"');
         }
         // check for mandatory options
-        foreach (['user', 'secret', 'container', 'host', 'path'] as $option) {
-            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
-                throw new Exception('SoftLayer ' . $option . ' is mandatory');
-            }
-        }
+        $this->validateConfig($config, ['user', 'secret', 'container', 'host', 'path']);
 
         $this->user      = $config['user'];
         $this->secret    = $config['secret'];

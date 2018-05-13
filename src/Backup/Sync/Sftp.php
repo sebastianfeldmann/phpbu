@@ -18,7 +18,7 @@ use phpseclib;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Sftp extends Xtp implements Simulator
+class Sftp extends Xtp
 {
     /**
      * @var phpseclib\Net\SFTP

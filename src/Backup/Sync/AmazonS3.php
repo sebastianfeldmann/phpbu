@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use phpbu\App\Backup\Sync;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
@@ -16,7 +17,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-abstract class AmazonS3 implements Simulator
+abstract class AmazonS3 extends Sync
 {
     /**
      * AWS key
@@ -117,7 +118,7 @@ abstract class AmazonS3 implements Simulator
         }
 
         // check for mandatory options
-        $this->validateConfig($config);
+        $this->validateConfig($config, ['key', 'secret', 'bucket', 'region', 'path']);
 
         $this->time            = time();
         $this->key             = $config['key'];
@@ -130,31 +131,6 @@ abstract class AmazonS3 implements Simulator
         $this->acl             = Util\Arr::getValue($config, 'acl', 'private');
         $this->multiPartUpload = Util\Str::toBoolean(Util\Arr::getValue($config, 'useMultiPartUpload'), false);
     }
-
-    /**
-     * Make sure all mandatory keys are present in given config.
-     *
-     * @param  array $config
-     * @throws \phpbu\App\Backup\Sync\Exception
-     */
-    protected function validateConfig(array $config)
-    {
-        foreach (['key', 'secret', 'bucket', 'region', 'path'] as $option) {
-            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
-                throw new Exception('AWS S3 ' . $option . ' is mandatory');
-            }
-        }
-    }
-
-    /**
-     * Execute the sync
-     *
-     * @see    \phpbu\App\Backup\Sync::sync()
-     * @param  \phpbu\App\Backup\Target $target
-     * @param  \phpbu\App\Result        $result
-     * @throws \phpbu\App\Backup\Sync\Exception
-     */
-    abstract public function sync(Target $target, Result $result);
 
     /**
      * Simulate the sync execution.

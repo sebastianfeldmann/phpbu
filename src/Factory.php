@@ -228,7 +228,7 @@ class Factory
     {
         /** @var \phpbu\App\Backup\Sync $sync */
         $sync = $this->create('sync', $alias);
-        if (!($sync instanceof Sync)) {
+        if (!($sync instanceof \phpbu\App\Backup\Sync\Sync)) {
             throw new Exception(sprintf('sync \'%s\' has to implement the \'Sync\' interface', $alias));
         }
         $sync->setup($conf);

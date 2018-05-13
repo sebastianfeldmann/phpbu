@@ -5,6 +5,7 @@ use Kunnu\Dropbox\DropboxApp as DropboxConfig;
 use Kunnu\Dropbox\Dropbox as DropboxApi;
 use Kunnu\Dropbox\DropboxFile;
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Sync;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
@@ -20,7 +21,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.1
  */
-class Dropbox implements Simulator
+class Dropbox extends Sync
 {
     use Clearable;
 
@@ -66,12 +67,10 @@ class Dropbox implements Simulator
         if (!class_exists('\\Kunnu\\Dropbox\\Dropbox')) {
             throw new Exception('Dropbox sdk not loaded: use composer to install "kunalvarma05/dropbox-php-sdk"');
         }
-        if (!Util\Arr::isSetAndNotEmptyString($config, 'token')) {
-            throw new Exception('API access token is mandatory');
-        }
-        if (!Util\Arr::isSetAndNotEmptyString($config, 'path')) {
-            throw new Exception('dropbox path is mandatory');
-        }
+
+        // check for mandatory options
+        $this->validateConfig($config, ['token', 'path']);
+
         // make sure the path contains leading and trailing slashes
         $this->token = $config['token'];
         $this->path  = Util\Path::withLeadingSlash(
