@@ -9,7 +9,6 @@ use OpenStack\Common\Transport\HandlerStack;
 use OpenStack\Common\Transport\Utils;
 use OpenStack\Identity\v2\Service;
 use phpbu\App\Backup\Collector;
-use phpbu\App\Backup\Sync as SyncInterface;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 use phpbu\App\Util;
@@ -26,7 +25,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 5.1
  */
-class Openstack extends SyncInterface
+class Openstack implements Simulator
 {
     use Clearable;
 
@@ -124,6 +123,22 @@ class Openstack extends SyncInterface
         }
 
         $this->setUpClearable($config);
+    }
+
+    /**
+     * Make sure all mandatory keys are present in given config.
+     *
+     * @param  array $config
+     * @param  array $keys
+     * @throws Exception
+     */
+    protected function validateConfig(array $config, array $keys)
+    {
+        foreach ($keys as $option) {
+            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
+                throw new Exception($option . ' is mandatory');
+            }
+        }
     }
 
     /**

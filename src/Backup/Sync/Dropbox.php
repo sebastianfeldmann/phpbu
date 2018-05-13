@@ -6,7 +6,6 @@ use Kunnu\Dropbox\Dropbox as DropboxApi;
 use Kunnu\Dropbox\DropboxFile;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Path;
-use phpbu\App\Backup\Sync as SyncInterface;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
@@ -22,7 +21,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.1
  */
-class Dropbox extends SyncInterface
+class Dropbox implements Simulator
 {
     use Clearable;
 
@@ -56,6 +55,13 @@ class Dropbox extends SyncInterface
     protected $client;
 
     /**
+     * Unix timestamp of generating path from placeholder.
+     *
+     * @var int
+     */
+    protected $time;
+
+    /**
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::setup()
@@ -77,6 +83,22 @@ class Dropbox extends SyncInterface
         $this->path  = new Path(Util\Path::withLeadingSlash($config['path']), $this->time);
 
         $this->setUpClearable($config);
+    }
+
+    /**
+     * Make sure all mandatory keys are present in given config.
+     *
+     * @param  array $config
+     * @param  array $keys
+     * @throws Exception
+     */
+    protected function validateConfig(array $config, array $keys)
+    {
+        foreach ($keys as $option) {
+            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
+                throw new Exception($option . ' is mandatory');
+            }
+        }
     }
 
     /**

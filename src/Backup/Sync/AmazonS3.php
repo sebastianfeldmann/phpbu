@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use phpbu\App\Backup\Sync as SyncInterface;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
@@ -17,7 +16,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-abstract class AmazonS3 extends SyncInterface
+abstract class AmazonS3 implements Simulator
 {
     /**
      * AWS key
@@ -123,6 +122,22 @@ abstract class AmazonS3 extends SyncInterface
         $this->pathRaw         = $config['path'];
         $this->acl             = Util\Arr::getValue($config, 'acl', 'private');
         $this->multiPartUpload = Util\Str::toBoolean(Util\Arr::getValue($config, 'useMultiPartUpload'), false);
+    }
+
+    /**
+     * Make sure all mandatory keys are present in given config.
+     *
+     * @param  array $config
+     * @param  array $keys
+     * @throws Exception
+     */
+    protected function validateConfig(array $config, array $keys)
+    {
+        foreach ($keys as $option) {
+            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
+                throw new Exception($option . ' is mandatory');
+            }
+        }
     }
 
     /**

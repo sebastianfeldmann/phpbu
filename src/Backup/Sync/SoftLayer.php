@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use phpbu\App\Backup\Sync as SyncInterface;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
@@ -20,7 +19,7 @@ use ObjectStorage;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class SoftLayer extends SyncInterface
+class SoftLayer implements Simulator
 {
     /**
      * SoftLayer user
@@ -79,6 +78,22 @@ class SoftLayer extends SyncInterface
         $this->path      = Util\Path::withLeadingSlash(
             Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path']))
         );
+    }
+
+    /**
+     * Make sure all mandatory keys are present in given config.
+     *
+     * @param  array $config
+     * @param  array $keys
+     * @throws Exception
+     */
+    protected function validateConfig(array $config, array $keys)
+    {
+        foreach ($keys as $option) {
+            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
+                throw new Exception($option . ' is mandatory');
+            }
+        }
     }
 
     /**
