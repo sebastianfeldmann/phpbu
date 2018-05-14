@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
 use phpbu\App\Configuration;
 use phpbu\App\Result;
@@ -25,6 +26,18 @@ class Sftp extends Xtp
      * @var phpseclib\Net\SFTP
      */
     protected $sftp;
+
+    /**
+     * Remote path where to put the backup
+     *
+     * @var Path
+     */
+    protected $remotePath;
+
+    /**
+     * @var int
+     */
+    protected $time;
 
     /**
      * @var string
@@ -62,6 +75,7 @@ class Sftp extends Xtp
         }
         $this->privateKey         = $privateKey;
         $this->privateKeyPassword = Util\Arr::getValue($config, 'private_key_password', '');
+        $this->remotePath         = new Path($config['path'], $this->time, Util\Path::hasLeadingSlash($config['path']));
 
         $this->setUpClearable($config);
     }
@@ -156,6 +170,11 @@ class Sftp extends Xtp
         // restore old error reporting
         error_reporting($old);
 
+        // if presented relative path, determine absolute path and update
+        if (!Util\Path::isAbsolutePath($this->remotePath->getPath())) {
+            $this->remotePath = new Path($sftp->realpath('.') . '/' . $this->remotePath->getPathRaw(), $this->time, true);
+        }
+
         return $sftp;
     }
 
@@ -166,7 +185,7 @@ class Sftp extends Xtp
      */
     private function getRemoteDirectoryList() : array
     {
-        return Util\Path::getDirectoryListFromAbsolutePath($this->remotePath);
+        return Util\Path::getDirectoryListFromAbsolutePath($this->remotePath->getPath());
     }
 
     /**

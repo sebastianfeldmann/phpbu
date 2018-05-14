@@ -61,6 +61,13 @@ abstract class AmazonS3 implements Simulator
     protected $path;
 
     /**
+     * Unix timestamp of generating path from placeholder.
+     *
+     * @var int
+     */
+    protected $time;
+
+    /**
      * AWS remote raw path / object key
      *
      * @var string

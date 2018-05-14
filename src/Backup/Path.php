@@ -76,12 +76,12 @@ class Path
     /**
      * Path constructor.
      *
-     * @param string   $path
-     * @param int|null $time
-     * @param bool     $leadingSlash
-     * @param bool     $trailingSlash
+     * @param string    $path
+     * @param int|null  $time
+     * @param bool|null $leadingSlash
+     * @param bool|null $trailingSlash
      */
-    public function __construct(string $path, $time = null, $leadingSlash = true, $trailingSlash = false)
+    public function __construct(string $path, $time = null, $leadingSlash = null, $trailingSlash = null)
     {
         $this->leadingSlash  = $leadingSlash;
         $this->trailingSlash = $trailingSlash;
@@ -96,15 +96,19 @@ class Path
      */
     private function setUp()
     {
-        if ($this->leadingSlash) {
-            $this->pathRaw = Util\Path::withLeadingSlash($this->pathRaw);
-        } else {
-            $this->pathRaw = Util\Path::withoutLeadingSlash($this->pathRaw);
+        if (!is_null($this->leadingSlash)) {
+            if ($this->leadingSlash) {
+                $this->pathRaw = Util\Path::withLeadingSlash($this->pathRaw);
+            } else {
+                $this->pathRaw = Util\Path::withoutLeadingSlash($this->pathRaw);
+            }
         }
-        if ($this->trailingSlash) {
-            $this->pathRaw = Util\Path::withTrailingSlash($this->pathRaw);
-        } else {
-            $this->pathRaw = Util\Path::withoutTrailingSlash($this->pathRaw);
+        if (!is_null($this->trailingSlash) && !empty($this->pathRaw)) {
+            if ($this->trailingSlash) {
+                $this->pathRaw = Util\Path::withTrailingSlash($this->pathRaw);
+            } else {
+                $this->pathRaw = Util\Path::withoutTrailingSlash($this->pathRaw);
+            }
         }
 
         $path = $this->pathRaw;
@@ -127,7 +131,7 @@ class Path
      */
     private function detectPathNotChanging(string $path)
     {
-        $partsNotChanging     = [];
+        $partsNotChanging = [];
         $foundChangingElement = false;
 
         foreach (Util\Path::getDirectoryListFromAbsolutePath($path) as $depth => $dir) {
@@ -144,7 +148,10 @@ class Path
                 $partsNotChanging[] = $dir;
             }
         }
-        $this->pathNotChanging = DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $partsNotChanging);
+        $this->pathNotChanging = implode(DIRECTORY_SEPARATOR, $partsNotChanging);
+        if (!is_null($this->leadingSlash) && $this->leadingSlash) {
+            $this->pathNotChanging = DIRECTORY_SEPARATOR . $this->pathNotChanging;
+        }
     }
 
     /**
@@ -153,7 +160,7 @@ class Path
      * @param  int $index
      * @return string
      */
-    public function getPathElementAtIndex(int $index) : string
+    public function getPathElementAtIndex(int $index): string
     {
         return $this->pathElements[$index];
     }
@@ -163,7 +170,7 @@ class Path
      *
      * @return int
      */
-    public function getPathDepth() : int
+    public function getPathDepth(): int
     {
         return count($this->pathElements);
     }
@@ -173,7 +180,7 @@ class Path
      *
      * @return string
      */
-    public function getPath() : string
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -183,7 +190,7 @@ class Path
      *
      * @return string
      */
-    public function getPathRaw() : string
+    public function getPathRaw(): string
     {
         return $this->pathRaw;
     }
@@ -193,7 +200,7 @@ class Path
      *
      * @return bool
      */
-    public function hasChangingPath() : bool
+    public function hasChangingPath(): bool
     {
         return $this->pathIsChanging;
     }
@@ -203,7 +210,7 @@ class Path
      *
      * @return string
      */
-    public function getPathThatIsNotChanging() : string
+    public function getPathThatIsNotChanging(): string
     {
         return $this->pathNotChanging;
     }

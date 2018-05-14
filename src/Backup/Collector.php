@@ -66,6 +66,7 @@ abstract class Collector
     protected function isFileMatch(string $targetPath): bool
     {
         $rawPath = Util\Path::withoutLeadingSlash($this->path->getPathRaw());
+        $rawPath = !empty($rawPath) ? Util\Path::withTrailingSlash($rawPath) : $rawPath;
         $pathRegex = Util\Path::datePlaceholdersToRegex($rawPath);
         $fileRegex = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
         $targetPath = Util\Path::withoutLeadingSlash($targetPath);

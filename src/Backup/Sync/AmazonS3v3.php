@@ -30,13 +30,6 @@ class AmazonS3v3 extends AmazonS3
     protected $client;
 
     /**
-     * Unix timestamp of generating path from placeholder.
-     *
-     * @var int
-     */
-    protected $time;
-
-    /**
      * Configure the sync.
      *
      * @see    \phpbu\App\Backup\Sync::setup()

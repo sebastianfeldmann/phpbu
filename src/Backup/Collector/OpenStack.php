@@ -66,7 +66,8 @@ class OpenStack extends Collector
                 continue;
             }
             if ($this->isFilenameMatch(basename($object->name))) {
-                $this->files[] = new \phpbu\App\Backup\File\OpenStack($this->container, $object);
+                $file = new \phpbu\App\Backup\File\OpenStack($this->container, $object);
+                $this->files[$file->getMTime()] = $file;
             }
         }
 

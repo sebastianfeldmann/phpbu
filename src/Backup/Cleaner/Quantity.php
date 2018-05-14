@@ -3,7 +3,6 @@ namespace phpbu\App\Backup\Cleaner;
 
 use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Collector;
-use phpbu\App\Backup\File;
 use phpbu\App\Backup\Target;
 
 /**
@@ -64,12 +63,7 @@ class Quantity extends Abstraction implements Cleaner
 
         if ($this->isCapacityExceeded($files)) {
             // oldest backups first
-            uasort($files, function (File $fileA, File $fileB) {
-                if ($fileA->getMTime() == $fileB->getMTime()) {
-                    return 0;
-                }
-                return ($fileA->getMTime() < $fileB->getMTime()) ? -1 : 1;
-            });
+            ksort($files);
 
             while ($this->isCapacityExceeded($files)) {
                 $file     = array_shift($files);

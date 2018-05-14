@@ -1,8 +1,9 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Path;
+use phpbu\App\Util;
 
 /**
  * SFTP Collector test
@@ -27,6 +28,7 @@ class SftpTest extends \PHPUnit\Framework\TestCase
         $filename       = 'foo-%Y-%m-%d-%H_%i.txt';
         $target         = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
         $secLib         = $this->createMock(\phpseclib\Net\SFTP::class);
+        $time           = time();
         $remotePath     = '/backups';
         $secLibFileList = [
             '.' => [
@@ -64,15 +66,17 @@ class SftpTest extends \PHPUnit\Framework\TestCase
                ->with($remotePath)
                ->willReturn($secLibFileList);
 
-        $collector = new Sftp($target, $secLib, $remotePath);
+        $path = new Path($remotePath, $time);
+        $collector = new Sftp($target, $secLib, $path);
         $this->assertAttributeEquals($secLib, 'sftp', $collector);
-        $this->assertAttributeEquals($remotePath, 'path', $collector);
+        $this->assertAttributeEquals($path, 'path', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
+        $this->assertAttributeEquals(Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
         $this->assertAttributeEquals([], 'files', $collector);
 
         $files = $collector->getBackupFiles();
         $this->assertCount(1, $files);
-        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[0]->getFilename());
+        $this->assertArrayHasKey(1525788894, $files);
+        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[1525788894]->getFilename());
     }
 }

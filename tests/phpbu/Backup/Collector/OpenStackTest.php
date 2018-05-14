@@ -77,7 +77,8 @@ class OpenStackTest extends \PHPUnit\Framework\TestCase
 
         $files = $collector->getBackupFiles();
         $this->assertCount(1, $files);
-        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[0]->getFilename());
+        $this->assertArrayHasKey(1525788894, $files);
+        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[1525788894]->getFilename());
     }
 
     /**

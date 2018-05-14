@@ -65,7 +65,7 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
             ->will(
                 $this->onConsecutiveCalls(null, ['Contents' => false], ['Contents' => true], $amazonS3Contents)
             );
-        $path = new Path('', $time);
+        $path = new Path('', $time, false);
 
         $collector = new AmazonS3v3($target, $amazonS3, 'test', '', $time);
         $this->assertEquals((string) $path, (string) $collector->getPath());
@@ -80,6 +80,7 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
         $this->assertEquals([], $collector->getBackupFiles());
         $files = $collector->getBackupFiles();
         $this->assertCount(1, $files);
-        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[0]->getFilename());
+        $this->assertArrayHasKey(975672000, $files);
+        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[975672000]->getFilename());
     }
 }

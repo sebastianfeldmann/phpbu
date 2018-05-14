@@ -35,19 +35,19 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
                 'name' => $target->getFilename(),
                 'pathname' => $remotePath . $target->getFilename(),
                 'size' => 100,
-                'last_modified' => 1525788894,
+                'last_modified' => '2018-05-08 14:14:54.0 +00:00',
             ],
             [
                 'name' => 'foo-2000-12-01-12_00.txt',
                 'pathname' => $remotePath . 'foo-2000-12-01-12_00.txt',
                 'size' => 100,
-                'last_modified' => 1525788894,
+                'last_modified' => '2000-12-01 12:00:00.0 +00:00',
             ],
             [
                 'name' => 'not-matching-2000-12-01-12_00.txt',
                 'pathname' => $remotePath . 'not-matching-2000-12-01-12_00.txt',
                 'size' => 100,
-                'last_modified' => 1525788894,
+                'last_modified' => '2000-12-01 12:00:00.0 +00:00',
             ],
         ];
 
@@ -80,7 +80,8 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
 
         $files = $collector->getBackupFiles();
         $this->assertCount(1, $files);
-        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[0]->getFilename());
+        $this->assertArrayHasKey(975672000, $files);
+        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[975672000]->getFilename());
     }
 
     /**

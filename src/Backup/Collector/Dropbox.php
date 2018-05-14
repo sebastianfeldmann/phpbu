@@ -69,7 +69,8 @@ class Dropbox extends Collector
                 continue;
             }
             if ($this->isFileMatch($item->getPathDisplay())) {
-                $this->files[] = new \phpbu\App\Backup\File\Dropbox($this->client, $item);
+                $file = new \phpbu\App\Backup\File\Dropbox($this->client, $item);
+                $this->files[$file->getMTime()] = $file;
             }
         }
 

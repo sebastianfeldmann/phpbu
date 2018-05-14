@@ -73,7 +73,8 @@ class AmazonS3v3 extends Collector
                 continue;
             }
             if ($this->isFileMatch($object['Key'])) {
-                $this->files[] = new AwsFile($this->client, $this->bucket, $object);
+                $file = new AwsFile($this->client, $this->bucket, $object);
+                $this->files[$file->getMTime()] = $file;
             }
         }
 
