@@ -3,6 +3,7 @@ namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Target;
+use phpbu\App\Configuration;
 use phpbu\App\Result;
 use phpbu\App\Util;
 use phpseclib;
