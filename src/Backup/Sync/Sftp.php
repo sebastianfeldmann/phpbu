@@ -57,7 +57,7 @@ class Sftp extends Xtp
             // get absolute private key path
             $privateKey = realpath(Util\Path::toAbsolutePath($privateKey, Configuration::getWorkingDirectory()));
             if ($privateKey === false) {
-                throw new \phpbu\App\Exception("Private key not found at specified path");
+                throw new \phpbu\App\Backup\Sync\Exception("Private key not found at specified path");
             }
         }
         $this->privateKey         = $privateKey;

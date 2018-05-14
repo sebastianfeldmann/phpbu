@@ -116,6 +116,24 @@ class SftpTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
+
+    /**
+     * Tests Sftp::setUp
+     *
+     * @expectedException \phpbu\App\Backup\Sync\Exception
+     */
+    public function testSetUpWithPrivateKeyThatDoesntExist()
+    {
+        $sftp = new Sftp();
+        $sftp->setup([
+            'host'                 => 'example.com',
+            'user'                 => 'user.name',
+            'private_key'          => PHPBU_TEST_FILES . '/misc/id_rsa_test_not_exist',
+            'private_key_password' => '12345',
+            'path'                 => '/foo'
+        ]);
+    }
+
     /**
      * Tests Sftp::setUp
      */
@@ -125,12 +143,12 @@ class SftpTest extends \PHPUnit\Framework\TestCase
         $sftp->setup([
             'host'                 => 'example.com',
             'user'                 => 'user.name',
-            'private_key'          => '/foo',
+            'private_key'          => PHPBU_TEST_FILES . '/misc/id_rsa_test',
             'private_key_password' => '12345',
             'path'                 => '/foo'
         ]);
 
-        $this->assertAttributeEquals('/foo', 'privateKey', $sftp);
+        $this->assertAttributeEquals(PHPBU_TEST_FILES . '/misc/id_rsa_test', 'privateKey', $sftp);
         $this->assertAttributeEquals('12345', 'privateKeyPassword', $sftp);
     }
 
