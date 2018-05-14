@@ -50,7 +50,16 @@ class Sftp extends Xtp
         }
         parent::setup($config);
 
-        $this->privateKey = Util\Arr::getValue($config, 'private_key', '');
+        $this->time = time();
+        $privateKey = Util\Arr::getValue($config, 'private_key', '');
+        if (!empty($privateKey)) {
+            // get absolute private key path
+            $privateKey = realpath(Util\Path::toAbsolutePath($privateKey, Configuration::getWorkingDirectory()));
+            if ($privateKey === false) {
+                throw new \phpbu\App\Exception("Private key not found at specified path");
+            }
+        }
+        $this->privateKey         = $privateKey;
         $this->privateKeyPassword = Util\Arr::getValue($config, 'private_key_password', '');
 
         $this->setUpClearable($config);
