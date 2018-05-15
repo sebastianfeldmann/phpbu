@@ -69,11 +69,7 @@ class SoftLayer implements Simulator
             throw new Exception('SoftLayer SDK not loaded: use composer to install "softlayer/objectstorage"');
         }
         // check for mandatory options
-        foreach (['user', 'secret', 'container', 'host', 'path'] as $option) {
-            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
-                throw new Exception('SoftLayer ' . $option . ' is mandatory');
-            }
-        }
+        $this->validateConfig($config, ['user', 'secret', 'container', 'host', 'path']);
 
         $this->user      = $config['user'];
         $this->secret    = $config['secret'];
@@ -82,6 +78,22 @@ class SoftLayer implements Simulator
         $this->path      = Util\Path::withLeadingSlash(
             Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path']))
         );
+    }
+
+    /**
+     * Make sure all mandatory keys are present in given config.
+     *
+     * @param  array    $config
+     * @param  string[] $keys
+     * @throws Exception
+     */
+    protected function validateConfig(array $config, array $keys)
+    {
+        foreach ($keys as $option) {
+            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
+                throw new Exception($option . ' is mandatory');
+            }
+        }
     }
 
     /**

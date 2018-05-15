@@ -5,6 +5,7 @@ use phpbu\App\Backup\Collector;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util\Arr;
+use phpbu\App\Util\Path;
 use phpbu\App\Util\Str;
 
 /**
@@ -17,7 +18,7 @@ use phpbu\App\Util\Str;
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
  */
-class Ftp extends Xtp implements Simulator
+class Ftp extends Xtp
 {
     use Clearable;
 
@@ -47,6 +48,9 @@ class Ftp extends Xtp implements Simulator
         $path = Arr::getValue($config, 'path', '');
         if ('/' === substr($path, 0, 1)) {
             throw new Exception('absolute path is not allowed');
+        }
+        if (!Arr::isSetAndNotEmptyString($config, 'password')) {
+            throw new Exception('option \'password\' is missing');
         }
         parent::setup($config);
 
@@ -116,7 +120,7 @@ class Ftp extends Xtp implements Simulator
         $localFile      = $target->getPathname();
 
         if ('' !== $this->remotePath) {
-            $remoteDirs = explode('/', $this->remotePath);
+            $remoteDirs = Path::getDirectoryListFromPath($this->remotePath);
             foreach ($remoteDirs as $dir) {
                 if (!ftp_chdir($this->ftpConnection, $dir)) {
                     $result->debug(sprintf('creating remote dir \'%s\'', $dir));

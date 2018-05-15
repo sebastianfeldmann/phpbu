@@ -61,6 +61,20 @@ abstract class AmazonS3 implements Simulator
     protected $path;
 
     /**
+     * Unix timestamp of generating path from placeholder.
+     *
+     * @var int
+     */
+    protected $time;
+
+    /**
+     * AWS remote raw path / object key
+     *
+     * @var string
+     */
+    protected $pathRaw;
+
+    /**
      * AWS acl
      * 'private' by default
      *
@@ -103,14 +117,16 @@ abstract class AmazonS3 implements Simulator
         }
 
         // check for mandatory options
-        $this->validateConfig($config);
+        $this->validateConfig($config, ['key', 'secret', 'bucket', 'region', 'path']);
 
+        $this->time            = time();
         $this->key             = $config['key'];
         $this->secret          = $config['secret'];
         $this->bucket          = $config['bucket'];
         $this->bucketTTL       = Util\Arr::getValue($config, 'bucketTTL');
         $this->region          = $config['region'];
-        $this->path            = Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path']));
+        $this->path            = Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path'], $this->time));
+        $this->pathRaw         = $config['path'];
         $this->acl             = Util\Arr::getValue($config, 'acl', 'private');
         $this->multiPartUpload = Util\Str::toBoolean(Util\Arr::getValue($config, 'useMultiPartUpload'), false);
     }
@@ -118,27 +134,18 @@ abstract class AmazonS3 implements Simulator
     /**
      * Make sure all mandatory keys are present in given config.
      *
-     * @param  array $config
-     * @throws \phpbu\App\Backup\Sync\Exception
+     * @param  array    $config
+     * @param  string[] $keys
+     * @throws Exception
      */
-    protected function validateConfig(array $config)
+    protected function validateConfig(array $config, array $keys)
     {
-        foreach (['key', 'secret', 'bucket', 'region', 'path'] as $option) {
+        foreach ($keys as $option) {
             if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
-                throw new Exception('AWS S3 ' . $option . ' is mandatory');
+                throw new Exception($option . ' is mandatory');
             }
         }
     }
-
-    /**
-     * Execute the sync
-     *
-     * @see    \phpbu\App\Backup\Sync::sync()
-     * @param  \phpbu\App\Backup\Target $target
-     * @param  \phpbu\App\Result        $result
-     * @throws \phpbu\App\Backup\Sync\Exception
-     */
-    abstract public function sync(Target $target, Result $result);
 
     /**
      * Simulate the sync execution.

@@ -478,7 +478,7 @@ class Mail implements Listener, Logger
                 $html .= '<tr>' .
                           '<td ' . sprintf(TPL::getSnippet('sTableBackupStatusColumn'), $color) . ' colspan="4">' .
                           sprintf('backup <em>%s</em>', $backup->getName()) .
-                          ' <span ' . TPL::getSnippet('sTableBackupStatusText') . '>' . $status . '</span>'.
+                          ' <span ' . TPL::getSnippet('sTableBackupStatusText') . '>' . $status . '</span>' .
                           '</td>' .
                          '</tr>' .
                          '<tr>' .

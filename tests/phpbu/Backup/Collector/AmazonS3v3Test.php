@@ -1,8 +1,9 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Path;
+use phpbu\App\Util;
 
 /**
  * Amazon S3v3 Collector test
@@ -23,6 +24,7 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
      */
     public function testCollector()
     {
+        $time      = time();
         $path      = '/collector/static-dir/';
         $filename  = 'foo-%Y-%m-%d-%H_%i.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
@@ -59,18 +61,18 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
             ->with([
                 'Bucket'    => 'test',
                 'Prefix'    => '',
-                'Delimiter' => '/',
             ])
             ->will(
                 $this->onConsecutiveCalls(null, ['Contents' => false], ['Contents' => true], $amazonS3Contents)
             );
+        $path = new Path('', $time, false);
 
-        $collector = new AmazonS3v3($target, $amazonS3, 'test', '');
+        $collector = new AmazonS3v3($target, $amazonS3, 'test', '', $time);
+        $this->assertEquals((string) $path, (string) $collector->getPath());
         $this->assertAttributeEquals($amazonS3, 'client', $collector);
-        $this->assertAttributeEquals('', 'path', $collector);
         $this->assertAttributeEquals('test', 'bucket', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
+        $this->assertAttributeEquals(Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
         $this->assertAttributeEquals([], 'files', $collector);
 
         $this->assertEquals([], $collector->getBackupFiles());
@@ -78,6 +80,7 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
         $this->assertEquals([], $collector->getBackupFiles());
         $files = $collector->getBackupFiles();
         $this->assertCount(1, $files);
-        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[0]->getFilename());
+        $this->assertArrayHasKey(975672000, $files);
+        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[975672000]->getFilename());
     }
 }

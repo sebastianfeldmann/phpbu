@@ -2,7 +2,9 @@
 namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
+use phpbu\App\Configuration;
 use phpbu\App\Result;
 use phpbu\App\Util;
 use phpseclib;
@@ -18,12 +20,34 @@ use phpseclib;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Sftp extends Xtp implements Simulator
+class Sftp extends Xtp
 {
     /**
      * @var phpseclib\Net\SFTP
      */
     protected $sftp;
+
+    /**
+     * Remote path where to put the backup
+     *
+     * @var Path
+     */
+    protected $remotePath;
+
+    /**
+     * @var int
+     */
+    protected $time;
+
+    /**
+     * @var string
+     */
+    protected $privateKey;
+
+    /**
+     * @var string
+     */
+    protected $privateKeyPassword;
 
     /**
      * (non-PHPDoc)
@@ -35,7 +59,23 @@ class Sftp extends Xtp implements Simulator
      */
     public function setup(array $config)
     {
+        if (!Util\Arr::isSetAndNotEmptyString($config, 'password') && !Util\Arr::isSetAndNotEmptyString($config, 'private_key')) {
+            throw new Exception('\'password\' or \'private_key\' must be presented');
+        }
         parent::setup($config);
+
+        $this->time = time();
+        $privateKey = Util\Arr::getValue($config, 'private_key', '');
+        if (!empty($privateKey)) {
+            // get absolute private key path
+            $privateKey = realpath(Util\Path::toAbsolutePath($privateKey, Configuration::getWorkingDirectory()));
+            if ($privateKey === false) {
+                throw new \phpbu\App\Backup\Sync\Exception("Private key not found at specified path");
+            }
+        }
+        $this->privateKey         = $privateKey;
+        $this->privateKeyPassword = Util\Arr::getValue($config, 'private_key_password', '');
+        $this->remotePath         = new Path($config['path'], $this->time, Util\Path::hasLeadingSlash($config['path']));
 
         $this->setUpClearable($config);
     }
@@ -107,7 +147,16 @@ class Sftp extends Xtp implements Simulator
         // silence phpseclib
         $old  = error_reporting(0);
         $sftp = new phpseclib\Net\SFTP($this->host);
-        if (!$sftp->login($this->user, $this->password)) {
+        if ($this->privateKey) {
+            $auth = new phpseclib\Crypt\RSA();
+            $auth->loadKey(file_get_contents($this->privateKey));
+            if ($this->privateKeyPassword) {
+                $auth->setPassword($this->privateKeyPassword);
+            }
+        } else {
+            $auth = $this->password;
+        }
+        if (!$sftp->login($this->user, $auth)) {
             error_reporting($old);
             throw new Exception(
                 sprintf(
@@ -121,6 +170,11 @@ class Sftp extends Xtp implements Simulator
         // restore old error reporting
         error_reporting($old);
 
+        // if presented relative path, determine absolute path and update
+        if (!Util\Path::isAbsolutePath($this->remotePath->getPath())) {
+            $this->remotePath = new Path($sftp->realpath('.') . '/' . $this->remotePath->getPathRaw(), $this->time, true);
+        }
+
         return $sftp;
     }
 
@@ -131,16 +185,7 @@ class Sftp extends Xtp implements Simulator
      */
     private function getRemoteDirectoryList() : array
     {
-        $remoteDirs = [];
-        if (!empty($this->remotePath)) {
-            $remoteDirs = explode('/', $this->remotePath);
-            // fix empty first array element for absolute path
-            if (Util\Path::hasLeadingSlash($this->remotePath)) {
-                $remoteDirs[0] = '/';
-            }
-            $remoteDirs = array_filter($remoteDirs);
-        }
-        return $remoteDirs;
+        return Util\Path::getDirectoryListFromAbsolutePath($this->remotePath->getPath());
     }
 
     /**

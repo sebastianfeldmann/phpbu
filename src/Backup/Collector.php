@@ -18,6 +18,13 @@ use phpbu\App\Util;
 abstract class Collector
 {
     /**
+     * Path class.
+     *
+     * @var Path
+     */
+    protected $path;
+
+    /**
      * Backup target
      *
      * @var \phpbu\App\Backup\Target
@@ -51,6 +58,22 @@ abstract class Collector
     }
 
     /**
+     * Return true if target full path matches file and path regex.
+     *
+     * @param string $targetPath Full path to the remote file to check
+     * @return bool
+     */
+    protected function isFileMatch(string $targetPath): bool
+    {
+        $rawPath = Util\Path::withoutLeadingSlash($this->path->getPathRaw());
+        $rawPath = !empty($rawPath) ? Util\Path::withTrailingSlash($rawPath) : $rawPath;
+        $pathRegex = Util\Path::datePlaceholdersToRegex($rawPath);
+        $fileRegex = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
+        $targetPath = Util\Path::withoutLeadingSlash($targetPath);
+        return preg_match('#' . $pathRegex . $fileRegex . '$#i', $targetPath);
+    }
+
+    /**
      * Returns true if filename matches the target regex
      *
      * @param string $filename
@@ -58,7 +81,15 @@ abstract class Collector
      */
     protected function isFilenameMatch(string $filename): bool
     {
-        return preg_match('#'.$this->fileRegex . '#i', $filename);
+        return preg_match('#' . $this->fileRegex . '#i', $filename);
+    }
+
+    /**
+     * @return Path
+     */
+    public function getPath(): Path
+    {
+        return $this->path;
     }
 
     /**

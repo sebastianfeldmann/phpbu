@@ -109,7 +109,7 @@ class Openstack implements Simulator
         }
 
         // check for mandatory options
-        $this->validateConfig($config);
+        $this->validateConfig($config, ['auth_url', 'region', 'username', 'password', 'container_name']);
 
         $this->authUrl       = $config['auth_url'];
         $this->region        = $config['region'];
@@ -129,11 +129,12 @@ class Openstack implements Simulator
      * Make sure all mandatory keys are present in given config.
      *
      * @param  array $config
-     * @throws \phpbu\App\Backup\Sync\Exception
+     * @param  array $keys
+     * @throws Exception
      */
-    protected function validateConfig(array $config)
+    protected function validateConfig(array $config, array $keys)
     {
-        foreach (['auth_url', 'region', 'username', 'password', 'container_name'] as $option) {
+        foreach ($keys as $option) {
             if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
                 throw new Exception($option . ' is mandatory');
             }

@@ -5,6 +5,7 @@ use Kunnu\Dropbox\DropboxApp as DropboxConfig;
 use Kunnu\Dropbox\Dropbox as DropboxApi;
 use Kunnu\Dropbox\DropboxFile;
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Path;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
@@ -42,7 +43,7 @@ class Dropbox implements Simulator
     /**
      * Remote path
      *
-     * @var string
+     * @var Path
      */
     protected $path;
 
@@ -52,6 +53,13 @@ class Dropbox implements Simulator
      * @var DropboxApi
      */
     protected $client;
+
+    /**
+     * Unix timestamp of generating path from placeholder.
+     *
+     * @var int
+     */
+    protected $time;
 
     /**
      * (non-PHPDoc)
@@ -66,19 +74,31 @@ class Dropbox implements Simulator
         if (!class_exists('\\Kunnu\\Dropbox\\Dropbox')) {
             throw new Exception('Dropbox sdk not loaded: use composer to install "kunalvarma05/dropbox-php-sdk"');
         }
-        if (!Util\Arr::isSetAndNotEmptyString($config, 'token')) {
-            throw new Exception('API access token is mandatory');
-        }
-        if (!Util\Arr::isSetAndNotEmptyString($config, 'path')) {
-            throw new Exception('dropbox path is mandatory');
-        }
-        // make sure the path contains leading and trailing slashes
+
+        // check for mandatory options
+        $this->validateConfig($config, ['token', 'path']);
+
         $this->token = $config['token'];
-        $this->path  = Util\Path::withLeadingSlash(
-            Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path']))
-        );
+        // make sure the path contains leading and trailing slashes
+        $this->path  = new Path(Util\Path::withLeadingSlash($config['path']), $this->time);
 
         $this->setUpClearable($config);
+    }
+
+    /**
+     * Make sure all mandatory keys are present in given config.
+     *
+     * @param  array    $config
+     * @param  string[] $keys
+     * @throws Exception
+     */
+    protected function validateConfig(array $config, array $keys)
+    {
+        foreach ($keys as $option) {
+            if (!Util\Arr::isSetAndNotEmptyString($config, $option)) {
+                throw new Exception($option . ' is mandatory');
+            }
+        }
     }
 
     /**
@@ -91,8 +111,9 @@ class Dropbox implements Simulator
      */
     public function sync(Target $target, Result $result)
     {
+        $this->time  = time();
         $sourcePath  = $target->getPathname();
-        $dropboxPath = $this->path . $target->getFilename();
+        $dropboxPath = Util\Path::withTrailingSlash($this->path->getPath()) . $target->getFilename();
         if (!$this->client) {
             $this->connect();
         }
@@ -118,7 +139,7 @@ class Dropbox implements Simulator
         $result->debug(
             'sync backup to dropbox' . PHP_EOL
             . '  token:    ********' . PHP_EOL
-            . '  location: ' . $this->path . PHP_EOL
+            . '  location: ' . $this->path->getPath() . PHP_EOL
         );
 
         $this->simulateRemoteCleanup($target, $result);
@@ -132,7 +153,7 @@ class Dropbox implements Simulator
      */
     protected function createCollector(Target $target): Collector
     {
-        return new \phpbu\App\Backup\Collector\Dropbox($target, $this->client, $this->path);
+        return new \phpbu\App\Backup\Collector\Dropbox($target, $this->client, $this->path->getPathRaw(), $this->time);
     }
 
     /**

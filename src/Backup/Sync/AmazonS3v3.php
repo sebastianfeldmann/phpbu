@@ -86,7 +86,7 @@ class AmazonS3v3 extends AmazonS3
      */
     protected function createCollector(Target $target): Collector
     {
-        return new \phpbu\App\Backup\Collector\AmazonS3v3($target, $this->client, $this->bucket, $this->path);
+        return new \phpbu\App\Backup\Collector\AmazonS3v3($target, $this->client, $this->bucket, $this->pathRaw, $this->time);
     }
 
     /**

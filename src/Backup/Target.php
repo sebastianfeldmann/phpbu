@@ -19,39 +19,11 @@ use phpbu\App\Util;
 class Target
 {
     /**
-     * Absolute path to the directory where to store the backup.
+     * Path object.
      *
-     * @var string
+     * @var Path
      */
     private $path;
-
-    /**
-     * Path to the backup with potential date placeholders like %d.
-     *
-     * @var string
-     */
-    private $pathRaw;
-
-    /**
-     * Indicates if the path changes over time.
-     *
-     * @var bool
-     */
-    private $pathIsChanging = false;
-
-    /**
-     * Part of the path without placeholders
-     *
-     * @var string
-     */
-    private $pathNotChanging;
-
-    /**
-     * List of all path elements.
-     *
-     * @var string[]
-     */
-    private $pathElements = [];
 
     /**
      * Backup filename.
@@ -129,83 +101,11 @@ class Target
      * @param  string  $path
      * @param  string  $filename
      * @param  integer $time
-     * @throws \phpbu\App\Exception
      */
     public function __construct($path, $filename, $time = null)
     {
-        $this->setPath($path, $time);
+        $this->path = new Path($path, $time, true, false);
         $this->setFile($filename, $time);
-    }
-
-    /**
-     * Directory setter.
-     *
-     * @param  string $path
-     * @param  int    $time
-     */
-    public function setPath($path, $time = null)
-    {
-        // remove trailing slashes
-        $path                  = rtrim($path, DIRECTORY_SEPARATOR);
-        $this->pathRaw         = $path;
-        $this->pathNotChanging = $path;
-
-        if (Util\Path::isContainingPlaceholder($path)) {
-            $this->pathIsChanging = true;
-            $this->detectPathNotChanging($path);
-            // replace potential date placeholder
-            $path = Util\Path::replaceDatePlaceholders($path, $time);
-        }
-
-        $this->path = $path;
-    }
-
-    /**
-     * Return path element at given index.
-     *
-     * @param  int $index
-     * @return string
-     */
-    public function getPathElementAtIndex(int $index) : string
-    {
-        return $this->pathElements[$index];
-    }
-
-    /**
-     * Return the full target path depth.
-     *
-     * @return int
-     */
-    public function getPathDepth() : int
-    {
-        return count($this->pathElements);
-    }
-
-    /**
-     * Find path elements that can't change because of placeholder usage.
-     *
-     * @param string $path
-     */
-    private function detectPathNotChanging(string $path)
-    {
-        $partsNotChanging     = [];
-        $foundChangingElement = false;
-
-        foreach (Util\Path::getDirectoryList($path) as $depth => $dir) {
-            $this->pathElements[] = $dir;
-
-            // already found placeholder or found one right now
-            // path isn't static anymore so don't add directory to path not changing
-            if ($foundChangingElement || Util\Path::isContainingPlaceholder($dir)) {
-                $foundChangingElement = true;
-                continue;
-            }
-            // do not add the / element leading slash will be re-added later
-            if ($dir !== '/') {
-                $partsNotChanging[] = $dir;
-            }
-        }
-        $this->pathNotChanging = DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $partsNotChanging);
     }
 
     /**
@@ -243,17 +143,17 @@ class Target
     public function setupPath()
     {
         // if directory doesn't exist, create it
-        if (!is_dir($this->path)) {
+        if (!is_dir($this->path->getPath())) {
             $reporting = error_reporting();
             error_reporting(0);
-            $created = mkdir($this->path, 0755, true);
+            $created = mkdir($this->path->getPath(), 0755, true);
             error_reporting($reporting);
             if (!$created) {
-                throw new Exception(sprintf('cant\'t create directory: %s', $this->path));
+                throw new Exception(sprintf('cant\'t create directory: %s', $this->path->getPath()));
             }
         }
-        if (!is_writable($this->path)) {
-            throw new Exception(sprintf('no write permission for directory: %s', $this->path));
+        if (!is_writable($this->path->getPath())) {
+            throw new Exception(sprintf('no write permission for directory: %s', $this->path->getPath()));
         }
     }
 
@@ -270,21 +170,11 @@ class Target
     /**
      * Return the path to the backup file.
      *
-     * @return string
+     * @return Path
      */
-    public function getPath() : string
+    public function getPath() : Path
     {
         return $this->path;
-    }
-
-    /**
-     * Return the path to the backup file.
-     *
-     * @return string
-     */
-    public function getPathRaw() : string
-    {
-        return $this->pathRaw;
     }
 
     /**
@@ -430,7 +320,7 @@ class Target
      */
     public function getPathname(bool $plain = false) : string
     {
-        return $this->path . DIRECTORY_SEPARATOR . $this->getFilename($plain);
+        return $this->path->getPath() . DIRECTORY_SEPARATOR . $this->getFilename($plain);
     }
 
     /**
@@ -441,26 +331,6 @@ class Target
     public function getPathnamePlain() : string
     {
         return $this->getPathname(true);
-    }
-
-    /**
-     * Is dirname configured with any date placeholders.
-     *
-     * @return bool
-     */
-    public function hasChangingPath() : bool
-    {
-        return $this->pathIsChanging;
-    }
-
-    /**
-     * Return the part of the path that is not changing.
-     *
-     * @return string
-     */
-    public function getPathThatIsNotChanging() : string
-    {
-        return $this->pathNotChanging;
     }
 
     /**

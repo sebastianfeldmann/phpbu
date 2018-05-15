@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\App\Util;
 
-use RuntimeException;
-
 /**
  * Path utility class.
  *
@@ -210,18 +208,31 @@ class Path
     }
 
     /**
-     * Return list of directories in a given path.
+     * Return list of directories in a given path without absolute root element
+     *
+     * @param string $path
+     * @return array
+     */
+    public static function getDirectoryListFromPath($path): array
+    {
+        $path = trim($path, '/');
+        $dirs = explode('/', $path);
+        return array_filter($dirs);
+    }
+
+    /**
+     * Return list of directories in a given path with absolute root element.
      *
      * @param  string $path
      * @return array
      */
-    public static function getDirectoryList(string $path) : array
+    public static function getDirectoryListFromAbsolutePath(string $path) : array
     {
-        $parts = explode('/', $path);
+        $dirs = static::getDirectoryListFromPath($path);
         if (self::hasLeadingSlash($path)) {
-            $parts[0] = '/';
+            array_unshift($dirs, '/');
         }
-        return array_filter($parts);
+        return array_filter($dirs);
     }
 
     /**
@@ -232,6 +243,6 @@ class Path
      */
     public static function getPathDepth(string $path) : int
     {
-        return count(self::getDirectoryList($path));
+        return count(self::getDirectoryListFromAbsolutePath($path));
     }
 }

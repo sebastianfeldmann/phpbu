@@ -123,6 +123,6 @@ trait Rsync
      */
     protected function getRsyncLocation(Target $target, $plain = false)
     {
-        return $this->isDirSync ? $target->getPath() : $target->getPathname($plain);
+        return $this->isDirSync ? $target->getPath()->getPath() : $target->getPathname($plain);
     }
 }

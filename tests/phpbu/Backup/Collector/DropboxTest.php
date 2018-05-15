@@ -1,8 +1,9 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Path;
+use phpbu\App\Util;
 
 /**
  * Dropbox Collector test
@@ -28,25 +29,25 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
         $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
 
         $dropboxClientStub = $this->createMock(\Kunnu\Dropbox\Dropbox::class);
-        $remotePath        = '/backups/';
+        $remotePath        = 'backups/';
         $dropboxFileList   = [
             [
                 'name' => $target->getFilename(),
                 'pathname' => $remotePath . $target->getFilename(),
                 'size' => 100,
-                'last_modified' => 1525788894,
+                'last_modified' => '2018-05-08 14:14:54.0 +00:00',
             ],
             [
                 'name' => 'foo-2000-12-01-12_00.txt',
                 'pathname' => $remotePath . 'foo-2000-12-01-12_00.txt',
                 'size' => 100,
-                'last_modified' => 1525788894,
+                'last_modified' => '2000-12-01 12:00:00.0 +00:00',
             ],
             [
                 'name' => 'not-matching-2000-12-01-12_00.txt',
                 'pathname' => $remotePath . 'not-matching-2000-12-01-12_00.txt',
                 'size' => 100,
-                'last_modified' => 1525788894,
+                'last_modified' => '2000-12-01 12:00:00.0 +00:00',
             ],
         ];
 
@@ -65,19 +66,22 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
 
         $dropboxClientStub->expects($this->once())
                           ->method('listFolder')
-                          ->with($remotePath, ['limit' => 100])
+                          ->with('backups/', ['limit' => 100, 'recursive' => true])
                           ->willReturn($dropboxFileListResult);
 
-        $collector = new Dropbox($target, $dropboxClientStub, $remotePath);
+        $time = time();
+        $pathObject = new Path($remotePath, $time, false, true);
+        $collector = new Dropbox($target, $dropboxClientStub, $remotePath, $time);
         $this->assertAttributeEquals($dropboxClientStub, 'client', $collector);
-        $this->assertAttributeEquals($remotePath, 'path', $collector);
+        $this->assertAttributeEquals($pathObject, 'path', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
+        $this->assertAttributeEquals(Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
         $this->assertAttributeEquals([], 'files', $collector);
 
         $files = $collector->getBackupFiles();
         $this->assertCount(1, $files);
-        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[0]->getFilename());
+        $this->assertArrayHasKey(975672000, $files);
+        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[975672000]->getFilename());
     }
 
     /**

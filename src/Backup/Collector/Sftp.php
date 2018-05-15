@@ -2,7 +2,9 @@
 namespace phpbu\App\Backup\Collector;
 
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
+use phpbu\App\Util;
 
 /**
  * Sftp class.
@@ -24,9 +26,9 @@ class Sftp extends Collector
     protected $sftp;
 
     /**
-     * OpenStack remote path
+     * SFTP remote path
      *
-     * @var string
+     * @var Path
      */
     protected $path;
 
@@ -35,9 +37,9 @@ class Sftp extends Collector
      *
      * @param \phpbu\App\Backup\Target $target
      * @param \phpseclib\Net\SFTP      $sftp
-     * @param string                   $path
+     * @param Path                     $path
      */
-    public function __construct(Target $target, \phpseclib\Net\SFTP $sftp, string $path)
+    public function __construct(Target $target, \phpseclib\Net\SFTP $sftp, Path $path)
     {
         $this->sftp = $sftp;
         $this->path = $path;
@@ -51,20 +53,72 @@ class Sftp extends Collector
      */
     public function getBackupFiles(): array
     {
-        $list = $this->sftp->_list($this->path);
-        foreach ($list as $fileInfo) {
-            if ($fileInfo['type'] === 2) {
+        $this->collect($this->path->getPathThatIsNotChanging());
+        return $this->files;
+    }
+
+    private function collect(string $path)
+    {
+        // collect all matching sub directories and get all the backup files
+        $depth = Util\Path::getPathDepth($path);
+        $list = $this->sftp->_list($path);
+        if (!$list) {
+            return;
+        }
+        if ($depth < $this->path->getPathDepth()) {
+            foreach ($list as $file) {
+                if (in_array($file['filename'], ['.', '..'])) {
+                    continue;
+                }
+                if ($this->isValidDirectory($file, $depth)) {
+                    $this->collect($path . '/' . $file['filename']);
+                }
+            }
+        } else {
+            $this->collectFiles($list, $path);
+        }
+    }
+
+    private function collectFiles(array $fileList, string $path)
+    {
+        foreach ($fileList as $file) {
+            if (in_array($file['filename'], ['.', '..'])) {
                 continue;
             }
             // skip currently created backup
-            if ($fileInfo['filename'] == $this->target->getFilename()) {
+            if ($path . '/' . $file['filename'] == $this->path->getPath() . '/' . $this->target->getFilename()) {
                 continue;
             }
-            if ($this->isFilenameMatch($fileInfo['filename'])) {
-                $this->files[] = new \phpbu\App\Backup\File\Sftp($this->sftp, $fileInfo, $this->path);
+            if ($this->isFileMatch($path . '/' . $file['filename'])) {
+                $file = new \phpbu\App\Backup\File\Sftp($this->sftp, $file, $path);
+                $this->files[$file->getMTime()] = $file;
             }
         }
+    }
 
-        return $this->files;
+    /**
+     * Check if the iterated file is part of a valid target path.
+     *
+     * @param array $file
+     * @param int   $depth
+     * @return bool
+     */
+    protected function isValidDirectory(array $file, int $depth)
+    {
+        return $file['type'] == 2 && $this->isMatchingDirectory($file['filename'], $depth);
+    }
+
+    /**
+     * Does a directory match the respective target path.
+     *
+     * @param  string $dir
+     * @param  int    $depth
+     * @return bool
+     */
+    protected function isMatchingDirectory(string $dir, int $depth)
+    {
+        $dirTarget = $this->path->getPathElementAtIndex($depth);
+        $dirRegex  = Util\Path::datePlaceholdersToRegex($dirTarget);
+        return preg_match('#' . $dirRegex . '#i', $dir);
     }
 }

@@ -50,7 +50,8 @@ class Ftp extends Collector
                 continue;
             }
             if ($this->isFilenameMatch($filename)) {
-                $this->files[] = new \phpbu\App\Backup\File\Ftp($this->ftpConnection, $filename);
+                $file = new \phpbu\App\Backup\File\Ftp($this->ftpConnection, $filename);
+                $this->files[$file->getMTime()] = $file;
             }
         }
         return $this->files;

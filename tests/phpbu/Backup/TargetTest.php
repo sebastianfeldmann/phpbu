@@ -24,9 +24,9 @@ class TargetTest extends \PHPUnit\Framework\TestCase
         $target   = new Target($path, $filename);
         $target->setupPath();
 
-        $this->assertTrue(is_dir($target->getPath()));
+        $this->assertTrue(is_dir($target->getPath()->getPath()));
 
-        rmdir($target->getPath());
+        rmdir($target->getPath()->getPath());
     }
 
     /**
@@ -59,8 +59,8 @@ class TargetTest extends \PHPUnit\Framework\TestCase
             $target->setupPath();
         } catch (\Exception $e) {
             if (isset($target)) {
-                chmod($target->getPath(), 0755);
-                rmdir($target->getPath());
+                chmod($target->getPath()->getPath(), 0755);
+                rmdir($target->getPath()->getPath());
             }
 
             throw $e;
@@ -96,7 +96,7 @@ class TargetTest extends \PHPUnit\Framework\TestCase
         $filename = 'foo-%d.txt';
         $target   = new Target($path, $filename);
 
-        $this->assertTrue($target->hasChangingPath(), 'path should be recognized as changing');
+        $this->assertTrue($target->getPath()->hasChangingPath(), 'path should be recognized as changing');
     }
 
     /**
@@ -108,7 +108,7 @@ class TargetTest extends \PHPUnit\Framework\TestCase
         $filename = 'foo-%d.txt';
         $target   = new Target($path, $filename);
 
-        $this->assertTrue($target->hasChangingPath(), 'path should be recognized as changing');
+        $this->assertTrue($target->getPath()->hasChangingPath(), 'path should be recognized as changing');
     }
 
     /**
@@ -120,7 +120,7 @@ class TargetTest extends \PHPUnit\Framework\TestCase
         $filename = 'foo-%d.txt';
         $target   = new Target($path, $filename);
 
-        $this->assertFalse($target->hasChangingPath(), 'path should be recognized as not changing');
+        $this->assertFalse($target->getPath()->hasChangingPath(), 'path should be recognized as not changing');
     }
 
     /**
@@ -380,7 +380,7 @@ class TargetTest extends \PHPUnit\Framework\TestCase
         $filename = 'foo.txt';
         $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
 
-        $this->assertEquals('/tmp/12/01', $target->getPath());
+        $this->assertEquals('/tmp/12/01', $target->getPath()->getPath());
     }
 
     /**
@@ -408,7 +408,7 @@ class TargetTest extends \PHPUnit\Framework\TestCase
         $filename = 'foo.txt';
         $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
 
-        $this->assertEquals('/tmp/%m/%d', $target->getPathRaw());
+        $this->assertEquals('/tmp/%m/%d', $target->getPath()->getPathRaw());
     }
 
     /**

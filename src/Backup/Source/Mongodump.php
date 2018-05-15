@@ -205,6 +205,6 @@ class Mongodump extends SimulatorExecutable implements Simulator
      */
     public function getDumpDir(Target $target) : string
     {
-        return $target->getPath() . '/dump';
+        return $target->getPath()->getPath() . '/dump';
     }
 }
