@@ -83,7 +83,7 @@ class Capacity extends Abstraction implements Simulator
         // so $targetFile->getMTime or $targetFile->getSize will not be called
         if ($this->deleteTarget) {
             $this->deleteTarget = false;
-            $result->debug('target will be deleted as well');
+            $result->debug('target may be deleted as well');
             $result->debug('delete ' . $target->getPathname());
         }
         parent::simulate($target, $collector, $result);
