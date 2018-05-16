@@ -75,11 +75,18 @@ class Openstack implements Simulator
     protected $maxStreamUploadSize = 5368709120;
 
     /**
-     * Path where to copy the backup.
+     * Path where to copy the backup without leading or trailing slashes.
      *
      * @var string
      */
     protected $path = '';
+
+    /**
+     * Path where to copy the backup still containing possible date placeholders.
+     *
+     * @var string
+     */
+    protected $pathRaw = '';
 
     /**
      * @var Container
@@ -117,9 +124,11 @@ class Openstack implements Simulator
         $this->password      = $config['password'];
         $this->containerName = $config['container_name'];
         $this->serviceName   = Util\Arr::getValue($config, 'service_name', 'swift');
-        if (Util\Arr::getValue($config, 'path')) {
-            $this->path = Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path']));
-            $this->path = substr($this->path, 0, 1) == '/' ? substr($this->path, 1) : $this->path;
+        $clearedPath         = Util\Path::withoutLeadingOrTrailingSlash(Util\Arr::getValue($config, 'path', ''));
+
+        if (!empty($clearedPath)) {
+            $this->path    = Util\Path::replaceDatePlaceholders($clearedPath);
+            $this->pathRaw = $clearedPath;
         }
 
         $this->setUpClearable($config);
@@ -167,7 +176,7 @@ class Openstack implements Simulator
             } else {
                 // create an object
                 $uploadOptions = [
-                    'name' => $this->getUploadPath($target),
+                    'name'    => $this->getUploadPath($target),
                     'content' => file_get_contents($target->getPathname()),
                 ];
                 $this->container->createObject($uploadOptions);
@@ -201,9 +210,9 @@ class Openstack implements Simulator
     }
 
     /**
-     * Creates collector for OpenStack
+     * Creates collector for OpenStack.
      *
-     * @param \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector
      */
     protected function createCollector(Target $target): Collector
@@ -212,8 +221,8 @@ class Openstack implements Simulator
     }
 
     /**
-     * @param ObjectStoreService $service
-     * @param Result             $result
+     * @param  \OpenStack\ObjectStore\v1\Service $service
+     * @param  \phpbu\App\Result                 $result
      * @return \OpenStack\ObjectStore\v1\Models\Container
      * @throws \OpenStack\Common\Error\BadResponseError
      */
@@ -234,11 +243,11 @@ class Openstack implements Simulator
      */
     public function getUploadPath(Target $target)
     {
-        return $this->path . $target->getFilename();
+        return (!empty($this->path) ? $this->path . '/' : '') . $target->getFilename();
     }
 
     /**
-     * @param Result $result
+     * @param  \phpbu\App\Result $result
      * @return void
      * @throws \OpenStack\Common\Error\BadResponseError
      */

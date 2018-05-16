@@ -6,14 +6,11 @@
   <!-- mandatory -->
   <option name="user" value="user.name" />
 
-  <!-- optional, if private_key presented -->
+  <!-- optional, if key presented it is used as key password -->
   <option name="password" value="mysecret" />
 
-  <!-- optional, if password presented -->
-  <option name="private_key" value="somedir/id_rsa" />
-
   <!-- optional -->
-  <option name="private_key_password" value="12345" />
+  <option name="key" value="somedir/id_rsa" />
 
   <!-- optional, default=none -->
   <option name="path" value="somedir/somesubdir" />

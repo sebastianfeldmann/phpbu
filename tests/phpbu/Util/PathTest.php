@@ -20,7 +20,7 @@ class PathTest extends \PHPUnit\Framework\TestCase
     static protected $time;
 
     /**
-     * Tests Str::isContainingPlaceholders
+     * Tests Path::isContainingPlaceholders
      */
     public function testIsContainingPlaceholders()
     {
@@ -81,7 +81,7 @@ class PathTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Str::replaceTargetPlaceholders
+     * Tests Path::replaceTargetPlaceholders
      */
     public function testReplaceTargetPlaceholder()
     {
@@ -155,7 +155,7 @@ class PathTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Cli::isAbsolutePath
+     * Tests Path::isAbsolutePath
      */
     public function testIsAbsolutePathTrue()
     {
@@ -166,7 +166,7 @@ class PathTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Cli::isAbsolutePath
+     * Tests Path::isAbsolutePath
      */
     public function testIsAbsolutePathFalse()
     {
@@ -177,7 +177,7 @@ class PathTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Cli::isAbsolutePath
+     * Tests Path::isAbsolutePath
      */
     public function testIsAbsolutePathStream()
     {
@@ -188,7 +188,7 @@ class PathTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Cli::isAbsolutePathWindows
+     * Tests Path::isAbsolutePathWindows
      *
      * @dataProvider providerWindowsPaths
      *
@@ -203,13 +203,25 @@ class PathTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Cli::toAbsolutePath
+     * Tests Path::toAbsolutePath
      */
     public function testToAbsolutePathAlreadyAbsolute()
     {
         $res = Path::toAbsolutePath('/foo/bar', '');
 
         $this->assertEquals('/foo/bar', $res, 'should be detected as absolute');
+    }
+
+
+    /**
+     * Tests Path::withoutLeadingOrTrailingSlash
+     */
+    public function testWithoutLeadingOrTrailingSlash()
+    {
+        $this->assertEquals('foo/bar', Path::withoutLeadingOrTrailingSlash('/foo/bar/'));
+        $this->assertEquals('foo/bar', Path::withoutLeadingOrTrailingSlash('foo/bar/'));
+        $this->assertEquals('foo/bar', Path::withoutLeadingOrTrailingSlash('/foo/bar'));
+        $this->assertEquals('foo/bar', Path::withoutLeadingOrTrailingSlash('foo/bar'));
     }
 
     /**
@@ -227,7 +239,7 @@ class PathTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests Cli::toAbsolutePath
+     * Tests Path::toAbsolutePath
      */
     public function testToAbsolutePathWIthIncludePath()
     {

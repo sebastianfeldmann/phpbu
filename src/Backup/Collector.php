@@ -43,7 +43,7 @@ abstract class Collector
      *
      * @var \phpbu\App\Backup\File[]
      */
-    protected $files;
+    protected $files = [];
 
     /**
      * Setting up
@@ -54,21 +54,20 @@ abstract class Collector
     {
         $this->target    = $target;
         $this->fileRegex = Util\Path::datePlaceholdersToRegex($target->getFilenameRaw());
-        $this->files     = [];
     }
 
     /**
      * Return true if target full path matches file and path regex.
      *
-     * @param string $targetPath Full path to the remote file to check
+     * @param  string $targetPath Full path to the remote file to check
      * @return bool
      */
-    protected function isFileMatch(string $targetPath): bool
+    protected function isFileMatch(string $targetPath) : bool
     {
-        $rawPath = Util\Path::withoutLeadingSlash($this->path->getPathRaw());
-        $rawPath = !empty($rawPath) ? Util\Path::withTrailingSlash($rawPath) : $rawPath;
-        $pathRegex = Util\Path::datePlaceholdersToRegex($rawPath);
-        $fileRegex = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
+        $rawPath    = Util\Path::withoutLeadingSlash($this->path->getPathRaw());
+        $rawPath    = !empty($rawPath) ? Util\Path::withTrailingSlash($rawPath) : $rawPath;
+        $pathRegex  = Util\Path::datePlaceholdersToRegex($rawPath);
+        $fileRegex  = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
         $targetPath = Util\Path::withoutLeadingSlash($targetPath);
         return preg_match('#' . $pathRegex . $fileRegex . '$#i', $targetPath);
     }
@@ -76,10 +75,10 @@ abstract class Collector
     /**
      * Returns true if filename matches the target regex
      *
-     * @param string $filename
+     * @param  string $filename
      * @return bool
      */
-    protected function isFilenameMatch(string $filename): bool
+    protected function isFilenameMatch(string $filename) : bool
     {
         return preg_match('#' . $this->fileRegex . '#i', $filename);
     }
@@ -87,7 +86,7 @@ abstract class Collector
     /**
      * @return Path
      */
-    public function getPath(): Path
+    public function getPath() : Path
     {
         return $this->path;
     }

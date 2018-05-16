@@ -113,7 +113,7 @@ class Dropbox implements Simulator
     {
         $this->time  = time();
         $sourcePath  = $target->getPathname();
-        $dropboxPath = Util\Path::withTrailingSlash($this->path->getPath()) . $target->getFilename();
+        $dropboxPath = $this->path->getPath() . '/' . $target->getFilename();
         if (!$this->client) {
             $this->connect();
         }
@@ -148,12 +148,12 @@ class Dropbox implements Simulator
     /**
      * Creates collector for Dropbox
      *
-     * @param \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector
      */
-    protected function createCollector(Target $target): Collector
+    protected function createCollector(Target $target) : Collector
     {
-        return new \phpbu\App\Backup\Collector\Dropbox($target, $this->client, $this->path->getPathRaw(), $this->time);
+        return new Collector\Dropbox($target, $this->client, $this->path->getPathRaw(), $this->time);
     }
 
     /**

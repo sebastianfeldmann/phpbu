@@ -2,9 +2,12 @@
 namespace phpbu\App\Backup\Collector;
 
 use Kunnu\Dropbox\Dropbox as DropboxApi;
+use Kunnu\Dropbox\Models\FolderMetadata;
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\File;
 use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
+use phpbu\App\Util;
 
 /**
  * Dropbox class.
@@ -43,7 +46,7 @@ class Dropbox extends Collector
     public function __construct(Target $target, DropboxApi $client, string $path, int $time)
     {
         $this->client = $client;
-        $this->path   = new Path($path, $time, false, true);
+        $this->path   = new Path($path, $time);
         $this->setUp($target);
     }
 
@@ -54,22 +57,25 @@ class Dropbox extends Collector
      */
     public function getBackupFiles() : array
     {
-        $items = $this->client->listFolder($this->path->getPathThatIsNotChanging(), [
-            'limit' => 100,
-            'recursive' => true,
-        ]);
+        $items = $this->client->listFolder(
+            Util\Path::withTrailingSlash($this->path->getPathThatIsNotChanging()),
+            [
+                'limit'     => 100,
+                'recursive' => true,
+            ]
+        );
         foreach ($items->getItems() as $item) {
             // skip directories
-            if ($item instanceof \Kunnu\Dropbox\Models\FolderMetadata) {
+            if ($item instanceof FolderMetadata) {
                 continue;
             }
             /** @var \Kunnu\Dropbox\Models\FileMetadata $item */
             // skip currently created backup
-            if ($item->getPathDisplay() == $this->path->getPath() . $this->target->getFilename()) {
+            if ($item->getPathDisplay() == $this->path->getPath() . '/' . $this->target->getFilename()) {
                 continue;
             }
             if ($this->isFileMatch($item->getPathDisplay())) {
-                $file = new \phpbu\App\Backup\File\Dropbox($this->client, $item);
+                $file = new File\Dropbox($this->client, $item);
                 $this->files[$file->getMTime()] = $file;
             }
         }

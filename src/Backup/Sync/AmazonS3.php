@@ -119,14 +119,15 @@ abstract class AmazonS3 implements Simulator
         // check for mandatory options
         $this->validateConfig($config, ['key', 'secret', 'bucket', 'region', 'path']);
 
+        $cleanedPath           = Util\Path::withoutTrailingSlash(Util\Path::withoutLeadingSlash($config['path']));
         $this->time            = time();
         $this->key             = $config['key'];
         $this->secret          = $config['secret'];
         $this->bucket          = $config['bucket'];
         $this->bucketTTL       = Util\Arr::getValue($config, 'bucketTTL');
         $this->region          = $config['region'];
-        $this->path            = Util\Path::withTrailingSlash(Util\Path::replaceDatePlaceholders($config['path'], $this->time));
-        $this->pathRaw         = $config['path'];
+        $this->path            = Util\Path::replaceDatePlaceholders($cleanedPath, $this->time);
+        $this->pathRaw         = $cleanedPath;
         $this->acl             = Util\Arr::getValue($config, 'acl', 'private');
         $this->multiPartUpload = Util\Str::toBoolean(Util\Arr::getValue($config, 'useMultiPartUpload'), false);
     }

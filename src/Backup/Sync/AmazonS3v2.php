@@ -29,7 +29,7 @@ class AmazonS3v2 extends AmazonS3
     public function sync(Target $target, Result $result)
     {
         $sourcePath = $target->getPathname();
-        $targetPath = $this->path . $target->getFilename();
+        $targetPath = $this->path . '/' .  $target->getFilename();
 
         $s3 = S3Client::factory(
             [

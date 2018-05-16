@@ -6,6 +6,7 @@ use Aws\S3\MultipartUploader;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
+use phpbu\App\Util;
 
 /**
  * Amazon S3 Sync
@@ -81,12 +82,12 @@ class AmazonS3v3 extends AmazonS3
     /**
      * Creates collector for Amazon S3
      *
-     * @param \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector
      */
-    protected function createCollector(Target $target): Collector
+    protected function createCollector(Target $target) : Collector
     {
-        return new \phpbu\App\Backup\Collector\AmazonS3v3($target, $this->client, $this->bucket, $this->pathRaw, $this->time);
+        return new Collector\AmazonS3v3($target, $this->client, $this->bucket, $this->pathRaw, $this->time);
     }
 
     /**
@@ -121,8 +122,10 @@ class AmazonS3v3 extends AmazonS3
     /**
      * Upload backup to Amazon S3 bucket.
      *
-     * @param \phpbu\App\Backup\Target $target
-     * @param \Aws\S3\S3Client         $s3
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  \Aws\S3\S3Client         $s3
+     * @throws \phpbu\App\Backup\Sync\Exception
+     * @throws \phpbu\App\Exception
      */
     private function upload(Target $target, S3Client $s3)
     {
@@ -192,9 +195,6 @@ class AmazonS3v3 extends AmazonS3
      */
     public function getUploadPath(Target $target)
     {
-        // remove leading slash
-        return (substr($this->path, 0, 1) == '/' ? substr($this->path, 1) : $this->path)
-               . (substr($this->path, -1, 1) == '/' ? '' : '/')
-               . $target->getFilename();
+        return (!empty($this->path) ? $this->path . '/' : '') . $target->getFilename();
     }
 }

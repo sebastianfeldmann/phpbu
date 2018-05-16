@@ -47,7 +47,7 @@ class AmazonS3v3 extends Collector
     {
         $this->client = $client;
         $this->bucket = $bucket;
-        $this->path   = new Path($path, $time, false, true);
+        $this->path   = new Path($path, $time);
         $this->setUp($target);
     }
 

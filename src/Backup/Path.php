@@ -18,21 +18,21 @@ use phpbu\App\Util;
 class Path
 {
     /**
-     * Path
+     * Path without trailing slashes.
      *
      * @var string
      */
     private $path;
 
     /**
-     * Raw path, that could contain placeholders
+     * Raw path, that could contain placeholders.
      *
      * @var string
      */
     private $pathRaw;
 
     /**
-     * Part of path, that is permanent
+     * Part of path, that is not changing because of placeholders.
      *
      * @var string
      */
@@ -64,74 +64,51 @@ class Path
      *
      * @var bool
      */
-    private $leadingSlash;
-
-    /**
-     * Whether trailing slash is needed or not
-     *
-     * @var bool
-     */
-    private $trailingSlash;
+    private $isAbsolute;
 
     /**
      * Path constructor.
      *
      * @param string    $path
      * @param int|null  $time
-     * @param bool|null $leadingSlash
-     * @param bool|null $trailingSlash
      */
-    public function __construct(string $path, $time = null, $leadingSlash = null, $trailingSlash = null)
+    public function __construct(string $path, $time = null)
     {
-        $this->leadingSlash  = $leadingSlash;
-        $this->trailingSlash = $trailingSlash;
-        $this->pathRaw       = $path;
-        $this->time          = $time;
+        $this->isAbsolute = Util\Path::hasLeadingSlash($path);
+        $this->time       = $time;
 
-        $this->setUp();
+        $this->setupPath(Util\Path::withoutTrailingSlash($path));
     }
 
     /**
-     * Updates path according to provided parameters.
+     * Setup path
+     *
+     * @param string $path
      */
-    private function setUp()
+    private function setupPath(string $path)
     {
-        if (!is_null($this->leadingSlash)) {
-            if ($this->leadingSlash) {
-                $this->pathRaw = Util\Path::withLeadingSlash($this->pathRaw);
-            } else {
-                $this->pathRaw = Util\Path::withoutLeadingSlash($this->pathRaw);
-            }
-        }
-        if (!is_null($this->trailingSlash) && !empty($this->pathRaw)) {
-            if ($this->trailingSlash) {
-                $this->pathRaw = Util\Path::withTrailingSlash($this->pathRaw);
-            } else {
-                $this->pathRaw = Util\Path::withoutTrailingSlash($this->pathRaw);
-            }
-        }
+        $this->path            = $path;
+        $this->pathRaw         = $path;
+        $this->pathNotChanging = $path;
 
-        $path = $this->pathRaw;
+        // if path contains date placeholders determine the path that is not changing
+        // and create final path by replacing all placeholders
         if (Util\Path::isContainingPlaceholder($this->pathRaw)) {
-            $this->pathIsChanging = true;
-            $this->detectPathNotChanging($this->pathRaw);
-            // replace potential date placeholder
-            $path = Util\Path::replaceDatePlaceholders($this->pathRaw, $this->time);
-        } else {
-            $this->pathNotChanging = $path;
+            $this->pathIsChanging  = true;
+            $this->pathNotChanging = $this->detectPathNotChanging($this->pathRaw);
+            $this->path            = Util\Path::replaceDatePlaceholders($this->pathRaw, $this->time);
         }
-
-        $this->path = $path;
     }
 
     /**
      * Find path elements that can't change because of placeholder usage.
      *
-     * @param string $path
+     * @param  string $path
+     * @return string
      */
-    private function detectPathNotChanging(string $path)
+    private function detectPathNotChanging(string $path) : string
     {
-        $partsNotChanging = [];
+        $partsNotChanging     = [];
         $foundChangingElement = false;
 
         foreach (Util\Path::getDirectoryListFromAbsolutePath($path) as $depth => $dir) {
@@ -143,15 +120,16 @@ class Path
                 $foundChangingElement = true;
                 continue;
             }
-            // do not add the / element leading slash will be re-added later
+            // do not add the / element, leading slash will be re-added later
             if ($dir !== '/') {
                 $partsNotChanging[] = $dir;
             }
         }
-        $this->pathNotChanging = implode(DIRECTORY_SEPARATOR, $partsNotChanging);
-        if (!is_null($this->leadingSlash) && $this->leadingSlash) {
-            $this->pathNotChanging = DIRECTORY_SEPARATOR . $this->pathNotChanging;
+        $pathNotChanging = implode(DIRECTORY_SEPARATOR, $partsNotChanging);
+        if ($this->isAbsolute) {
+            $pathNotChanging = DIRECTORY_SEPARATOR . $pathNotChanging;
         }
+        return $pathNotChanging;
     }
 
     /**

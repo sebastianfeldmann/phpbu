@@ -104,7 +104,7 @@ class Target
      */
     public function __construct($path, $filename, $time = null)
     {
-        $this->path = new Path($path, $time, true, false);
+        $this->path = new Path($path, $time);
         $this->setFile($filename, $time);
     }
 

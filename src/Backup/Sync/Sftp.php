@@ -45,11 +45,6 @@ class Sftp extends Xtp
     protected $privateKey;
 
     /**
-     * @var string
-     */
-    protected $privateKeyPassword;
-
-    /**
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::setup()
@@ -65,17 +60,16 @@ class Sftp extends Xtp
         parent::setup($config);
 
         $this->time = time();
-        $privateKey = Util\Arr::getValue($config, 'private_key', '');
+        $privateKey = Util\Arr::getValue($config, 'key', '');
         if (!empty($privateKey)) {
             // get absolute private key path
-            $privateKey = realpath(Util\Path::toAbsolutePath($privateKey, Configuration::getWorkingDirectory()));
-            if ($privateKey === false) {
-                throw new \phpbu\App\Backup\Sync\Exception("Private key not found at specified path");
+            $privateKey = Util\Path::toAbsolutePath($privateKey, Configuration::getWorkingDirectory());
+            if (!file_exists($privateKey)) {
+                throw new Exception("Private key not found at specified path");
             }
         }
-        $this->privateKey         = $privateKey;
-        $this->privateKeyPassword = Util\Arr::getValue($config, 'private_key_password', '');
-        $this->remotePath         = new Path($config['path'], $this->time, Util\Path::hasLeadingSlash($config['path']));
+        $this->privateKey = $privateKey;
+        $this->remotePath = new Path($config['path'], $this->time);
 
         $this->setUpClearable($config);
     }
@@ -147,15 +141,8 @@ class Sftp extends Xtp
         // silence phpseclib
         $old  = error_reporting(0);
         $sftp = new phpseclib\Net\SFTP($this->host);
-        if ($this->privateKey) {
-            $auth = new phpseclib\Crypt\RSA();
-            $auth->loadKey(file_get_contents($this->privateKey));
-            if ($this->privateKeyPassword) {
-                $auth->setPassword($this->privateKeyPassword);
-            }
-        } else {
-            $auth = $this->password;
-        }
+        $auth = $this->getAuth();
+
         if (!$sftp->login($this->user, $auth)) {
             error_reporting($old);
             throw new Exception(
@@ -172,10 +159,29 @@ class Sftp extends Xtp
 
         // if presented relative path, determine absolute path and update
         if (!Util\Path::isAbsolutePath($this->remotePath->getPath())) {
-            $this->remotePath = new Path($sftp->realpath('.') . '/' . $this->remotePath->getPathRaw(), $this->time, true);
+            $this->remotePath = new Path($sftp->realpath('.') . '/' . $this->remotePath->getPathRaw(), $this->time);
         }
 
         return $sftp;
+    }
+
+    /**
+     * Return a phpseclib authentication thingy.
+     *
+     * @return \phpseclib\Crypt\RSA|string
+     */
+    private function getAuth()
+    {
+        $auth = $this->password;
+        // if private key should be used
+        if ($this->privateKey) {
+            $auth = new phpseclib\Crypt\RSA();
+            $auth->loadKey(file_get_contents($this->privateKey));
+            if ($this->password) {
+                $auth->setPassword($this->password);
+            }
+        }
+        return $auth;
     }
 
     /**

@@ -70,8 +70,8 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
                           ->willReturn($dropboxFileListResult);
 
         $time = time();
-        $pathObject = new Path($remotePath, $time, false, true);
-        $collector = new Dropbox($target, $dropboxClientStub, $remotePath, $time);
+        $pathObject = new Path($remotePath, $time);
+        $collector  = new Dropbox($target, $dropboxClientStub, $remotePath, $time);
         $this->assertAttributeEquals($dropboxClientStub, 'client', $collector);
         $this->assertAttributeEquals($pathObject, 'path', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);

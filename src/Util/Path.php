@@ -122,7 +122,7 @@ class Path
      * @param  string $string
      * @return string
      */
-    public static function withLeadingSlash($string)
+    public static function withLeadingSlash(string $string) : string
     {
         return (self::hasLeadingSlash($string) ? '' : '/') . $string;
     }
@@ -133,9 +133,19 @@ class Path
      * @param  string $string
      * @return string
      */
-    public static function withoutLeadingSlash($string)
+    public static function withoutLeadingSlash(string $string) : string
     {
-        return self::hasLeadingSlash($string) ? substr($string, 1) : $string;
+        return ltrim($string, '/');
+    }
+
+    /**
+     * Removes trailing and leading sl
+     * @param string $string
+     * @return string
+     */
+    public static function withoutLeadingOrTrailingSlash(string $string) : string
+    {
+        return trim($string, '/');
     }
 
     /**
@@ -232,7 +242,7 @@ class Path
         if (self::hasLeadingSlash($path)) {
             array_unshift($dirs, '/');
         }
-        return array_filter($dirs);
+        return $dirs;
     }
 
     /**
