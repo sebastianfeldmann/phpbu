@@ -161,7 +161,7 @@ abstract class AmazonS3 implements Simulator
             . '  region:   ' . $this->region . PHP_EOL
             . '  key:      ' . $this->key . PHP_EOL
             . '  secret:    ********' . PHP_EOL
-            . '  location: ' . $this->bucket
+            . '  location: ' . $this->bucket . PHP_EOL
         );
     }
 
