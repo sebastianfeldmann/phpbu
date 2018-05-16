@@ -62,7 +62,7 @@ class MailTemplate
                                           'align="center" cellpadding="5" cellspacing="0"',
             'sTableErrorCol'           => 'style="border-top: 1px solid #f6f6f6; ' .
                                                  'border-bottom: 1px solid #c9c9c9;"',
-            'sTableContent'            => 'style="width:380px; ' .
+            'sTableContent'            => 'style="width:420px; ' .
                                                  'font-family: Arial, Helvetica, sans-serif; ' .
                                                  'margin:0 auto;" ' .
                                           'align="center" cellpadding="0" cellspacing="0"',
