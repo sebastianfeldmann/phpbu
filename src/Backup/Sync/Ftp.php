@@ -20,7 +20,7 @@ use phpbu\App\Util\Str;
  */
 class Ftp extends Xtp
 {
-    use Clearable;
+    use Cleanable;
 
     /**
      * FTP connection stream
@@ -55,7 +55,7 @@ class Ftp extends Xtp
         parent::setup($config);
 
         $this->passive = Str::toBoolean(Arr::getValue($config, 'passive', ''), false);
-        $this->setUpClearable($config);
+        $this->setUpCleanable($config);
     }
 
     /**

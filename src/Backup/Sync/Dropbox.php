@@ -23,7 +23,7 @@ use phpbu\App\Util;
  */
 class Dropbox implements Simulator
 {
-    use Clearable;
+    use Cleanable;
 
     /**
      * API access token
@@ -82,7 +82,7 @@ class Dropbox implements Simulator
         // make sure the path contains leading and trailing slashes
         $this->path  = new Path(Util\Path::withLeadingSlash($config['path']), $this->time);
 
-        $this->setUpClearable($config);
+        $this->setUpCleanable($config);
     }
 
     /**

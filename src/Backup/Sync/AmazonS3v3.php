@@ -21,7 +21,7 @@ use phpbu\App\Util;
  */
 class AmazonS3v3 extends AmazonS3
 {
-    use Clearable;
+    use Cleanable;
 
     /**
      * Amazon S3 client.
@@ -42,7 +42,7 @@ class AmazonS3v3 extends AmazonS3
     {
         parent::setup($config);
 
-        $this->setUpClearable($config);
+        $this->setUpCleanable($config);
     }
 
     /**

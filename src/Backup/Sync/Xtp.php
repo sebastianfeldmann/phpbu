@@ -19,7 +19,7 @@ use phpbu\App\Util;
  */
 abstract class Xtp implements Simulator
 {
-    use Clearable;
+    use Cleanable;
 
     /**
      * Host to connect to

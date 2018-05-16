@@ -71,7 +71,7 @@ class Sftp extends Xtp
         $this->privateKey = $privateKey;
         $this->remotePath = new Path($config['path'], $this->time);
 
-        $this->setUpClearable($config);
+        $this->setUpCleanable($config);
     }
 
     /**

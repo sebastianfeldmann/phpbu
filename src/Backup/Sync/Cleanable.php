@@ -19,7 +19,7 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-trait Clearable
+trait Cleanable
 {
     /**
      * @var \phpbu\App\Configuration\Backup\Cleanup
@@ -37,7 +37,7 @@ trait Clearable
      * @param  array $options
      * @throws \phpbu\App\Exception
      */
-    public function setUpClearable(array $options)
+    public function setUpCleanable(array $options)
     {
         $config = [];
         foreach ($options as $key => $value) {

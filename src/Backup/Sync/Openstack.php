@@ -27,7 +27,7 @@ use phpbu\App\Util;
  */
 class Openstack implements Simulator
 {
-    use Clearable;
+    use Cleanable;
 
     /**
      * OpenStack identify url
@@ -131,7 +131,7 @@ class Openstack implements Simulator
             $this->pathRaw = $clearedPath;
         }
 
-        $this->setUpClearable($config);
+        $this->setUpCleanable($config);
     }
 
     /**
