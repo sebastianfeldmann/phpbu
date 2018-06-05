@@ -23,7 +23,7 @@ use SebastianFeldmann\Ftp\Client;
 class Ftp extends Remote implements Collector
 {
     /**
-     * FTP connection stream
+     * FTP connection client.
      *
      * @var \SebastianFeldmann\Ftp\Client
      */

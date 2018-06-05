@@ -20,7 +20,9 @@ use SebastianFeldmann\Ftp\File;
 class Ftp extends Remote
 {
     /**
-     * @var resource
+     * FTP client class, handling FTP connection and commands.
+     *
+     * @var \SebastianFeldmann\Ftp\Client
      */
     private $ftpClient;
 
