@@ -1,8 +1,9 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Path;
+use phpbu\App\Util;
 
 /**
  * OpenStack Collector test
@@ -68,17 +69,25 @@ class OpenStackTest extends \PHPUnit\Framework\TestCase
                                ->with(['prefix' => $remotePath])
                                ->willReturn($this->getOpenStackFilesGenerator($openStackFiles));
 
-        $collector = new OpenStack($target, $openStackContainerStub, $remotePath);
+        $path      = new Path($remotePath, strtotime('2018-05-08 14:14:54.0 +00:00'));
+        $collector = new OpenStack($target, $path, $openStackContainerStub);
         $this->assertAttributeEquals($openStackContainerStub, 'container', $collector);
-        $this->assertAttributeEquals($remotePath, 'path', $collector);
+        $this->assertAttributeEquals($path, 'path', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
-        $this->assertAttributeEquals([], 'files', $collector);
+        $this->assertAttributeEquals(null, 'files', $collector);
+        $this->assertAttributeEquals(
+            Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()),
+            'fileRegex',
+            $collector
+        );
 
         $files = $collector->getBackupFiles();
-        $this->assertCount(1, $files);
-        $this->assertArrayHasKey(1525788894, $files);
-        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[1525788894]->getFilename());
+        $this->assertCount(2, $files);
+        $this->assertArrayHasKey('1525788894-foo-2000-12-01-12_00.txt-1', $files);
+        $this->assertEquals(
+            'foo-2000-12-01-12_00.txt',
+            $files['1525788894-foo-2000-12-01-12_00.txt-1']->getFilename()
+        );
     }
 
     /**

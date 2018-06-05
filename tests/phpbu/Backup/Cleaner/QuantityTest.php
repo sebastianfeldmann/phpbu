@@ -19,7 +19,7 @@ class QuantityTest extends TestCase
      *
      * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
-    public function testSetUpNoAmout()
+    public function testSetUpNoAmount()
     {
         $cleaner = new Quantity();
         $cleaner->setup(['foo' => 'bar']);
@@ -69,7 +69,7 @@ class QuantityTest extends TestCase
                       ->willReturn($fileList);
 
         $cleaner = new Quantity();
-        $cleaner->setup(['amount' => '3']);
+        $cleaner->setup(['amount' => '2']);
 
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }
@@ -138,7 +138,7 @@ class QuantityTest extends TestCase
     {
         $fileList      = $this->getFileMockList(
             [
-                ['size' => 100, 'shouldBeDeleted' => true],
+                ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
         $resultStub    = $this->createMock(\phpbu\App\Result::class);

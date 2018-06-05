@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup\File;
 
 /**
- * OpenStackFileTest
+ * OpenStackTest
  *
  * @package    phpbu
  * @subpackage tests
@@ -13,7 +13,7 @@ namespace phpbu\App\Backup\File;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class OpenStackFileTest extends \PHPUnit\Framework\TestCase
+class OpenStackTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreateFileWithCorrectProperties()
     {
@@ -38,6 +38,33 @@ class OpenStackFileTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(102102, $file->getSize());
         $this->assertEquals(1525788894, $file->getMTime());
 
+        $file->unlink();
+    }
+
+    /**
+     * Tests OpenStack::unlink
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testOpenStackDeleteFailure()
+    {
+        $storageObjectLastModified    = new \DateTimeImmutable('2018-05-08 14:14:54.0 +00:00');
+        $storageObject                = $this->createMock(\OpenStack\ObjectStore\v1\Models\StorageObject::class);
+        $storageObject->name          = 'path/dump.tar.gz';
+        $storageObject->filename      = 'dump.tar.gz';
+        $storageObject->contentLength = 102102;
+        $storageObject->lastModified  = $storageObjectLastModified;
+        $storageObject->expects($this->once())
+                      ->method('delete')
+                      ->will($this->throwException(new \Exception()));;
+
+        $container = $this->createMock(\OpenStack\ObjectStore\v1\Models\Container::class);
+        $container->expects($this->once())
+                  ->method('getObject')
+                  ->with('path/dump.tar.gz')
+                  ->willReturn($storageObject);
+
+        $file = new OpenStack($container, $storageObject);
         $file->unlink();
     }
 }

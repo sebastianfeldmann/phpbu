@@ -50,15 +50,12 @@ class CapacityTest extends TestCase
             ]
         );
         $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
-
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
-        $targetStub->method('getSize')->willReturn(100);
 
         $cleaner = new Capacity();
-        $cleaner->setup(['size' => '400B']);
-
+        $cleaner->setup(['size' => '300B']);
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }
 
@@ -67,7 +64,7 @@ class CapacityTest extends TestCase
      */
     public function testSimulateDeleteOldestFile()
     {
-        $fileList      = $this->getFileMockList(
+        $fileList   = $this->getFileMockList(
             [
                 // should be deleted but not called because of simulation
                 ['size' => 100, 'shouldBeDeleted' => false],
@@ -76,18 +73,17 @@ class CapacityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $resultStub->expects($this->exactly(2))
+        $resultStub = $this->createMock(\phpbu\App\Result::class);
+        $resultStub->expects($this->once())
                    ->method('debug');
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
 
+
+        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
-        $targetStub->method('getSize')->willReturn(100);
 
         $cleaner = new Capacity();
-        $cleaner->setup(['size' => '400B']);
-
+        $cleaner->setup(['size' => '300B']);
         $cleaner->simulate($targetStub, $collectorStub, $resultStub);
     }
 
@@ -107,14 +103,12 @@ class CapacityTest extends TestCase
             ]
         );
         $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
-
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
-        $targetStub->method('getSize')->willReturn(100);
 
         $cleaner = new Capacity();
-        $cleaner->setup(['size' => '400B']);
+        $cleaner->setup(['size' => '300B']);
 
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }
@@ -134,15 +128,12 @@ class CapacityTest extends TestCase
             ]
         );
         $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
-
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $collectorStub->expects($this->once())->method('getBackupFiles')->willReturn($fileList);
-        $targetStub->expects($this->once())->method('getSize')->willReturn(100);
 
         $cleaner = new Capacity();
         $cleaner->setup(['size' => '1M']);
-
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }
 
@@ -161,20 +152,13 @@ class CapacityTest extends TestCase
             ]
         );
         $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
-
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $collectorStub->method('getBackupFiles')
                       ->willReturn($fileList);
-        $targetStub->method('getSize')
-                   ->willReturn(100);
-        $targetStub->expects($this->once())
-                   ->method('toFile')
-                   ->willReturn($this->getFileMock(100, true, 0, true));
 
         $cleaner = new Capacity();
-        $cleaner->setup(['size' => '0B', 'deleteTarget' => 'true']);
-
+        $cleaner->setup(['size' => '0B']);
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }
 
@@ -183,7 +167,7 @@ class CapacityTest extends TestCase
      */
     public function testSimulateDeleteTarget()
     {
-        $fileList      = $this->getFileMockList(
+        $fileList   = $this->getFileMockList(
             [
                 // should be deleted but not called because of simulation
                 ['size' => 100, 'shouldBeDeleted' => false],
@@ -192,18 +176,17 @@ class CapacityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub    = $this->createMock(\phpbu\App\Result::class);
+        // instead of the unlink call a debug call should be emitted.
+        $resultStub = $this->createMock(\phpbu\App\Result::class);
         $resultStub->expects($this->exactly(4))
                    ->method('debug');
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
 
+        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
+        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
-        $targetStub->method('getSize')->willReturn(100);
 
         $cleaner = new Capacity();
-        $cleaner->setup(['size' => '400B', 'deleteTarget' => 'true']);
-
+        $cleaner->setup(['size' => '0B']);
         $cleaner->simulate($targetStub, $collectorStub, $resultStub);
     }
 }

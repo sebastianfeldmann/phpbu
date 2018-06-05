@@ -2,11 +2,11 @@
 namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Backup\Collector;
-use phpbu\App\Result;
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util\Arr;
-use phpbu\App\Util\Path;
-use phpbu\App\Util\Str;
+use phpbu\App\Result;
+use phpbu\App\Util;
+use SebastianFeldmann\Ftp\Client;
 
 /**
  * Ftp sync
@@ -14,6 +14,7 @@ use phpbu\App\Util\Str;
  * @package    phpbu
  * @subpackage Backup
  * @author     Chris Hawes <me@chrishawes.net>
+ * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
@@ -25,9 +26,9 @@ class Ftp extends Xtp
     /**
      * FTP connection stream
      *
-     * @var resource
+     * @var \SebastianFeldmann\Ftp\Client
      */
-    protected $ftpConnection;
+    protected $ftpClient;
 
     /**
      * Determine should ftp connects via passive mode.
@@ -45,16 +46,16 @@ class Ftp extends Xtp
      */
     public function setup(array $config)
     {
-        $path = Arr::getValue($config, 'path', '');
+        $path = Util\Arr::getValue($config, 'path', '');
         if ('/' === substr($path, 0, 1)) {
             throw new Exception('absolute path is not allowed');
         }
-        if (!Arr::isSetAndNotEmptyString($config, 'password')) {
+        if (!Util\Arr::isSetAndNotEmptyString($config, 'password')) {
             throw new Exception('option \'password\' is missing');
         }
         parent::setup($config);
 
-        $this->passive = Str::toBoolean(Arr::getValue($config, 'passive', ''), false);
+        $this->passive = Util\Str::toBoolean(Util\Arr::getValue($config, 'passive', ''), false);
         $this->setUpCleanable($config);
     }
 
@@ -90,68 +91,43 @@ class Ftp extends Xtp
      */
     public function sync(Target $target, Result $result)
     {
-        // silence ftp errors
-        $old = error_reporting(0);
-        if (!$this->ftpConnection = ftp_connect($this->host)) {
-            throw new Exception(
-                sprintf(
-                    'Unable to connect to ftp server %s',
-                    $this->host
-                )
-            );
+        try {
+            $client         = $this->connect();
+            $remoteFilename = $target->getFilename();
+            $localFile      = $target->getPathname();
+
+            $client->uploadFile($localFile, Util\Path::withTrailingSlash($this->remotePath), $remoteFilename);
+            $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
+
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage());
         }
-
-        if (!ftp_login($this->ftpConnection, $this->user, $this->password)) {
-            error_reporting($old);
-            throw new Exception(
-                sprintf(
-                    'authentication failed for %s@%s%s',
-                    $this->user,
-                    $this->host,
-                    empty($this->password) ? '' : ' with password ****'
-                )
-            );
-        }
-
-        // Set passive mode if needed
-        ftp_pasv($this->ftpConnection, $this->passive);
-
-        $remoteFilename = $target->getFilename();
-        $localFile      = $target->getPathname();
-
-        if ('' !== $this->remotePath) {
-            $remoteDirs = Path::getDirectoryListFromPath($this->remotePath);
-            foreach ($remoteDirs as $dir) {
-                if (!ftp_chdir($this->ftpConnection, $dir)) {
-                    $result->debug(sprintf('creating remote dir \'%s\'', $dir));
-                    ftp_mkdir($this->ftpConnection, $dir);
-                    ftp_chdir($this->ftpConnection, $dir);
-                } else {
-                    $result->debug(sprintf('change to remote dir \'%s\'', $dir));
-                }
-            }
-        }
-        $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
-
-        if (!ftp_put($this->ftpConnection, $remoteFilename, $localFile, FTP_BINARY)) {
-            $error   = error_get_last();
-            $message = $error['message'];
-            throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $message));
-        }
-
-        error_reporting($old);
 
         $this->cleanup($target, $result);
     }
 
     /**
+     * Return FTP client wrapping the ftp connection.
+     *
+     * @return \SebastianFeldmann\Ftp\Client
+     */
+    protected function connect()
+    {
+        if ($this->ftpClient === null) {
+            $login           = $this->user . ($this->password ? ':' . $this->password : '');
+            $this->ftpClient = new Client('ftp://' . $login . '@' . $this->host, $this->passive);
+        }
+        return $this->ftpClient;
+    }
+
+    /**
      * Creates collector for FTP
      *
-     * @param \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector
      */
     protected function createCollector(Target $target): Collector
     {
-        return new \phpbu\App\Backup\Collector\Ftp($target, $this->ftpConnection);
+        return new Collector\Ftp($target, new Path($this->remotePath), $this->ftpClient);
     }
 }

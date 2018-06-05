@@ -43,7 +43,7 @@ class Dropbox implements Simulator
     /**
      * Remote path
      *
-     * @var Path
+     * @var \phpbu\App\Backup\Path
      */
     protected $path;
 
@@ -78,8 +78,9 @@ class Dropbox implements Simulator
         // check for mandatory options
         $this->validateConfig($config, ['token', 'path']);
 
+        $this->time  = time();
         $this->token = $config['token'];
-        // make sure the path contains leading and trailing slashes
+        // make sure the path contains a leading slash
         $this->path  = new Path(Util\Path::withLeadingSlash($config['path']), $this->time);
 
         $this->setUpCleanable($config);
@@ -111,7 +112,6 @@ class Dropbox implements Simulator
      */
     public function sync(Target $target, Result $result)
     {
-        $this->time  = time();
         $sourcePath  = $target->getPathname();
         $dropboxPath = $this->path->getPath() . '/' . $target->getFilename();
         if (!$this->client) {
@@ -153,7 +153,7 @@ class Dropbox implements Simulator
      */
     protected function createCollector(Target $target) : Collector
     {
-        return new Collector\Dropbox($target, $this->client, $this->path->getPathRaw(), $this->time);
+        return new Collector\Dropbox($target, $this->path, $this->client);
     }
 
     /**

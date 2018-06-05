@@ -22,29 +22,35 @@ class SftpTest extends \PHPUnit\Framework\TestCase
     /**
      * Test SFTP collector
      */
-    public function testCollector()
+    public function testStaticDir()
     {
         $path           = '/collector/static-dir/';
+        $remotePath     = '/backups';
         $filename       = 'foo-%Y-%m-%d-%H_%i.txt';
         $target         = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
+        $pathUtil       = new Path($remotePath);
         $secLib         = $this->createMock(\phpseclib\Net\SFTP::class);
-        $time           = time();
-        $remotePath     = '/backups';
         $secLibFileList = [
+            // directory
             '.' => [
-                'type'     => 2, // directory
+                'type'     => 2,
                 'filename' => '.',
             ],
+            // directory
             '..' => [
-                'type'     => 2, // directory
+                'type'     => 2,
                 'filename' => '..',
             ],
+            // directory
             'some_dir' => [
-                'type'     => 2, // directory
+                'type'     => 2,
                 'filename' => 'some_dir',
             ],
-            $target->getFilename() => [ // current backup
+            // current backup
+            $target->getFilename() => [
                 'type'     => 1,
+                'size'     => 100,
+                'mtime'    => 1525788994,
                 'filename' => $target->getFilename(),
             ],
             'foo-2000-12-01-12_00.txt' => [
@@ -66,17 +72,128 @@ class SftpTest extends \PHPUnit\Framework\TestCase
                ->with($remotePath)
                ->willReturn($secLibFileList);
 
-        $path = new Path($remotePath, $time);
-        $collector = new Sftp($target, $secLib, $path);
+        $collector = new Sftp($target, $pathUtil, $secLib);
         $this->assertAttributeEquals($secLib, 'sftp', $collector);
-        $this->assertAttributeEquals($path, 'path', $collector);
+        $this->assertAttributeEquals($pathUtil, 'path', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
-        $this->assertAttributeEquals([], 'files', $collector);
+        $this->assertAttributeEquals(null, 'files', $collector);
+        $this->assertAttributeEquals(
+            Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()),
+            'fileRegex',
+            $collector
+        );
 
         $files = $collector->getBackupFiles();
-        $this->assertCount(1, $files);
-        $this->assertArrayHasKey(1525788894, $files);
-        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[1525788894]->getFilename());
+        $this->assertCount(2, $files);
+        $this->assertArrayHasKey('1525788894-foo-2000-12-01-12_00.txt-1', $files);
+        $this->assertEquals(
+            'foo-2000-12-01-12_00.txt',
+            $files['1525788894-foo-2000-12-01-12_00.txt-1']->getFilename()
+        );
+    }
+
+    /**
+     * Tests Sftp::getBackupFiles
+     */
+    public function testDynamicDir()
+    {
+        $path       = '/collector/static-dir/';
+        $remotePath = '/backups/%Y';
+        $filename   = 'foo-%Y-%m-%d-%H_%i.txt';
+        $target     = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
+        $pathUtil   = new Path($remotePath);
+
+        // return result with one matching directory
+        $listDir    = [
+            // directory
+            '.' => [
+                'type'     => 2,
+                'filename' => '.',
+            ],
+            // directory
+            '..' => [
+                'type'     => 2,
+                'filename' => '..',
+            ],
+            // directory not matching
+            'some_dir' => [
+                'type'     => 2,
+                'filename' => 'some_dir',
+            ],
+            // directory matching
+            '2000' => [
+                'type'     => 2,
+                'filename' => '2000',
+            ],
+        ];
+        // return content of matching directory
+        $listFiles = [
+            // directory
+            '.' => [
+                'type'     => 2,
+                'filename' => '.',
+            ],
+            // directory
+            '..' => [
+                'type'     => 2,
+                'filename' => '..',
+            ],
+            // current backup
+            $target->getFilename() => [
+                'type'     => 1,
+                'size'     => 100,
+                'mtime'    => 1525788994,
+                'filename' => $target->getFilename(),
+            ],
+            'foo-2000-12-01-12_00.txt' => [
+                'type'     => 1,
+                'size'     => 100,
+                'mtime'    => 1525788894,
+                'filename' => 'foo-2000-12-01-12_00.txt',
+            ],
+            'not-matching-2000-12-01-12_00.txt' => [
+                'type'     => 1,
+                'size'     => 100,
+                'mtime'    => 1525788894,
+                'filename' => 'not-matching-2000-12-01-12_00.txt',
+            ],
+        ];
+
+        $secLib = $this->createMock(\phpseclib\Net\SFTP::class);
+        $secLib->expects($this->exactly(2))
+               ->method('_list')
+               ->will($this->onConsecutiveCalls($listDir, $listFiles));
+
+        $collector = new Sftp($target, $pathUtil, $secLib);
+        $files     = $collector->getBackupFiles();
+        $this->assertCount(2, $files);
+        $this->assertEquals(
+            'foo-2000-12-01-12_00.txt',
+            $files['1525788894-foo-2000-12-01-12_00.txt-1']->getFilename()
+        );
+    }
+
+    /**
+     * Tests Sftp::getBackupFiles
+     */
+    public function testSftpFail()
+    {
+        $path           = '/collector/static-dir/';
+        $remotePath     = '/backups';
+        $filename       = 'foo-%Y-%m-%d-%H_%i.txt';
+        $target         = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
+        $pathUtil       = new Path($remotePath);
+        $secLib         = $this->createMock(\phpseclib\Net\SFTP::class);
+        $result         = null;
+
+        $secLib->expects($this->once())
+            ->method('_list')
+            ->with($remotePath)
+            ->willReturn($result);
+
+        $collector = new Sftp($target, $pathUtil, $secLib);
+
+        $files = $collector->getBackupFiles();
+        $this->assertCount(0, $files);
     }
 }

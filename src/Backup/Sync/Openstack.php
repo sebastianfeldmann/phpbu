@@ -217,7 +217,7 @@ class Openstack implements Simulator
      */
     protected function createCollector(Target $target): Collector
     {
-        return new Collector\OpenStack($target, $this->container, $this->path);
+        return new Collector\OpenStack($target, $this->path, $this->container);
     }
 
     /**
@@ -266,8 +266,8 @@ class Openstack implements Simulator
             'identityService' => Service::factory($httpClient),
         ];
 
-        $openStack = new \OpenStack\OpenStack($options);
+        $openStack          = new \OpenStack\OpenStack($options);
         $objectStoreService = $openStack->objectStoreV1(['catalogName' => $this->serviceName]);
-        $this->container = $this->getOrCreateContainer($objectStoreService, $result);
+        $this->container    = $this->getOrCreateContainer($objectStoreService, $result);
     }
 }

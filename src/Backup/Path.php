@@ -53,6 +53,13 @@ class Path
     private $pathElements = [];
 
     /**
+     * List of not changing path elements.
+     *
+     * @var string[]
+     */
+    private $pathElementsNotChanging = [];
+
+    /**
      * Time for replacing placeholders
      *
      * @var int
@@ -87,49 +94,46 @@ class Path
      */
     private function setupPath(string $path)
     {
-        $this->path            = $path;
-        $this->pathRaw         = $path;
-        $this->pathNotChanging = $path;
+        $this->path                    = $path;
+        $this->pathRaw                 = $path;
+        $this->pathNotChanging         = $path;
+        $this->pathElements            = Util\Path::getDirectoryListFromAbsolutePath($path);
+        $this->pathElementsNotChanging = $this->pathElements;
 
         // if path contains date placeholders determine the path that is not changing
         // and create final path by replacing all placeholders
         if (Util\Path::isContainingPlaceholder($this->pathRaw)) {
-            $this->pathIsChanging  = true;
-            $this->pathNotChanging = $this->detectPathNotChanging($this->pathRaw);
-            $this->path            = Util\Path::replaceDatePlaceholders($this->pathRaw, $this->time);
+            $this->handleChangingPath();
         }
     }
 
     /**
      * Find path elements that can't change because of placeholder usage.
      *
-     * @param  string $path
-     * @return string
+     * @return void
      */
-    private function detectPathNotChanging(string $path) : string
+    private function handleChangingPath()
     {
-        $partsNotChanging     = [];
-        $foundChangingElement = false;
+        $this->pathIsChanging          = true;
+        $this->pathElementsNotChanging = [];
+        $foundChangingElement          = false;
 
-        foreach (Util\Path::getDirectoryListFromAbsolutePath($path) as $depth => $dir) {
-            $this->pathElements[] = $dir;
-
+        // collect path elements that do not change
+        foreach ($this->pathElements as $depth => $dir) {
             // already found placeholder or found one right now
             // path isn't static anymore so don't add directory to path not changing
             if ($foundChangingElement || Util\Path::isContainingPlaceholder($dir)) {
                 $foundChangingElement = true;
                 continue;
             }
-            // do not add the / element, leading slash will be re-added later
-            if ($dir !== '/') {
-                $partsNotChanging[] = $dir;
-            }
+            $this->pathElementsNotChanging[] = $dir;
         }
-        $pathNotChanging = implode(DIRECTORY_SEPARATOR, $partsNotChanging);
+        $pathNotChanging = implode(DIRECTORY_SEPARATOR, $this->pathElementsNotChanging);
         if ($this->isAbsolute) {
-            $pathNotChanging = DIRECTORY_SEPARATOR . $pathNotChanging;
+            $pathNotChanging = substr($pathNotChanging, 1);
         }
-        return $pathNotChanging;
+        $this->pathNotChanging = $pathNotChanging;
+        $this->path            = Util\Path::replaceDatePlaceholders($this->pathRaw, $this->time);
     }
 
     /**
@@ -151,6 +155,16 @@ class Path
     public function getPathDepth(): int
     {
         return count($this->pathElements);
+    }
+
+    /**
+     * Return depth of path that is not changing.
+     *
+     * @return int
+     */
+    public function getPathThatIsNotChangingDepth(): int
+    {
+        return count($this->pathElementsNotChanging);
     }
 
     /**

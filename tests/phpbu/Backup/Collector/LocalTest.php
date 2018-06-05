@@ -79,20 +79,6 @@ class LocalTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Test the Backup collector with one dynamic directory ignoring current backup
-     */
-    public function testSingleDynamicDirectorySkipCurrent()
-    {
-        $path      = $this->getTestDataDir() . '/collector/dynamic-dir/single/%Y%m';
-        $filename  = '%d.txt';
-        $target    = new Target($path, $filename, strtotime('2014-03-17 04:30:57'));
-        $collector = new Local($target);
-        $files     = $collector->getBackupFiles();
-
-        $this->assertEquals(3, count($files), '3 files should be found');
-    }
-
-    /**
      * Test the Backup collector with multi dynamic directories
      */
     public function testMultipleDynamicDirectories()
@@ -104,20 +90,6 @@ class LocalTest extends \PHPUnit\Framework\TestCase
         $files     = $collector->getBackupFiles();
 
         $this->assertEquals(8, count($files), '8 files should be found');
-    }
-
-    /**
-     * Test the Backup collector with multi dynamic directories and ignoring current backup
-     */
-    public function testMultipleDynamicDirectoriesSkipCurrent()
-    {
-        $path      = $this->getTestDataDir() . '/collector/dynamic-dir/multi/%m/%d';
-        $filename  = '%H.txt';
-        $target    = new Target($path, $filename, strtotime('2014-02-02 22:30:57'));
-        $collector = new Local($target);
-        $files     = $collector->getBackupFiles();
-
-        $this->assertEquals(7, count($files), '7 files should be found');
     }
 
     /**
@@ -153,7 +125,7 @@ class LocalTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests Local::getBackupFiles
      */
-    public function testSkipsCurrentWhenTargetPathHasTrailingBackslash()
+    public function testNotSkipsCurrentWhenTargetPathHasTrailingBackslash()
     {
         $path      = $this->getTestDataDir() . '/collector/static-dir/';
         $filename  = 'foo-%d.txt';
@@ -161,7 +133,7 @@ class LocalTest extends \PHPUnit\Framework\TestCase
         $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
-        $this->assertEquals(3, count($files), '3 files should be found');
+        $this->assertEquals(4, count($files), '4 files should be found');
     }
 
     /**

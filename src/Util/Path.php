@@ -22,7 +22,7 @@ class Path
      * @param  mixed <integer|null> $time
      * @return string
      */
-    public static function replaceDatePlaceholders($string, $time = null)
+    public static function replaceDatePlaceholders(string $string, $time = null) : string
     {
         $time = $time === null ? time() : $time;
         return preg_replace_callback(
@@ -40,7 +40,7 @@ class Path
      * @param  string $string
      * @return bool
      */
-    public static function isContainingPlaceholder($string)
+    public static function isContainingPlaceholder(string $string) : bool
     {
         return false !== strpos($string, '%');
     }
@@ -52,7 +52,7 @@ class Path
      * @param  string $target
      * @return string
      */
-    public static function replaceTargetPlaceholders($string, $target)
+    public static function replaceTargetPlaceholders(string $string, string $target) : string
     {
         $targetDir  = dirname($target);
         $search     = ['%TARGET_DIR%', '%TARGET_FILE%'];
@@ -66,9 +66,25 @@ class Path
      * @param  string $stringWithDatePlaceholders
      * @return string
      */
-    public static function datePlaceholdersToRegex($stringWithDatePlaceholders)
+    public static function datePlaceholdersToRegex(string $stringWithDatePlaceholders) : string
     {
+        $dateRegex = [
+            '%Y' => '[0-9]{4}',
+            '%y' => '[0-9]{2}',
+            '%m' => '[0-9]{2}',
+            '%M' => '[a-z]{3}',
+            '%d' => '[0-9]{2}',
+            '%D' => '[a-z]{3}',
+            '%j' => '[1-9]{1,2}',
+            '%H' => '[0-9]{2}',
+            '%s' => '[0-9]{2}',
+            '%i' => '[0-9]{2}',
+            '%N' => '[1-7]{1}',
+            '%w' => '[0-6]{1}',
+            '%z' => '[0-9]{1,3}',
+        ];
         $regex = preg_quote($stringWithDatePlaceholders, '#');
+        $regex = str_replace(array_keys($dateRegex), array_values($dateRegex), $regex);
         return preg_replace('#%[a-z]#i', '[0-9a-z]+', $regex);
     }
 
@@ -89,7 +105,7 @@ class Path
      * @param  string $string
      * @return string
      */
-    public static function withTrailingSlash($string)
+    public static function withTrailingSlash(string $string) : string
     {
         return $string . (self::hasTrailingSlash($string) ? '' : '/');
     }
@@ -100,7 +116,7 @@ class Path
      * @param  string $string
      * @return string
      */
-    public static function withoutTrailingSlash($string)
+    public static function withoutTrailingSlash(string $string) : string
     {
         return strlen($string) > 1 && self::hasTrailingSlash($string) ? substr($string, 0, -1) : $string;
     }
@@ -154,7 +170,7 @@ class Path
      * @param  string $path
      * @return bool
      */
-    public static function isAbsolutePath($path) : bool
+    public static function isAbsolutePath(string $path) : bool
     {
         // path already absolute?
         if ($path[0] === '/') {
@@ -187,7 +203,7 @@ class Path
      * @param  string $path
      * @return bool
      */
-    public static function isAbsoluteWindowsPath($path) : bool
+    public static function isAbsoluteWindowsPath(string $path) : bool
     {
         return ($path[0] === '\\' || (strlen($path) >= 3 && preg_match('#^[A-Z]\:[/\\\]#i', substr($path, 0, 3))));
     }
@@ -220,10 +236,10 @@ class Path
     /**
      * Return list of directories in a given path without absolute root element
      *
-     * @param string $path
+     * @param  string $path
      * @return array
      */
-    public static function getDirectoryListFromPath($path): array
+    public static function getDirectoryListFromPath(string $path) : array
     {
         $path = trim($path, '/');
         $dirs = explode('/', $path);

@@ -202,6 +202,6 @@ class Sftp extends Xtp
      */
     protected function createCollector(Target $target): Collector
     {
-        return new Collector\Sftp($target, $this->sftp, $this->remotePath);
+        return new Collector\Sftp($target, $this->remotePath, $this->sftp);
     }
 }

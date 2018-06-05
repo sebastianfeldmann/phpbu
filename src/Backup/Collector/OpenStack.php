@@ -2,9 +2,11 @@
 namespace phpbu\App\Backup\Collector;
 
 use OpenStack\ObjectStore\v1\Models\Container;
-use phpbu\App\Backup\Collector;
 use OpenStack\ObjectStore\v1\Models\StorageObject;
+use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
+use phpbu\App\Util;
 
 /**
  * OpenStack collector class.
@@ -18,7 +20,7 @@ use phpbu\App\Backup\Target;
  * @link       http://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class OpenStack extends Collector
+class OpenStack extends Remote implements Collector
 {
     /**
      * @var \OpenStack\ObjectStore\v1\Models\Container
@@ -26,48 +28,36 @@ class OpenStack extends Collector
     protected $container;
 
     /**
-     * Path where to search for backup files
-     *
-     * @var string
-     */
-    protected $path;
-
-    /**
      * OpenStack constructor.
      *
      * @param \phpbu\App\Backup\Target                   $target
+     * @param \phpbu\App\Backup\Path                     $path
      * @param \OpenStack\ObjectStore\v1\Models\Container $container
-     * @param string                                     $path
      */
-    public function __construct(Target $target, Container $container, string $path)
+    public function __construct(Target $target, Path $path, Container $container)
     {
+        $this->setUp($target, $path);
         $this->container = $container;
-        $this->path = $path;
-        $this->setUp($target);
     }
 
     /**
-     * Get all created backups.
-     *
-     * @return \phpbu\App\Backup\File[]
+     * Collect all created backups.
      */
-    public function getBackupFiles() : array
+    protected function collectBackups()
     {
         // get all objects matching our path prefix
-        $objects = $this->container->listObjects(['prefix' => $this->path]);
+        $remotePath = Util\Path::withTrailingSlash($this->path->getPath());
+        $objects    = $this->container->listObjects(['prefix' => $remotePath]);
         /** @var StorageObject $object */
         foreach ($objects as $object) {
             // skip directories
             if ($object->contentType == 'application/directory') {
                 continue;
             }
-            // skip currently created backup
-            if ($object->name == $this->path . $this->target->getFilename()) {
-                continue;
-            }
             if ($this->isFilenameMatch(basename($object->name))) {
-                $file = new \phpbu\App\Backup\File\OpenStack($this->container, $object);
-                $this->files[$file->getMTime()] = $file;
+                $file                = new \phpbu\App\Backup\File\OpenStack($this->container, $object);
+                $index               = $this->getFileIndex($file);
+                $this->files[$index] = $file;
             }
         }
 

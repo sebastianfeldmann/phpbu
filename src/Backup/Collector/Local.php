@@ -19,29 +19,8 @@ use SplFileInfo;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Local extends Collector
+class Local extends Abstraction implements Collector
 {
-    /**
-     * Backup target
-     *
-     * @var \phpbu\App\Backup\Target
-     */
-    protected $target;
-
-    /**
-     * Target filename regex
-     *
-     * @var string
-     */
-    protected $fileRegex;
-
-    /**
-     * Collection cache
-     *
-     * @var \phpbu\App\Backup\File\Local[]
-     */
-    protected $files;
-
     /**
      * Constructor
      *
@@ -49,24 +28,16 @@ class Local extends Collector
      */
     public function __construct(Target $target)
     {
-        $this->target = $target;
+        $this->target    = $target;
+        $this->fileRegex = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
     }
 
     /**
-     * Get all created backups.
-     *
-     * @return \phpbu\App\Backup\File\Local[]
+     * Collect all created backups.
      */
-    public function getBackupFiles() : array
+    protected function collectBackups()
     {
-        if (null === $this->files) {
-            // create regex to match only created backup files
-            $this->fileRegex = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
-            $this->files     = [];
-            // collect all matching backup files
-            $this->collect($this->target->getPath()->getPathThatIsNotChanging());
-        }
-        return $this->files;
+        $this->collect($this->target->getPath()->getPathThatIsNotChanging());
     }
 
     /**
@@ -100,17 +71,15 @@ class Local extends Collector
      */
     protected function collectFiles(DirectoryIterator $dirIterator)
     {
-        foreach ($dirIterator as $i => $file) {
-            if ($file->isDir()) {
+        foreach ($dirIterator as $i => $splFile) {
+            if ($splFile->isDir()) {
                 continue;
             }
-            // skip currently created backup
-            if ($file->getPathname() == $this->target->getPathname()) {
-                continue;
-            }
-            if ($this->isFilenameMatch($file->getFilename())) {
-                $index               = date('YmdHis', $file->getMTime()) . '-' . $i . '-' . $file->getPathname();
-                $this->files[$index] = new FileLocal($file->getFileInfo());
+            if ($this->isFilenameMatch($splFile->getFilename())) {
+
+                $file                = new FileLocal($splFile->getFileInfo());
+                $index               = $this->getFileIndex($file);
+                $this->files[$index] = $file;
             }
         }
     }

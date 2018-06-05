@@ -21,7 +21,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class Dropbox extends Collector
+class Dropbox extends Remote implements Collector
 {
     /**
      * @var DropboxApi
@@ -29,33 +29,22 @@ class Dropbox extends Collector
     protected $client;
 
     /**
-     * Dropbox remote path
-     *
-     * @var Path
-     */
-    protected $path;
-
-    /**
      * OpenStack constructor.
      *
      * @param \phpbu\App\Backup\Target $target
-     * @param DropboxApi               $client
-     * @param string                   $path
-     * @param int                      $time
+     * @param \phpbu\App\Backup\Path   $path
+     * @param \Kunnu\Dropbox\Dropbox   $client
      */
-    public function __construct(Target $target, DropboxApi $client, string $path, int $time)
+    public function __construct(Target $target, Path $path, DropboxApi $client)
     {
+        $this->setUp($target, $path);
         $this->client = $client;
-        $this->path   = new Path($path, $time);
-        $this->setUp($target);
     }
 
     /**
-     * Get all created backups.
-     *
-     * @return \phpbu\App\Backup\File[]
+     * Collect all created backups.
      */
-    public function getBackupFiles() : array
+    protected function collectBackups()
     {
         $items = $this->client->listFolder(
             Util\Path::withTrailingSlash($this->path->getPathThatIsNotChanging()),
@@ -64,22 +53,17 @@ class Dropbox extends Collector
                 'recursive' => true,
             ]
         );
+        /** @var \Kunnu\Dropbox\Models\FileMetadata $item */
         foreach ($items->getItems() as $item) {
             // skip directories
             if ($item instanceof FolderMetadata) {
                 continue;
             }
-            /** @var \Kunnu\Dropbox\Models\FileMetadata $item */
-            // skip currently created backup
-            if ($item->getPathDisplay() == $this->path->getPath() . '/' . $this->target->getFilename()) {
-                continue;
-            }
             if ($this->isFileMatch($item->getPathDisplay())) {
-                $file = new File\Dropbox($this->client, $item);
-                $this->files[$file->getMTime()] = $file;
+                $file                = new File\Dropbox($this->client, $item);
+                $index               = $this->getFileIndex($file);
+                $this->files[$index] = $file;
             }
         }
-
-        return $this->files;
     }
 }

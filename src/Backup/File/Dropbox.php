@@ -2,7 +2,6 @@
 namespace phpbu\App\Backup\File;
 
 use Kunnu\Dropbox\Dropbox as DropboxApi;
-use Kunnu\Dropbox\Exceptions\DropboxClientException;
 use Kunnu\Dropbox\Models\FileMetadata;
 
 /**
@@ -48,7 +47,7 @@ class Dropbox extends Remote
     {
         try {
             $this->client->delete($this->pathname);
-        } catch (DropboxClientException $e) {
+        } catch (\Exception $e) {
             throw new \phpbu\App\Exception($e->getMessage());
         }
     }

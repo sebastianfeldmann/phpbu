@@ -46,6 +46,25 @@ class PathTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests Path::datePlaceholderToRegex
+     */
+    public function testDatePlaceholderToRegex()
+    {
+        $this->assertEquals(
+            '[0-9]{4}',
+            Path::datePlaceholdersToRegex('%Y')
+        );
+        $this->assertEquals(
+            'backups_[0-9]{4}_[0-9]{2}',
+            Path::datePlaceholdersToRegex('backups_%Y_%m')
+        );
+        $this->assertEquals(
+            'backups_[0-9]{4}_[0-9]{2}_[0-9a-z]+',
+            Path::datePlaceholdersToRegex('backups_%Y_%m_%T')
+        );
+    }
+
+    /**
      * @dataProvider providerDatePlaceholder
      * @param        $placeholder
      * @param        $expected

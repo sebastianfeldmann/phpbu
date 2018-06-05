@@ -18,7 +18,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class Sftp extends Collector
+class Sftp extends Remote implements Collector
 {
     /**
      * @var \phpseclib\Net\SFTP
@@ -26,24 +26,16 @@ class Sftp extends Collector
     protected $sftp;
 
     /**
-     * SFTP remote path
-     *
-     * @var Path
-     */
-    protected $path;
-
-    /**
      * OpenStack constructor.
      *
      * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Backup\Path   $path
      * @param \phpseclib\Net\SFTP      $sftp
-     * @param Path                     $path
      */
-    public function __construct(Target $target, \phpseclib\Net\SFTP $sftp, Path $path)
+    public function __construct(Target $target, Path $path, \phpseclib\Net\SFTP $sftp)
     {
+        $this->setUp($target, $path);
         $this->sftp = $sftp;
-        $this->path = $path;
-        $this->setUp($target);
     }
 
     /**
@@ -51,17 +43,22 @@ class Sftp extends Collector
      *
      * @return \phpbu\App\Backup\File[]
      */
-    public function getBackupFiles(): array
+    protected function collectBackups(): array
     {
         $this->collect($this->path->getPathThatIsNotChanging());
         return $this->files;
     }
 
+    /**
+     * Collect all remote files in all matching directories.
+     *
+     * @param string $path
+     */
     private function collect(string $path)
     {
         // collect all matching sub directories and get all the backup files
         $depth = Util\Path::getPathDepth($path);
-        $list = $this->sftp->_list($path);
+        $list  = $this->sftp->_list($path);
         if (!$list) {
             return;
         }
@@ -79,19 +76,22 @@ class Sftp extends Collector
         }
     }
 
+    /**
+     * Collect matching files in a directory.
+     *
+     * @param array  $fileList
+     * @param string $path
+     */
     private function collectFiles(array $fileList, string $path)
     {
         foreach ($fileList as $file) {
             if (in_array($file['filename'], ['.', '..'])) {
                 continue;
             }
-            // skip currently created backup
-            if ($path . '/' . $file['filename'] == $this->path->getPath() . '/' . $this->target->getFilename()) {
-                continue;
-            }
             if ($this->isFileMatch($path . '/' . $file['filename'])) {
-                $file = new \phpbu\App\Backup\File\Sftp($this->sftp, $file, $path);
-                $this->files[$file->getMTime()] = $file;
+                $file                = new \phpbu\App\Backup\File\Sftp($this->sftp, $file, $path);
+                $index               = $this->getFileIndex($file);
+                $this->files[$index] = $file;
             }
         }
     }

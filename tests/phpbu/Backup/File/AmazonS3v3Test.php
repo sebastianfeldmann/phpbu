@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup\File;
 
 /**
- * AmazonS3v3FileTest
+ * AmazonS3v3Test
  *
  * @package    phpbu
  * @subpackage tests
@@ -13,7 +13,7 @@ namespace phpbu\App\Backup\File;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class AmazonS3v3FileTest extends \PHPUnit\Framework\TestCase
+class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test creating file and handle removing
@@ -47,5 +47,35 @@ class AmazonS3v3FileTest extends \PHPUnit\Framework\TestCase
 
         $file->unlink();
         $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
+     * Tests AmazonS3V3::unlink
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testAWSDeleteFailure()
+    {
+        $amazonS3 = $this->getMockBuilder(\Aws\S3\S3Client::class)
+                         ->disableOriginalConstructor()
+                         ->setMethods(['deleteObject'])
+                         ->getMock();
+
+        $amazonS3->expects($this->once())
+                 ->method('deleteObject')
+                 ->with([
+                    'Bucket' => 'test',
+                    'Key'    => 'dump.tar.gz',
+                 ])
+                 ->will($this->throwException(new \Exception));
+
+        $metadata = [
+            'Key'          => 'dump.tar.gz',
+            'Size'         => 102102,
+            'LastModified' => '2018-05-08 14:14:54.0 +00:00',
+        ];
+
+        $file = new AmazonS3v3($amazonS3, 'test', $metadata);
+        $file->unlink();
     }
 }

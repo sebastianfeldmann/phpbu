@@ -28,8 +28,8 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
         $path      = '/collector/static-dir/';
         $filename  = 'foo-%Y-%m-%d-%H_%i.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
-
-        $amazonS3 = $this->getMockBuilder(\Aws\S3\S3Client::class)
+        $path      = new Path('', $time, false);
+        $amazonS3  = $this->getMockBuilder(\Aws\S3\S3Client::class)
                          ->disableOriginalConstructor()
                          ->setMethods(['listObjects'])
                          ->getMock();
@@ -56,31 +56,52 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
 
         // Firstly mock listObjects without wrong or non existed contents key to
         // make sure it returns empty array of files
-        $amazonS3->expects($this->exactly(4))
-            ->method('listObjects')
-            ->with([
-                'Bucket'    => 'test',
-                'Prefix'    => '',
-            ])
-            ->will(
-                $this->onConsecutiveCalls(null, ['Contents' => false], ['Contents' => true], $amazonS3Contents)
-            );
-        $path = new Path('', $time, false);
+        $amazonS3->expects($this->once())
+                 ->method('listObjects')
+                 ->with(['Bucket' => 'test', 'Prefix' => ''])
+                 ->willReturn($amazonS3Contents);
 
-        $collector = new AmazonS3v3($target, $amazonS3, 'test', '', $time);
-        $this->assertEquals((string) $path, (string) $collector->getPath());
+        $collector = new AmazonS3v3($target, $path, $amazonS3, 'test');
         $this->assertAttributeEquals($amazonS3, 'client', $collector);
         $this->assertAttributeEquals('test', 'bucket', $collector);
         $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()), 'fileRegex', $collector);
-        $this->assertAttributeEquals([], 'files', $collector);
+        $this->assertAttributeEquals(null, 'files', $collector);
+        $this->assertAttributeEquals(
+            Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()),
+            'fileRegex',
+            $collector
+        );
 
-        $this->assertEquals([], $collector->getBackupFiles());
-        $this->assertEquals([], $collector->getBackupFiles());
-        $this->assertEquals([], $collector->getBackupFiles());
         $files = $collector->getBackupFiles();
-        $this->assertCount(1, $files);
-        $this->assertArrayHasKey(975672000, $files);
-        $this->assertEquals('foo-2000-12-01-12_00.txt', $files[975672000]->getFilename());
+        $this->assertCount(2, $files);
+        $this->assertArrayHasKey('975672000-foo-2000-12-01-12_00.txt-1', $files);
+        $this->assertEquals(
+            'foo-2000-12-01-12_00.txt',
+            $files['975672000-foo-2000-12-01-12_00.txt-1']->getFilename());
+    }
+
+    public function testNoAWSResult()
+    {
+        $time      = time();
+        $path      = '/collector/static-dir/';
+        $filename  = 'foo-%Y-%m-%d-%H_%i.txt';
+        $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
+        $path      = new Path('', $time, false);
+        $amazonS3  = $this->getMockBuilder(\Aws\S3\S3Client::class)
+                         ->disableOriginalConstructor()
+                         ->setMethods(['listObjects'])
+                         ->getMock();
+        $amazonS3->expects($this->exactly(3))
+                 ->method('listObjects')
+                 ->with(['Bucket' => 'test', 'Prefix' => ''])
+                 ->will($this->onConsecutiveCalls(null, ['content' => null], ['content' => true]));
+
+
+        $collector1 = new AmazonS3v3($target, $path, $amazonS3, 'test');
+        $this->assertEquals([], $collector1->getBackupFiles());
+        $collector2 = new AmazonS3v3($target, $path, $amazonS3, 'test');
+        $this->assertEquals([], $collector2->getBackupFiles());
+        $collector3 = new AmazonS3v3($target, $path, $amazonS3, 'test');
+        $this->assertEquals([], $collector3->getBackupFiles());
     }
 }

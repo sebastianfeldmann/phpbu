@@ -1,6 +1,10 @@
 <?php
 namespace phpbu\App\Backup\File;
 
+use phpbu\App\Exception;
+use SebastianFeldmann\Ftp\Client;
+use SebastianFeldmann\Ftp\File;
+
 /**
  * Ftp file class.
  *
@@ -18,28 +22,36 @@ class Ftp extends Remote
     /**
      * @var resource
      */
-    private $ftpConnection;
+    private $ftpClient;
 
     /**
      * Ftp constructor.
      *
-     * @param resource $ftpConnection
-     * @param string   $filename
+     * @param \SebastianFeldmann\Ftp\Client $ftpClient
+     * @param \SebastianFeldmann\Ftp\File   $ftpFile
+     * @param string                        $path
      */
-    public function __construct($ftpConnection, string $filename)
+    public function __construct(Client $ftpClient, File $ftpFile, string $path)
     {
-        $this->ftpConnection = $ftpConnection;
-        $this->filename      = $filename;
-        $this->pathname      = $filename;
-        $this->size          = ftp_size($ftpConnection, $filename);
-        $this->lastModified  = ftp_mdtm($ftpConnection, $filename);
+        $this->ftpClient    = $ftpClient;
+        $this->filename     = $ftpFile->getFilename();
+        $this->pathname     = (!empty($path) ? rtrim($path, '/') . '/' : '') . $ftpFile->getFilename();
+        $this->size         = $ftpFile->getSize();
+        $this->lastModified = $ftpFile->getLastModifyDate()->getTimestamp();
     }
 
     /**
      * Deletes the file.
+     *
+     * @throws \phpbu\App\Exception
      */
     public function unlink()
     {
-        ftp_delete($this->ftpConnection, $this->filename);
+        try {
+            $this->ftpClient->chHome();
+            $this->ftpClient->delete($this->pathname);
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 }

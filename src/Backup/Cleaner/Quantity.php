@@ -77,14 +77,10 @@ class Quantity extends Abstraction implements Cleaner
      * Returns true when the capacity is exceeded.
      *
      * @param  array
-     * @return boolean
+     * @return bool
      */
     private function isCapacityExceeded(array $files)
     {
-        $totalFiles                  = count($files);
-        $totalFilesPlusCurrentBackup = $totalFiles + 1;
-
-        return $totalFiles > 0
-               && $totalFilesPlusCurrentBackup > $this->amount;
+        return count($files) > $this->amount;
     }
 }

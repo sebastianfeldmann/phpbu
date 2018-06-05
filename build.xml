@@ -107,8 +107,16 @@
 
     <!-- SF/CLI -->
     <copy file="${basedir}/vendor/sebastianfeldmann/cli/LICENSE" tofile="${basedir}/build/phar/lib/sf-cli/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/phpdotenv">
+    <copy todir="${basedir}/build/phar/lib/sf-cli">
       <fileset dir="${basedir}/vendor/sebastianfeldmann/cli/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- SF/FTP -->
+    <copy file="${basedir}/vendor/sebastianfeldmann/ftp/LICENSE" tofile="${basedir}/build/phar/lib/sf-cli/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/sf-ftp">
+      <fileset dir="${basedir}/vendor/sebastianfeldmann/ftp/src">
         <include name="**/*.php"/>
       </fileset>
     </copy>

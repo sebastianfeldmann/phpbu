@@ -1,12 +1,12 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use Aws\S3\S3Client;
 use Aws\S3\MultipartUploader;
+use Aws\S3\S3Client;
 use phpbu\App\Backup\Collector;
-use phpbu\App\Result;
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
-use phpbu\App\Util;
+use phpbu\App\Result;
 
 /**
  * Amazon S3 Sync
@@ -87,7 +87,8 @@ class AmazonS3v3 extends AmazonS3
      */
     protected function createCollector(Target $target) : Collector
     {
-        return new Collector\AmazonS3v3($target, $this->client, $this->bucket, $this->pathRaw, $this->time);
+        $path = new Path($this->pathRaw, $this->time);
+        return new Collector\AmazonS3v3($target, $path, $this->client, $this->bucket);
     }
 
     /**

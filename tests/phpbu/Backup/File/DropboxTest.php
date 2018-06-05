@@ -2,7 +2,7 @@
 namespace phpbu\App\Backup\File;
 
 /**
- * DropboxFileTest
+ * DropboxTest
  *
  * @package    phpbu
  * @subpackage tests
@@ -13,7 +13,7 @@ namespace phpbu\App\Backup\File;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class DropboxFileTest extends \PHPUnit\Framework\TestCase
+class DropboxTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test creating file and handle removing
@@ -37,6 +37,29 @@ class DropboxFileTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(102102, $file->getSize());
         $this->assertEquals(1525788894, $file->getMTime());
 
+        $file->unlink();
+    }
+
+    /**
+     * Tests Dropbox::unlink
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testDropboxDeleteFailure()
+    {
+        $dropboxFileMetadataStub = $this->createMock(\Kunnu\Dropbox\Models\FileMetadata::class);
+        $dropboxFileMetadataStub->method('getName')->willReturn('dump.tar.gz');
+        $dropboxFileMetadataStub->method('getPathDisplay')->willReturn('backups/dump.tar.gz');
+        $dropboxFileMetadataStub->method('getSize')->willReturn(102102);
+        $dropboxFileMetadataStub->method('getClientModified')->willReturn('2018-05-08 14:14:54.0 +00:00');
+
+        $dropboxClientStub = $this->createMock(\Kunnu\Dropbox\Dropbox::class);
+        $dropboxClientStub->expects($this->once())
+                          ->method('delete')
+                          ->with('backups/dump.tar.gz')
+                          ->will($this->throwException(new \Exception));
+
+        $file = new Dropbox($dropboxClientStub, $dropboxFileMetadataStub);
         $file->unlink();
     }
 }

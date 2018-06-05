@@ -47,6 +47,7 @@ class Simulate extends Compression
             // setup target and collector
             $target    = $this->factory->createTarget($backup->getTarget());
             $collector = new Local($target);
+            $collector->setSimulation(true);
 
             $this->simulateSource($backup, $target);
             $this->simulateChecks($backup, $target, $collector);

@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Cleaner;
 
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\File\Simulation;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 
@@ -25,7 +26,7 @@ abstract class Abstraction
      * @param  \phpbu\App\Backup\Target    $target
      * @param  \phpbu\App\Backup\Collector $collector
      * @param  \phpbu\App\Result           $result
-     * @throws \phpbu\App\Backup\Cleaner\Exception
+     * @throws \phpbu\App\Exception
      */
     public function cleanup(Target $target, Collector $collector, Result $result)
     {
@@ -41,9 +42,10 @@ abstract class Abstraction
     /**
      * Simulate the cleanup execution.
      *
-     * @param \phpbu\App\Backup\Target    $target
-     * @param \phpbu\App\Backup\Collector $collector
-     * @param \phpbu\App\Result           $result
+     * @param  \phpbu\App\Backup\Target    $target
+     * @param  \phpbu\App\Backup\Collector $collector
+     * @param  \phpbu\App\Result           $result
+     * @throws \phpbu\App\Exception
      */
     public function simulate(Target $target, Collector $collector, Result $result)
     {

@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Cleaner;
 
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\File\Local;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 use phpbu\App\Util\Arr;
@@ -38,13 +39,6 @@ class Capacity extends Abstraction implements Simulator
     protected $capacityBytes;
 
     /**
-     * Delete current backup as well
-     *
-     * @var bool
-     */
-    protected $deleteTarget;
-
-    /**
      * Setup the the Cleaner.
      *
      * @see    \phpbu\App\Backup\Cleanup::setup()
@@ -61,32 +55,8 @@ class Capacity extends Abstraction implements Simulator
         } catch (RuntimeException $e) {
             throw new Exception($e->getMessage());
         }
-        $this->deleteTarget  = Str::toBoolean(Arr::getValue($options, 'deleteTarget', 'false'), false);
         $this->capacityRaw   = $options['size'];
         $this->capacityBytes = $bytes;
-    }
-
-    /**
-     * Simulate the cleanup execution.
-     *
-     * @param \phpbu\App\Backup\Target    $target
-     * @param \phpbu\App\Backup\Collector $collector
-     * @param \phpbu\App\Result           $result
-     */
-    public function simulate(Target $target, Collector $collector, Result $result)
-    {
-        $target->setSize('20000000');
-        $result->debug('assuming backup size 20MB');
-
-        // because there is no target file on disc to read
-        // we have to deactivate the target handling
-        // so $targetFile->getMTime or $targetFile->getSize will not be called
-        if ($this->deleteTarget) {
-            $this->deleteTarget = false;
-            $result->debug('target may be deleted as well');
-            $result->debug('delete ' . $target->getPathname());
-        }
-        parent::simulate($target, $collector, $result);
     }
 
     /**
@@ -99,9 +69,11 @@ class Capacity extends Abstraction implements Simulator
      */
     protected function getFilesToDelete(Target $target, Collector $collector)
     {
-        $files  = $this->getDeletableBackups($target, $collector);
+        $files  = $collector->getBackupFiles();
         $size   = $target->getSize();
         $delete = [];
+
+
 
         // sum up the size of all backups
         /** @var \phpbu\App\Backup\File\Local $file */
@@ -123,25 +95,6 @@ class Capacity extends Abstraction implements Simulator
         }
 
         return $delete;
-    }
-
-    /**
-     * Return a list of all deletable backups, including the currently created one if configured.
-     *
-     * @param  \phpbu\App\Backup\Target    $target
-     * @param  \phpbu\App\Backup\Collector $collector
-     * @return \phpbu\App\Backup\File\Local[]
-     */
-    protected function getDeletableBackups(Target $target, Collector $collector): array
-    {
-        $files = $collector->getBackupFiles();
-        // should the currently created backup be deleted as well?
-        if ($this->deleteTarget) {
-            $file          = $target->toFile();
-            $index         = date('YmdHis', $file->getMTime()) . '-' . count($files) . '-' . $file->getPathname();
-            $files[$index] = $file;
-        }
-        return $files;
     }
 
     /**
