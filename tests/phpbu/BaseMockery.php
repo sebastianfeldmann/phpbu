@@ -37,6 +37,7 @@ trait BaseMockery
         $path     = $this->createMock(\phpbu\App\Backup\Path::class);
         $path->method('getPath')->willreturn(dirname($pathName));
         $target   = $this->createMock(\phpbu\App\Backup\Target::class);
+        $target->method('getSize')->willReturn(1000000000);
         $target->method('getFilename')->willReturn(basename($pathName));
         $target->method('getPathnamePlain')->willReturn($file);
         $target->method('getPathname')->willReturn($pathName);
