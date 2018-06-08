@@ -106,24 +106,26 @@ class Sftp extends Xtp
      */
     public function sync(Target $target, Result $result)
     {
-        $this->sftp     = $this->login();
+        $sftp           = $this->createClient();
         $remoteFilename = $target->getFilename();
         $localFile      = $target->getPathname();
 
+        $this->validateRemotePath();
+
         foreach ($this->getRemoteDirectoryList() as $dir) {
-            if (!$this->sftp->is_dir($dir)) {
+            if (!$sftp->is_dir($dir)) {
                 $result->debug(sprintf('creating remote dir \'%s\'', $dir));
-                $this->sftp->mkdir($dir);
+                $sftp->mkdir($dir);
             }
             $result->debug(sprintf('change to remote dir \'%s\'', $dir));
-            $this->sftp->chdir($dir);
+            $sftp->chdir($dir);
         }
 
         $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
-        $result->debug(sprintf('last error \'%s\'', $this->sftp->getLastSFTPError()));
+        $result->debug(sprintf('last error \'%s\'', $sftp->getLastSFTPError()));
 
-        if (!$this->sftp->put($remoteFilename, $localFile, phpseclib\Net\SFTP::SOURCE_LOCAL_FILE)) {
-            throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $this->sftp->getLastSFTPError()));
+        if (!$sftp->put($remoteFilename, $localFile, phpseclib\Net\SFTP::SOURCE_LOCAL_FILE)) {
+            throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $sftp->getLastSFTPError()));
         }
 
         // run remote cleanup
@@ -136,33 +138,43 @@ class Sftp extends Xtp
      * @return \phpseclib\Net\SFTP
      * @throws \phpbu\App\Backup\Sync\Exception
      */
-    protected function login() : phpseclib\Net\SFTP
+    protected function createClient() : phpseclib\Net\SFTP
     {
-        // silence phpseclib
-        $old  = error_reporting(0);
-        $sftp = new phpseclib\Net\SFTP($this->host);
-        $auth = $this->getAuth();
+        if (!$this->sftp) {
+            // silence phpseclib errors
+            $old  = error_reporting(0);
+            $this->sftp = new phpseclib\Net\SFTP($this->host);
+            $auth = $this->getAuth();
 
-        if (!$sftp->login($this->user, $auth)) {
+            if (!$this->sftp->login($this->user, $auth)) {
+                error_reporting($old);
+                throw new Exception(
+                    sprintf(
+                        'authentication failed for %s@%s%s',
+                        $this->user,
+                        $this->host,
+                        empty($this->password) ? '' : ' with password ****'
+                    )
+                );
+            }
+            // restore old error reporting
             error_reporting($old);
-            throw new Exception(
-                sprintf(
-                    'authentication failed for %s@%s%s',
-                    $this->user,
-                    $this->host,
-                    empty($this->password) ? '' : ' with password ****'
-                )
-            );
         }
-        // restore old error reporting
-        error_reporting($old);
 
-        // if presented relative path, determine absolute path and update
+        return $this->sftp;
+    }
+
+    /**
+     * If a relative path is configured, determine absolute path and update local remote.
+     *
+     * @throws \phpbu\App\Backup\Sync\Exception
+     */
+    protected function validateRemotePath()
+    {
         if (!Util\Path::isAbsolutePath($this->remotePath->getPath())) {
+            $sftp             = $this->createClient();
             $this->remotePath = new Path($sftp->realpath('.') . '/' . $this->remotePath->getPathRaw(), $this->time);
         }
-
-        return $sftp;
     }
 
     /**
@@ -197,11 +209,12 @@ class Sftp extends Xtp
     /**
      * Creates collector for SFTP
      *
-     * @param \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector
+     * @throws \phpbu\App\Backup\Sync\Exception
      */
     protected function createCollector(Target $target): Collector
     {
-        return new Collector\Sftp($target, $this->remotePath, $this->sftp);
+        return new Collector\Sftp($target, $this->remotePath, $this->createClient());
     }
 }

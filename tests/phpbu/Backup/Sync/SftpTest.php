@@ -37,6 +37,96 @@ class SftpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests Sftp::sync
+     */
+    public function testSync()
+    {
+        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $result = $this->createMock(\phpbu\App\Result::class);
+        $result->expects($this->exactly(6))->method('debug');
+
+        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock->expects($this->once())->method('realpath')->willReturn('/backup');
+        $clientMock->expects($this->once())->method('mkdir')->with('foo');
+        $clientMock->expects($this->exactly(3))->method('chdir');
+        $clientMock->expects($this->once())->method('put')->willReturn(true);
+        $clientMock->expects($this->exactly(3))
+                   ->method('is_dir')
+                   ->will($this->onConsecutiveCalls(true, true, false));
+
+        $sftp = $this->createPartialMock(Sftp::class, ['createClient']);
+        $sftp->method('createClient')->willReturn($clientMock);
+
+        $sftp->setup([
+            'host'     => 'example.com',
+            'user'     => 'user.name',
+            'password' => 'secret',
+            'path'     => 'foo'
+        ]);
+
+        $sftp->sync($target, $result);
+    }
+
+    /**
+     * Tests Sftp::sync
+     */
+    public function testSyncWithRemoteCleanup()
+    {
+        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $result = $this->createMock(\phpbu\App\Result::class);
+        $result->expects($this->exactly(5))->method('debug');
+
+        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock->expects($this->exactly(2))->method('is_dir')->will($this->onConsecutiveCalls(true, true));
+        $clientMock->expects($this->exactly(2))->method('chdir');
+        $clientMock->expects($this->once())->method('put')->willReturn(true);
+        $clientMock->expects($this->once())->method('_list')->willReturn([]);
+
+        $sftp = $this->createPartialMock(Sftp::class, ['createClient']);
+        $sftp->method('createClient')->willReturn($clientMock);
+
+        $sftp->setup([
+            'host'           => 'example.com',
+            'user'           => 'user.name',
+            'password'       => 'secret',
+            'path'           => '/foo',
+            'cleanup.type'   => 'quantity',
+            'cleanup.amount' => 99
+        ]);
+
+        $sftp->sync($target, $result);
+    }
+
+    /**
+     * Tests Sftp::sync
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testSyncFail()
+    {
+        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $result = $this->createMock(\phpbu\App\Result::class);
+        $result->expects($this->exactly(4))->method('debug');
+
+        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock->expects($this->exactly(2))->method('is_dir')->will($this->onConsecutiveCalls(true, true));
+        $clientMock->expects($this->exactly(2))->method('chdir');
+        $clientMock->expects($this->once())->method('put')->willReturn(false);
+
+        $sftp = $this->createPartialMock(Sftp::class, ['createClient']);
+        $sftp->method('createClient')->willReturn($clientMock);
+
+        $sftp->setup([
+            'host'     => 'example.com',
+            'user'     => 'user.name',
+            'password' => 'secret',
+            'path'     => '/foo'
+        ]);
+
+        $sftp->sync($target, $result);
+    }
+
+    /**
      * Tests Sftp::simulate
      */
     public function testSimulate()
@@ -161,8 +251,8 @@ class SftpTest extends \PHPUnit\Framework\TestCase
         $target     = $this->createTargetMock('foo.txt', 'foo.txt.gz');
         $result     = $this->getResultMock(5);
 
-        $sftp = $this->createPartialMock(Sftp::class, ['login']);
-        $sftp->method('login')->willReturn($secLibMock);
+        $sftp = $this->createPartialMock(Sftp::class, ['createClient']);
+        $sftp->method('createClient')->willReturn($secLibMock);
 
         $sftp->setup([
             'host'     => 'example.com',
