@@ -92,18 +92,17 @@ class Ftp extends Xtp
     public function sync(Target $target, Result $result)
     {
         try {
-            $client         = $this->connect();
+            $client         = $this->createClient();
             $remoteFilename = $target->getFilename();
             $localFile      = $target->getPathname();
 
             $client->uploadFile($localFile, Util\Path::withTrailingSlash($this->remotePath), $remoteFilename);
             $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
+            $this->cleanup($target, $result);
 
         } catch (\Exception $e) {
             throw new Exception($e->getMessage());
         }
-
-        $this->cleanup($target, $result);
     }
 
     /**
@@ -111,9 +110,9 @@ class Ftp extends Xtp
      *
      * @return \SebastianFeldmann\Ftp\Client
      */
-    protected function connect()
+    protected function createClient()
     {
-        if ($this->ftpClient === null) {
+        if (!$this->ftpClient) {
             $login           = $this->user . ($this->password ? ':' . $this->password : '');
             $this->ftpClient = new Client('ftp://' . $login . '@' . $this->host, $this->passive);
         }
@@ -121,13 +120,13 @@ class Ftp extends Xtp
     }
 
     /**
-     * Creates collector for FTP
+     * Creates FTP remote collector.
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector
      */
     protected function createCollector(Target $target): Collector
     {
-        return new Collector\Ftp($target, new Path($this->remotePath), $this->ftpClient);
+        return new Collector\Ftp($target, new Path($this->remotePath), $this->createClient());
     }
 }
