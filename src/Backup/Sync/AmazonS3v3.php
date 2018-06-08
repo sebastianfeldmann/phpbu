@@ -64,12 +64,14 @@ class AmazonS3v3 extends AmazonS3
 
         try {
             $this->upload($target, $this->client);
+            $result->debug('upload: done');
+
+            // run remote cleanup
+            $this->cleanup($target, $result);
+
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }
-        // run remote cleanup
-        $this->cleanup($target, $result);
-        $result->debug('upload: done');
     }
 
     /**
