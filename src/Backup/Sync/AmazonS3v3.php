@@ -55,14 +55,7 @@ class AmazonS3v3 extends AmazonS3
      */
     public function sync(Target $target, Result $result)
     {
-        $this->client = new S3Client([
-            'region'  => $this->region,
-            'version' => '2006-03-01',
-            'credentials' => [
-                'key'    => $this->key,
-                'secret' => $this->secret,
-            ]
-        ]);
+        $this->client = $this->createClient();
 
         if (!$this->client->doesBucketExist($this->bucket)) {
             $result->debug('create s3 bucket');
@@ -77,6 +70,38 @@ class AmazonS3v3 extends AmazonS3
         // run remote cleanup
         $this->cleanup($target, $result);
         $result->debug('upload: done');
+    }
+
+    /**
+     * Create the AWS client.
+     *
+     * @return \Aws\S3\S3Client
+     */
+    protected function createClient() : S3Client
+    {
+        return new S3Client([
+            'region'      => $this->region,
+            'version'     => '2006-03-01',
+            'credentials' => [
+                'key'    => $this->key,
+                'secret' => $this->secret,
+            ]
+        ]);
+    }
+
+    /**
+     * Create a multi part s3 file uploader.
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @param  \Aws\S3\S3Client         $s3
+     * @return \Aws\S3\MultipartUploader
+     */
+    protected function createUploader(Target $target, S3Client $s3) : MultipartUploader
+    {
+        return new MultipartUploader($s3, $target->getPathname(), [
+            'bucket' => $this->bucket,
+            'key'    => $this->getUploadPath($target),
+        ]);
     }
 
     /**
@@ -164,10 +189,7 @@ class AmazonS3v3 extends AmazonS3
      */
     private function uploadMultiPart(Target $target, S3Client $s3)
     {
-        $uploader = new MultipartUploader($s3, $target->getPathname(), [
-            'bucket' => $this->bucket,
-            'key'    => $this->getUploadPath($target),
-        ]);
+        $uploader = $this->createUploader($target, $s3);
         $uploader->upload();
     }
 

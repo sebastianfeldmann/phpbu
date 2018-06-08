@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Sync;
+use phpbu\App\BaseMockery;
 
 /**
  * AmazonS3Test
@@ -14,6 +15,8 @@ namespace phpbu\App\Backup\Sync;
  */
 class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+
     /**
      * Tests AmazonS3::setUp
      */
@@ -69,6 +72,71 @@ class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
         $targetStub->expects($this->once())->method('getFilename')->willReturn('foo.zip');
 
         $this->assertEquals('fiz/foo.zip', $amazonS3->getUploadPath($targetStub));
+    }
+
+    /**
+     * Tests AmazonS3V3::sync
+     */
+    public function testSync()
+    {
+        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+
+        $result = $this->createMock(\phpbu\App\Result::class);
+        $result->expects($this->exactly(2))->method('debug');
+
+        $clientMock = $this->createAWSS3Mock();
+        $clientMock->expects($this->once())->method('doesBucketExist')->willReturn(false);
+        $clientMock->expects($this->once())->method('__call');
+
+        $uploaderMock = $this->createAWSS3UploaderMock();
+        $uploaderMock->expects($this->once())->method('upload');
+
+        $aws = $this->createPartialMock(AmazonS3v3::class, ['createClient', 'createUploader']);
+        $aws->method('createClient')->willReturn($clientMock);
+        $aws->method('createUploader')->willReturn($uploaderMock);
+
+        $aws->setup([
+            'key'                => 'some-key',
+            'secret'             => 'some-secret',
+            'bucket'             => 'backup',
+            'region'             => 'frankfurt',
+            'path'               => 'backup',
+            'useMultiPartUpload' => 'true'
+        ]);
+
+        $aws->sync($target, $result);
+    }
+
+    /**
+     * Tests AmazonS3V3::sync
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testSyncFail()
+    {
+        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $result = $this->createMock(\phpbu\App\Result::class);
+
+        $clientMock = $this->createAWSS3Mock();
+        $clientMock->expects($this->once())->method('doesBucketExist')->willReturn(true);
+
+        $uploaderMock = $this->createAWSS3UploaderMock();
+        $uploaderMock->expects($this->once())->method('upload')->will($this->throwException(new \Exception));
+
+        $aws = $this->createPartialMock(AmazonS3v3::class, ['createClient', 'createUploader']);
+        $aws->method('createClient')->willReturn($clientMock);
+        $aws->method('createUploader')->willReturn($uploaderMock);
+
+        $aws->setup([
+            'key'                => 'some-key',
+            'secret'             => 'some-secret',
+            'bucket'             => 'backup',
+            'region'             => 'frankfurt',
+            'path'               => 'backup',
+            'useMultiPartUpload' => 'true'
+        ]);
+
+        $aws->sync($target, $result);
     }
 
     /**
@@ -172,5 +240,23 @@ class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
             'bucket' => 'dummy-bucket',
             'region' => 'dummy-region'
         ]);
+    }
+
+    /**
+     * Create an aws s3 client mock
+     * @return \Aws\S3\S3Client
+     */
+    private function createAWSS3Mock()
+    {
+        /** @var $awsMock \Aws\S3\S3Client */
+        $awsMock = $this->createMock(\Aws\S3\S3Client::class);
+        return $awsMock;
+    }
+
+    private function createAWSS3UploaderMock()
+    {
+        /** @var $awsMock \Aws\S3\S3Client */
+        $awsMock = $this->createMock(\Aws\S3\MultipartUploader::class);
+        return $awsMock;
     }
 }
