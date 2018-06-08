@@ -22,14 +22,25 @@ use phpbu\App\Result;
 trait Cleanable
 {
     /**
+     * Cleaner configuration.
+     *
      * @var \phpbu\App\Configuration\Backup\Cleanup
      */
     protected $cleanupConfig;
 
     /**
+     * The cleaner instance executing the actual cleaning process.
+     *
      * @var \phpbu\App\Backup\Cleaner
      */
     protected $cleaner;
+
+    /**
+     * Simulation indicator.
+     *
+     * @var bool
+     */
+    protected $isSimulation = false;
 
     /**
      * Check sync clean configuration entities and set up a proper cleaner
@@ -47,11 +58,11 @@ trait Cleanable
         }
 
         if (isset($config['type'])) {
-            $skip = isset($config['skipOnFailure']) ? (bool) $config['skipOnFailure'] : true;
-            // creating cleanup config
-            $this->cleanupConfig = new Cleanup($config['type'], $skip, $config);
-            // creating cleaner
-            $this->cleaner = (new Factory())->createCleaner($this->cleanupConfig->type, $this->cleanupConfig->options);
+            $this->cleanupConfig = new Cleanup($config['type'], false, $config);
+            $this->cleaner       = (new Factory())->createCleaner(
+                $this->cleanupConfig->type,
+                $this->cleanupConfig->options
+            );
         }
     }
 
