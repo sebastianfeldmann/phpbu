@@ -87,6 +87,7 @@ trait Cleanable
         }
 
         $collector = $this->createCollector($target);
+        $result->debug("  sync cleanup: {$this->cleanupConfig->type}" . PHP_EOL);
         $this->cleaner->cleanup($target, $collector, $result);
     }
 
