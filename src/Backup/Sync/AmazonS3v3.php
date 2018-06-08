@@ -191,7 +191,7 @@ class AmazonS3v3 extends AmazonS3
     /**
      * Get the s3 upload path
      *
-     * @param \phpbu\App\Backup\Target $target
+     * @param  \phpbu\App\Backup\Target $target
      * @return string
      */
     public function getUploadPath(Target $target)
