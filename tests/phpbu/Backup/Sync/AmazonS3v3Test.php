@@ -109,6 +109,41 @@ class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests AmazonS3V3::sync
+     */
+    public function testSyncWithRemoteCleanup()
+    {
+        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+
+        $result = $this->createMock(\phpbu\App\Result::class);
+        $result->expects($this->exactly(3))->method('debug');
+
+        $clientMock = $this->createAWSS3Mock();
+        $clientMock->expects($this->once())->method('doesBucketExist')->willReturn(false);
+        $clientMock->expects($this->exactly(2))->method('__call')->will($this->onConsecutiveCalls(null, []));
+
+        $uploaderMock = $this->createAWSS3UploaderMock();
+        $uploaderMock->expects($this->once())->method('upload');
+
+        $aws = $this->createPartialMock(AmazonS3v3::class, ['createClient', 'createUploader']);
+        $aws->method('createClient')->willReturn($clientMock);
+        $aws->method('createUploader')->willReturn($uploaderMock);
+
+        $aws->setup([
+            'key'                => 'some-key',
+            'secret'             => 'some-secret',
+            'bucket'             => 'backup',
+            'region'             => 'frankfurt',
+            'path'               => 'backup',
+            'useMultiPartUpload' => 'true',
+            'cleanup.type'       => 'quantity',
+            'cleanup.amount'     => 99
+        ]);
+
+        $aws->sync($target, $result);
+    }
+
+    /**
+     * Tests AmazonS3V3::sync
      *
      * @expectedException \phpbu\App\Exception
      */
