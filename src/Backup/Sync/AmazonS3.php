@@ -177,7 +177,7 @@ abstract class AmazonS3 implements Simulator
         // files bigger 5GB have to be uploaded via multi part
         // files uploaded with multi part upload has to be at least 5MB
         return (
-            $target->getSize() > $this->maxStreamUploadSize || $this->multiPartUpload
+            ($target->getSize() > $this->maxStreamUploadSize || $this->multiPartUpload)
         ) && $target->getSize() > $this->minMultiPartUploadSize;
     }
 }
