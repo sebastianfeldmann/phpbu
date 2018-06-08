@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Sync;
+use phpbu\App\BaseMockery;
 
 /**
  * DropboxTest
@@ -14,6 +15,8 @@ namespace phpbu\App\Backup\Sync;
  */
 class DropboxTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+
     /**
      * Tests Dropbox::setUp
      */
@@ -54,6 +57,88 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests Dropbox::sync
+     */
+    public function testSync()
+    {
+        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $result = $this->createMock(\phpbu\App\Result::class);
+        $result->expects($this->once())->method('debug');
+
+        $metaMock = $this->createMock(\Kunnu\Dropbox\Models\FileMetadata::class);
+        $metaMock->expects($this->once())->method('getSize')->willReturn(12345678);
+
+        $clientMock = $this->createMock(\Kunnu\Dropbox\Dropbox::class);
+        $clientMock->expects($this->once())->method('upload')->willReturn($metaMock);
+
+        $dropbox = $this->createPartialMock(Dropbox::class, ['createClient']);
+        $dropbox->method('createClient')->willReturn($clientMock);
+
+        $dropbox->setup([
+            'token' => 'this-is-no-token',
+            'path'  => '/'
+        ]);
+
+        $dropbox->sync($target, $result);
+    }
+
+    /**
+     * Tests Dropbox::sync
+     */
+    public function testSyncWithCleanup()
+    {
+        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $result = $this->createMock(\phpbu\App\Result::class);
+        $result->expects($this->exactly(2))->method('debug');
+
+        $metaMock = $this->createMock(\Kunnu\Dropbox\Models\FileMetadata::class);
+        $metaMock->expects($this->once())->method('getSize')->willReturn(12345678);
+
+        $metaCollectionMock = $this->createMock(\Kunnu\Dropbox\Models\MetadataCollection::class);
+        $metaCollectionMock->expects($this->once())->method('getItems')->willReturn([]);
+
+        $clientMock = $this->createMock(\Kunnu\Dropbox\Dropbox::class);
+        $clientMock->expects($this->once())->method('upload')->willReturn($metaMock);
+        $clientMock->expects($this->once())->method('listFolder')->willReturn($metaCollectionMock);
+
+        $dropbox = $this->createPartialMock(Dropbox::class, ['createClient']);
+        $dropbox->method('createClient')->willReturn($clientMock);
+
+        $dropbox->setup([
+            'token'          => 'this-is-no-token',
+            'path'           => '/',
+            'cleanup.type'   => 'quantity',
+            'cleanup.amount' => 99
+        ]);
+
+        $dropbox->sync($target, $result);
+    }
+
+    /**
+     * Tests Dropbox::sync
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testSyncFail()
+    {
+        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $result = $this->createMock(\phpbu\App\Result::class);
+
+        $clientMock = $this->createMock(\Kunnu\Dropbox\Dropbox::class);
+        $clientMock->expects($this->once())->method('upload')->will($this->throwException(new \Exception));
+
+        $dropbox = $this->createPartialMock(Dropbox::class, ['createClient']);
+        $dropbox->method('createClient')->willReturn($clientMock);
+
+        $dropbox->setup([
+            'token' => 'this-is-no-token',
+            'path'  => '/'
+        ]);
+
+        $dropbox->sync($target, $result);
+    }
+
+    /**
      * Tests Dropbox::simulate
      */
     public function testSimulate()
@@ -66,7 +151,7 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
 
         $resultStub = $this->createMock(\phpbu\App\Result::class);
         $resultStub->expects($this->once())
-            ->method('debug');
+                   ->method('debug');
 
         $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
 
