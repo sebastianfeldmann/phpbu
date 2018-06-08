@@ -114,18 +114,19 @@ class Dropbox implements Simulator
     {
         $sourcePath  = $target->getPathname();
         $dropboxPath = $this->path->getPath() . '/' . $target->getFilename();
-        if (!$this->client) {
-            $this->connect();
-        }
+        $client      = $this->createClient();
+
         try {
             $file = new DropboxFile($sourcePath);
-            $meta = $this->client->upload($file, $dropboxPath, ['autorename' => true]);
+            $meta = $client->upload($file, $dropboxPath, ['autorename' => true]);
+            $result->debug('upload: done  (' . $meta->getSize() . ')');
+
+            // run remote cleanup
+            $this->cleanup($target, $result);
+
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }
-        // run remote cleanup
-        $this->cleanup($target, $result);
-        $result->debug('upload: done  (' . $meta->getSize() . ')');
     }
 
     /**
@@ -141,27 +142,35 @@ class Dropbox implements Simulator
             . '  token:    ********' . PHP_EOL
             . '  location: ' . $this->path->getPath() . PHP_EOL
         );
-
+        $this->isSimulation = true;
         $this->simulateRemoteCleanup($target, $result);
     }
 
     /**
-     * Creates collector for Dropbox
+     * Creates the Dropbox collector.
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector
      */
     protected function createCollector(Target $target) : Collector
     {
-        return new Collector\Dropbox($target, $this->path, $this->client);
+        $collector = new Collector\Dropbox($target, $this->path, $this->createClient());
+        $collector->setSimulation($this->isSimulation);
+
+        return $collector;
     }
 
     /**
-     * Create Dropbox api client
+     * Create a dropbox api client.
+     *
+     * @return \Kunnu\Dropbox\Dropbox
      */
-    protected function connect()
+    protected function createClient() : DropboxApi
     {
-        $config       = new DropboxConfig("id", "secret", $this->token);
-        $this->client = new DropboxApi($config);
+        if (!$this->client) {
+            $config       = new DropboxConfig("id", "secret", $this->token);
+            $this->client = new DropboxApi($config);
+        }
+        return $this->client;
     }
 }
