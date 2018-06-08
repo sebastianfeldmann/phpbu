@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Sync;
+use phpbu\App\BaseMockery;
 
 /**
  * FtpTest
@@ -13,6 +14,8 @@ namespace phpbu\App\Backup\Sync;
  */
 class FtpTest extends \PHPUnit\Framework\TestCase
 {
+    use BaseMockery;
+
     /**
      * Tests Ftp::setUp
      */
@@ -27,6 +30,86 @@ class FtpTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
+     * Tests Dropbox::sync
+     */
+    public function testSync()
+    {
+        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $result = $this->createMock(\phpbu\App\Result::class);
+        $result->expects($this->once())->method('debug');
+
+        $clientMock = $this->createMock(\SebastianFeldmann\Ftp\Client::class);
+        $clientMock->expects($this->once())->method('uploadFile');
+
+        $ftp = $this->createPartialMock(Ftp::class, ['createClient']);
+        $ftp->method('createClient')->willReturn($clientMock);
+
+        $ftp->setup([
+            'host'     => 'example.com',
+            'user'     => 'user.name',
+            'password' => 'secret',
+            'path'     => 'foo'
+        ]);
+
+        $ftp->sync($target, $result);
+    }
+
+    /**
+     * Tests Dropbox::sync
+     */
+    public function testSyncWithCleanup()
+    {
+        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $result = $this->createMock(\phpbu\App\Result::class);
+        $result->expects($this->exactly(2))->method('debug');
+
+        $clientMock = $this->createMock(\SebastianFeldmann\Ftp\Client::class);
+        $clientMock->expects($this->once())->method('uploadFile');
+        $clientMock->expects($this->once())->method('chHome');
+        $clientMock->expects($this->once())->method('lsFiles')->willReturn([]);
+
+        $ftp = $this->createPartialMock(Ftp::class, ['createClient']);
+        $ftp->method('createClient')->willReturn($clientMock);
+
+        $ftp->setup([
+            'host'           => 'example.com',
+            'user'           => 'user.name',
+            'password'       => 'secret',
+            'path'           => 'foo',
+            'cleanup.type'   => 'quantity',
+            'cleanup.amount' => 99,
+        ]);
+
+        $ftp->sync($target, $result);
+    }
+
+    /**
+     * Tests Dropbox::sync
+     *
+     * @expectedException \phpbu\App\Exception
+     */
+    public function testSyncFail()
+    {
+        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $result = $this->createMock(\phpbu\App\Result::class);
+
+        $clientMock = $this->createMock(\SebastianFeldmann\Ftp\Client::class);
+        $clientMock->expects($this->once())->method('uploadFile')->will($this->throwException(new \Exception));
+
+        $ftp = $this->createPartialMock(Ftp::class, ['createClient']);
+        $ftp->method('createClient')->willReturn($clientMock);
+
+        $ftp->setup([
+            'host'     => 'example.com',
+            'user'     => 'user.name',
+            'password' => 'secret',
+            'path'     => 'foo'
+        ]);
+
+        $ftp->sync($target, $result);
     }
 
     /**
