@@ -67,7 +67,7 @@ class GoogleDrive implements Simulator
      *
      * @see    \phpbu\App\Backup\Sync::setup()
      * @param  array $config
-     * @throws \phpbu\App\Backup\Sync\Exception
+     * @throws \phpbu\App\Exception
      */
     public function setup(array $config)
     {
@@ -82,6 +82,8 @@ class GoogleDrive implements Simulator
         }
         $this->setupAuthFiles($config);
         $this->parent = Util\Arr::getValue($config, 'parentId');
+
+        $this->setUpCleanable($config);
     }
 
     /**
@@ -136,13 +138,12 @@ class GoogleDrive implements Simulator
             if ($status != false) {
                 $apiResult = $status;
             }
-
+            $result->debug(sprintf('upload: done: %s', $apiResult->getId()));
             $this->cleanup($target, $result);
 
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }
-        $result->debug(sprintf('upload: done: %s', $apiResult->getId()));
     }
 
     /**
