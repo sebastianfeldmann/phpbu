@@ -61,7 +61,7 @@ class GoogleDrive extends Remote implements Collector
 
         /** @var \Google_Service_Drive_DriveFile $googleFile */
         foreach ($results->getFiles() as $googleFile) {
-            if ($this->isFileMatch($googleFile->getName())) {
+            if ($this->isFileMatch($this->path->getPath() . '/' . $googleFile->getName())) {
                 $file                                    = new File\GoogleDrive($this->client, $googleFile);
                 $this->files[$this->getFileIndex($file)] = $file;
             }
