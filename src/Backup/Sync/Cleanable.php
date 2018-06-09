@@ -67,15 +67,15 @@ trait Cleanable
     }
 
     /**
-     * Creates collector for remote cleanup
+     * Creates collector for remote cleanup.
      *
-     * @param Target $target
-     * @return Collector
+     * @param  \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Backup\Collector
      */
     abstract protected function createCollector(Target $target): Collector;
 
     /**
-     * Execute the remote clean up if needed
+     * Execute the remote clean up if needed.
      *
      * @param \phpbu\App\Backup\Target $target
      * @param \phpbu\App\Result        $result
@@ -87,7 +87,7 @@ trait Cleanable
         }
 
         $collector = $this->createCollector($target);
-        $result->debug("  sync cleanup: {$this->cleanupConfig->type}" . PHP_EOL);
+        $result->debug(sprintf('remote cleanup: %s ', $this->cleanupConfig->type));
         $this->cleaner->cleanup($target, $collector, $result);
     }
 
@@ -100,7 +100,7 @@ trait Cleanable
     public function simulateRemoteCleanup(Target $target, Result $result)
     {
         if ($this->cleaner) {
-            $result->debug("  sync cleanup: {$this->cleanupConfig->type}" . PHP_EOL);
+            $result->debug(sprintf('remote cleanup: %s ', $this->cleanupConfig->type));
         }
     }
 }
