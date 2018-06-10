@@ -76,7 +76,6 @@ class Local extends Abstraction implements Collector
                 continue;
             }
             if ($this->isFilenameMatch($splFile->getFilename())) {
-
                 $file                = new FileLocal($splFile->getFileInfo());
                 $index               = $this->getFileIndex($file);
                 $this->files[$index] = $file;

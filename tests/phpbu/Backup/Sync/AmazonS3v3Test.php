@@ -1,5 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Sync;
+
 use phpbu\App\BaseMockery;
 
 /**

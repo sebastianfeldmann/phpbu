@@ -77,7 +77,8 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
         $this->assertArrayHasKey('975672000-foo-2000-12-01-12_00.txt-1', $files);
         $this->assertEquals(
             'foo-2000-12-01-12_00.txt',
-            $files['975672000-foo-2000-12-01-12_00.txt-1']->getFilename());
+            $files['975672000-foo-2000-12-01-12_00.txt-1']->getFilename()
+        );
     }
 
     public function testNoAWSResult()

@@ -54,7 +54,9 @@ class Sftp extends Xtp
      */
     public function setup(array $config)
     {
-        if (!Util\Arr::isSetAndNotEmptyString($config, 'password') && !Util\Arr::isSetAndNotEmptyString($config, 'private_key')) {
+        // make sure either password or private key is configured
+        if (!Util\Arr::isSetAndNotEmptyString($config, 'password')
+         && !Util\Arr::isSetAndNotEmptyString($config, 'private_key')) {
             throw new Exception('\'password\' or \'private_key\' must be presented');
         }
         parent::setup($config);

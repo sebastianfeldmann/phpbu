@@ -56,7 +56,7 @@ class OpenStackTest extends \PHPUnit\Framework\TestCase
         $storageObject->lastModified  = $storageObjectLastModified;
         $storageObject->expects($this->once())
                       ->method('delete')
-                      ->will($this->throwException(new \Exception()));;
+                      ->will($this->throwException(new \Exception()));
 
         $container = $this->createMock(\OpenStack\ObjectStore\v1\Models\Container::class);
         $container->expects($this->once())
