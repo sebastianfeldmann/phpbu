@@ -58,7 +58,8 @@
     "phpseclib/phpseclib": "Require '~2.0' to use SFTP sync",
     "softlayer/objectstorage": "Require 'dev-master' to sync to Softlayer",
     "php-opencloud/openstack": "Require ~3.0 to sync to OpenStack",
-    "vlucas/phpdotenv": "Require ~2.4 to use Dotenv adapter"
+    "vlucas/phpdotenv": "Require ~2.4 to use Dotenv adapter",
+    "google/apiclient":"Require ~2.0 to sync to Google Drive"
   },
   "bin": [
     "phpbu"
