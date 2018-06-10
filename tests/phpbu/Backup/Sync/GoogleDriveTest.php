@@ -186,7 +186,7 @@ class GoogleDriveTest extends \PHPUnit\Framework\TestCase
     public function testSetUpNoAccess()
     {
         $sync = new GoogleDrive();
-        $sync->setup(['secret' => '']);
+        $sync->setup(['secret' => 'foo']);
     }
 
     /**
