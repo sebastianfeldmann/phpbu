@@ -26,7 +26,7 @@ class GoogleDrive extends Remote
     private $service;
 
     /**
-     * Goole api file id.
+     * Google api file id.
      *
      * @var string
      */
@@ -49,7 +49,7 @@ class GoogleDrive extends Remote
     }
 
     /**
-     * Deletes the file.
+     * Deletes the file from Google Drive.
      *
      * @throws \phpbu\App\Exception
      */

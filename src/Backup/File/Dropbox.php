@@ -19,15 +19,17 @@ use Kunnu\Dropbox\Models\FileMetadata;
 class Dropbox extends Remote
 {
     /**
-     * @var DropboxApi
+     * Dropbox api client.
+     *
+     * @var \Kunnu\Dropbox\Dropbox
      */
     protected $client;
 
     /**
      * Dropbox constructor.
      *
-     * @param DropboxApi   $client
-     * @param FileMetadata $dropboxFile
+     * @param \Kunnu\Dropbox\Dropbox             $client
+     * @param \Kunnu\Dropbox\Models\FileMetadata $dropboxFile
      */
     public function __construct(DropboxApi $client, FileMetadata $dropboxFile)
     {
@@ -39,7 +41,7 @@ class Dropbox extends Remote
     }
 
     /**
-     * Deletes the file.
+     * Deletes the file on Dropbox.
      *
      * @throws \phpbu\App\Exception
      */
