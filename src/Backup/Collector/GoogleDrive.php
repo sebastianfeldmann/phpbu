@@ -22,11 +22,11 @@ use phpbu\App\Backup\Target;
 class GoogleDrive extends Remote implements Collector
 {
     /**
-     * Google api client.
+     * Google drive api service.
      *
-     * @var \Google_Client
+     * @var \Google_Service_Drive
      */
-    private $client;
+    private $service;
 
     /**
      * Parent folder id.
@@ -40,13 +40,13 @@ class GoogleDrive extends Remote implements Collector
      *
      * @param \phpbu\App\Backup\Target $target
      * @param \phpbu\App\Backup\Path   $path
-     * @param \Google_Client           $client
+     * @param \Google_Service_Drive    $service
      */
-    public function __construct(Target $target, Path $path, Google_Client $client)
+    public function __construct(Target $target, Path $path, Google_Service_Drive $service)
     {
         $this->setUp($target, $path);
-        $this->client = $client;
-        $this->parent = $path->getPath();
+        $this->service = $service;
+        $this->parent  = $path->getPath();
     }
 
     /**
@@ -56,14 +56,14 @@ class GoogleDrive extends Remote implements Collector
      */
     protected function collectBackups()
     {
-        $service = new Google_Service_Drive($this->client);
-        $results = $service->files->listFiles($this->getParams());
+        $results = $this->service->files->listFiles($this->getParams());
 
         /** @var \Google_Service_Drive_DriveFile $googleFile */
         foreach ($results->getFiles() as $googleFile) {
             if ($this->isFileMatch($this->path->getPath() . '/' . $googleFile->getName())) {
-                $file                                    = new File\GoogleDrive($this->client, $googleFile);
-                $this->files[$this->getFileIndex($file)] = $file;
+                $file                = new File\GoogleDrive($this->service, $googleFile);
+                $index               = $this->getFileIndex($file);
+                $this->files[$index] = $file;
             }
         }
     }

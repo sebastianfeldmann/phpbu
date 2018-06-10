@@ -1,13 +1,12 @@
 <?php
 namespace phpbu\App\Backup\File;
 
-use Google_Client;
 use Google_Service_Drive;
 use Google_Service_Drive_DriveFile;
 use phpbu\App\Exception;
 
 /**
- * GoogleDrive file class.
+ * Google Drive file class.
  *
  * @package    phpbu
  * @subpackage Backup
@@ -20,11 +19,11 @@ use phpbu\App\Exception;
 class GoogleDrive extends Remote
 {
     /**
-     * Google api client.
+     * Google drive api service.
      *
-     * @var \Google_Client
+     * @var \Google_Service_Drive
      */
-    private $client;
+    private $service;
 
     /**
      * Goole api file id.
@@ -36,12 +35,12 @@ class GoogleDrive extends Remote
     /**
      * Constructor.
      *
-     * @param \Google_Client                  $client
+     * @param \Google_Service_Drive           $service
      * @param \Google_Service_Drive_DriveFile $googleFile
      */
-    public function __construct(Google_Client $client, Google_Service_Drive_DriveFile $googleFile)
+    public function __construct(Google_Service_Drive $service, Google_Service_Drive_DriveFile $googleFile)
     {
-        $this->client       = $client;
+        $this->service      = $service;
         $this->filename     = $googleFile->getName();
         $this->pathname     = $googleFile->getId();
         $this->fileId       = $googleFile->getId();
@@ -57,8 +56,7 @@ class GoogleDrive extends Remote
     public function unlink()
     {
         try {
-            $service = new Google_Service_Drive($this->client);
-            $service->files->delete($this->fileId);
+            $this->service->files->delete($this->fileId);
         } catch (\Exception $e) {
             throw new Exception($e->getMessage());
         }

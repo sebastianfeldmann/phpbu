@@ -30,9 +30,11 @@ class GoogleDrive implements Simulator
     use Cleanable;
 
     /**
-     * @var \Google_Client
+     * Google drive service.
+     *
+     * @var \Google_Service_Drive
      */
-    private $client;
+    private $service;
 
     /**
      * Google json secret file.
@@ -117,16 +119,16 @@ class GoogleDrive implements Simulator
     public function sync(Target $target, Result $result)
     {
         try {
+            $service = $this->createDriveService();
+            $client  = $service->getClient();
+            $client->setDefer(true);
+
             $status    = false;
             $apiResult = false;
             $apiFile   = $this->createFile($target);
-            $client    = $this->createClient();
-            $client->setDefer(true);
-
-            $service = new GDriveService($client);
-            $request = $service->files->create($apiFile);
-            $stream  = $this->createUploadStream($client, $request, $target);
-            $handle  = fopen($target->getPathname(), "rb");
+            $request   = $service->files->create($apiFile);
+            $stream    = $this->createUploadStream($client, $request, $target);
+            $handle    = fopen($target->getPathname(), "rb");
             while (!$status && !feof($handle)) {
                 $chunk  = fread($handle, $this->chunkSize);
                 $status = $stream->nextChunk($chunk);
@@ -161,27 +163,27 @@ class GoogleDrive implements Simulator
     }
 
     /**
-     * Create google api client.
+     * Setup google api client and google drive service.
      *
-     * @return \Google_Client
      * @throws \Google_Exception
      */
-    protected function createClient() : GClient
+    protected function createDriveService() : GDriveService
     {
-        if (!$this->client) {
-            $this->client = new GClient();
-            $this->client->setApplicationName('phpbu');
-            $this->client->setScopes(GDrive::DRIVE);
-            $this->client->setAuthConfig($this->secret);
-            $this->client->setAccessType('offline');
-            $this->client->setAccessToken($this->getAccessToken());
+        if (!$this->service) {
+            $client = new GClient();
+            $client->setApplicationName('phpbu');
+            $client->setScopes(GDrive::DRIVE);
+            $client->setAuthConfig($this->secret);
+            $client->setAccessType('offline');
+            $client->setAccessToken($this->getAccessToken());
 
-            if ($this->client->isAccessTokenExpired()) {
-                $this->client->fetchAccessTokenWithRefreshToken($this->client->getRefreshToken());
-                $this->updateAccessToken($this->client->getAccessToken());
+            if ($client->isAccessTokenExpired()) {
+                $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
+                $this->updateAccessToken($client->getAccessToken());
             }
+            $this->service = new GDriveService($client);
         }
-        return $this->client;
+        return $this->service;
     }
 
     /**
@@ -253,6 +255,6 @@ class GoogleDrive implements Simulator
      */
     protected function createCollector(Target $target): Collector
     {
-        return new Collector\GoogleDrive($target, new Path($this->parent), $this->createClient());
+        return new Collector\GoogleDrive($target, new Path($this->parent), $this->createDriveService());
     }
 }
