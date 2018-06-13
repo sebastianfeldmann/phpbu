@@ -47,6 +47,8 @@ class OpenStack extends Remote implements Collector
     {
         // get all objects matching our path prefix
         $remotePath = Util\Path::withTrailingSlash($this->path->getPathThatIsNotChanging());
+        $remotePath = $remotePath == '/' ? '' : $remotePath;
+
         $objects    = $this->container->listObjects(['prefix' => $remotePath]);
         /** @var StorageObject $object */
         foreach ($objects as $object) {
