@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\Backup\Sync;
 
-use phpbu\App\Backup\Sync\Openstack;
+use phpbu\App\Backup\Sync\OpenStack;
 
 /**
  * OpenStackTest
@@ -15,14 +15,14 @@ use phpbu\App\Backup\Sync\Openstack;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1
  */
-class OpenstackTest extends \PHPUnit\Framework\TestCase
+class OpenStackTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * Tests Openstack::setUp
+     * Tests OpenStack::setUp
      */
     public function testSetUpOk()
     {
-        $openstack = new Openstack();
+        $openstack = new OpenStack();
         $openstack->setup([
             'auth_url'       => 'some-auth-url',
             'region'         => 'region-name',
@@ -39,7 +39,7 @@ class OpenstackTest extends \PHPUnit\Framework\TestCase
      */
     public function testSimulate()
     {
-        $openstack = new Openstack();
+        $openstack = new OpenStack();
         $openstack->setup([
             'auth_url'       => 'some-auth-url',
             'region'         => 'region-name',
@@ -64,7 +64,7 @@ class OpenstackTest extends \PHPUnit\Framework\TestCase
      */
     public function testSetUpNoAuthUrl()
     {
-        $openstack = new Openstack();
+        $openstack = new OpenStack();
         $openstack->setup([
             'region'         => 'region-name',
             'username'       => 'some-user',
@@ -80,7 +80,7 @@ class OpenstackTest extends \PHPUnit\Framework\TestCase
      */
     public function testSetUpNoRegion()
     {
-        $openstack = new Openstack();
+        $openstack = new OpenStack();
         $openstack->setup([
             'auth_url'       => 'some-auth-url',
             'username'       => 'some-user',
@@ -96,7 +96,7 @@ class OpenstackTest extends \PHPUnit\Framework\TestCase
      */
     public function testSetUpNoUsername()
     {
-        $openstack = new Openstack();
+        $openstack = new OpenStack();
         $openstack->setup([
             'auth_url'       => 'some-auth-url',
             'region'         => 'region-name',
@@ -112,7 +112,7 @@ class OpenstackTest extends \PHPUnit\Framework\TestCase
      */
     public function testSetUpNoPassword()
     {
-        $openstack = new Openstack();
+        $openstack = new OpenStack();
         $openstack->setup([
             'auth_url'       => 'some-auth-url',
             'region'         => 'region-name',
@@ -128,7 +128,7 @@ class OpenstackTest extends \PHPUnit\Framework\TestCase
      */
     public function testSetUpNoContainerName()
     {
-        $openstack = new Openstack();
+        $openstack = new OpenStack();
         $openstack->setup([
             'auth_url'       => 'some-auth-url',
             'region'         => 'region-name',
@@ -142,7 +142,7 @@ class OpenstackTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetUploadPathFixingSlashes()
     {
-        $openstack = new Openstack();
+        $openstack = new OpenStack();
         $openstack->setup([
             'auth_url'       => 'some-auth-url',
             'region'         => 'region-name',
@@ -163,7 +163,7 @@ class OpenstackTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetUploadWithEmptyPath()
     {
-        $openstack = new Openstack();
+        $openstack = new OpenStack();
         $openstack->setup([
             'auth_url'       => 'some-auth-url',
             'region'         => 'region-name',

@@ -9,6 +9,7 @@ use OpenStack\Common\Transport\HandlerStack;
 use OpenStack\Common\Transport\Utils;
 use OpenStack\Identity\v2\Service;
 use phpbu\App\Backup\Collector;
+use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 use phpbu\App\Util;
@@ -25,7 +26,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 5.1
  */
-class Openstack implements Simulator
+class OpenStack implements Simulator
 {
     use Cleanable;
 
@@ -77,9 +78,16 @@ class Openstack implements Simulator
     /**
      * Path where to copy the backup without leading or trailing slashes.
      *
-     * @var string
+     * @var Path
      */
-    protected $path = '';
+    protected $path;
+
+    /**
+     * Unix timestamp of generating path from placeholder.
+     *
+     * @var int
+     */
+    protected $time;
 
     /**
      * Path where to copy the backup still containing possible date placeholders.
@@ -118,18 +126,14 @@ class Openstack implements Simulator
         // check for mandatory options
         $this->validateConfig($config, ['auth_url', 'region', 'username', 'password', 'container_name']);
 
+        $this->time          = time();
         $this->authUrl       = $config['auth_url'];
         $this->region        = $config['region'];
         $this->username      = $config['username'];
         $this->password      = $config['password'];
         $this->containerName = $config['container_name'];
         $this->serviceName   = Util\Arr::getValue($config, 'service_name', 'swift');
-        $clearedPath         = Util\Path::withoutLeadingOrTrailingSlash(Util\Arr::getValue($config, 'path', ''));
-
-        if (!empty($clearedPath)) {
-            $this->path    = Util\Path::replaceDatePlaceholders($clearedPath);
-            $this->pathRaw = $clearedPath;
-        }
+        $this->path          = new Path(Util\Path::withoutLeadingSlash(Util\Arr::getValue($config, 'path', '')), $this->time);
 
         $this->setUpCleanable($config);
     }
@@ -203,7 +207,7 @@ class Openstack implements Simulator
             . '  key:      ' . $this->username . PHP_EOL
             . '  password:    ********' . PHP_EOL
             . '  container: ' . $this->containerName
-            . '  path: "' . $this->path . '"' . PHP_EOL
+            . '  path: "' . $this->path->getPath() . '"' . PHP_EOL
         );
 
         $this->simulateRemoteCleanup($target, $result);
@@ -243,7 +247,7 @@ class Openstack implements Simulator
      */
     public function getUploadPath(Target $target)
     {
-        return (!empty($this->path) ? $this->path . '/' : '') . $target->getFilename();
+        return (!empty($this->path->getPath()) ? $this->path->getPath() . '/' : '') . $target->getFilename();
     }
 
     /**
