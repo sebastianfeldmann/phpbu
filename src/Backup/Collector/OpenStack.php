@@ -46,7 +46,9 @@ class OpenStack extends Remote implements Collector
     protected function collectBackups()
     {
         // get all objects matching our path prefix
-        $remotePath = Util\Path::withTrailingSlash($this->path->getPath());
+        $remotePath = Util\Path::withTrailingSlash($this->path->getPathThatIsNotChanging());
+        $remotePath = $remotePath == '/' ? '' : $remotePath;
+
         $objects    = $this->container->listObjects(['prefix' => $remotePath]);
         /** @var StorageObject $object */
         foreach ($objects as $object) {
@@ -54,7 +56,7 @@ class OpenStack extends Remote implements Collector
             if ($object->contentType == 'application/directory') {
                 continue;
             }
-            if ($this->isFilenameMatch(basename($object->name))) {
+            if ($this->isFileMatch($object->name)) {
                 $file                = new \phpbu\App\Backup\File\OpenStack($this->container, $object);
                 $index               = $this->getFileIndex($file);
                 $this->files[$index] = $file;
