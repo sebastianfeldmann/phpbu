@@ -148,23 +148,44 @@
       <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src">
         <include name="**/*.php"/>
         <exclude name="Acm/**"/>
+        <exclude name="ACMPCA/**"/>
+        <exclude name="AlexaForBusiness/**"/>
+        <exclude name="ApiGateway/**"/>
+        <exclude name="ApplicationAutoScaling/**"/>
+        <exclude name="ApplicationDiscoveryService/**"/>
+        <exclude name="Appstream/**"/>
+        <exclude name="AppSync/**"/>
+        <exclude name="Athena/**"/>
         <exclude name="AutoScaling/**"/>
+        <exclude name="AutoScalingPlans/**"/>
+        <exclude name="Budgets/**"/>
+        <exclude name="Cloud9/**"/>
+        <exclude name="CloudDirectory/**"/>
         <exclude name="CloudFormation/**"/>
         <exclude name="CloudFront/**"/>
         <exclude name="CloudHsm/**"/>
+        <exclude name="CloudHSMV2/**"/>
         <exclude name="CloudSearch/**"/>
         <exclude name="CloudSearchDomain/**"/>
         <exclude name="CloudTrail/**"/>
         <exclude name="CloudWatch/**"/>
         <exclude name="CloudWatchEvents/**"/>
         <exclude name="CloudWatchLogs/**"/>
+        <exclude name="CloudBuild/**"/>
         <exclude name="CodeCommit/**"/>
         <exclude name="CodeDeploy/**"/>
         <exclude name="CodePipeline/**"/>
+        <exclude name="CodeStar/**"/>
         <exclude name="CognitoIdentity/**"/>
         <exclude name="CognitoSync/**"/>
+        <exclude name="Comprehend/**"/>
         <exclude name="ConfigService/**"/>
+        <exclude name="ConstantUsageReportService/**"/>
+        <exclude name="CostExplorer/**"/>
+        <exclude name="data/**"/>
+        <exclude name="DatabaseMigrationService/**"/>
         <exclude name="DataPipeline/**"/>
+        <exclude name="DAX/**"/>
         <exclude name="DeviceFarm/**"/>
         <exclude name="DirectConnect/**"/>
         <exclude name="DirectoryService/**"/>
@@ -174,30 +195,80 @@
         <exclude name="Ecr/**"/>
         <exclude name="Ecs/**"/>
         <exclude name="Efs/**"/>
+        <exclude name="EKS/**"/>
         <exclude name="ElastiCache/**"/>
         <exclude name="ElasticBeanstalk/**"/>
         <exclude name="ElasticLoadBalancing/**"/>
+        <exclude name="ElasticLoadBalancingV2/**"/>
         <exclude name="ElasticsearchService/**"/>
         <exclude name="ElasticTranscoder/**"/>
         <exclude name="Emr/**"/>
         <exclude name="Firehose/**"/>
+        <exclude name="FMS/**"/>
+        <exclude name="GameLift/**"/>
         <exclude name="Glacier/**"/>
-        <exclude name="AutoScaling/**"/>
+        <exclude name="Glue/**"/>
+        <exclude name="Greengrass/**"/>
+        <exclude name="GuardDuty/**"/>
+        <exclude name="Health/**"/>
         <exclude name="Iam/**"/>
-        <exclude name="Inspector/**"/>
+        <exclude name="Iam/**"/>
+        <exclude name="ImportExport/**"/>
         <exclude name="Iot/**"/>
+        <exclude name="IoT1ClickDevicesService/**"/>
+        <exclude name="IoT1ClickProjects/**"/>
+        <exclude name="IoTAnalytics/**"/>
         <exclude name="IotDataPlane/**"/>
+        <exclude name="IoTJobsDataPlane/**"/>
         <exclude name="Kinesis/**"/>
+        <exclude name="KinesisAnalytics/**"/>
+        <exclude name="KinesisVideo/**"/>
+        <exclude name="KinesisVideoArchivedMedia/**"/>
+        <exclude name="KinesisVideoMedia/**"/>
         <exclude name="Kms/**"/>
         <exclude name="Lambda/**"/>
+        <exclude name="LexModelBuildingService/**"/>
+        <exclude name="LexRuntimeService/**"/>
+        <exclude name="Lightsail/**"/>
         <exclude name="MachineLearning/**"/>
         <exclude name="MarketplaceCommerceAnalytics/**"/>
+        <exclude name="MarketplaceEntitlementService/**"/>
+        <exclude name="MarketplaceMetering/**"/>
+        <exclude name="MediaConvert/**"/>
+        <exclude name="MediaLive/**"/>
+        <exclude name="MediaPackage/**"/>
+        <exclude name="MediaStore/**"/>
+        <exclude name="MediaStoreData/**"/>
+        <exclude name="MediaTailor/**"/>
+        <exclude name="MigrationHub/**"/>
+        <exclude name="Mobile/**"/>
+        <exclude name="MQ/**"/>
+        <exclude name="MTurk/**"/>
+        <exclude name="Neptune/**"/>
         <exclude name="OpsWorks/**"/>
+        <exclude name="OpsWorksCM/**"/>
+        <exclude name="Organizations/**"/>
+        <exclude name="PI/**"/>
+        <exclude name="Pinpoint/**"/>
+        <exclude name="Polly/**"/>
+        <exclude name="Pricing/**"/>
         <exclude name="Rds/**"/>
         <exclude name="Redshift/**"/>
+        <exclude name="Rekognition/**"/>
+        <exclude name="ResourceGroups/**"/>
+        <exclude name="ResourceGroupsTaggingAPI/**"/>
         <exclude name="Route53/**"/>
         <exclude name="Route53Domains/**"/>
+        <exclude name="SageMaker/**"/>
+        <exclude name="SageMakerRuntime/**"/>
+        <exclude name="ServerlessApplicationRepository/**"/>
+        <exclude name="ServiceCatalog/**"/>
+        <exclude name="ServiceDiscovery/**"/>
         <exclude name="Ses/**"/>
+        <exclude name="Sfn/**"/>
+        <exclude name="Shield/**"/>
+        <exclude name="Sms/**"/>
+        <exclude name="SnowBall/**"/>
         <exclude name="Sns/**"/>
         <exclude name="Sqs/**"/>
         <exclude name="Ssm/**"/>
@@ -205,8 +276,21 @@
         <exclude name="Sts/**"/>
         <exclude name="Support/**"/>
         <exclude name="Swf/**"/>
+        <exclude name="TranscribeService/**"/>
+        <exclude name="Translate/**"/>
         <exclude name="Waf/**"/>
+        <exclude name="WafRegional/**"/>
+        <exclude name="WorkDocs/**"/>
+        <exclude name="WorkMail/**"/>
         <exclude name="WorkSpaces/**"/>
+        <exclude name="XRay/**"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/aws/aws-sdk-php/src/data/endpoints.json.php" tofile="${basedir}/build/phar/lib/aws-sdk/data/endpoints.json.php"/>
+    <copy file="${basedir}/vendor/aws/aws-sdk-php/src/data/manifest.json.php" tofile="${basedir}/build/phar/lib/aws-sdk/data/manifest.json.php"/>
+    <copy todir="${basedir}/build/phar/lib/aws-sdk/data/s3">
+      <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src/data/s3">
+        <include name="**/*.php"/>
       </fileset>
     </copy>
 
@@ -246,6 +330,50 @@
         <include name="**/*.php"/>
       </fileset>
     </copy>
+
+    <!-- GOOGLE API -->
+    <copy file="${basedir}/vendor/google/apiclient/LICENSE" tofile="${basedir}/build/phar/lib/google-client/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/google-client">
+      <fileset dir="${basedir}/vendor/google/apiclient/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/google/auth/LICENSE" tofile="${basedir}/build/phar/lib/google-auth/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/google-auth">
+      <fileset dir="${basedir}/vendor/google/auth/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/google/apiclient-services/LICENSE" tofile="${basedir}/build/phar/lib/google-services/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/google-services">
+      <fileset dir="${basedir}/vendor/google/apiclient-services/src">
+        <include name="**/Drive.php"/>
+        <include name="**/Drive/**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/psr/cache/LICENSE.txt"
+          tofile="${basedir}/build/phar/lib/psr/cache/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/psr/cache">
+      <fileset dir="${basedir}/vendor/psr/cache/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- MONOLOG FOR GOOGLE -->
+    <copy file="${basedir}/vendor/monolog/monolog/LICENSE" tofile="${basedir}/build/phar/lib/monolog/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/monolog">
+      <fileset dir="${basedir}/vendor/monolog/monolog/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/psr/log/LICENSE"
+          tofile="${basedir}/build/phar/lib/psr/log/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/psr/log">
+      <fileset dir="${basedir}/vendor/psr/log/Psr">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
 
     <!-- PHPSECLIB -->
     <copy file="${basedir}/vendor/phpseclib/phpseclib/LICENSE" tofile="${basedir}/build/phar/lib/phpseclib/LICENSE"/>
