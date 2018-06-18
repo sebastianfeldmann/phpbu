@@ -1,0 +1,8 @@
+{
+  "type": "googledrive",
+  "options": {
+    "secret": "backup/google/client_secret.json",
+    "access": "backup/google/credentials.json",
+    "parentId": "s234bh3b24bb32asd7q2"
+  }
+}

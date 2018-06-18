@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sync type="googledrive">
+  <!-- google secret file -->
+  <option name="secret" value="backup/google/client_secret.json"/>
+
+  <!-- google created oauth credentials -->
+  <option name="access" value="backup/google/credentials.json"/>
+
+  <!-- the id of the "folder" where to put the backups -->
+  <option name="parentId" value="s234bh3b24bb32asd7q2"/>
+
+  <!-- optional cleanup configuration -->
+  <option name="cleanup.type" value="quantity"/>
+  <option name="cleanup.amount" value="10"/>
+</sync>
