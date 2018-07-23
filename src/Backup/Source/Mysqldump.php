@@ -155,11 +155,19 @@ class Mysqldump extends SimulatorExecutable implements Simulator
 
     /**
      * Add general transaction id statement.
-     * --set-gids-purged
+     * --set-gids-purged=['ON', 'OFF', 'AUTO']
      *
      * @var string
      */
     private $gtidPurged;
+
+    /**
+     * Dump procedures and functions.
+     * --routines
+     *
+     * @var bool
+     */
+    private $routines;
 
     /**
      * Setup.
@@ -186,6 +194,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
         $this->extendedInsert    = Util\Str::toBoolean(Util\Arr::getValue($conf, 'extendedInsert', ''), false);
         $this->noData            = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
         $this->filePerTable      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'filePerTable', ''), false);
+        $this->routines          = Util\Str::toBoolean(Util\Arr::getValue($conf, 'routines', ''), false);
 
         // this doesn't fail, but it doesn't work, so throw an exception so the user understands
         if ($this->filePerTable && count($this->structureOnly)) {
@@ -259,6 +268,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
                    ->ignoreTables($this->ignoreTables)
                    ->produceFilePerTable($this->filePerTable)
                    ->dumpNoData($this->noData)
+                   ->dumpRoutines($this->routines)
                    ->dumpStructureOnly($this->structureOnly)
                    ->dumpTo($this->getDumpTarget($target));
         // if compression is active and commands can be piped

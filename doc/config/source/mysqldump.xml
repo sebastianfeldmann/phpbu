@@ -42,6 +42,9 @@
   <!-- optional, default=false -->
   <option name="hexBlob" value="true" />
 
+  <!-- optional, default=false -->
+  <option name="routines" value="true" />
+
   <!-- optional, default=none, accepted=ON,OFF,AUTO -->
   <option name="gtidPurged" value="ON" />
 

@@ -28,7 +28,9 @@ foreach ($lock->{'packages-dev'} as $package) {
         "kunalvarma05/dropbox-php-sdk",
         "phpseclib/phpseclib",
         "softlayer/objectstorage",
-        "vlucas/phpdotenv"
+        "vlucas/phpdotenv",
+        "google/apiclient",
+        "php-opencloud/openstack"
     ])) {
       continue;
     }

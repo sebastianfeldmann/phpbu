@@ -15,6 +15,7 @@
     "compress": true,
     "extendedInsert": true,
     "hexBlob": true,
+    "routines": true,
     "gtidPurged": "AUTO",
     "pathToMysqldump": "/path/to/custom/bin"
   }
