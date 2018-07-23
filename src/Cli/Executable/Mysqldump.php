@@ -157,6 +157,14 @@ class Mysqldump extends Abstraction implements Executable
     private $hexBlob = false;
 
     /**
+     * Dump routines.
+     * --routines
+     *
+     * @var boolean
+     */
+    private $routines = false;
+
+    /**
      * Path to dump file
      *
      * @var string
@@ -376,6 +384,18 @@ class Mysqldump extends Abstraction implements Executable
     }
 
     /**
+     * Dump procedures and functions.
+     *
+     * @param  bool $bool
+     * @return \phpbu\App\Cli\Executable\Mysqldump
+     */
+    public function dumpRoutines(bool $bool) : Mysqldump
+    {
+        $this->routines = $bool;
+        return $this;
+    }
+
+    /**
      * Pipe compressor.
      *
      * @param  \phpbu\App\Backup\Target\Compression $compression
@@ -421,6 +441,7 @@ class Mysqldump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('-e', $this->extendedInsert, false);
         $cmd->addOptionIfNotEmpty('--hex-blob', $this->hexBlob, false);
         $cmd->addOptionIfNotEmpty('--set-gtid-purged', $this->gtidPurged);
+        $cmd->addOptionIfNotEmpty('--routines', $this->routines, false);
 
         $this->configureSourceData($cmd);
         $this->configureIgnoredTables($cmd);
