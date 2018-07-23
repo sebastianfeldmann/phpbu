@@ -155,7 +155,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
 
     /**
      * Add general transaction id statement.
-     * --set-gids-purged
+     * --set-gids-purged=['ON', 'OFF', 'AUTO']
      *
      * @var string
      */
@@ -165,7 +165,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
      * Dump procedures and functions.
      * --routines
      *
-     * @var string
+     * @var bool
      */
     private $routines;
 
