@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Log;
 
+use phpbu\App\Cli\Statistics;
 use phpbu\App\Exception;
 use phpbu\App\Event;
 use phpbu\App\Listener;
@@ -8,7 +9,6 @@ use phpbu\App\Result;
 use phpbu\App\Log\MailTemplate as TPL;
 use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
-use PHP_Timer;
 use Swift_Mailer;
 use Swift_Message;
 
@@ -549,7 +549,7 @@ class Mail implements Listener, Logger
      */
     protected function getFooterHtml()
     {
-        return '<p ' . TPL::getSnippet('sStats') . '>' . PHP_Timer::resourceUsage() . '</p>' .
+        return '<p ' . TPL::getSnippet('sStats') . '>' . Statistics::resourceUsage() . '</p>' .
                '</td></tr></table>';
     }
 }
