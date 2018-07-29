@@ -385,15 +385,6 @@
       </fileset>
     </copy>
 
-    <!-- PHPUNIT LIBS -->
-    <copy file="${basedir}/vendor/phpunit/php-timer/LICENSE" tofile="${basedir}/build/phar/lib/php-timer/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/php-timer">
-      <fileset dir="${basedir}/vendor/phpunit/php-timer/src">
-        <include name="**/*.php"/>
-        <exclude name="**/Autoload.*"/>
-      </fileset>
-    </copy>
-
     <copy file="${basedir}/vendor/sebastian/environment/LICENSE"
           tofile="${basedir}/build/phar/lib/sebastian-environment/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/sebastian-environment">
