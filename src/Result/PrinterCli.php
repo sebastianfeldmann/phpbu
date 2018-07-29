@@ -1,11 +1,11 @@
 <?php
 namespace phpbu\App\Result;
 
+use phpbu\App\Cli\Statistics;
 use phpbu\App\Event;
 use phpbu\App\Listener;
 use phpbu\App\Result;
 use phpbu\App\Util;
-use PHP_Timer;
 use SebastianBergmann\Environment\Console;
 use SebastianBergmann\Environment\Runtime;
 
@@ -440,7 +440,7 @@ class PrinterCli implements Listener
      */
     protected function printHeader()
     {
-        $this->write(PHP_Timer::resourceUsage() . PHP_EOL . PHP_EOL);
+        $this->write(Statistics::resourceUsage() . PHP_EOL . PHP_EOL);
     }
 
     /**
