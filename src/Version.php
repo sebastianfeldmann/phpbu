@@ -17,19 +17,59 @@ use SebastianBergmann;
 class Version
 {
     /**
-     * Version of the phar file.
-     * Is getting set via the phar build process.
-     *
-     * @var string
-     */
-    private static $pharVersion;
-
-    /**
      * Current version
      *
      * @var string
      */
     private static $version;
+
+    /**
+     * Path to application root directory.
+     *
+     * @var string
+     */
+    private $path;
+
+    /**
+     * Current release version.
+     *
+     * @var string
+     */
+    private $release;
+
+    /**
+     * Current version number.
+     *
+     * @var string
+     */
+    private $number;
+
+    /**
+     * @param string $release
+     * @param string $path
+     */
+    public function __construct($release, $path)
+    {
+        $this->release = $release;
+        $this->path    = $path;
+    }
+
+    /**
+     * Return the full version number.
+     *
+     * @return string
+     */
+    public function getVersionNumber()
+    {
+        if ($this->number === null) {
+            if (count(explode('.', $this->release)) == 3) {
+                $this->number = $this->release;
+            } else {
+                $this->number = $this->release . '-dev';
+            }
+        }
+        return $this->number;
+    }
 
     /**
      * Return the current version of PHPUnit.
@@ -38,13 +78,9 @@ class Version
      */
     public static function id() : string
     {
-        if (self::$pharVersion !== null) {
-            return self::$pharVersion;
-        }
-
         if (self::$version === null) {
-            $version = new SebastianBergmann\Version('5.1', dirname(dirname(__DIR__)));
-            self::$version = $version->getVersion();
+            $version = new self('5.1', dirname(dirname(__DIR__)));
+            self::$version = $version->getVersionNumber();
         }
 
         return self::$version;

@@ -35,4 +35,24 @@ class VersionTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('phpbu 5.1', substr($version, 0, 9), 'version should match');
     }
+
+    /**
+     * Tests Version::getVersionNumber
+     */
+    public function testVersionNumberDev()
+    {
+        $version = new Version('5.1', dirname(dirname(dirname(__DIR__))));
+
+        $this->assertEquals('5.1-dev', $number  = $version->getVersionNumber());
+    }
+
+    /**
+     * Tests Version::getVersionNumber
+     */
+    public function testVersionNumberRelease()
+    {
+        $version = new Version('5.1.0', dirname(dirname(dirname(__DIR__))));
+
+        $this->assertEquals('5.1.0', $number  = $version->getVersionNumber());
+    }
 }
