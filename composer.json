@@ -36,13 +36,13 @@
     "ext-json": "*",
     "ext-spl": "*",
     "sebastian/environment": "~1.1|~2.0|~3.0",
-    "sebastian/version": "~1.0|~2.0",
     "sebastianfeldmann/cli": "~2.0",
     "sebastianfeldmann/ftp": "~0.9",
     "swiftmailer/swiftmailer": "~5.3|~6.0",
     "symfony/event-dispatcher": "~2.6|~3.0|~4.0"
   },
   "require-dev": {
+    "sebastianfeldmann/git": "~1.0",
     "aws/aws-sdk-php": "~3.10",
     "kunalvarma05/dropbox-php-sdk": "~0.2",
     "phpseclib/phpseclib": "~2.0",

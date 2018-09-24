@@ -4,21 +4,28 @@ if (!isset($argv[1])) {
     exit(1);
 }
 
-$arg = trim($argv[1]);
+require __DIR__ . '/../vendor/autoload.php';
 
-if ($arg == 'alpha' || $arg == 'beta') {
-    $version = sprintf('%s-%s', $argv[1], date('Y-m-d'));
-} else {
-    $version = $arg;
+$version = trim($argv[1]);
+
+if (strpos($version, 'dev') !== false) {
+    // smuggle in a more informative dev version number
+    try {
+        $repository = new SebastianFeldmann\Git\Repository(dirname(__DIR__));
+        $info       = $repository->getInfoOperator();
+        $version    = $info->getCurrentTag();
+
+        file_put_contents(
+            __DIR__ . '/phar/Version.php',
+            preg_replace(
+                '#new self\\(\'.*\',#',
+                'new self(\'' . $version . '\',',
+                file_get_contents(__DIR__ . '/phar/Version.php')
+            )
+        );
+    } catch (\Exception $e) {
+        exit(1);
+    }
 }
-
-file_put_contents(
-    __DIR__ . '/phar/Version.php',
-    str_replace(
-        'private static $pharVersion;',
-        'private static $pharVersion = "' . $version . '";',
-        file_get_contents(__DIR__ . '/phar/Version.php')
-    )
-);
 
 echo $version;

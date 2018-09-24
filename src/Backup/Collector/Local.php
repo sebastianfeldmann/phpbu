@@ -28,8 +28,7 @@ class Local extends Abstraction implements Collector
      */
     public function __construct(Target $target)
     {
-        $this->target    = $target;
-        $this->fileRegex = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
+        $this->target = $target;
     }
 
     /**
@@ -37,6 +36,7 @@ class Local extends Abstraction implements Collector
      */
     protected function collectBackups()
     {
+        $this->fileRegex = Util\Path::datePlaceholdersToRegex($this->target->getFilenameRaw());
         $this->collect($this->target->getPath()->getPathThatIsNotChanging());
     }
 

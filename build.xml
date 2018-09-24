@@ -84,22 +84,6 @@
     </antcall>
   </target>
 
-  <target name="phar-alpha"
-          description="Create PHAR archive of PHPUnit and all its dependencies (alpha)"
-          depends="phar-prepare">
-    <antcall target="phar-build">
-      <param name="version" value="alpha"/>
-    </antcall>
-  </target>
-
-  <target name="phar-beta"
-          description="Create PHAR archive of PHPUnit and all its dependencies (beta)"
-          depends="phar-prepare">
-    <antcall target="phar-build">
-      <param name="version" value="beta"/>
-    </antcall>
-  </target>
-
   <target name="phar-prepare" depends="clean">
     <mkdir dir="${basedir}/build/phar"/>
 
@@ -393,15 +377,6 @@
       </fileset>
     </copy>
 
-    <copy file="${basedir}/vendor/sebastian/version/LICENSE"
-          tofile="${basedir}/build/phar/lib/sebastian-version/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/sebastian-version">
-      <fileset dir="${basedir}/vendor/sebastian/version/src">
-        <include name="**/*.php"/>
-        <exclude name="**/autoload.php"/>
-      </fileset>
-    </copy>
-
     <!-- SOFTLAYER -->
     <copy file="${basedir}/vendor/softlayer/objectstorage/COPYING"
           tofile="${basedir}/build/phar/lib/softlayer-os/LICENSE"/>
@@ -450,8 +425,6 @@
       </fileset>
     </copy>
 
-    <exec executable="${basedir}/build/phar-patch.php"/>
-
   </target>
 
 
@@ -470,7 +443,6 @@
       <arg value="--all"/>
       <arg value="--phar"/>
       <arg value="--gzip"/>
-      <!-- <arg value="- -bzip2" /> -->
       <arg value="--output"/>
       <arg path="${basedir}/build/phpbu-${phar_version}.phar"/>
       <arg value="--template"/>
