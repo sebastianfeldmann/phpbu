@@ -270,8 +270,11 @@
         <exclude name="XRay/**"/>
       </fileset>
     </copy>
-    <copy file="${basedir}/vendor/aws/aws-sdk-php/src/data/endpoints.json.php" tofile="${basedir}/build/phar/lib/aws-sdk/data/endpoints.json.php"/>
-    <copy file="${basedir}/vendor/aws/aws-sdk-php/src/data/manifest.json.php" tofile="${basedir}/build/phar/lib/aws-sdk/data/manifest.json.php"/>
+    <copy todir="${basedir}/build/phar/lib/aws-sdk/data">
+      <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src/data">
+        <include name="*.php"/>
+      </fileset>
+    </copy>
     <copy todir="${basedir}/build/phar/lib/aws-sdk/data/s3">
       <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src/data/s3">
         <include name="**/*.php"/>
