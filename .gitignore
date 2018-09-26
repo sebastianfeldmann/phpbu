@@ -8,6 +8,7 @@
 /build/coverage
 /build/logs
 /build/phar
+/build/phar-scoped
 /composer.lock
 /phpbu.xml
 /phpbu.json
