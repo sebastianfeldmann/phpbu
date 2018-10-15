@@ -173,7 +173,7 @@ class Path
     public static function isAbsolutePath(string $path) : bool
     {
         // path already absolute?
-        if ($path[0] === '/') {
+        if (substr($path, 0, 1) === '/') {
             return true;
         }
 
