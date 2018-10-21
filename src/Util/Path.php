@@ -18,8 +18,8 @@ class Path
      * Date placeholder replacement.
      * Replaces %{somevalue} with date({somevalue}).
      *
-     * @param  string               $string
-     * @param  mixed <integer|null> $time
+     * @param  string       $string
+     * @param  integer|null $time
      * @return string
      */
     public static function replaceDatePlaceholders(string $string, $time = null) : string

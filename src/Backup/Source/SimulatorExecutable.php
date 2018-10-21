@@ -35,7 +35,7 @@ abstract class SimulatorExecutable extends Cli
     /**
      * Create backup status.
      *
-     * @param  \phpbu\App\Backup\Target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Source\Status
      */
     abstract protected function createStatus(Target $target) : Status;

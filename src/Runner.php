@@ -47,7 +47,6 @@ class Runner
      * Run phpbu
      *
      * @param  \phpbu\App\Configuration $configuration
-     * @param  \phpbu\App\Factory
      * @return \phpbu\App\Result
      * @throws \phpbu\App\Exception
      */
