@@ -106,7 +106,7 @@ class Result
     /**
      * Registers a Listener/Subscriber.
      *
-     * @param \phpbu\App\Listener
+     * @param \phpbu\App\Listener $subscriber
      */
     public function addListener(Listener $subscriber)
     {

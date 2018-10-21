@@ -187,7 +187,7 @@ class AmazonS3v3 extends AmazonS3
      *
      * @param \phpbu\App\Backup\Target $target
      * @param \Aws\S3\S3Client         $s3
-     * @param \Aws\Exception\MultipartUploadException
+     * @throws \Aws\Exception\MultipartUploadException
      */
     private function uploadMultiPart(Target $target, S3Client $s3)
     {

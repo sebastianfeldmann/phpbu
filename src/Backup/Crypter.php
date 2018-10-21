@@ -27,7 +27,7 @@ interface Crypter
      * Checks the created backup.
      *
      * @param  \phpbu\App\Backup\Target $target
-     * @param  \phpbu\App\Result
+     * @param  \phpbu\App\Result $result
      * @throws \phpbu\App\Exception
      */
     public function crypt(Target $target, Result $result);
