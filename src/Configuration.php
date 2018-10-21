@@ -115,7 +115,7 @@ class Configuration
     /**
      * Bootstrap setter.
      *
-     * @param $file
+     * @param string $file
      */
     public function setBootstrap(string $file)
     {
