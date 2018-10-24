@@ -1,0 +1,10 @@
+parameters:
+  level: 2
+  paths:
+  - %currentWorkingDirectory%/src/
+  ignoreErrors:
+      - '#Call to an undefined method SebastianFeldmann\\Ftp\\Client::delete\(\)#'
+      - '#Call to an undefined method ObjectStorage_Abstract::setLocalFile\(\)#'
+      - '#Instantiated class phpbu\\App\\Runner\\Restore not found#'
+      - '#Cannot cast DateTimeImmutable to int#'
+      - '#Cannot call method getTimestamp\(\) on string#'

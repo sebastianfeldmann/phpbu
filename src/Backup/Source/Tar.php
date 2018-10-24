@@ -170,7 +170,7 @@ class Tar extends SimulatorExecutable implements Simulator
     /**
      * Setup the Executable to run the 'tar' command.
      *
-     * @param  \phpbu\App\Backup\Target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
      */
     protected function createExecutable(Target $target) : Executable
@@ -216,7 +216,7 @@ class Tar extends SimulatorExecutable implements Simulator
     /**
      * Create backup status.
      *
-     * @param  \phpbu\App\Backup\Target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Source\Status
      */
     protected function createStatus(Target $target) : Status

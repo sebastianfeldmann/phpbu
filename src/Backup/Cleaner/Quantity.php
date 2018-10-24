@@ -76,7 +76,7 @@ class Quantity extends Abstraction implements Cleaner
     /**
      * Returns true when the capacity is exceeded.
      *
-     * @param  array
+     * @param  array $files
      * @return bool
      */
     private function isCapacityExceeded(array $files)

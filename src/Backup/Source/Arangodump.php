@@ -173,7 +173,7 @@ class Arangodump extends SimulatorExecutable implements Simulator
     /**
      * Create backup status.
      *
-     * @param  \phpbu\App\Backup\Target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Source\Status
      */
     protected function createStatus(Target $target) : Status
