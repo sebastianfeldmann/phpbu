@@ -51,7 +51,7 @@ class Status
     }
 
     /**
-     * @param $path
+     * @param  string $path
      * @return \phpbu\App\Backup\Source\Status
      */
     public function uncompressedDirectory($path)

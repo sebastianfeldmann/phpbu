@@ -100,7 +100,7 @@ class SoftLayer implements Simulator
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::sync()
-     * @param  \phpbu\App\backup\Target $target
+     * @param  \phpbu\App\Backup\Target $target
      * @param  \phpbu\App\Result        $result
      * @throws \phpbu\App\Backup\Sync\Exception
      */

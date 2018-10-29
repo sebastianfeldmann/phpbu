@@ -179,7 +179,7 @@ class Webhook implements Listener, Logger
     /**
      * Returns some basic statistics as GET query string.
      *
-     * @param  $result \phpbu\App\Result
+     * @param  \phpbu\App\Result $result
      * @return array
      */
     private function getQueryStringData(Result $result) : array

@@ -80,7 +80,7 @@ class Rsync extends Cli implements Simulator
     /**
      * Setup the Executable to run the 'rsync' command.
      *
-     * @param  \phpbu\App\Backup\Target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
      */
     protected function createExecutable(Target $target) : Executable

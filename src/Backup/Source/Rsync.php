@@ -59,7 +59,7 @@ class Rsync extends SimulatorExecutable implements Simulator
     /**
      * Setup the Executable to run the 'rsync' command.
      *
-     * @param  \phpbu\App\Backup\Target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
      */
     protected function createExecutable(Target $target) : Executable
@@ -86,7 +86,7 @@ class Rsync extends SimulatorExecutable implements Simulator
     /**
      * Create backup status.
      *
-     * @param  \phpbu\App\Backup\Target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Source\Status
      */
     protected function createStatus(Target $target) : Status

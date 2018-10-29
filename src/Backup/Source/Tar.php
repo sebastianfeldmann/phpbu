@@ -3,9 +3,11 @@ namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
+use phpbu\App\Configuration;
 use phpbu\App\Exception;
 use phpbu\App\Result;
 use phpbu\App\Util;
+use Symfony\Component\Finder\Tests\Iterator\FilecontentFilterIteratorTest;
 
 /**
  * Tar source class.
@@ -111,17 +113,31 @@ class Tar extends SimulatorExecutable implements Simulator
      */
     public function setup(array $conf = [])
     {
+        $this->setupPath($conf);
         $this->pathToTar        = Util\Arr::getValue($conf, 'pathToTar', '');
-        $this->path             = Util\Arr::getValue($conf, 'path', '');
         $this->excludes         = Util\Str::toList(Util\Arr::getValue($conf, 'exclude', ''));
         $this->compressProgram  = Util\Arr::getValue($conf, 'compressProgram', '');
         $this->throttle         = Util\Arr::getValue($conf, 'throttle', '');
         $this->forceLocal       = Util\Str::toBoolean(Util\Arr::getValue($conf, 'forceLocal', ''), false);
         $this->ignoreFailedRead = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ignoreFailedRead', ''), false);
         $this->removeSourceDir  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeSourceDir', ''), false);
+    }
 
-        if (empty($this->path)) {
+    /**
+     * Setup the path to the directory that should be compressed.
+     *
+     * @param  array $conf
+     * @throws \phpbu\App\Exception
+     */
+    protected function setupPath(array $conf)
+    {
+        $path = Util\Arr::getValue($conf, 'path', '');
+        if (empty($path)) {
             throw new Exception('path option is mandatory');
+        }
+        $this->path = Util\Path::toAbsolutePath($path, Configuration::getWorkingDirectory());
+        if (!file_exists($this->path)) {
+            throw new Exception('could not find directory to compress');
         }
     }
 
@@ -154,7 +170,7 @@ class Tar extends SimulatorExecutable implements Simulator
     /**
      * Setup the Executable to run the 'tar' command.
      *
-     * @param  \phpbu\App\Backup\Target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
      */
     protected function createExecutable(Target $target) : Executable
@@ -200,7 +216,7 @@ class Tar extends SimulatorExecutable implements Simulator
     /**
      * Create backup status.
      *
-     * @param  \phpbu\App\Backup\Target
+     * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Source\Status
      */
     protected function createStatus(Target $target) : Status
