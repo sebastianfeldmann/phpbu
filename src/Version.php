@@ -13,8 +13,9 @@ use SebastianBergmann;
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
+ * @internal
  */
-class Version
+final class Version
 {
     /**
      * Current version

@@ -13,8 +13,9 @@ use phpbu\App\Exception;
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
+ * @internal
  */
-class Args
+final class Args
 {
 
     /**
