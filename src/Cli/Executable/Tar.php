@@ -99,6 +99,13 @@ class Tar extends Abstraction implements Executable
     ];
 
     /**
+     * Instead of archiving symbolic links, archive the files they link to
+     *
+     * @var bool
+     */
+    private $dereference = false;
+
+    /**
      * Constructor.
      *
      * @param string $path
@@ -242,6 +249,18 @@ class Tar extends Abstraction implements Executable
     }
 
     /**
+     * Instead of archiving symbolic links, archive the files they link
+     *
+     * @param bool $bool
+     * @return \phpbu\App\Cli\Executable\Tar
+     */
+    public function dereference(bool $bool) : Tar
+    {
+        $this->dereference = $bool;
+        return $this;
+    }
+
+    /**
      * Tar CommandLine generator.
      *
      * @return \SebastianFeldmann\Cli\CommandLine
@@ -259,6 +278,7 @@ class Tar extends Abstraction implements Executable
         $this->setExcludeOptions($tar);
         $this->handleWarnings($tar);
 
+        $tar->addOptionIfNotEmpty('-h', $this->dereference, false);
         $tar->addOptionIfNotEmpty('--force-local', $this->local, false);
         $tar->addOptionIfNotEmpty('--use-compress-program', $this->compressProgram);
         $tar->addOption('-' . (empty($this->compressProgram) ? $this->compression : '') . $create);
