@@ -35,6 +35,24 @@ class TarTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests Tar::getCommandLine
      */
+    public function testDereference()
+    {
+        $dir  = sys_get_temp_dir();
+        $tarC = dirname($dir);
+        $tarD = basename($dir);
+        $tar  = new Tar(PHPBU_TEST_BIN);
+        $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->dereference(true);
+
+        $this->assertEquals([0], $tar->getAcceptableExitCodes());
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar -h -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            $tar->getCommand()
+        );
+    }
+
+    /**
+     * Tests Tar::getCommandLine
+     */
     public function testExclude()
     {
         $dir  = sys_get_temp_dir();

@@ -61,6 +61,28 @@ class TarTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests Tar::getExecutable
      */
+    public function testDereferenceOption()
+    {
+        $target = $this->createTargetMock('/tmp/backup.tar');
+        $target->method('shouldBeCompressed')->willReturn(false);
+        $target->method('getPathname')->willReturn('/tmp/backup.tar');
+
+        $tar = new Tar();
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __DIR__, 'dereference' => 'true']);
+
+        $exec = $tar->getExecutable($target);
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar -h -cf \'/tmp/backup.tar\' -C \''
+            . dirname(__DIR__) . '\' \''
+            . basename(__DIR__) . '\'',
+            $exec->getCommand()
+        );
+    }
+
+    /**
+     * Tests Tar::getExecutable
+     */
     public function testExcludes()
     {
         $tar = new Tar();

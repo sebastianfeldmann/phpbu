@@ -18,7 +18,7 @@
   <!-- mandatory -->
   <option name="transport" value="smtp" />
 
-  <!-- optional default=587 -->
+  <!-- optional default=25 -->
   <option name="smtp.port" value="587" />
 
   <!-- mandatory -->

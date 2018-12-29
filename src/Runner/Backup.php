@@ -20,6 +20,7 @@ use phpbu\App\Result;
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.0
+ * @internal
  */
 class Backup extends Compression
 {

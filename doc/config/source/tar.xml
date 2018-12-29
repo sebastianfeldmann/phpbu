@@ -23,4 +23,7 @@
 
   <!-- define your custom tar executable location -->
   <option name="pathToTar" value="/path/to/custom/bin" />
+
+  <!-- optional, default false -->
+  <option name="dereference" value="false" />
 </source>

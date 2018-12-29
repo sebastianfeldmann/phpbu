@@ -105,6 +105,13 @@ class Tar extends SimulatorExecutable implements Simulator
     private $pathToArchive;
 
     /**
+     * Instead of archiving symbolic links, archive the files they link to
+     *
+     * @var bool
+     */
+    private $dereference;
+
+    /**
      * Setup.
      *
      * @see    \phpbu\App\Backup\Source
@@ -121,6 +128,7 @@ class Tar extends SimulatorExecutable implements Simulator
         $this->forceLocal       = Util\Str::toBoolean(Util\Arr::getValue($conf, 'forceLocal', ''), false);
         $this->ignoreFailedRead = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ignoreFailedRead', ''), false);
         $this->removeSourceDir  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'removeSourceDir', ''), false);
+        $this->dereference      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'dereference', ''), false);
     }
 
     /**
@@ -192,7 +200,8 @@ class Tar extends SimulatorExecutable implements Simulator
                    ->ignoreFailedRead($this->ignoreFailedRead)
                    ->removeSourceDirectory($this->removeSourceDir)
                    ->throttle($this->throttle)
-                   ->archiveTo($this->pathToArchive);
+                   ->archiveTo($this->pathToArchive)
+                   ->dereference($this->dereference);
         // add paths to exclude
         foreach ($this->excludes as $path) {
             $executable->addExclude($path);
