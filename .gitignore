@@ -3,6 +3,7 @@
 .idea
 .env
 .project
+.phpunit.result.cache
 .settings
 /backup/*
 /build/coverage

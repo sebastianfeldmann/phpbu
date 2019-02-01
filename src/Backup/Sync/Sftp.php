@@ -35,6 +35,13 @@ class Sftp extends Xtp
     protected $remotePath;
 
     /**
+     * Remote port of sftp server
+     *
+     * @var string
+     */
+    protected $port;
+
+    /**
      * @var int
      */
     protected $time;
@@ -72,6 +79,7 @@ class Sftp extends Xtp
         }
         $this->privateKey = $privateKey;
         $this->remotePath = new Path($config['path'], $this->time);
+        $this->port       = Util\Arr::getValue($config, 'port', '22');
 
         $this->setUpCleanable($config);
     }
@@ -145,7 +153,7 @@ class Sftp extends Xtp
         if (!$this->sftp) {
             // silence phpseclib errors
             $old  = error_reporting(0);
-            $this->sftp = new phpseclib\Net\SFTP($this->host);
+            $this->sftp = new phpseclib\Net\SFTP($this->host, $this->port);
             $auth = $this->getAuth();
 
             if (!$this->sftp->login($this->user, $auth)) {

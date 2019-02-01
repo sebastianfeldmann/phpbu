@@ -9,6 +9,9 @@
   <!-- optional, if key presented it is used as key password -->
   <option name="password" value="mysecret" />
 
+  <!-- optional, default 22 -->
+  <option name="port" value="22" />
+
   <!-- optional -->
   <option name="key" value="somedir/id_rsa" />
 
