@@ -16,9 +16,19 @@ namespace phpbu\App\Adapter;
 abstract class Util
 {
     /**
-     * Finds all adapter references in a value string.
+     * Finds all adapter references in a value string
      *
-     * @param string $value
+     * This returns a list of all found adapter references in an array like:
+     *   [
+     *     [
+     *       'search'  => 'adapter:name:path',
+     *       'adapter' => 'name',
+     *       'path'    => 'path'
+     *     ],
+     *     ...
+     *   ]
+     *
+     * @param  string $value
      * @return array
      */
     public static function getAdapterReplacements(string $value) : array
