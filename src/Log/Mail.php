@@ -9,8 +9,7 @@ use phpbu\App\Result;
 use phpbu\App\Log\MailTemplate as TPL;
 use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
-use Swift_Mailer;
-use Swift_Message;
+use PHPMailer\PHPMailer\PHPMailer;
 
 /**
  * Mail Logger
@@ -28,7 +27,7 @@ class Mail implements Listener, Logger
     /**
      * Mailer instance
      *
-     * @var Swift_Mailer
+     * @var \PHPMailer\PHPMailer\PHPMailer;
      */
     protected $mailer;
 
@@ -171,8 +170,8 @@ class Mail implements Listener, Logger
         $this->isSimulation    = Arr::getValue($options, '__simulate__', false);
 
         // create transport an mailer
-        $transport    = $this->createTransport($this->transportType, $options);
-        $this->mailer = new Swift_Mailer($transport);
+        $this->mailer = new PHPMailer();
+        $this->setupMailer($this->transportType, $options);
     }
 
     /**
@@ -201,20 +200,16 @@ class Mail implements Listener, Logger
             $sent    = null;
             $state   = $result->allOk() ? 'OK' : ($result->backupOkButSkipsOrFails() ? 'WARNING' : 'ERROR');
 
-            try {
-                /** @var \Swift_Message $message */
-                $message = new Swift_Message();
-                $message->setSubject($this->subject . ' [' . $state . ']')
-                        ->setFrom($this->senderMail, $this->senderName)
-                        ->setTo($this->recipients)
-                        ->setBody($body, 'text/html');
+            $this->mailer->Subject = $this->subject . ' [' . $state . ']';
+            $this->mailer->setFrom($this->senderMail, $this->senderName);
+            $this->mailer->msgHTML($body);
 
-                $sent = $this->mailer->send($message);
-            } catch (\Exception $e) {
-                throw new Exception($e->getMessage());
+            foreach ($this->recipients as $recipient) {
+                $this->mailer->addAddress($recipient);
             }
-            if (!$sent) {
-                throw new Exception('mail could not be sent');
+
+            if (!$this->mailer->send()) {
+                throw new Exception($this->mailer->ErrorInfo);
             }
         }
     }
@@ -270,40 +265,36 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * Create a Swift_Mailer_Transport.
+     * Configure PHPMailer
      *
-     * @param  string $type
-     * @param  array  $options
+     * @param  string                         $type
+     * @param  array                          $options
      * @throws \phpbu\App\Exception
-     * @return \Swift_Transport
      */
-    protected function createTransport($type, array $options)
+    protected function setupMailer($type, array $options)
     {
         switch ($type) {
-            // null transport, don't send any mails
             case 'null':
-                 /* @var $transport \Swift_NullTransport */
-                $transport = new \Swift_NullTransport();
+                $this->isSimulation = true;
                 break;
 
             case 'smtp':
-                $transport = $this->getSmtpTransport($options);
+                $this->setupSmtpMailer($options);
                 break;
 
             case 'mail':
             case 'sendmail':
-                $transport = $this->getSendmailTransport($options);
+                $this->setupSendmailMailer($options);
                 break;
 
             // UPS! no transport given
             default:
                 throw new Exception(sprintf('mail transport not supported: \'%s\'', $type));
         }
-        return $transport;
     }
 
     /**
-     * Should a mail be send.
+     * Should a mail be send
      *
      * @param  \phpbu\App\Result $result
      * @return bool
@@ -318,13 +309,13 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * Create Swift Smtp Transport.
+     * Setup smtp mailing
      *
      * @param  array $options
-     * @return \Swift_SmtpTransport
+     * @return void
      * @throws \phpbu\App\Exception
      */
-    protected function getSmtpTransport(array $options)
+    protected function setupSmtpMailer(array $options)
     {
         if (!isset($options['smtp.host'])) {
             throw new Exception('option \'smtp.host\' ist missing');
@@ -335,40 +326,36 @@ class Mail implements Listener, Logger
         $password   = Arr::getValue($options, 'smtp.password');
         $encryption = Arr::getValue($options, 'smtp.encryption');
 
-        /* @var $transport \Swift_SmtpTransport */
-        $transport = new \Swift_SmtpTransport($host, $port);
+        $this->mailer->isSMTP();
+        $this->mailer->Host     = $host;
+        $this->mailer->Port     = $port;
 
         if ($username && $password) {
-            $transport->setUsername($username)
-                      ->setPassword($password);
+            $this->mailer->SMTPAuth = true;
+            $this->mailer->Username = $username;
+            $this->mailer->Password = $password;
         }
         if ($encryption) {
-            $transport->setEncryption($encryption);
+            $this->mailer->SMTPSecure = $encryption;
         }
-        return $transport;
     }
 
     /**
-     * Create a Swift Sendmail Transport.
+     * Setup the php mail transport
      *
      * @param  array $options
-     * @return \Swift_SendmailTransport
+     * @return void
      */
-    protected function getSendmailTransport(array $options)
+    protected function setupSendmailMailer(array $options)
     {
-        if (isset($options['sendmail.path'])) {
-            $path    = $options['sendmail.path'];
-            $options = isset($options['sendmail.options']) ? ' ' . $options['sendmail.options'] : '';
-            /* @var $transport \Swift_SendmailTransport */
-            return new \Swift_SendmailTransport($path . $options);
-        }
-        return new \Swift_SendmailTransport();
+        // nothing to do here
     }
 
     /**
      * Return mail header html
      *
      * @return string
+     * @throws \phpbu\App\Exception
      */
     protected function getHeaderHtml()
     {
@@ -381,6 +368,7 @@ class Mail implements Listener, Logger
      *
      * @param  \phpbu\App\Result $result
      * @return string
+     * @throws \phpbu\App\Exception
      */
     protected function getStatusHtml(Result $result)
     {
@@ -422,10 +410,11 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * Get error information.
+     * Get error information
      *
      * @param  \phpbu\App\Result $result
      * @return string
+     * @throws \phpbu\App\Exception
      */
     protected function getErrorHtml(Result $result)
     {
@@ -452,10 +441,11 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * Return backup html information.
+     * Return backup html information
      *
      * @param  \phpbu\App\Result $result
      * @return string
+     * @throws \phpbu\App\Exception
      */
     protected function getInfoHtml(Result $result)
     {
@@ -543,9 +533,10 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * Return mail body footer.
+     * Return mail body footer
      *
      * @return string
+     * @throws \phpbu\App\Exception
      */
     protected function getFooterHtml()
     {
