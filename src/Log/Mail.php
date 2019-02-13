@@ -197,7 +197,6 @@ class Mail implements Listener, Logger
                      . $info
                      . $footer
                      . '</body></html>';
-            $sent    = null;
             $state   = $result->allOk() ? 'OK' : ($result->backupOkButSkipsOrFails() ? 'WARNING' : 'ERROR');
 
             $this->mailer->Subject = $this->subject . ' [' . $state . ']';
