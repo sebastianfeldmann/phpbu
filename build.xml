@@ -120,7 +120,7 @@
         <include name="**/*.php"/>
       </fileset>
     </copy>
-    <copy todir="${basedir}/build/phar/lib/collect">
+    <copy todir="${basedir}/build/phar/lib/tightenco">
       <fileset dir="${basedir}/vendor/tightenco/collect/src">
         <include name="**/*.php"/>
       </fileset>
@@ -389,13 +389,12 @@
       </fileset>
     </copy>
 
-    <!-- SWIFTMAILER -->
-    <copy file="${basedir}/vendor/swiftmailer/swiftmailer/LICENSE"
-          tofile="${basedir}/build/phar/lib/swiftmailer/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/swiftmailer">
-      <fileset dir="${basedir}/vendor/swiftmailer/swiftmailer/lib">
+    <!-- PHPMAILER -->
+    <copy file="${basedir}/vendor/phpmailer/phpmailer/LICENSE"
+          tofile="${basedir}/build/phar/lib/phpmailer/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/phpmailer">
+      <fileset dir="${basedir}/vendor/phpmailer/phpmailer/src">
         <include name="**/*.php"/>
-        <exclude name="**/swift_required_pear.php"/>
       </fileset>
     </copy>
 

@@ -8,7 +8,7 @@ use phpbu\App\Factory as AppFactory;
 use phpbu\App\Util\Path as PathUtil;
 
 /**
- * Base class for file based phpbu configuration.
+ * Base class for file based phpbu configuration
  *
  * @package    phpbu
  * @subpackage App
@@ -21,28 +21,28 @@ use phpbu\App\Util\Path as PathUtil;
 abstract class File
 {
     /**
-     * Path to config file.
+     * Path to config file
      *
      * @var string
      */
     protected $filename;
 
     /**
-     * Path to config file.
+     * Path to config file
      *
      * @var array
      */
     protected $adapters;
 
     /**
-     * Handling the bootstrapping.
+     * Handling the bootstrapping
      *
      * @var \phpbu\App\Configuration\Bootstrapper
      */
     protected $bootstrapper;
 
     /**
-     * File constructor.
+     * File constructor
      *
      * @param string                                $file
      * @param \phpbu\App\Configuration\Bootstrapper $bootstrapper
@@ -54,7 +54,7 @@ abstract class File
     }
 
     /**
-     * Returns the phpbu Configuration.
+     * Returns the phpbu Configuration
      *
      * @param  \phpbu\App\Factory $factory
      * @return \phpbu\App\Configuration
@@ -77,7 +77,7 @@ abstract class File
     }
 
     /**
-     * Load all available config adapters.
+     * Load all available config adapters
      *
      * @param  \phpbu\App\Factory $factory
      * @throws \phpbu\App\Exception
@@ -90,7 +90,7 @@ abstract class File
     }
 
     /**
-     * Return a registered adapter.
+     * Return a registered adapter
      *
      * @param  string $name
      * @return \phpbu\App\Adapter
@@ -105,21 +105,21 @@ abstract class File
     }
 
     /**
-     * Return list of adapter configs.
+     * Return list of adapter configs
      *
      * @return array
      */
     abstract protected function getAdapterConfigs();
 
     /**
-     * Set the phpbu application settings.
+     * Set the phpbu application settings
      *
      * @param  \phpbu\App\Configuration $configuration
      */
     abstract public function setAppSettings(Configuration $configuration);
 
     /**
-     * Set the log configuration.
+     * Set the log configuration
      *
      * @param  \phpbu\App\Configuration $configuration
      * @throws \phpbu\App\Exception
@@ -127,7 +127,7 @@ abstract class File
     abstract public function setLoggers(Configuration $configuration);
 
     /**
-     * Set the backup configurations.
+     * Set the backup configurations
      *
      * @param  \phpbu\App\Configuration $configuration
      * @throws \phpbu\App\Exception
@@ -135,7 +135,7 @@ abstract class File
     abstract public function setBackups(Configuration $configuration);
 
     /**
-     * Handles the bootstrap file inclusion.
+     * Handles the bootstrap file inclusion
      *
      * @param  \phpbu\App\Configuration $configuration
      * @throws \phpbu\App\Exception
@@ -146,7 +146,7 @@ abstract class File
     }
 
     /**
-     * Converts a path to an absolute one if necessary.
+     * Converts a path to an absolute one if necessary
      *
      * @param  string  $path
      * @param  boolean $useIncludePath
@@ -158,7 +158,7 @@ abstract class File
     }
 
     /**
-     * Return option value.
+     * Return option value
      * Checks if the value should be fetched from an Adapter, if not it just returns the value.
      *
      * @param  string $value
@@ -167,16 +167,18 @@ abstract class File
      */
     protected function getAdapterizedValue($value)
     {
-        foreach (Util::getAdapterReplacements($value) as $replacement) {
-            $search  = $replacement['search'];
-            $replace = $this->getAdapter($replacement['adapter'])->getValue($replacement['path']);
-            $value   = str_replace($search, $replace, $value);
+        if (!empty($value)) {
+            foreach (Util::getAdapterReplacements($value) as $replacement) {
+                $search  = $replacement['search'];
+                $replace = $this->getAdapter($replacement['adapter'])->getValue($replacement['path']);
+                $value   = str_replace($search, $replace, $value);
+            }
         }
         return $value;
     }
 
     /**
-     * Load the file.
+     * Load the file
      *
      * @param  string $filename
      * @throws \phpbu\App\Exception

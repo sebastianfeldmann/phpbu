@@ -175,7 +175,7 @@ class Json extends File implements Loader
      */
     private function getBackupConfig(array $json)
     {
-        $name          = $this->getAdapterizedValue(Arr::getValue($json, 'name'));
+        $name          = $this->getAdapterizedValue(Arr::getValue($json, 'name', ''));
         $stopOnFailure = Arr::getValue($json, 'stopOnFailure', false);
         $backup        = new Configuration\Backup($name, $stopOnFailure);
 
@@ -222,8 +222,8 @@ class Json extends File implements Loader
             throw new Exception('backup requires a target config');
         }
         $compress = Arr::getValue($json['target'], 'compress');
-        $filename = $this->getAdapterizedValue(Arr::getValue($json['target'], 'filename'));
-        $dirname  = $this->getAdapterizedValue(Arr::getValue($json['target'], 'dirname'));
+        $filename = $this->getAdapterizedValue(Arr::getValue($json['target'], 'filename',''));
+        $dirname  = $this->getAdapterizedValue(Arr::getValue($json['target'], 'dirname', ''));
 
         if ($dirname) {
             $dirname = $this->toAbsolutePath($dirname);
@@ -316,10 +316,11 @@ class Json extends File implements Loader
     }
 
     /**
-     * Extracts all option tags.
+     * Extracts all option tags
      *
      * @param  array $json
      * @return array
+     * @throws \phpbu\App\Exception
      */
     protected function getOptions(array $json)
     {
