@@ -207,8 +207,8 @@ class Mail implements Listener, Logger
                 $this->mailer->addAddress($recipient);
             }
 
-            if (!$this->mailer->send()) {
-                throw new Exception($this->mailer->ErrorInfo);
+            if ($this->transportType !== 'null') {
+                $this->sendMail();
             }
         }
     }
@@ -348,6 +348,22 @@ class Mail implements Listener, Logger
     protected function setupSendmailMailer(array $options)
     {
         // nothing to do here
+    }
+
+    /**
+     * Send the email
+     *
+     * @throws \phpbu\App\Exception
+     */
+    protected function sendMail()
+    {
+        try {
+            if (!$this->mailer->send()) {
+                throw new Exception($this->mailer->ErrorInfo);
+            }
+        } catch (\Exception $e)  {
+            throw new Exception($e->getMessage());
+        }
     }
 
     /**
