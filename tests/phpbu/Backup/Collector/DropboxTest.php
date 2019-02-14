@@ -66,7 +66,7 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
 
         $dropboxClientStub->expects($this->once())
                           ->method('listFolder')
-                          ->with('backups/', ['limit' => 100, 'recursive' => true])
+                          ->with('backups/', ['recursive' => true])
                           ->willReturn($dropboxFileListResult);
 
         $time = time();
