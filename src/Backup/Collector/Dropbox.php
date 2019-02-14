@@ -49,8 +49,7 @@ class Dropbox extends Remote implements Collector
         $items = $this->client->listFolder(
             Util\Path::withTrailingSlash($this->path->getPathThatIsNotChanging()),
             [
-                'limit'     => 100,
-                'recursive' => true,
+                'recursive' => true
             ]
         );
         /** @var \Kunnu\Dropbox\Models\FileMetadata $item */
