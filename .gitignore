@@ -1,4 +1,5 @@
 *.phar
+*.asc
 .buildpath
 .idea
 .env
