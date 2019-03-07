@@ -37,7 +37,6 @@
     "ext-spl": "*",
     "sebastian/environment": "~1.1|~2.0|~3.0",
     "sebastianfeldmann/cli": "~2.0",
-    "sebastianfeldmann/ftp": "~0.9",
     "phpmailer/phpmailer": "~6.0",
     "symfony/event-dispatcher": "~2.6|~3.0|~4.0"
   },
@@ -52,6 +51,7 @@
     "php-opencloud/openstack": "^3.0"
   },
   "suggest": {
+    "sebastianfeldmann/ftp": "Require ~0.9 to sync to an FTP server",
     "aws/aws-sdk-php": "Require '~3.10' to sync to Amazon S3",
     "kunalvarma05/dropbox-php-sdk": "Require '~0.2' to sync to Dropbox",
     "phpseclib/phpseclib": "Require '~2.0' to use SFTP sync",
