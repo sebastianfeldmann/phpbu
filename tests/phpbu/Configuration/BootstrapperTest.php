@@ -47,11 +47,10 @@ class BootstrapperTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Bootstrapper::run
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBootstrapNoFile()
     {
+        $this->expectException('phpbu\App\Exception');
         $configuration = $this->createMock(\phpbu\App\Configuration::class);
         $configuration->expects($this->once())
                       ->method('getBootstrap')

@@ -104,11 +104,10 @@ class XtraBackupTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests XtraBackup::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $runner = $this->getRunnerMock();
         $runner->expects($this->once())
                ->method('run')

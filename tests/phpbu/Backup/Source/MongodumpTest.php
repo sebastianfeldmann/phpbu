@@ -57,11 +57,10 @@ class MongodumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Mongodump::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $runner = $this->getRunnerMock();
         $runner->expects($this->once())
                ->method('run')

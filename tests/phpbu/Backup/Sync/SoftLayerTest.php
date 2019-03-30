@@ -56,11 +56,10 @@ class SoftLayerTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests SoftLayer::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoUsername()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup([
             'secret'    => 'dummy-secret',
@@ -72,11 +71,10 @@ class SoftLayerTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests SoftLayer::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoSecret()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup([
             'user'      => 'dummy-username',
@@ -88,11 +86,10 @@ class SoftLayerTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests SoftLayer::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoContainer()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup([
             'user'   => 'dummy-username',
@@ -104,11 +101,10 @@ class SoftLayerTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests SoftLayer::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoHost()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup([
             'user'      => 'dummy-username',
@@ -120,11 +116,10 @@ class SoftLayerTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests SoftLayer::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoPath()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $SoftLayer = new SoftLayer();
         $SoftLayer->setup([
             'user'      => 'dummy-username',

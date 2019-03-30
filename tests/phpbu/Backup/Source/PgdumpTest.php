@@ -77,11 +77,10 @@ class PgdumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Pgdump::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $runner = $this->getRunnerMock();
         $runner->expects($this->once())
                ->method('run')

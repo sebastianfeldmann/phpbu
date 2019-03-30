@@ -21,11 +21,10 @@ class RsyncTest extends \PHPUnit\Framework\TestCase
     use CliMockery;
     /**
      * Tests Rsync::setUp
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupPathMissing()
     {
+        $this->expectException('phpbu\App\Exception');
         $rsync = new Rsync();
         $rsync->setup([]);
 
@@ -141,11 +140,10 @@ class RsyncTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Rsync::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $target = $this->createTargetMock('/tmp/backup.rsync');
         $runner = $this->getRunnerMock();
         $runner->expects($this->once())

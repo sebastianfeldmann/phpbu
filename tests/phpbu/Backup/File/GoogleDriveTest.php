@@ -43,11 +43,10 @@ class GoogleDriveTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests GoogleDrive::unlink
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testUnlinkFailure()
     {
+        $this->expectException('phpbu\App\Exception');
         $file = $this->createMock(\Google_Service_Drive_DriveFile::class);
         $file->method('getName')->willReturn('dump.tar.gz');
         $file->method('getId')->willReturn('A12345');

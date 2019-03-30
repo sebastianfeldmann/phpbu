@@ -34,22 +34,20 @@ class OpenSSLTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests OpenSSL::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Crypter\Exception
      */
     public function testSetUpNoCertOrPassword()
     {
+        $this->expectException('phpbu\App\Backup\Crypter\Exception');
         $openSSL = new OpenSSL();
         $openSSL->setup(['algorithm' => 'aes-256-cbc']);
     }
 
     /**
      * Tests OpenSSL::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Crypter\Exception
      */
     public function testSetUpNoAlgorithm()
     {
+        $this->expectException('phpbu\App\Backup\Crypter\Exception');
         $openSSL = new OpenSSL();
         $openSSL->setup(['password' => 'fooBarBaz']);
     }
@@ -127,11 +125,10 @@ class OpenSSLTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests OpenSSL::crypt
-     *
-     * @expectedException \phpbu\App\Backup\Crypter\Exception
      */
     public function testCryptFail()
     {
+        $this->expectException('phpbu\App\Backup\Crypter\Exception');
         $runner = $this->getRunnerMock();
         $runner->expects($this->once())
                ->method('run')

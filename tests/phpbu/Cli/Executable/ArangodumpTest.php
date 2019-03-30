@@ -29,11 +29,10 @@ class ArangodumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Arangodump::createCommand
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoDumpDir()
     {
+        $this->expectException('phpbu\App\Exception');
         $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->getCommand();
     }

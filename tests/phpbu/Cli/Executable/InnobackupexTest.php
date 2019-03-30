@@ -48,11 +48,10 @@ class InnobackupexTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Mongodump::createCommandLine
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFailNoDumpDir()
     {
+        $this->expectException('phpbu\App\Exception');
         $xtra  = new Innobackupex(PHPBU_TEST_BIN);
         $xtra->getCommand();
     }

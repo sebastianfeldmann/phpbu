@@ -100,11 +100,10 @@ class StepwiseTest extends TestCase
 
     /**
      * Tests Stepwise::cleanup
-     *
-     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testCleanupInvalidRange()
     {
+        $this->expectException('phpbu\App\Backup\Cleaner\Exception');
         $fileList      = $this->getFileMockList(
             [
                 [

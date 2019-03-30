@@ -36,11 +36,10 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Mysqldump:setup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $mysqldump = new Mysqldump();
         $mysqldump->setup(
             [
@@ -253,11 +252,10 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Mysqldump::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $file = sys_get_temp_dir() . '/fakedump';
         file_put_contents($file, '# mysql fake dump');
 

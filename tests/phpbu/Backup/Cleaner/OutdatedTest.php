@@ -16,44 +16,40 @@ class OutdatedTest extends TestCase
 {
     /**
      * Tests Outdated::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpNoOlder()
     {
+        $this->expectException('phpbu\App\Backup\Cleaner\Exception');
         $cleaner = new Outdated();
         $cleaner->setup(['foo' => 'bar']);
     }
 
     /**
      * Tests Outdated::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpInvalidValue()
     {
+        $this->expectException('phpbu\App\Backup\Cleaner\Exception');
         $cleaner = new Outdated();
         $cleaner->setup(['older' => 'false']);
     }
 
     /**
      * Tests Outdated::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpAmountToLow()
     {
+        $this->expectException('phpbu\App\Backup\Cleaner\Exception');
         $cleaner = new Outdated();
         $cleaner->setup(['older' => '0S']);
     }
 
     /**
      * Tests Outdated::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpOlderToLow()
     {
+        $this->expectException('phpbu\App\Backup\Cleaner\Exception');
         $cleaner = new Outdated();
         $cleaner->setup(['older' => '0S']);
     }
@@ -142,11 +138,10 @@ class OutdatedTest extends TestCase
 
     /**
      * Tests Outdated::cleanup
-     *
-     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testCleanupNotWritable()
     {
+        $this->expectException('phpbu\App\Backup\Cleaner\Exception');
         $fileList      = $this->getFileMockList(
             [
                 [

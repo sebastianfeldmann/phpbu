@@ -16,22 +16,20 @@ class RedisCliTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests RedisCli::getProcess
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoCommand()
     {
+        $this->expectException('phpbu\App\Exception');
         $redis = new RedisCli(PHPBU_TEST_BIN);
         $redis->getCommandLine();
     }
 
     /**
      * Tests RedisCli::getProcess
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testInvalidCommand()
     {
+        $this->expectException('phpbu\App\Exception');
         $redis = new RedisCli(PHPBU_TEST_BIN);
         $redis->runCommand('foo');
     }

@@ -27,11 +27,10 @@ class StatusTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Status::getDataPath
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoPathForAlreadyCompressedSources()
     {
+        $this->expectException('phpbu\App\Exception');
         $status = Status::create();
         $status->getDataPath();
     }

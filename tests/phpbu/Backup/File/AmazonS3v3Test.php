@@ -51,11 +51,10 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests AmazonS3V3::unlink
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testAWSDeleteFailure()
     {
+        $this->expectException('phpbu\App\Exception');
         $amazonS3 = $this->getMockBuilder(\Aws\S3\S3Client::class)
                          ->disableOriginalConstructor()
                          ->setMethods(['deleteObject'])

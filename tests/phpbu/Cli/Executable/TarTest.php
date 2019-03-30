@@ -218,11 +218,10 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Tar::getCommand
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testWithoutSource()
     {
+        $this->expectException('phpbu\App\Exception');
         $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->getCommand();
     }
@@ -249,11 +248,10 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Tar::getCommand
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testWithoutTarget()
     {
+        $this->expectException('phpbu\App\Exception');
         $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->archiveDirectory(__DIR__);
         $tar->getCommand();
@@ -261,11 +259,10 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Tar::archiveDirectory
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSourceNotCWD()
     {
+        $this->expectException('phpbu\App\Exception');
         $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->archiveDirectory('.');
     }

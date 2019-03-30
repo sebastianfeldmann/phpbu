@@ -13,14 +13,9 @@
   <logging>
     <log type="coverage-html"
          target="build/coverage"
-         title="PHPBU"
-         charset="UTF-8"
-         yui="true"
-         highlight="true"
          lowUpperBound="35"
          highLowerBound="70" />
     <log type="junit"
-         target="build/logs/junit.xml"
-         logIncompleteSkipped="false" />
+         target="build/logs/junit.xml" />
   </logging>
 </phpunit>

@@ -25,11 +25,10 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Tar::setUp
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupPathMissing()
     {
+        $this->expectException('phpbu\App\Exception');
         $tar = new Tar();
         $tar->setup([]);
 
@@ -193,11 +192,10 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Tar::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testInvalidDir()
     {
+        $this->expectException('phpbu\App\Exception');
         $runner = $this->getRunnerMock();
         $runner->expects($this->once())
                ->method('run')
@@ -340,11 +338,10 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Tar::backup
-     *
-     * @expectedException \RuntimeException
      */
     public function testBackupFailOnFailedRead()
     {
+        $this->expectException('RuntimeException');
         $processor = $this->createMock(ProcOpen::class);
         $processor->expects($this->once())
                   ->method('run')
@@ -388,11 +385,10 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Tar::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupInvalidPath()
     {
+        $this->expectException('phpbu\App\Exception');
         $runner = $this->getRunnerMock();
         $tar    = new Tar($runner);
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __FILE__]);
@@ -405,11 +401,10 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Tar::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $runner = $this->getRunnerMock();
         $runner->expects($this->once())
                ->method('run')

@@ -29,33 +29,30 @@ class MailTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test Mail::setup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupNoRecipients()
     {
+        $this->expectException('phpbu\App\Exception');
         $mail = new Mail();
         $mail->setup([]);
     }
 
     /**
      * Test Mail::setup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupInvalidTransport()
     {
+        $this->expectException('phpbu\App\Exception');
         $mail = new Mail();
         $mail->setup(['recipients' => 'test@example.com', 'transport' => 'foo']);
     }
 
     /**
      * Test Mail::setup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupSmtpNoHost()
     {
+        $this->expectException('phpbu\App\Exception');
         $mail = new Mail();
         $mail->setup(['recipients' => 'test@example.com', 'transport' => 'smtp']);
     }
@@ -269,11 +266,7 @@ class MailTest extends \PHPUnit\Framework\TestCase
      */
     public function getExceptionMock($msg, $code)
     {
-        $e = $this->createMock(\Exception::class);
-
-        $e->method('getMessage')->willReturn($msg);
-        $e->method('getCode')->willReturn($code);
-        return $e;
+        return new \Exception($msg, $code);
     }
 
     /**

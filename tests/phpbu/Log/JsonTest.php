@@ -25,11 +25,10 @@ class JsonTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Json::setup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupNoTarget()
     {
+        $this->expectException('phpbu\App\Exception');
         $json = new Json();
         $json->setup([]);
     }

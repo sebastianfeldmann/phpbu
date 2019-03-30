@@ -16,22 +16,20 @@ class CapacityTest extends TestCase
 {
     /**
      * Tests Quantity::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpNoSize()
     {
+        $this->expectException('phpbu\App\Backup\Cleaner\Exception');
         $cleaner = new Capacity();
         $cleaner->setup(['foo' => 'bar']);
     }
 
     /**
      * Tests Quantity::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpInvalidValue()
     {
+        $this->expectException('phpbu\App\Backup\Cleaner\Exception');
         $cleaner = new Capacity();
         $cleaner->setup(['size' => '10']);
     }
@@ -89,11 +87,10 @@ class CapacityTest extends TestCase
 
     /**
      * Tests Capacity::cleanup
-     *
-     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testCleanupFileNotWritable()
     {
+        $this->expectException('phpbu\App\Backup\Cleaner\Exception');
         $fileList      = $this->getFileMockList(
             [
                 ['size' => 100, 'shouldBeDeleted' => false, 'writable' => false],

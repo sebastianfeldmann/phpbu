@@ -24,39 +24,36 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     /**
      * Create the AppFactory
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         self::$factory = new Factory();
     }
 
     /**
      * Tests Json::loadJsonFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNotFound()
     {
+        $this->expectException('phpbu\App\Exception');
         $loader = new Json('some.json', $this->getBootstrapperMock());
     }
 
     /**
      * Tests Json::loadJsonFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNoJson()
     {
+        $this->expectException('phpbu\App\Exception');
         $json   = PHPBU_TEST_FILES . '/conf/json/config-no-json.xml';
         $loader = new Json($json, $this->getBootstrapperMock());
     }
 
     /**
      * Tests Json::loadJsonFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupNoBackup()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-backup.json';
         $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -64,11 +61,10 @@ class JsonTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Json::loadJsonFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupNoTarget()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-target.json';
         $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -77,11 +73,10 @@ class JsonTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Json::loadJsonFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupNoSource()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-source.json';
         $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -89,11 +84,10 @@ class JsonTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Json::loadJsonFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNoSourceType()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-source-type.json';
         $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -101,11 +95,10 @@ class JsonTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Json::loadJsonFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNoLoggerType()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-logger-type.json';
         $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -113,11 +106,10 @@ class JsonTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Json::loadJsonFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNoCleanupType()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-cleanup-type.json';
         $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -125,11 +117,10 @@ class JsonTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Json::loadJsonFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNoCryptType()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-crypt-type.json';
         $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -137,11 +128,10 @@ class JsonTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Json::loadJsonFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNoSyncType()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/json/config-no-sync-type.json';
         $loader = new Json($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -259,11 +249,10 @@ class JsonTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Xml::getConfiguration
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testGetAdapterInvalidNoType()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
         $file    = PHPBU_TEST_FILES . '/conf/json/config-no-adapter-type.json';
         $loader  = new Json($file, $this->getBootstrapperMock());
@@ -272,11 +261,10 @@ class JsonTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Xml::getConfiguration
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testGetAdapterInvalidNoName()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
         $file    = PHPBU_TEST_FILES . '/conf/json/config-no-adapter-name.json';
         $loader  = new Json($file, $this->getBootstrapperMock());
@@ -287,7 +275,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
      * Return Bootstrapper mock.
      *
      * @param  bool $execute
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function getBootstrapperMock(bool $execute = false)
     {

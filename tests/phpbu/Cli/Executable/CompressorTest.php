@@ -38,11 +38,10 @@ class CompressorTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Compressor::compressFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFailEarlyCompress()
     {
+        $this->expectException('phpbu\App\Exception');
         $gzip = new Compressor('gzip', PHPBU_TEST_BIN);
         $gzip->getCommand();
     }

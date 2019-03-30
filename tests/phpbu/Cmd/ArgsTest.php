@@ -36,11 +36,10 @@ class ArgsTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test short option -x
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testGetOptionsFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $args    = new Args();
         $options = $args->getOptions(['-x']);
         $this->assertFalse(true, 'short option x is invalid');
@@ -158,41 +157,33 @@ class ArgsTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \phpbu\App\Exception
-     */
     public function testGetOptionsLongMissingArgument()
     {
+        $this->expectException('phpbu\App\Exception');
         $args    = new Args();
         $options = $args->getOptions(['--bootstrap']);
         $this->assertTrue(false, 'should not be called');
     }
 
-    /**
-     * @expectedException \phpbu\App\Exception
-     */
     public function testGetOptionsLongUnneccesaryArgument()
     {
+        $this->expectException('phpbu\App\Exception');
         $args    = new Args();
         $options = $args->getOptions(['--version=foo']);
         $this->assertTrue(false, 'should not be called');
     }
 
-    /**
-     * @expectedException \phpbu\App\Exception
-     */
     public function testGetOptionsLongInvalidArgument()
     {
+        $this->expectException('phpbu\App\Exception');
         $args    = new Args();
         $options = $args->getOptions(['--bootstrap=foo=bar']);
         $this->assertTrue(false, 'should not be called');
     }
 
-    /**
-     * @expectedException \phpbu\App\Exception
-     */
     public function testGetOptionsLongUnknownOption()
     {
+        $this->expectException('phpbu\App\Exception');
         $args    = new Args();
         $options = $args->getOptions(['--foo']);
         $this->assertTrue(false, 'should not be called');

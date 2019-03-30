@@ -16,11 +16,10 @@ class CompressionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Compression::create
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCreateInvalid()
     {
+        $this->expectException('phpbu\App\Exception');
         Compression\Factory::create('/foo/bar');
         $this->assertFalse(true, 'Exception should be thrown');
     }

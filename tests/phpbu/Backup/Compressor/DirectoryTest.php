@@ -20,11 +20,10 @@ class DirectoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Directory:__construct
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoPathToCompress()
     {
+        $this->expectException('phpbu\App\Exception');
         $compressor = new Directory('');
     }
 
@@ -41,11 +40,10 @@ class DirectoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Directory::canCompress
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCanCompressUncompressedTarget()
     {
+        $this->expectException('phpbu\App\Exception');
         $target = $this->createMock(\phpbu\App\Backup\Target::class);
 
         $target->method('shouldBeCompressed')
@@ -109,11 +107,10 @@ class DirectoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Directory:compress
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCompressFails()
     {
+        $this->expectException('phpbu\App\Exception');
         $cmp           = Compression\Factory::create('bzip2');
         $commandResult = new CommandResult('foo', 1);
         $runnerResult  = new RunnerResult($commandResult);
@@ -140,11 +137,10 @@ class DirectoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Directory:compress
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCompressInvalidPath()
     {
+        $this->expectException('phpbu\App\Exception');
         $cmp           = Compression\Factory::create('bzip2');
         $commandResult = new CommandResult('foo', 1);
         $runnerResult  = new RunnerResult($commandResult);

@@ -75,11 +75,10 @@ class ElasticdumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Elasticdump::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $runner = $this->getRunnerMock();
         $runner->expects($this->once())
                ->method('run')
