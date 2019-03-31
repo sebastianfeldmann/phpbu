@@ -404,7 +404,7 @@ class Xml extends File implements Loader
      *
      * @return void
      */
-    private function validateConfigurationAgainstSchema() : void
+    private function validateConfigurationAgainstSchema()
     {
         $original    = \libxml_use_internal_errors(true);
         $xsdFilename = __DIR__ . '/../../../phpbu.xsd';
