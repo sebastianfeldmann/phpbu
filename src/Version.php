@@ -60,7 +60,7 @@ final class Version
      *
      * @return string
      */
-    public function getVersionNumber()
+    public function getVersionNumber() : string
     {
         if ($this->number === null) {
             if (count(explode('.', $this->release)) == 3) {
@@ -85,6 +85,21 @@ final class Version
         }
 
         return self::$version;
+    }
+
+    /**
+     * Return the minor version number e.g. x.x, x.y, x.z
+     *
+     * @return string
+     */
+    public static function minor() : string
+    {
+        if (\strpos(self::id(), '-')) {
+            $version = \explode('-', self::id())[0];
+        } else {
+            $version = self::id();
+        }
+        return \implode('.', \array_slice(\explode('.', $version), 0, 2));
     }
 
     /**
