@@ -89,6 +89,9 @@
 
     <exec executable="${basedir}/build/phar-manifest.php" output="${basedir}/build/phar/manifest.txt"/>
 
+    <!-- Copy .xsd for config validation -->
+    <copy file="${basedir}/phpbu.xsd" tofile="${basedir}/build/phar/phpbu.xsd"/>
+
     <!-- SF/CLI -->
     <copy file="${basedir}/vendor/sebastianfeldmann/cli/LICENSE" tofile="${basedir}/build/phar/lib/sf-cli/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/sf-cli">

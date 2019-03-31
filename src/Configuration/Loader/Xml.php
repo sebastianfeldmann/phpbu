@@ -92,6 +92,8 @@ class Xml extends File implements Loader
         parent::__construct($file, $bootstrapper);
         $this->document = $this->loadXmlFile($file);
         $this->xpath    = new DOMXPath($this->document);
+
+        $this->validateConfigurationAgainstSchema();
     }
 
     /**
@@ -344,8 +346,9 @@ class Xml extends File implements Loader
     /**
      * Extracts all option tags.
      *
-     * @param  DOMElement $node
+     * @param  \DOMElement $node
      * @return array
+     * @throws \phpbu\App\Exception
      */
     protected function getOptions(DOMElement $node)
     {
@@ -394,5 +397,28 @@ class Xml extends File implements Loader
             );
         }
         return $document;
+    }
+
+    /**
+     * Validate xml configuration against phpbu.xsd schema
+     *
+     * @return void
+     */
+    private function validateConfigurationAgainstSchema() : void
+    {
+        $original    = \libxml_use_internal_errors(true);
+        $xsdFilename = __DIR__ . '/../../../phpbu.xsd';
+        if (\defined('__PHPBU_PHAR_ROOT__')) {
+            $xsdFilename =  __PHPBU_PHAR_ROOT__ . '/phpbu.xsd';
+        }
+        $this->document->schemaValidate($xsdFilename);
+        foreach (\libxml_get_errors() as $error) {
+            if (!isset($this->errors[$error->line])) {
+                $this->errors[$error->line] = [];
+            }
+            $this->errors[$error->line][] = \trim($error->message);
+        }
+        \libxml_clear_errors();
+        \libxml_use_internal_errors($original);
     }
 }

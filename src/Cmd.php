@@ -186,11 +186,25 @@ class Cmd
      * @return \phpbu\App\Configuration
      * @throws \phpbu\App\Exception
      */
-    protected function createConfiguration(string $configurationFile, Factory $factory)
+    protected function createConfiguration(string $configurationFile, Factory $factory) : Configuration
     {
         // setup bootstrapper with --bootstrap option that has precedence over the config file value
         $bootstrapper  = new Bootstrapper(Arr::getValue($this->arguments, 'bootstrap', ''));
         $configLoader  = Configuration\Loader\Factory::createLoader($configurationFile, $bootstrapper);
+
+        if ($configLoader->hasValidationErrors()) {
+            echo "  Warning - The configuration file did not pass validation!" . \PHP_EOL .
+                 "  The following problems have been detected:" . \PHP_EOL;
+
+            foreach ($configLoader->getValidationErrors() as $line => $errors) {
+                echo \sprintf("\n  Line %d:\n", $line);
+                foreach ($errors as $msg) {
+                    echo \sprintf("  - %s\n", $msg);
+                }
+            }
+            echo \PHP_EOL;
+        }
+
         $configuration = $configLoader->getConfiguration($factory);
 
         // command line arguments overrule the config file settings
@@ -265,7 +279,7 @@ class Cmd
             unset($phar);
             // replace current phar with the new one
             rename($tempFilename, $localFilename);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // cleanup crappy phar
             unlink($tempFilename);
             echo 'failed' . PHP_EOL . $e->getMessage() . PHP_EOL;
