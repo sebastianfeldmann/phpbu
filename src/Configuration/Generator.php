@@ -74,7 +74,7 @@ EOT;
      * @param  string $bootstrapScript
      * @return string
      */
-    public function generateDefaultConfiguration(string $version, string $format, string $bootstrapScript) : string
+    public function generateConfigurationSkeleton(string $version, string $format, string $bootstrapScript) : string
     {
         return \str_replace(
             [

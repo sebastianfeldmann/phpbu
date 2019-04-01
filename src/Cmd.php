@@ -332,7 +332,7 @@ class Cmd
 
         \file_put_contents(
             $file,
-            $generator->generateDefaultConfiguration(
+            $generator->generateConfigurationSkeleton(
                 Version::minor(),
                 $format,
                 $bootstrapScript
