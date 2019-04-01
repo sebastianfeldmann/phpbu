@@ -409,7 +409,7 @@ class Xml extends File implements Loader
         $original    = \libxml_use_internal_errors(true);
         $xsdFilename = __DIR__ . '/../../../phpbu.xsd';
         if (\defined('__PHPBU_PHAR_ROOT__')) {
-            $xsdFilename =  __PHPBU_PHAR_ROOT__ . '/phpbu.xsd';
+            $xsdFilename = __PHPBU_PHAR_ROOT__ . '/phpbu.xsd';
         }
         $this->document->schemaValidate($xsdFilename);
         foreach (\libxml_get_errors() as $error) {
