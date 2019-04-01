@@ -154,6 +154,8 @@ class XmlTest extends \PHPUnit\Framework\TestCase
         $loader = new Xml($dir . '/' . $file, $this->getBootstrapperMock(true));
         $config = $loader->getConfiguration(self::$factory);
 
+        $this->assertFalse($loader->hasValidationErrors());
+        $this->assertCount(0, $loader->getValidationErrors());
         $this->assertEquals($dir . '/backup/bootstrap.php', $config->getBootstrap());
         $this->assertEquals(true, $config->getColors());
         $this->assertEquals(false, $config->getVerbose());
