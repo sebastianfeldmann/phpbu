@@ -94,11 +94,7 @@ final class Version
      */
     public static function minor() : string
     {
-        if (\strpos(self::id(), '-')) {
-            $version = \explode('-', self::id())[0];
-        } else {
-            $version = self::id();
-        }
+        $version = \explode('-', self::id())[0];
         return \implode('.', \array_slice(\explode('.', $version), 0, 2));
     }
 

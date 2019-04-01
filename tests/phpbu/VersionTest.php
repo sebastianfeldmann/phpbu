@@ -14,16 +14,18 @@ namespace phpbu\App;
  */
 class VersionTest extends \PHPUnit\Framework\TestCase
 {
+    private const VERSION = '5.1';
+
     /**
      * Tests Version::createSource
      */
     public function testId()
     {
         $version = Version::id();
-        $this->assertTrue(strpos($version, '5.1') !== false, 'version should match');
+        $this->assertTrue(strpos($version, self::VERSION) !== false, 'version should match');
 
         $cachedVersion = Version::id();
-        $this->assertTrue(strpos($cachedVersion, '5.1') !== false, 'version should match');
+        $this->assertTrue(strpos($cachedVersion, self::VERSION) !== false, 'version should match');
     }
 
     /**
@@ -33,7 +35,15 @@ class VersionTest extends \PHPUnit\Framework\TestCase
     {
         $version = Version::getVersionString();
 
-        $this->assertEquals('phpbu 5.1', substr($version, 0, 9), 'version should match');
+        $this->assertEquals('phpbu ' . self::VERSION, substr($version, 0, 9), 'version should match');
+    }
+
+    /**
+     * Tests Version::minor
+     */
+    public function testMinor()
+    {
+        $this->assertEquals(self::VERSION, Version::minor());
     }
 
     /**
@@ -41,9 +51,10 @@ class VersionTest extends \PHPUnit\Framework\TestCase
      */
     public function testVersionNumberDev()
     {
-        $version = new Version('5.1', dirname(dirname(dirname(__DIR__))));
+        $version = new Version(self::VERSION, dirname(dirname(dirname(__DIR__))));
 
-        $this->assertEquals('5.1-dev', $number  = $version->getVersionNumber());
+        $this->assertEquals(self::VERSION . '-dev', $number  = $version->getVersionNumber());
+        $this->assertEquals(self::VERSION, Version::minor());
     }
 
     /**
@@ -51,8 +62,9 @@ class VersionTest extends \PHPUnit\Framework\TestCase
      */
     public function testVersionNumberRelease()
     {
-        $version = new Version('5.1.0', dirname(dirname(dirname(__DIR__))));
+        $version = new Version(self::VERSION . '.0', dirname(dirname(dirname(__DIR__))));
 
-        $this->assertEquals('5.1.0', $number  = $version->getVersionNumber());
+        $this->assertEquals(self::VERSION . '.0', $number  = $version->getVersionNumber());
+        $this->assertEquals(self::VERSION, Version::minor());
     }
 }
