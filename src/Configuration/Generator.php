@@ -7,7 +7,7 @@ final class Generator
     /**
      * @var string
      */
-    private const TEMPLATE_XML = <<<EOT
+    const TEMPLATE_XML = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
 <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpbu.de/{phpbu_version}/phpbu.xsd"
@@ -39,7 +39,7 @@ EOT;
     /**
      * @var string
      */
-    private const TEMPLATE_JSON = <<<EOT
+    const TEMPLATE_JSON = <<<EOT
 {
   "bootstrap": "{bootstrap_script}",
   "verbose": true,

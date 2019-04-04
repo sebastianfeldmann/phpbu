@@ -24,7 +24,7 @@ class CliTest extends \PHPUnit\Framework\TestCase
     /**
      * Backup $_SERVER settings.
      */
-    public function setup() : void
+    public function setup()
     {
         self::$server = $_SERVER;
     }
@@ -32,7 +32,7 @@ class CliTest extends \PHPUnit\Framework\TestCase
     /**
      * Restore $_SERVER settings.
      */
-    public function tearDown() : void
+    public function tearDown()
     {
         $_SERVER = self::$server;
     }

@@ -25,7 +25,7 @@ class XmlTest extends \PHPUnit\Framework\TestCase
     /**
      * Create the AppFactory
      */
-    public static function setUpBeforeClass() : void
+    public static function setUpBeforeClass()
     {
         self::$factory = new Factory();
     }
