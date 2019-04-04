@@ -14,7 +14,7 @@ namespace phpbu\App;
  */
 class VersionTest extends \PHPUnit\Framework\TestCase
 {
-    private const VERSION = '5.1';
+    const VERSION = '5.1';
 
     /**
      * Tests Version::createSource
