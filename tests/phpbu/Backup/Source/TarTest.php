@@ -182,7 +182,8 @@ class TarTest extends \PHPUnit\Framework\TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar -c -C \''
+            'set -o pipefail; '
+            . PHPBU_TEST_BIN . '/tar -c -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\''
             . ' | pv -qL \'1m\' > /tmp/backup.tar',
