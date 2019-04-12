@@ -145,11 +145,10 @@ class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests AmazonS3V3::sync
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSyncFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
         $result = $this->createMock(\phpbu\App\Result::class);
 
@@ -200,11 +199,10 @@ class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests AmazonS3::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoKey()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $amazonS3 = new AmazonS3v3();
         $amazonS3->setup([
             'secret' => 'dummy-secret',
@@ -216,11 +214,10 @@ class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests AmazonS3::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoSecret()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $amazonS3 = new AmazonS3v3();
         $amazonS3->setup([
             'key'    => 'dummy-key',
@@ -232,11 +229,10 @@ class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests AmazonS3::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoBucket()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $amazonS3 = new AmazonS3v3();
         $amazonS3->setup([
             'key'    => 'dummy-key',
@@ -248,11 +244,10 @@ class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests AmazonS3::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoRegion()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $amazonS3 = new AmazonS3v3();
         $amazonS3->setup([
             'key'    => 'dummy-key',
@@ -264,11 +259,10 @@ class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests AmazonS3::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoPath()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $amazonS3 = new AmazonS3v3();
         $amazonS3->setup([
             'key'    => 'dummy-key',

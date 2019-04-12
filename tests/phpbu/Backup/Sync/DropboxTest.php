@@ -117,11 +117,10 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Dropbox::sync
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSyncFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
         $result = $this->createMock(\phpbu\App\Result::class);
 
@@ -161,22 +160,20 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Dropbox::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoToken()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $dropbox = new Dropbox();
         $dropbox->setup(['path' => '/']);
     }
 
     /**
      * Tests Dropbox::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoPath()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $dropbox = new Dropbox();
         $dropbox->setup(['token' => 'this-is-no-token']);
     }

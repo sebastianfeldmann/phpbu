@@ -89,11 +89,10 @@ class FtpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Dropbox::sync
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSyncFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
         $result = $this->createMock(\phpbu\App\Result::class);
 
@@ -137,12 +136,11 @@ class FtpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Ftp::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
-     * @expectedExceptionMessage option 'host' is missing
      */
     public function testSetUpNoHost()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
+        $this->expectExceptionMessage('option \'host\' is missing');
         $ftp = new Ftp();
         $ftp->setup([
             'user'     => 'user.name',
@@ -153,12 +151,11 @@ class FtpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Ftp::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
-     * @expectedExceptionMessage option 'user' is missing
      */
     public function testSetUpNoUser()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
+        $this->expectExceptionMessage('option \'user\' is missing');
         $ftp = new Ftp();
         $ftp->setup([
             'host'     => 'example.com',
@@ -169,12 +166,11 @@ class FtpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Ftp::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
-     * @expectedExceptionMessage option 'password' is missing
      */
     public function testSetUpNoPassword()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
+        $this->expectExceptionMessage('option \'password\' is missing');
         $ftp = new Ftp();
         $ftp->setup([
             'host' => 'example.com',
@@ -185,12 +181,11 @@ class FtpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Ftp::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
-     * @expectedExceptionMessage absolute path is not allowed
      */
     public function testSetUpPathWithRootSlash()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
+        $this->expectExceptionMessage('absolute path is not allowed');
         $ftp = new Ftp();
         $ftp->setup([
             'host'     => 'example.com',

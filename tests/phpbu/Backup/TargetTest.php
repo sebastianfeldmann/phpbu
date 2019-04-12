@@ -45,11 +45,10 @@ class TargetTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Target::setupPath
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupPathNotWritable()
     {
+        $this->expectException('phpbu\App\Exception');
         $filename = 'foo.txt';
         $path     = sys_get_temp_dir() . '/dirBar';
         mkdir($path, 0100);
@@ -69,11 +68,10 @@ class TargetTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Target::setupPath
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupPathCantCreateDir()
     {
+        $this->expectException('phpbu\App\Exception');
         $filename = 'foo.txt';
         $path     = sys_get_temp_dir() . '/dirFiz';
         mkdir($path, 0100);
@@ -231,11 +229,10 @@ class TargetTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Target::enableCompressor
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testEnableCompressorWithoutCompressor()
     {
+        $this->expectException('phpbu\App\Exception');
         $path     = '/tmp/foo/bar';
         $filename = '%Y-test-%d.txt';
         $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
@@ -450,11 +447,10 @@ class TargetTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Target::getSize
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testGetSizeFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $path     = '.';
         $filename = 'foo.txt';
         $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));

@@ -37,21 +37,19 @@ class FileTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests File::__construct
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoPath()
     {
+        $this->expectException('phpbu\App\Exception');
         $file = new File('');
     }
 
     /**
      * Tests File::__construct
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoFile()
     {
+        $this->expectException('phpbu\App\Exception');
         $result = $this->getAppResultMock();
         $target = $this->createTargetMock(__FILE__, __FILE__ . '.gz');
         $target->method('getCompression')
@@ -83,11 +81,10 @@ class FileTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests File::compress
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCompressFailTargetUncompressed()
     {
+        $this->expectException('phpbu\App\Exception');
         $dir       = new File(__FILE__);
         $target    = $this->createTargetMock(__FILE__);
         $appResult = $this->getAppResultMock();
@@ -97,11 +94,10 @@ class FileTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests File::compress
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCompressFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $runner = $this->getRunnerMock();
         $runner->method('run')
                ->willReturn($this->getRunnerResultMock(1, 'gzip'));

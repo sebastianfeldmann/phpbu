@@ -42,11 +42,10 @@ class BackupTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests Backup::getName()
      *
-     * @expectedException \phpbu\App\Exception
-     *
      */
     public function testGetNameException()
     {
+        $this->expectException('phpbu\App\Exception');
         $backup = new Backup('', false);
         $backup->getName();
     }

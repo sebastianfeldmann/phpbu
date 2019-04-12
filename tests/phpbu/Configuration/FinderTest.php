@@ -16,33 +16,30 @@ class FinderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Finder::findConfiguration
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFindConfigurationNoConfigInDir()
     {
+        $this->expectException('phpbu\App\Exception');
         $finder = new Finder();
         $finder->findConfiguration(PHPBU_TEST_FILES . '/conf');
     }
 
     /**
      * Tests Finder::findConfiguration
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFindConfigurationInvalidPath()
     {
+        $this->expectException('phpbu\App\Exception');
         $finder = new Finder();
         $finder->findConfiguration(PHPBU_TEST_FILES . '/fooBarBaz');
     }
 
     /**
      * Tests Finder::findConfiguration
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFindDefaultConfFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $old = getcwd();
         chdir(PHPBU_TEST_FILES . '/conf');
 

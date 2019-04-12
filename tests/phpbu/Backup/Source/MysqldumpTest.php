@@ -36,11 +36,10 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Mysqldump:setup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $mysqldump = new Mysqldump();
         $mysqldump->setup(
             [
@@ -66,7 +65,9 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
         $executable = $mysqldump->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mysqldump --all-databases | ' . PHPBU_TEST_BIN . '/gzip > /tmp/foo.sql.gz',
+            'set -o pipefail; '
+            . PHPBU_TEST_BIN . '/mysqldump --all-databases | '
+            . PHPBU_TEST_BIN . '/gzip > /tmp/foo.sql.gz',
             $executable->getCommand()
         );
     }
@@ -253,11 +254,10 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Mysqldump::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $file = sys_get_temp_dir() . '/fakedump';
         file_put_contents($file, '# mysql fake dump');
 

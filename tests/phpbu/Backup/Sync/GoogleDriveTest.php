@@ -146,11 +146,10 @@ class GoogleDriveTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests GoogleDrive::sync
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSyncFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $target  = $this->createTargetMock(PHPBU_TEST_FILES . '/misc/backup.txt');
         $result  = $this->createMock(\phpbu\App\Result::class);
         $service = $this->createMock(\Google_Service_Drive::class);
@@ -169,44 +168,40 @@ class GoogleDriveTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests GoogleDrive::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoSecret()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $sync = new GoogleDrive();
         $sync->setup(['access' => '']);
     }
 
     /**
      * Tests GoogleDrive::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoAccess()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $sync = new GoogleDrive();
         $sync->setup(['secret' => 'foo']);
     }
 
     /**
      * Tests GoogleDrive::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoSecretFile()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $sync = new GoogleDrive();
         $sync->setup(['secret' => 'foo', 'access' => PHPBU_TEST_FILES . '/misc/google_credentials.json']);
     }
 
     /**
      * Tests GoogleDrive::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoAccessFile()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $sync = new GoogleDrive();
         $sync->setup(['secret' => PHPBU_TEST_FILES . '/misc/google_secret.json', 'access' => 'foo']);
     }

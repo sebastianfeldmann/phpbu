@@ -24,7 +24,7 @@ class CliTest extends \PHPUnit\Framework\TestCase
     /**
      * Backup $_SERVER settings.
      */
-    public function setUp()
+    public function setup()
     {
         self::$server = $_SERVER;
     }
@@ -39,11 +39,10 @@ class CliTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test detectCmdLocation Exception
-     *
-     * @expectedException \RuntimeException
      */
     public function testDetectCmdFail()
     {
+        $this->expectException('RuntimeException');
         if (defined('PHP_WINDOWS_VERSION_BUILD')) {
             // can't be tested on windows system
             $this->assertTrue(true);
@@ -56,11 +55,10 @@ class CliTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test detectCmdLocation Exception with path.
-     *
-     * @expectedException \RuntimeException
      */
     public function testDetectCmdFailWithPath()
     {
+        $this->expectException('RuntimeException');
         // assume ls should be there
         $cmd = Cli::detectCmdLocation('someStupidCommand', '/tmp');
         $this->assertFalse(true, $cmd . ' should not be found');
@@ -111,11 +109,10 @@ class CliTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Cli::getEnvPath
-     *
-     * @expectedException \RuntimeException
      */
     public function testGetEnvPathFail()
     {
+        $this->expectException('RuntimeException');
         unset($_SERVER['PATH']);
         unset($_SERVER['Path']);
         unset($_SERVER['path']);

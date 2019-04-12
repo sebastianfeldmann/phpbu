@@ -63,11 +63,10 @@ class RsyncTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Rsync::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoPath()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $rsync = new Rsync();
         $rsync->setup([
             'user' => 'dummy-user',
@@ -200,11 +199,10 @@ class RsyncTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Rsync::sync
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSyncFail()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $runner = $this->getRunnerMock();
         $runner->method('run')->willReturn($this->getRunnerResultMock(1, 'rsync'));
 

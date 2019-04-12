@@ -154,11 +154,10 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Mysqldump::getCommand
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testTablesNoDatabase()
     {
+        $this->expectException('phpbu\App\Exception');
         $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $mysqldump->dumpTables(['foo', 'bar']);
         $cmd       = $mysqldump->getCommand();
@@ -253,7 +252,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
         $mysqldump->compressOutput($compression)->dumpTo('/tmp/foo.mysql');
 
         $this->assertEquals(
-            $path . '/mysqldump --all-databases | ' . $path . '/gzip > /tmp/foo.mysql.gz',
+            'set -o pipefail; ' . $path . '/mysqldump --all-databases | ' . $path . '/gzip > /tmp/foo.mysql.gz',
             $mysqldump->getCommand()
         );
     }

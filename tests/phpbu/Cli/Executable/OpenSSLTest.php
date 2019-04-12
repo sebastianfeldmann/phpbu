@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
+use phpbu\App\Exception;
+
 /**
  * OpenSSL ExecutableTest
  *
@@ -16,11 +18,11 @@ class OpenSLLTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests OpenSSL::createCommandLine
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoAlgorithm()
     {
+        $this->expectException(Exception::class);
+
         $openSSL  = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->encryptFile('/foo/bar.txt')
                 ->usePassword('fooBarBaz');
@@ -95,66 +97,66 @@ class OpenSLLTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests OpenSSL::createCommandLine
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testPasswordAlreadySet()
     {
+        $this->expectException(Exception::class);
+
         $openSSL = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->usePassword('foo')->useSSLCert('/foo/my.pem');
     }
 
     /**
      * Tests OpenSSL::createCommandLine
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCertAlreadySet()
     {
+        $this->expectException(Exception::class);
+
         $openSSL = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->useSSLCert('/foo/my.pub')->usePassword('foo');
     }
 
     /**
      * Tests OpenSSL::useAlgorithm
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testUseInvalidAlgorithm()
     {
+        $this->expectException(Exception::class);
+
         $openSSL = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->usePassword('foo')->useAlgorithm('invalid');
     }
 
     /**
      * Tests OpenSSL::useAlgorithm
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testChooseAlgorithmAfterMode()
     {
+        $this->expectException(Exception::class);
+
         $openSSL = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->useAlgorithm('invalid');
     }
 
     /**
      * Tests OpenSSL::createCommandLine
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoSource()
     {
+        $this->expectException(Exception::class);
+
         $openSSL = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->getCommand();
     }
 
     /**
      * Tests OpenSSL::createCommandLine
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoMode()
     {
+        $this->expectException(Exception::class);
+
         $openSSL = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->encryptFile('/foo/bar.txt');
         $openSSL->getCommand();

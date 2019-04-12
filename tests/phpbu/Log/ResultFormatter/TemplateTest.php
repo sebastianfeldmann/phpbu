@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Log\ResultFormatter;
 
+use phpbu\App\Exception;
+
 /**
  * Template Formatter Test
  *
@@ -16,11 +18,11 @@ class TemplateTestTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test Template::__construct
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testMissingTemplate()
     {
+        $this->expectException(Exception::class);
+
         $path      = './some/stupid/file.tpl';
         $formatter = new Template($path);
     }

@@ -22,11 +22,10 @@ class RedisTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Redis::setUp
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupDataPathMissing()
     {
+        $this->expectException('phpbu\App\Exception');
         $redis = new Redis();
         $redis->setup([]);
     }
@@ -75,11 +74,10 @@ class RedisTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Redis::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupInvalidLastBackupTime()
     {
+        $this->expectException('phpbu\App\Exception');
         $cliResult1 = $this->getRunnerResultMock(0, 'redis', 'invalid');
         $cliResult2 = $this->getRunnerResultMock(0, 'redis', 'invalid');
         $cliResult3 = $this->getRunnerResultMock(0, 'redis', 'invalid');
@@ -100,11 +98,10 @@ class RedisTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Redis::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupTimeoutFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $runner = $this->getRunnerMock();
         $runner->method('run')
                ->willReturn($this->getRunnerResultMock(0, 'redis', '(integer) 100000000'));
@@ -122,11 +119,10 @@ class RedisTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Redis::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupInvalidRDB()
     {
+        $this->expectException('phpbu\App\Exception');
         $cliResult1 = $this->getRunnerResultMock(0, 'redis', '(integer) 100000000');
         $cliResult2 = $this->getRunnerResultMock(0, 'redis', '(integer) 100000000');
         $cliResult3 = $this->getRunnerResultMock(0, 'redis', '(integer) 100000002');
@@ -148,11 +144,10 @@ class RedisTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Redis::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupSaveFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $cliResult1 = $this->getRunnerResultMock(0, 'redis', '(integer) 100000000');
         $cliResult2 = $this->getRunnerResultMock(1, 'redis');
 

@@ -116,11 +116,11 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Factory::createType
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCreateUnknown()
     {
+        $this->expectException(Exception::class);
+
         $factory = new Factory();
         $factory->createSync('Unknown', ['foo' => 'bar']);
 
@@ -146,11 +146,10 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Factory::register
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testRegisterInvalidType()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('invalid', 'dummy', '\\phpbu\\App\\PhpbuAppFactoryTestCheck');
 
         $this->assertFalse(true, 'Exception should be thrown');
@@ -158,11 +157,10 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Factory::createAdapter
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCreateAdapterThatIsNone()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('adapter', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
@@ -173,11 +171,10 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Factory::createSource
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCreateSourceThatIsNone()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('source', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
@@ -188,11 +185,10 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Factory::createSource
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCreateCrypterThatIsNone()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('crypter', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
@@ -203,11 +199,10 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Factory::createLogger
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCreateLoggerThatIsNone()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('logger', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
@@ -218,11 +213,10 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Factory::createLogger
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCreateLoggerThatIsLoggerButNoListener()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('logger', 'nothing', '\\phpbu\\App\\Log\\FakeLoggerNoListener', true);
 
         $factory = new Factory();
@@ -233,11 +227,10 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Factory::createCleaner
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCreateCleanerThatIsNone()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('cleaner', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
@@ -248,11 +241,10 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Factory::createCleaner
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCreateSyncThatIsNone()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('sync', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
@@ -263,11 +255,10 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Factory::createCleaner
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCreateCheckThatIsNone()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('check', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
@@ -278,11 +269,10 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Factory::createRunner
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testCreateRunnerThatIsNone()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('runner', 'nothing', '\\phpbu\\App\\Factory\\FakeNothing', true);
 
         $factory = new Factory();
@@ -293,11 +283,10 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Factory::register
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testRegisterExistingCheck()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('check', 'sizemin', '\\phpbu\\App\\Backup\\Check\\FakeCheck');
 
         $this->assertFalse(true, 'Exception should be thrown');

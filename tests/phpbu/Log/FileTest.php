@@ -16,11 +16,10 @@ class FileTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Printer::setAutoFlush
-     *
-     * @expectedException \InvalidArgumentException
      */
     public function testOutFail()
     {
+        $this->expectException('InvalidArgumentException');
         $file = new File();
         $file->setOut(null);
     }

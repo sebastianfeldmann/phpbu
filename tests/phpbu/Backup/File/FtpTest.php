@@ -47,11 +47,10 @@ class FtpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Ftp::unlink
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testDeleteFailure()
     {
+        $this->expectException('phpbu\App\Exception');
         $ftpClient = $this->createMock(\SebastianFeldmann\Ftp\Client::class);
         $ftpClient->expects($this->once())->method('chHome');
         $ftpClient->expects($this->once())

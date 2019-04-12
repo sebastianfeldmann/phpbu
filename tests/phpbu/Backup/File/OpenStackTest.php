@@ -43,11 +43,10 @@ class OpenStackTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests OpenStack::unlink
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testOpenStackDeleteFailure()
     {
+        $this->expectException('phpbu\App\Exception');
         $storageObjectLastModified    = new \DateTimeImmutable('2018-05-08 14:14:54.0 +00:00');
         $storageObject                = $this->createMock(\OpenStack\ObjectStore\v1\Models\StorageObject::class);
         $storageObject->name          = 'path/dump.tar.gz';

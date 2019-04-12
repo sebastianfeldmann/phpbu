@@ -91,11 +91,10 @@ class ArangodumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Arangodump::backup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $runner = $this->getRunnerMock();
         $runner->expects($this->once())
                ->method('run')

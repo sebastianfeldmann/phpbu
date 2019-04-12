@@ -169,8 +169,9 @@ class TarTest extends \PHPUnit\Framework\TestCase
             ->throttle('1m');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar -jc -C \'' . $tarC .  '\' \'' . $tarD . '\'' .
-            ' | pv -qL \'1m\' > /tmp/foo.tar.bzip2',
+            'set -o pipefail; '
+            . PHPBU_TEST_BIN . '/tar -jc -C \'' . $tarC .  '\' \'' . $tarD . '\''
+            . ' | pv -qL \'1m\' > /tmp/foo.tar.bzip2',
             $tar->getCommand()
         );
     }
@@ -191,7 +192,8 @@ class TarTest extends \PHPUnit\Framework\TestCase
             ->throttle('1m');
 
         $this->assertEquals(
-            '(' . PHPBU_TEST_BIN . '/tar -jc -C \'' . $tarC .  '\' \'' . $tarD . '\''
+            'set -o pipefail; '
+            . '(' . PHPBU_TEST_BIN . '/tar -jc -C \'' . $tarC .  '\' \'' . $tarD . '\''
             . ' && rm -rf \'' . $dir . '\')'
             . ' | pv -qL \'1m\' > /tmp/foo.tar.bzip2',
             $tar->getCommand()
@@ -218,11 +220,10 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Tar::getCommand
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testWithoutSource()
     {
+        $this->expectException('phpbu\App\Exception');
         $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->getCommand();
     }
@@ -249,11 +250,10 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Tar::getCommand
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testWithoutTarget()
     {
+        $this->expectException('phpbu\App\Exception');
         $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->archiveDirectory(__DIR__);
         $tar->getCommand();
@@ -261,11 +261,10 @@ class TarTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Tar::archiveDirectory
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSourceNotCWD()
     {
+        $this->expectException('phpbu\App\Exception');
         $tar  = new Tar(PHPBU_TEST_BIN);
         $tar->archiveDirectory('.');
     }

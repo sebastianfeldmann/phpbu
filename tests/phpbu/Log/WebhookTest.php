@@ -25,22 +25,20 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Webhook::setup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupNoTarget()
     {
+        $this->expectException('phpbu\App\Exception');
         $json = new Webhook();
         $json->setup([]);
     }
 
     /**
      * Tests Webhook::onPhpbuEnd
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testGet()
     {
+        $this->expectException('phpbu\App\Exception');
         // result mock
         $result = $this->getResultMock();
 
@@ -57,11 +55,10 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Webhook::onPhpbuEnd
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBasicAuth()
     {
+        $this->expectException('phpbu\App\Exception');
         // result mock
         $result = $this->getResultMock();
 
@@ -98,11 +95,10 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Webhook::onPhpbuEnd
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testPostDefaultJson()
     {
+        $this->expectException('phpbu\App\Exception');
         // result mock
         $result = $this->getResultMock();
 
@@ -120,11 +116,10 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Webhook::onPhpbuEnd
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testPostXmlTemplate()
     {
+        $this->expectException('phpbu\App\Exception');
         // result mock
         $result = $this->getResultMock();
 
@@ -144,12 +139,11 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Webhook::onPhpbuEnd
-     *
-     * @expectedException        \phpbu\App\Exception
-     * @expectedExceptionMessage no default formatter for content-type: application/html
      */
     public function testPostNoFormatter()
     {
+        $this->expectException('phpbu\App\Exception');
+        $this->expectExceptionMessage('no default formatter for content-type: application/html');
         // result mock
         $result = $this->getResultMock(false);
 

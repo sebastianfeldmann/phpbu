@@ -179,11 +179,11 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Configuration::addLogger
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testLoggerInvalid()
     {
+        $this->expectException(Exception::class);
+
         $conf = new Configuration();
         $conf->setFilename('/tmp/foo.xml');
         $conf->addLogger('no valid logger at all');

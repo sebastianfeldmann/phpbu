@@ -42,6 +42,13 @@ abstract class File
     protected $bootstrapper;
 
     /**
+     * List of validation errors
+     *
+     * @var array
+     */
+    protected $errors = [];
+
+    /**
      * File constructor
      *
      * @param string                                $file
@@ -54,13 +61,33 @@ abstract class File
     }
 
     /**
+     * Is the configuration valid
+     *
+     * @return bool
+     */
+    public function hasValidationErrors(): bool
+    {
+        return \count($this->errors) > 0;
+    }
+
+    /**
+     * Return a list of all validation errors
+     *
+     * @return array
+     */
+    public function getValidationErrors(): array
+    {
+        return $this->errors;
+    }
+
+    /**
      * Returns the phpbu Configuration
      *
      * @param  \phpbu\App\Factory $factory
      * @return \phpbu\App\Configuration
      * @throws \phpbu\App\Exception
      */
-    public function getConfiguration(AppFactory $factory)
+    public function getConfiguration(AppFactory $factory) : Configuration
     {
         // create configuration first so the working directory is available for all adapters
         $configuration = new Configuration();

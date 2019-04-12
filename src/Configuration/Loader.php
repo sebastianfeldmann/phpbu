@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Configuration;
 
+use phpbu\App\Configuration;
 use phpbu\App\Factory;
 
 /**
@@ -22,5 +23,19 @@ interface Loader
      * @param  \phpbu\App\Factory $factory
      * @return \phpbu\App\Configuration
      */
-    public function getConfiguration(Factory $factory);
+    public function getConfiguration(Factory $factory) : Configuration;
+
+    /**
+     * Is the configuration valid
+     *
+     * @return bool
+     */
+    public function hasValidationErrors() : bool;
+
+    /**
+     * Return a list of all validation errors
+     *
+     * @return array
+     */
+    public function getValidationErrors() : array;
 }

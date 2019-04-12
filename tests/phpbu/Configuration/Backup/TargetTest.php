@@ -16,21 +16,19 @@ class TargetTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Target::__construct()
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testMandatoryDir()
     {
+        $this->expectException('phpbu\App\Exception');
         $target = new Target('', 'bar.txt');
     }
 
     /**
      * Tests Target::__construct()
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testMandatoryFile()
     {
+        $this->expectException('phpbu\App\Exception');
         $target = new Target('/foo', '');
     }
 }

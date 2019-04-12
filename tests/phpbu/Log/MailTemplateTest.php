@@ -34,11 +34,10 @@ class MailTemplateTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Test MailTemplate::getSnippet
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testInvalidSnippet()
     {
+        $this->expectException('phpbu\App\Exception');
         MailTemplate::getSnippet('bar');
     }
 

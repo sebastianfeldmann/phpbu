@@ -99,11 +99,10 @@ class SftpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Sftp::sync
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSyncFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
         $result = $this->createMock(\phpbu\App\Result::class);
         $result->expects($this->exactly(4))->method('debug');
@@ -150,11 +149,10 @@ class SftpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Sftp::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoHost()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $sftp = new Sftp();
         $sftp->setup([
             'user' => 'user.name',
@@ -164,11 +162,10 @@ class SftpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Sftp::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoUser()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $sftp = new Sftp();
         $sftp->setup([
             'host' => 'example.com',
@@ -178,11 +175,10 @@ class SftpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Sftp::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpNoPassword()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $sftp = new Sftp();
         $sftp->setup([
             'host' => 'example.com',
@@ -193,11 +189,10 @@ class SftpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Sftp::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpPathWithRootSlash()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $sftp = new Sftp();
         $sftp->setup([
             'host' => 'example.com',
@@ -209,11 +204,10 @@ class SftpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Sftp::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Sync\Exception
      */
     public function testSetUpWithPrivateKeyThatDoesNotExist()
     {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $sftp = new Sftp();
         $sftp->setup([
             'host'     => 'example.com',

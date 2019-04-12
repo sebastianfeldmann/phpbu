@@ -460,10 +460,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
     {
         $printer = new PrinterCli(true, false, false);
         $result  = $this->createMock(\phpbu\App\Result::class);
-        $e       = $this->createMock(\phpbu\App\Exception::class);
-        $e->method('getMessage')->willReturn('foo');
-        $e->method('getFile')->willReturn('foo.php');
-        $e->method('getLine')->willReturn(1);
+        $e       = new \phpbu\App\Exception('foo');
         $backup  = $this->createMock(\phpbu\App\Result\Backup::class);
 
         $backup->method('allOk')->willReturn(false);

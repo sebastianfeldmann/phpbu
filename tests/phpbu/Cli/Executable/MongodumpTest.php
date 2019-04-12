@@ -30,11 +30,10 @@ class MongodumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Mongodump::createCommandLine
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFailNoDumpDir()
     {
+        $this->expectException('phpbu\App\Exception');
         $mongo = new Mongodump(PHPBU_TEST_BIN);
         $mongo->getCommand();
     }

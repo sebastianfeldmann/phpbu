@@ -35,16 +35,17 @@ final class Args
      * @var array
      */
     private $longOptions = [
-        'bootstrap='     => true,
-        'colors'         => true,
-        'configuration=' => true,
-        'debug'          => true,
-        'help'           => true,
-        'limit='         => true,
-        'restore'        => true,
-        'simulate'       => true,
-        'verbose'        => true,
-        'version'        => true
+        'bootstrap='             => true,
+        'colors'                 => true,
+        'configuration='         => true,
+        'debug'                  => true,
+        'generate-configuration' => true,
+        'help'                   => true,
+        'limit='                 => true,
+        'restore'                => true,
+        'simulate'               => true,
+        'verbose'                => true,
+        'version'                => true
     ];
 
     /**

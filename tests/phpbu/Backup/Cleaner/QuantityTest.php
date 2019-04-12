@@ -16,33 +16,30 @@ class QuantityTest extends TestCase
 {
     /**
      * Tests Capacity::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpNoAmount()
     {
+        $this->expectException('phpbu\App\Backup\Cleaner\Exception');
         $cleaner = new Quantity();
         $cleaner->setup(['foo' => 'bar']);
     }
 
     /**
      * Tests Capacity::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpInvalidValue()
     {
+        $this->expectException('phpbu\App\Backup\Cleaner\Exception');
         $cleaner = new Quantity();
         $cleaner->setup(['amount' => 'false']);
     }
 
     /**
      * Tests Capacity::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testSetUpAmountToLow()
     {
+        $this->expectException('phpbu\App\Backup\Cleaner\Exception');
         $cleaner = new Quantity();
         $cleaner->setup(['amount' => '0']);
     }
@@ -76,11 +73,10 @@ class QuantityTest extends TestCase
 
     /**
      * Tests Capacity::cleanup
-     *
-     * @expectedException \phpbu\App\Backup\Cleaner\Exception
      */
     public function testCleanupFileNotWritable()
     {
+        $this->expectException('phpbu\App\Backup\Cleaner\Exception');
         $fileList      = $this->getFileMockList(
             [
                 ['size' => 100, 'shouldBeDeleted' => false, 'writable' => false],

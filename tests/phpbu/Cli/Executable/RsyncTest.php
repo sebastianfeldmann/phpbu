@@ -122,22 +122,20 @@ class RsyncTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Rsync::getCommandLine
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoSource()
     {
+        $this->expectException('phpbu\App\Exception');
         $rsync = new Rsync(PHPBU_TEST_BIN);
         $rsync->getCommandLine();
     }
 
     /**
      * Tests Rsync::getCommandLine
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoTarget()
     {
+        $this->expectException('phpbu\App\Exception');
         $rsync = new Rsync(PHPBU_TEST_BIN);
         $rsync->fromPath('./foo');
         $rsync->getCommandLine();

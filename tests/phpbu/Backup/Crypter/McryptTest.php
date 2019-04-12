@@ -41,22 +41,20 @@ class McryptTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Mcrypt::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Crypter\Exception
      */
     public function testSetUpNoKeyOrKeyFile()
     {
+        $this->expectException('phpbu\App\Backup\Crypter\Exception');
         $mcrypt = new Mcrypt();
         $mcrypt->setup(['algorithm' => 'blowfish']);
     }
 
     /**
      * Tests Mcrypt::setUp
-     *
-     * @expectedException \phpbu\App\Backup\Crypter\Exception
      */
     public function testSetUpNoAlgorithm()
     {
+        $this->expectException('phpbu\App\Backup\Crypter\Exception');
         $mcrypt = new Mcrypt();
         $mcrypt->setup(['k' => 'fooBarBaz']);
     }
@@ -116,11 +114,10 @@ class McryptTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Mcrypt::crypt
-     *
-     * @expectedException \phpbu\App\Backup\Crypter\Exception
      */
     public function testCryptFail()
     {
+        $this->expectException('phpbu\App\Backup\Crypter\Exception');
         $commandResult = new CommandResult('foo', 1);
         $runnerResult  = new RunnerResult($commandResult);
 

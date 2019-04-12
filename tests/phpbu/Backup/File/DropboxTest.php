@@ -42,11 +42,10 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Dropbox::unlink
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testDropboxDeleteFailure()
     {
+        $this->expectException('phpbu\App\Exception');
         $dropboxFileMetadataStub = $this->createMock(\Kunnu\Dropbox\Models\FileMetadata::class);
         $dropboxFileMetadataStub->method('getName')->willReturn('dump.tar.gz');
         $dropboxFileMetadataStub->method('getPathDisplay')->willReturn('backups/dump.tar.gz');

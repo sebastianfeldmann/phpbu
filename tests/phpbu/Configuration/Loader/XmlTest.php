@@ -32,32 +32,29 @@ class XmlTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Xml::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNotFound()
     {
+        $this->expectException(\phpbu\App\Exception::class);
         $loader = new Xml('some.xml', $this->getBootstrapperMock());
     }
 
     /**
      * Tests Xml::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNoXml()
     {
+        $this->expectException('phpbu\App\Exception');
         $json   = PHPBU_TEST_FILES . '/conf/xml/config-no-xml.json';
         $loader = new Xml($json, $this->getBootstrapperMock());
     }
 
     /**
      * Tests Xml::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupNoTarget()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-target.xml';
         $loader = new Xml($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -65,11 +62,10 @@ class XmlTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Xml::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testBackupNoSource()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-source.xml';
         $loader = new Xml($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -77,11 +73,10 @@ class XmlTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Xml::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNoSourceType()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-source-type.xml';
         $loader = new Xml($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -89,11 +84,10 @@ class XmlTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Xml::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNoLoggerType()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-logger-type.xml';
         $loader = new Xml($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -101,11 +95,10 @@ class XmlTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Xml::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNoCleanupType()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-cleanup-type.xml';
         $loader = new Xml($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -113,11 +106,10 @@ class XmlTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Xml::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNoCryptType()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-crypt-type.xml';
         $loader = new Xml($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -125,11 +117,10 @@ class XmlTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Xml::loadXmlFile
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testFileNoSyncType()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = PHPBU_TEST_FILES . '/conf/xml/config-no-sync-type.xml';
         $loader = new Xml($file, $this->getBootstrapperMock());
         $config = $loader->getConfiguration(self::$factory);
@@ -163,6 +154,8 @@ class XmlTest extends \PHPUnit\Framework\TestCase
         $loader = new Xml($dir . '/' . $file, $this->getBootstrapperMock(true));
         $config = $loader->getConfiguration(self::$factory);
 
+        $this->assertFalse($loader->hasValidationErrors());
+        $this->assertCount(0, $loader->getValidationErrors());
         $this->assertEquals($dir . '/backup/bootstrap.php', $config->getBootstrap());
         $this->assertEquals(true, $config->getColors());
         $this->assertEquals(false, $config->getVerbose());
@@ -265,11 +258,10 @@ class XmlTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Xml::getConfiguration
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testInvalidAdapterRef()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
         $dir    = PHPBU_TEST_FILES . '/conf/xml';
         $file   = 'config-no-adapter.xml';
@@ -279,11 +271,10 @@ class XmlTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Xml::getConfiguration
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testInvalidAdapterNoType()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
         $dir    = PHPBU_TEST_FILES . '/conf/xml';
         $file   = 'config-no-adapter-type.xml';
@@ -293,11 +284,10 @@ class XmlTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Xml::getConfiguration
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testInvalidAdapterNoName()
     {
+        $this->expectException('phpbu\App\Exception');
         Factory::register('adapter', 'fake', '\\phpbu\\App\\FakeAdapter', true);
         $dir    = PHPBU_TEST_FILES . '/conf/xml';
         $file   = 'config-no-adapter-name.xml';
@@ -309,7 +299,7 @@ class XmlTest extends \PHPUnit\Framework\TestCase
      * Return Bootstrapper mock.
      *
      * @param  bool $execute
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function getBootstrapperMock(bool $execute = false)
     {

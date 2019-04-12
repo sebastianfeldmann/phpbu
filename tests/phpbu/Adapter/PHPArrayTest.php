@@ -27,11 +27,10 @@ class PHPArrayTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests PHPArray::setup
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSetupFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $arr = new PHPArray();
         $arr->setup(['file' => 'array.config.php']);
     }
@@ -52,11 +51,10 @@ class PHPArrayTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests PHPArray::getValue
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testGetValueFail()
     {
+        $this->expectException('phpbu\App\Exception');
         $arr = new PHPArray();
         $arr->setup(['file' => PHPBU_TEST_FILES . '/misc/array.config.php']);
 

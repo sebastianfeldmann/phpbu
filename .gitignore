@@ -1,6 +1,7 @@
 *.phar
 *.asc
 .buildpath
+.DS_Store
 .idea
 .env
 .project

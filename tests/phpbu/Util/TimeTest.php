@@ -16,11 +16,10 @@ class TimeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests Time::timeSinceExecutionStart
-     *
-     * @expectedException \RuntimeException
      */
     public function testTimeSinceExecutionStartFail()
     {
+        $this->expectException('RuntimeException');
         $SERVER = $_SERVER;
         unset($_SERVER['REQUEST_TIME_FLOAT']);
         unset($_SERVER['REQUEST_TIME']);

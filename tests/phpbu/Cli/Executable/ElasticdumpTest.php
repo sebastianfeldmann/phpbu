@@ -89,22 +89,20 @@ class ElasticdumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Elasticdump::createCommandLine
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoHost()
     {
+        $this->expectException('phpbu\App\Exception');
         $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->getCommand();
     }
 
     /**
      * Tests Elasticdump::createCommandLine
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoTarget()
     {
+        $this->expectException('phpbu\App\Exception');
         $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200')->getCommand();
     }

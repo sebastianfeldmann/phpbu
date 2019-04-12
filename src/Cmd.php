@@ -138,6 +138,9 @@ class Cmd
                 case '--self-update':
                     $this->handleSelfUpdate();
                     exit(self::EXIT_SUCCESS);
+                case '--generate-configuration':
+                    $this->handleConfigGeneration();
+                    exit(self::EXIT_SUCCESS);
                 case '--version-check':
                     $this->handleVersionCheck();
                     exit(self::EXIT_SUCCESS);
@@ -183,11 +186,25 @@ class Cmd
      * @return \phpbu\App\Configuration
      * @throws \phpbu\App\Exception
      */
-    protected function createConfiguration(string $configurationFile, Factory $factory)
+    protected function createConfiguration(string $configurationFile, Factory $factory) : Configuration
     {
         // setup bootstrapper with --bootstrap option that has precedence over the config file value
         $bootstrapper  = new Bootstrapper(Arr::getValue($this->arguments, 'bootstrap', ''));
         $configLoader  = Configuration\Loader\Factory::createLoader($configurationFile, $bootstrapper);
+
+        if ($configLoader->hasValidationErrors()) {
+            echo "  Warning - The configuration file did not pass validation!" . \PHP_EOL .
+                 "  The following problems have been detected:" . \PHP_EOL;
+
+            foreach ($configLoader->getValidationErrors() as $line => $errors) {
+                echo \sprintf("\n  Line %d:\n", $line);
+                foreach ($errors as $msg) {
+                    echo \sprintf("  - %s\n", $msg);
+                }
+            }
+            echo \PHP_EOL;
+        }
+
         $configuration = $configLoader->getConfiguration($factory);
 
         // command line arguments overrule the config file settings
@@ -262,7 +279,7 @@ class Cmd
             unset($phar);
             // replace current phar with the new one
             rename($tempFilename, $localFilename);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // cleanup crappy phar
             unlink($tempFilename);
             echo 'failed' . PHP_EOL . $e->getMessage() . PHP_EOL;
@@ -286,6 +303,45 @@ class Cmd
         } else {
             print 'You are using the latest version of phpbu.' . PHP_EOL;
         }
+    }
+
+    /**
+     * Create a configuration file by asking the user some questions
+     *
+     * @return void
+     */
+    private function handleConfigGeneration()
+    {
+        $this->printVersionString();
+
+        print 'Configuration file format: xml|json (default: xml): ';
+        $format = \trim(\fgets(\STDIN)) === 'json' ? 'json' : 'xml';
+        $file   = 'phpbu.' . $format;
+
+        if (file_exists($file)) {
+            echo '  FAILED: The configuration file already exists.' . \PHP_EOL;
+            exit(self::EXIT_EXCEPTION);
+        }
+
+        print \PHP_EOL . 'Generating ' . $file . ' in ' . \getcwd() . \PHP_EOL . \PHP_EOL;
+
+        print 'Bootstrap script (relative to path shown above; e.g: vendor/autoload.php): ';
+        $bootstrapScript = \trim(\fgets(\STDIN));
+
+        $generator = new Configuration\Generator;
+
+        \file_put_contents(
+            $file,
+            $generator->generateConfigurationSkeleton(
+                Version::minor(),
+                $format,
+                $bootstrapScript
+            )
+        );
+
+        print \PHP_EOL . 'Generated ' . $file . ' in ' . \getcwd() . \PHP_EOL . \PHP_EOL .
+            'ATTENTION:' . \PHP_EOL .
+            'The created configuration is just a skeleton. You have to finish the configuration manually.' . \PHP_EOL;
     }
 
     /**
@@ -339,15 +395,16 @@ class Cmd
         echo <<<EOT
 Usage: phpbu [option]
 
-  --bootstrap=<file>     A "bootstrap" PHP file that is included before the backup.
-  --configuration=<file> A phpbu configuration file.
-  --colors               Use colors in output.
-  --debug                Display debugging information during backup generation.
-  --limit=<subset>       Limit backup execution to a subset.
-  --simulate             Perform a trial run with no changes made.
-  -h, --help             Print this usage information.
-  -v, --verbose          Output more verbose information.
-  -V, --version          Output version information and exit.
+  --bootstrap=<file>       A "bootstrap" PHP file that is included before the backup.
+  --configuration=<file>   A phpbu configuration file.
+  --colors                 Use colors in output.
+  --debug                  Display debugging information during backup generation.
+  --generate-configuration Create a new configuration skeleton.
+  --limit=<subset>         Limit backup execution to a subset.
+  --simulate               Perform a trial run with no changes made.
+  -h, --help               Print this usage information.
+  -v, --verbose            Output more verbose information.
+  -V, --version            Output version information and exit.
 
 EOT;
         if ($this->isPhar) {

@@ -64,11 +64,10 @@ class McryptTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Mcrypt::createCommandLine
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoTarget()
     {
+        $this->expectException('phpbu\App\Exception');
         $mcrypt   = new Mcrypt(PHPBU_TEST_BIN);
         $mcrypt->useAlgorithm('blowfish')->useHash('myHash');
 
@@ -77,11 +76,10 @@ class McryptTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Mcrypt::createCommandLine
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testNoKey()
     {
+        $this->expectException('phpbu\App\Exception');
         $mcrypt   = new Mcrypt(PHPBU_TEST_BIN);
         $mcrypt->useAlgorithm('blowfish')->useHash('myHash')->saveAt('/foo/bar.txt.nc');
 

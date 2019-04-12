@@ -102,11 +102,10 @@ class PgdumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Pgdump::getCommand
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testSchemaOnlyAfterDataOnly()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = '/tmp/foo';
         $pgdump = new Pgdump(PHPBU_TEST_BIN);
         $pgdump->dumpDatabase('phpbu')
@@ -140,11 +139,10 @@ class PgdumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Pgdump::getCommand
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testDataOnlyAfterSchemaOnly()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = '/tmp/foo';
         $pgdump = new Pgdump(PHPBU_TEST_BIN);
         $pgdump->dumpDatabase('phpbu')
@@ -268,11 +266,10 @@ class PgdumpTest extends \PHPUnit\Framework\TestCase
 
     /**
      * Tests Pgdump::getCommand
-     *
-     * @expectedException \phpbu\App\Exception
      */
     public function testInvalidFormat()
     {
+        $this->expectException('phpbu\App\Exception');
         $file   = '/tmp/foo';
         $pgdump = new Pgdump(PHPBU_TEST_BIN);
         $pgdump->dumpDatabase('phpbu')->dumpFormat('fail')->dumpTo($file);
