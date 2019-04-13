@@ -169,8 +169,7 @@ class TarTest extends \PHPUnit\Framework\TestCase
             ->throttle('1m');
 
         $this->assertEquals(
-            'set -o pipefail; '
-            . PHPBU_TEST_BIN . '/tar -jc -C \'' . $tarC .  '\' \'' . $tarD . '\''
+            PHPBU_TEST_BIN . '/tar -jc -C \'' . $tarC .  '\' \'' . $tarD . '\''
             . ' | pv -qL \'1m\' > /tmp/foo.tar.bzip2',
             $tar->getCommand()
         );
@@ -192,8 +191,7 @@ class TarTest extends \PHPUnit\Framework\TestCase
             ->throttle('1m');
 
         $this->assertEquals(
-            'set -o pipefail; '
-            . '(' . PHPBU_TEST_BIN . '/tar -jc -C \'' . $tarC .  '\' \'' . $tarD . '\''
+            '(' . PHPBU_TEST_BIN . '/tar -jc -C \'' . $tarC .  '\' \'' . $tarD . '\''
             . ' && rm -rf \'' . $dir . '\')'
             . ' | pv -qL \'1m\' > /tmp/foo.tar.bzip2',
             $tar->getCommand()

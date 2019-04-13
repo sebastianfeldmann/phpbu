@@ -65,8 +65,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
         $executable = $mysqldump->getExecutable($target);
 
         $this->assertEquals(
-            'set -o pipefail; '
-            . PHPBU_TEST_BIN . '/mysqldump --all-databases | '
+            PHPBU_TEST_BIN . '/mysqldump --all-databases | '
             . PHPBU_TEST_BIN . '/gzip > /tmp/foo.sql.gz',
             $executable->getCommand()
         );

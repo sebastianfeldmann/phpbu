@@ -252,7 +252,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
         $mysqldump->compressOutput($compression)->dumpTo('/tmp/foo.mysql');
 
         $this->assertEquals(
-            'set -o pipefail; ' . $path . '/mysqldump --all-databases | ' . $path . '/gzip > /tmp/foo.mysql.gz',
+            $path . '/mysqldump --all-databases | ' . $path . '/gzip > /tmp/foo.mysql.gz',
             $mysqldump->getCommand()
         );
     }
