@@ -206,11 +206,11 @@ class Pgdump extends SimulatorExecutable implements Simulator
     private function setupSourceData(array $conf)
     {
         $this->database         = Util\Arr::getValue($conf, 'database', '');
-        $this->tables           = Util\Str::toList(Util\Arr::getValue($conf, 'tables'));
-        $this->excludeTables    = Util\Str::toList(Util\Arr::getValue($conf, 'ignoreTables'));
-        $this->schemas          = Util\Str::toList(Util\Arr::getValue($conf, 'schemas'));
-        $this->excludeSchemas   = Util\Str::toList(Util\Arr::getValue($conf, 'ignoreTables'));
-        $this->excludeTableData = Util\Str::toList(Util\Arr::getValue($conf, 'excludeTableData'));
+        $this->tables           = Util\Str::toList(Util\Arr::getValue($conf, 'tables', ''));
+        $this->excludeTables    = Util\Str::toList(Util\Arr::getValue($conf, 'ignoreTables', ''));
+        $this->schemas          = Util\Str::toList(Util\Arr::getValue($conf, 'schemas', ''));
+        $this->excludeSchemas   = Util\Str::toList(Util\Arr::getValue($conf, 'ignoreTables', ''));
+        $this->excludeTableData = Util\Str::toList(Util\Arr::getValue($conf, 'excludeTableData', ''));
     }
 
     /**

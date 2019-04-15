@@ -9,32 +9,32 @@ namespace phpbu\App\Util;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.1.5
  */
 abstract class Arr
 {
     /**
-     * Check array key for existence and value that is not the empty string.
+     * Check array key for existence and value that is not the empty string
      *
      * @param  array  $arr
      * @param  string $key
      * @return boolean
      */
-    public static function isSetAndNotEmptyString(array $arr, $key)
+    public static function isSetAndNotEmptyString(array $arr, string $key)
     {
         return isset($arr[$key]) && '' !== $arr[$key];
     }
 
     /**
-     * Return an array key if it exists, null or given default otherwise.
+     * Return an array key if it exists, null or given default otherwise
      *
      * @param  array  $arr
      * @param  string $key
      * @param  mixed  $default
      * @return mixed
      */
-    public static function getValue(array $arr, $key, $default = null)
+    public static function getValue(array $arr, string $key, $default = null)
     {
         return isset($arr[$key]) ? $arr[$key] : $default;
     }

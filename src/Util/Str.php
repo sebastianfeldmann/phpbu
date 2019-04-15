@@ -4,26 +4,26 @@ namespace phpbu\App\Util;
 use RuntimeException;
 
 /**
- * String utility class.
+ * String utility class
  *
  * @package    phpbu
  * @subpackage Util
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class Str
 {
     /**
-     * Converts a given value to boolean.
+     * Converts a given value to a bool
      *
      * @param  string $value
      * @param  bool   $default
      * @return bool
      */
-    public static function toBoolean($value, $default)
+    public static function toBoolean($value, $default) : bool
     {
         if (is_bool($value)) {
             return $value;
@@ -37,7 +37,7 @@ class Str
     }
 
     /**
-     * Return given size in bytes.
+     * Return given size in bytes
      * Allowed units:
      *   B => byte
      *   K => kilo byte
@@ -55,7 +55,7 @@ class Str
      * @throws \RuntimeException
      * @return int
      */
-    public static function toBytes($value)
+    public static function toBytes(string $value) : int
     {
         if (!preg_match('#^[0-9]*[BKMGT]$#i', $value)) {
             throw new RuntimeException('Invalid size value');
@@ -68,7 +68,7 @@ class Str
     }
 
     /**
-     * Return time in seconds for a given value.
+     * Return time in seconds for a given value
      * Allowed units:
      *   S => second
      *   I => minute
@@ -84,9 +84,9 @@ class Str
      *
      * @param  string $offset
      * @throws \RuntimeException
-     * @return integer
+     * @return int
      */
-    public static function toTime($offset)
+    public static function toTime(string $offset) : int
     {
         if (!preg_match('#^[1-9]+[0-9]*[SIHDWMY]$#i', $offset)) {
             throw new RuntimeException(sprintf('Invalid value for offset: %s', $offset));
@@ -101,13 +101,13 @@ class Str
     /**
      * Pads all given strings to given length.
      *
-     * @param  array   $strings
-     * @param  integer $length
-     * @param  string  $pad
-     * @param  integer $mode
+     * @param  array  $strings
+     * @param  int    $length
+     * @param  string $pad
+     * @param  int    $mode
      * @return array
      */
-    public static function padAll(array $strings, $length, $pad = ' ', $mode = STR_PAD_LEFT)
+    public static function padAll(array $strings, int $length, string $pad = ' ', int $mode = STR_PAD_LEFT) : array
     {
         $result = [];
         foreach ($strings as $key => $s) {
@@ -117,14 +117,14 @@ class Str
     }
 
     /**
-     * Explodes string to array but empty string results in empty array not array with empty string in it.
+     * Explodes string to array but empty string results in empty array not array with empty string in it
      *
-     * @param  string  $separated
-     * @param  string  $separator
-     * @param  boolean $trim
+     * @param  string $separated
+     * @param  string $separator
+     * @param  bool   $trim
      * @return array
      */
-    public static function toList($separated, $separator = ',', $trim = true)
+    public static function toList(string $separated, string $separator = ',', bool $trim = true) : array
     {
         $list = empty($separated) ? [] : explode($separator, $separated);
         if ($trim) {
@@ -140,7 +140,7 @@ class Str
      * @param  int    $amount
      * @return string
      */
-    public static function appendPluralS($subject, $amount)
+    public static function appendPluralS(string $subject, int $amount) : string
     {
         return $subject . ($amount == 1 ? '' : (substr($subject, -1) == 's' ? '\'s' : 's'));
     }

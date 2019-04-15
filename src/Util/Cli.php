@@ -11,7 +11,7 @@ use RuntimeException;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 abstract class Cli
@@ -54,7 +54,7 @@ abstract class Cli
      * @param string $command
      * @param string $path
      */
-    public static function addCommandLocation($command, $path)
+    public static function addCommandLocation(string $command, string $path)
     {
         self::$optionalCommandLocations[$command][] = $path;
     }
@@ -65,7 +65,7 @@ abstract class Cli
      * @param  string $command
      * @return array
      */
-    public static function getCommandLocations($command) : array
+    public static function getCommandLocations(string $command) : array
     {
         return isset(self::$optionalCommandLocations[$command]) ? self::$optionalCommandLocations[$command] : [];
     }
@@ -134,7 +134,7 @@ abstract class Cli
      * @param  string $cmd
      * @return string
      */
-    public static function detectCmdLocationWithWhich($cmd) : string
+    public static function detectCmdLocationWithWhich(string $cmd) : string
     {
         $bin = '';
         // on nx systems use 'which' command.
@@ -153,7 +153,7 @@ abstract class Cli
      * @param  array  $paths
      * @return string
      */
-    public static function detectCmdLocationInPaths($cmd, array $paths) : string
+    public static function detectCmdLocationInPaths(string $cmd, array $paths) : string
     {
         foreach ($paths as $path) {
             $command = $path . DIRECTORY_SEPARATOR . $cmd;
@@ -189,7 +189,7 @@ abstract class Cli
      * @param  string $command
      * @return string
      */
-    public static function isExecutable($command) : string
+    public static function isExecutable(string $command) : string
     {
         if (is_executable($command)) {
             return $command;

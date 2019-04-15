@@ -109,7 +109,10 @@ class Arangodump extends SimulatorExecutable implements Simulator
         $this->username              = Util\Arr::getValue($conf, 'username', '');
         $this->password              = Util\Arr::getValue($conf, 'password', '');
         $this->database              = Util\Arr::getValue($conf, 'database', '');
-        $this->disableAuthentication = Util\Str::toBoolean(Util\Arr::getValue($conf, 'disableAuthentication'), false);
+        $this->disableAuthentication = Util\Str::toBoolean(
+            Util\Arr::getValue($conf, 'disableAuthentication', ''),
+            false
+        );
     }
 
     /**
@@ -119,8 +122,8 @@ class Arangodump extends SimulatorExecutable implements Simulator
      */
     protected function setupSourceData(array $conf)
     {
-        $this->dumpData                  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'dumpData'), false);
-        $this->collections               = Util\Str::toList(Util\Arr::getValue($conf, 'collections'));
+        $this->dumpData                  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'dumpData', ''), false);
+        $this->collections               = Util\Str::toList(Util\Arr::getValue($conf, 'collections', ''));
         $this->includeSystemCollections  = Util\Str::toBoolean(
             Util\Arr::getValue($conf, 'includeSystemCollections'),
             false

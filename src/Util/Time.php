@@ -11,7 +11,7 @@ use RuntimeException;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.2
  */
 class Time
@@ -28,7 +28,7 @@ class Time
     ];
 
     /**
-     * Returns the time passed since execution start.
+     * Returns the time passed since execution start
      *
      * @throws \RuntimeException
      */
@@ -45,7 +45,7 @@ class Time
     }
 
     /**
-     * Return string like '1 hour 3 minutes 12 seconds'.
+     * Return string like '1 hour 3 minutes 12 seconds'
      *
      * @param  float $time
      * @return string

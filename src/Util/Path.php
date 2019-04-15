@@ -2,24 +2,24 @@
 namespace phpbu\App\Util;
 
 /**
- * Path utility class.
+ * Path utility class
  *
  * @package    phpbu
  * @subpackage Util
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
 class Path
 {
     /**
-     * Date placeholder replacement.
-     * Replaces %{somevalue} with date({somevalue}).
+     * Date placeholder replacement
+     * Replaces %{somevalue} with date({somevalue})
      *
-     * @param  string       $string
-     * @param  integer|null $time
+     * @param  string   $string
+     * @param  int|null $time
      * @return string
      */
     public static function replaceDatePlaceholders(string $string, $time = null) : string
@@ -35,7 +35,7 @@ class Path
     }
 
     /**
-     * Does a given string contain a date placeholder.
+     * Does a given string contain a date placeholder
      *
      * @param  string $string
      * @return bool
@@ -46,7 +46,7 @@ class Path
     }
 
     /**
-     * Replaces %TARGET_DIR% and %TARGET_FILE% in given string.
+     * Replaces %TARGET_DIR% and %TARGET_FILE% in given string
      *
      * @param  string $string
      * @param  string $target
@@ -61,7 +61,7 @@ class Path
     }
 
     /**
-     * Create a regex that matches the raw path considering possible date placeholders.
+     * Create a regex that matches the raw path considering possible date placeholders
      *
      * @param  string $stringWithDatePlaceholders
      * @return string
@@ -89,7 +89,7 @@ class Path
     }
 
     /**
-     * Determine if the path has a trailing slash.
+     * Determine if the path has a trailing slash
      *
      * @param  string $string
      * @return bool
@@ -100,7 +100,7 @@ class Path
     }
 
     /**
-     * Adds trailing slash to a string/path if not already there.
+     * Adds trailing slash to a string/path if not already there
      *
      * @param  string $string
      * @return string
@@ -111,7 +111,7 @@ class Path
     }
 
     /**
-     * Removes the trailing slash from a string/path.
+     * Removes the trailing slash from a string/path
      *
      * @param  string $string
      * @return string
@@ -122,7 +122,7 @@ class Path
     }
 
     /**
-     * Determine if the path has a leading slash.
+     * Determine if the path has a leading slash
      *
      * @param  string $string
      * @return bool
@@ -144,7 +144,7 @@ class Path
     }
 
     /**
-     * Removes the leading slash from a string/path.
+     * Removes the leading slash from a string/path
      *
      * @param  string $string
      * @return string
@@ -156,6 +156,7 @@ class Path
 
     /**
      * Removes trailing and leading sl
+     *
      * @param string $string
      * @return string
      */
@@ -165,7 +166,7 @@ class Path
     }
 
     /**
-     * Is given path absolute.
+     * Is given path absolute
      *
      * @param  string $path
      * @return bool
@@ -198,7 +199,7 @@ class Path
     }
 
     /**
-     * Is given path an absolute windows path.
+     * Is given path an absolute windows path
      *
      * @param  string $path
      * @return bool
@@ -209,7 +210,7 @@ class Path
     }
 
     /**
-     * Converts a path to an absolute one if necessary relative to a given base path.
+     * Converts a path to an absolute one if necessary relative to a given base path
      *
      * @param  string  $path
      * @param  string  $base
@@ -247,7 +248,7 @@ class Path
     }
 
     /**
-     * Return list of directories in a given path with absolute root element.
+     * Return list of directories in a given path with absolute root element
      *
      * @param  string $path
      * @return array
@@ -262,7 +263,7 @@ class Path
     }
 
     /**
-     * Returns directory depth of a given path.
+     * Returns directory depth of a given path
      *
      * @param  string $path
      * @return int
