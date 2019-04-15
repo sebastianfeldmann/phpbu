@@ -196,7 +196,7 @@ class Result
     /**
      * Return list of executed backups
      *
-     * @return array<\phpbu\App\Configuration\Backup>
+     * @return array<\phpbu\App\Result\Backup>
      */
     public function getBackups() : array
     {
