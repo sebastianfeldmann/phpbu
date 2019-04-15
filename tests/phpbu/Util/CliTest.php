@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Util;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Cli utility test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class CliTest extends \PHPUnit\Framework\TestCase
+class CliTest extends TestCase
 {
     /**
      * Fake global state
@@ -24,7 +26,7 @@ class CliTest extends \PHPUnit\Framework\TestCase
     /**
      * Backup $_SERVER settings.
      */
-    public function setup()
+    public function setup() : void
     {
         self::$server = $_SERVER;
     }
@@ -32,7 +34,7 @@ class CliTest extends \PHPUnit\Framework\TestCase
     /**
      * Restore $_SERVER settings.
      */
-    public function tearDown()
+    public function tearDown() : void
     {
         $_SERVER = self::$server;
     }
