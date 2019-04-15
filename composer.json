@@ -36,17 +36,17 @@
     }
   },
   "require": {
-    "php": ">=7.0.0",
+    "php": ">=7.2.0",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-spl": "*",
-    "sebastian/environment": "~1.1|~2.0|~3.0|~4.0",
-    "sebastianfeldmann/cli": "~2.2",
+    "sebastian/environment": "~3.0|~4.0",
+    "sebastianfeldmann/cli": "~3.1",
     "phpmailer/phpmailer": "~6.0",
-    "symfony/event-dispatcher": "~2.6|~3.0|~4.0"
+    "symfony/event-dispatcher": "~3.0|~4.0"
   },
   "require-dev": {
-    "sebastianfeldmann/git": "~1.0",
+    "sebastianfeldmann/git": "~2.2",
     "sebastianfeldmann/ftp": "~0.9",
     "aws/aws-sdk-php": "~3.10",
     "kunalvarma05/dropbox-php-sdk": "~0.2",
@@ -72,7 +72,7 @@
   ],
   "extra": {
     "branch-alias": {
-      "dev-master": "5.0.x-dev"
+      "dev-master": "6.0.x-dev"
     }
   }
 }
