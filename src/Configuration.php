@@ -22,7 +22,7 @@ class Configuration
     private $filename = '';
 
     /**
-     * Path to bootstrap file.
+     * Path to bootstrap file
      *
      * @var string
      */
@@ -36,7 +36,7 @@ class Configuration
     private $verbose = false;
 
     /**
-     * Use colors in output.
+     * Use colors in output
      *
      * @var bool
      */
@@ -92,18 +92,18 @@ class Configuration
     private static $workingDirectory;
 
     /**
-     * Filename setter.
+     * Filename setter
      *
      * @param string $file
      */
-    public function setFilename(string $file)
+    public function setFilename(string $file) : void
     {
         $this->filename = $file;
         self::setWorkingDirectory(dirname($file));
     }
 
     /**
-     * Filename getter.
+     * Filename getter
      *
      * @return string
      */
@@ -113,17 +113,17 @@ class Configuration
     }
 
     /**
-     * Bootstrap setter.
+     * Bootstrap setter
      *
      * @param string $file
      */
-    public function setBootstrap(string $file)
+    public function setBootstrap(string $file) : void
     {
         $this->bootstrap = $file;
     }
 
     /**
-     * Bootstrap getter.
+     * Bootstrap getter
      *
      * @return string
      */
@@ -133,27 +133,27 @@ class Configuration
     }
 
     /**
-     * Limit setter.
+     * Limit setter
      *
      * @param array $limit
      */
-    public function setLimit(array $limit)
+    public function setLimit(array $limit) : void
     {
         $this->limit = $limit;
     }
 
     /**
-     * Verbose setter.
+     * Verbose setter
      *
      * @param bool $bool
      */
-    public function setVerbose(bool $bool)
+    public function setVerbose(bool $bool) : void
     {
         $this->verbose = $bool;
     }
 
     /**
-     * Verbose getter.
+     * Verbose getter
      *
      * @return bool
      */
@@ -163,17 +163,17 @@ class Configuration
     }
 
     /**
-     * Colors setter.
+     * Colors setter
      *
      * @param bool $bool
      */
-    public function setColors(bool $bool)
+    public function setColors(bool $bool) : void
     {
         $this->colors = $bool;
     }
 
     /**
-     * Colors getter.
+     * Colors getter
      *
      * @return bool
      */
@@ -183,17 +183,17 @@ class Configuration
     }
 
     /**
-     * Debug setter.
+     * Debug setter
      *
      * @param bool $bool
      */
-    public function setDebug(bool $bool)
+    public function setDebug(bool $bool) : void
     {
         $this->debug = $bool;
     }
 
     /**
-     * Debug getter.
+     * Debug getter
      *
      * @return bool
      */
@@ -203,17 +203,17 @@ class Configuration
     }
 
     /**
-     * Simulate setter.
+     * Simulate setter
      *
      * @param bool $bool
      */
-    public function setSimulate(bool $bool)
+    public function setSimulate(bool $bool) : void
     {
         $this->simulate = $bool;
     }
 
     /**
-     * Simulate getter.
+     * Simulate getter
      *
      * @return bool
      */
@@ -223,17 +223,17 @@ class Configuration
     }
 
     /**
-     * Restore setter.
+     * Restore setter
      *
      * @param bool $bool
      */
-    public function setRestore(bool $bool)
+    public function setRestore(bool $bool) : void
     {
         $this->restore = $bool;
     }
 
     /**
-     * Restore getter.
+     * Restore getter
      *
      * @return bool
      */
@@ -243,13 +243,13 @@ class Configuration
     }
 
     /**
-     * Add a logger.
+     * Add a logger
      * This accepts valid logger configs as well as valid Listener objects.
      *
      * @param  mixed $logger
      * @throws \phpbu\App\Exception
      */
-    public function addLogger($logger)
+    public function addLogger($logger) : void
     {
         if (!($logger instanceof Listener) && !($logger instanceof Configuration\Logger)) {
             throw new Exception('invalid logger, only \'Listener\' and valid logger configurations are accepted');
@@ -258,7 +258,7 @@ class Configuration
     }
 
     /**
-     * Get the list of logger configurations.
+     * Get the list of logger configurations
      *
      * @return \phpbu\App\Configuration\Logger[]
      */
@@ -268,17 +268,17 @@ class Configuration
     }
 
     /**
-     * Add a Backup configuration.
+     * Add a Backup configuration
      *
      * @param \phpbu\App\Configuration\Backup $backup
      */
-    public function addBackup(Configuration\Backup $backup)
+    public function addBackup(Configuration\Backup $backup) : void
     {
         $this->backups[] = $backup;
     }
 
     /**
-     * Get the list of backup configurations.
+     * Get the list of backup configurations
      *
      * @return \phpbu\App\Configuration\Backup[]
      */
@@ -288,7 +288,7 @@ class Configuration
     }
 
     /**
-     * Is given backup active.
+     * Is given backup active
      * Backups could be skipped by using the --limit option.
      *
      * @param  string $backupName
@@ -303,17 +303,17 @@ class Configuration
     }
 
     /**
-     * Working directory setter.
+     * Working directory setter
      *
      * @param string $wd
      */
-    public static function setWorkingDirectory(string $wd)
+    public static function setWorkingDirectory(string $wd) : void
     {
         self::$workingDirectory = $wd;
     }
 
     /**
-     * Working directory getter.
+     * Working directory getter
      *
      * @return string
      */

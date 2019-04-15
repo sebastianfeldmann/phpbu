@@ -5,6 +5,7 @@ use phpbu\App\Backup\Check;
 use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Source;
+use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Log\Logger;
 
@@ -22,7 +23,7 @@ use phpbu\App\Log\Logger;
 class Factory
 {
     /**
-     * Map of available sources, checks, syncs and cleanups.
+     * Map of available sources, checks, crypts, syncs and cleanups
      *
      * @var array
      */
@@ -80,7 +81,7 @@ class Factory
     ];
 
     /**
-     * Backup Factory.
+     * Backup Factory
      * Creates 'Source', 'Check', 'Crypter', 'Sync' and 'Cleaner' Objects.
      *
      * @param  string $type
@@ -101,14 +102,14 @@ class Factory
     }
 
     /**
-     * Adapter Factory.
+     * Adapter Factory
      *
      * @param  string $alias
      * @param  array  $conf
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Adapter
      */
-    public function createAdapter($alias, $conf = [])
+    public function createAdapter($alias, $conf = []) : Adapter
     {
         /** @var \phpbu\App\Adapter $adapter */
         $adapter = $this->create('adapter', $alias);
@@ -120,14 +121,14 @@ class Factory
     }
 
     /**
-     * Logger Factory.
+     * Logger Factory
      *
      * @param  string $alias
      * @param  array  $conf
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Log\Logger
      */
-    public function createLogger($alias, $conf = [])
+    public function createLogger($alias, $conf = []) : Logger
     {
         /** @var \phpbu\App\Log\Logger $logger */
         $logger = $this->create('logger', $alias);
@@ -142,13 +143,13 @@ class Factory
     }
 
     /**
-     * Create a backup target.
+     * Create a backup target
      *
      * @param  \phpbu\App\Configuration\Backup\Target $conf
      * @return \phpbu\App\Backup\Target
      * @throws \phpbu\App\Exception
      */
-    public function createTarget(Configuration\Backup\Target $conf)
+    public function createTarget(Configuration\Backup\Target $conf) : Target
     {
         $target = new Target($conf->dirname, $conf->filename);
         $target->setupPath();
@@ -161,14 +162,14 @@ class Factory
     }
 
     /**
-     * Source Factory.
+     * Source Factory
      *
      * @param  string $alias
      * @param  array  $conf
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Source
      */
-    public function createSource($alias, $conf = [])
+    public function createSource($alias, $conf = []) : Source
     {
         /** @var \phpbu\App\Backup\Source $source */
         $source = $this->create('source', $alias);
@@ -180,13 +181,13 @@ class Factory
     }
 
     /**
-     * Check Factory.
+     * Check Factory
      *
      * @param  string $alias
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Check
      */
-    public function createCheck($alias)
+    public function createCheck($alias) : Check
     {
         /** @var \phpbu\App\Backup\Check $check */
         $check = $this->create('check', $alias);
@@ -197,14 +198,14 @@ class Factory
     }
 
     /**
-     * Crypter Factory.
+     * Crypter Factory
      *
      * @param  string $alias
      * @param  array  $conf
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Crypter
      */
-    public function createCrypter($alias, $conf = [])
+    public function createCrypter($alias, $conf = []) : Crypter
     {
         /** @var \phpbu\App\Backup\Crypter $crypter */
         $crypter = $this->create('crypter', $alias);
@@ -216,18 +217,18 @@ class Factory
     }
 
     /**
-     * Sync Factory.
+     * Sync Factory
      *
      * @param  string $alias
      * @param  array  $conf
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Sync
      */
-    public function createSync($alias, $conf = [])
+    public function createSync($alias, $conf = []) : Sync
     {
         /** @var \phpbu\App\Backup\Sync $sync */
         $sync = $this->create('sync', $alias);
-        if (!($sync instanceof \phpbu\App\Backup\Sync)) {
+        if (!($sync instanceof Sync)) {
             throw new Exception(sprintf('sync \'%s\' has to implement the \'Sync\' interface', $alias));
         }
         $sync->setup($conf);
@@ -235,14 +236,14 @@ class Factory
     }
 
     /**
-     * Cleaner Factory.
+     * Cleaner Factory
      *
      * @param  string $alias
      * @param  array  $conf
      * @throws \phpbu\App\Exception
      * @return \phpbu\App\Backup\Cleaner
      */
-    public function createCleaner($alias, $conf = [])
+    public function createCleaner($alias, $conf = []) : Cleaner
     {
         /** @var \phpbu\App\Backup\Cleaner $cleaner */
         $cleaner = $this->create('cleaner', $alias);
@@ -254,7 +255,7 @@ class Factory
     }
 
     /**
-     * Extend the backup factory.
+     * Extend the backup factory
      *
      * @param  string  $type        Type to create 'adapter', 'source', 'check', 'sync' or 'cleaner'
      * @param  string  $alias       Name the class is registered at
@@ -274,7 +275,7 @@ class Factory
     }
 
     /**
-     * Throws an exception if type is invalid.
+     * Throws an exception if type is invalid
      *
      * @param  string $type
      * @throws \phpbu\App\Exception

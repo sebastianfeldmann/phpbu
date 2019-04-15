@@ -38,7 +38,7 @@ class Runner
      *
      * @return \phpbu\App\Factory
      */
-    public function getFactory()
+    public function getFactory() : Factory
     {
         return $this->factory;
     }
@@ -50,7 +50,7 @@ class Runner
      * @return \phpbu\App\Result
      * @throws \phpbu\App\Exception
      */
-    public function run(Configuration $configuration)
+    public function run(Configuration $configuration) : Result
     {
         $result = new Result();
         $this->setupLoggers($configuration, $result);
@@ -66,7 +66,7 @@ class Runner
      * @param  \phpbu\App\Result        $result
      * @throws \phpbu\App\Exception
      */
-    private function setupLoggers(Configuration $configuration, Result $result)
+    private function setupLoggers(Configuration $configuration, Result $result) : void
     {
         foreach ($configuration->getLoggers() as $log) {
             // log is a already fully setup Listener so just use it

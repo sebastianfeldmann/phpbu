@@ -53,14 +53,14 @@ class Cmd
     const EXIT_EXCEPTION = 2;
 
     /**
-     * Is cmd executed from phar.
+     * Is cmd executed from phar
      *
      * @var bool
      */
     private $isPhar;
 
     /**
-     * Is version string printed already.
+     * Is version string printed already
      *
      * @var bool
      */
@@ -74,11 +74,11 @@ class Cmd
     private $arguments = [];
 
     /**
-     * Runs the application.
+     * Runs the application
      *
      * @param array $args
      */
-    public function run(array $args)
+    public function run(array $args) : void
     {
         $this->isPhar = defined('__PHPBU_PHAR__');
         $this->handleOpt($args);
@@ -106,11 +106,11 @@ class Cmd
     }
 
     /**
-     * Check arguments and load configuration file.
+     * Check arguments and load configuration file
      *
      * @param array $args
      */
-    protected function handleOpt(array $args)
+    protected function handleOpt(array $args) : void
     {
         try {
             $parser  = new Args($this->isPhar);
@@ -127,7 +127,7 @@ class Cmd
      * @param  array $options
      * @return void
      */
-    protected function handleArgs(array $options)
+    protected function handleArgs(array $options) : void
     {
         foreach ($options as $option => $argument) {
             switch ($option) {
@@ -159,7 +159,7 @@ class Cmd
     }
 
     /**
-     * Try to find a configuration file.
+     * Try to find a configuration file
      */
     protected function findConfiguration() : string
     {
@@ -179,7 +179,7 @@ class Cmd
     }
 
     /**
-     * Create a application configuration.
+     * Create a application configuration
      *
      * @param  string             $configurationFile
      * @param  \phpbu\App\Factory $factory
@@ -226,11 +226,11 @@ class Cmd
     }
 
     /**
-     * Override configuration settings with command line arguments.
+     * Override configuration settings with command line arguments
      *
      * @param \phpbu\App\Configuration $configuration
      */
-    protected function overrideConfigWithArguments(Configuration $configuration)
+    protected function overrideConfigWithArguments(Configuration $configuration) : void
     {
         $settingsToOverride = ['verbose', 'colors', 'debug', 'simulate', 'restore'];
         foreach ($settingsToOverride as $arg) {
@@ -243,9 +243,9 @@ class Cmd
     }
 
     /**
-     * Handle the phar self-update.
+     * Handle the phar self-update
      */
-    protected function handleSelfUpdate()
+    protected function handleSelfUpdate() : void
     {
         $this->printVersionString();
 
@@ -290,9 +290,9 @@ class Cmd
     }
 
     /**
-     * Handle phar version-check.
+     * Handle phar version-check
      */
-    protected function handleVersionCheck()
+    protected function handleVersionCheck() : void
     {
         $this->printVersionString();
 
@@ -310,7 +310,7 @@ class Cmd
      *
      * @return void
      */
-    private function handleConfigGeneration()
+    private function handleConfigGeneration() : void
     {
         $this->printVersionString();
 
@@ -345,7 +345,7 @@ class Cmd
     }
 
     /**
-     * Returns latest released phpbu version.
+     * Returns latest released phpbu version
      *
      * @return string
      * @throws \RuntimeException
@@ -363,7 +363,7 @@ class Cmd
     }
 
     /**
-     * Check if current phar is outdated.
+     * Check if current phar is outdated
      *
      * @param  string $latestVersion
      * @return bool
@@ -376,7 +376,7 @@ class Cmd
     /**
      * Shows the current application version.
      */
-    protected function printVersionString()
+    protected function printVersionString() : void
     {
         if ($this->isVersionStringPrinted) {
             return;
@@ -387,9 +387,9 @@ class Cmd
     }
 
     /**
-     * Show the help message.
+     * Show the help message
      */
-    protected function printHelp()
+    protected function printHelp() : void
     {
         $this->printVersionString();
         echo <<<EOT
@@ -414,12 +414,12 @@ EOT;
     }
 
     /**
-     * Shows some given error message.
+     * Shows some given error message
      *
      * @param string $message
      * @param bool   $hint
      */
-    private function printError($message, $hint = false)
+    private function printError($message, $hint = false) : void
     {
         $help = $hint ? ', use "phpbu -h" for help' : '';
         $this->printVersionString();
@@ -428,9 +428,9 @@ EOT;
     }
 
     /**
-     * Main method, is called by phpbu command and the phar file.
+     * Main method, is called by phpbu command and the phar file
      */
-    public static function main()
+    public static function main() : void
     {
         $app = new static();
         $app->run($_SERVER['argv']);
