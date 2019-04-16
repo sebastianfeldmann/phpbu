@@ -34,19 +34,23 @@ class SizeDiffPreviousPercent implements Simulator
      */
     public function pass(Target $target, $value, Local $collector, Result $result) : bool
     {
+        $result->debug('checking size difference ' . $value . '%' . PHP_EOL);
+
         // throws App\Exception if file doesn't exist
         $backupSize   = $target->getSize();
         $history      = $collector->getBackupFiles();
         $historyCount = count($history);
         $pass         = true;
 
-        if ($historyCount > 0) {
-            // oldest backups first
-            ksort($history);
-            $prevFile    = array_pop($history);
-            $prevSize    = $prevFile->getSize();
-            $diffPercent = Math::getDiffInPercent($backupSize, $prevSize);
+        if ($historyCount > 1) {
+            // latest backups first
+            krsort($history);
+            // grab the second backup in the history as it should be the previous one
+            $previousBackup = $history[array_keys($history)[1]];
+            $prevSize       = $previousBackup->getSize();
+            $diffPercent    = Math::getDiffInPercent($backupSize, $prevSize);
 
+            $result->debug('size difference is ' . $diffPercent . '%' . PHP_EOL);
             $pass = $diffPercent < $value;
         }
 
@@ -54,7 +58,7 @@ class SizeDiffPreviousPercent implements Simulator
     }
 
     /**
-     * Simulate the check execution.
+     * Simulate the check execution
      *
      * @param  \phpbu\App\Backup\Target          $target
      * @param  string                            $value
