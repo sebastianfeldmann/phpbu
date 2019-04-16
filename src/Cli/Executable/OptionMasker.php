@@ -26,7 +26,7 @@ trait OptionMasker
      *
      * @return string
      */
-    public abstract function getCommand() : string;
+    abstract public function getCommand() : string;
 
     /**
      * Return the command with masked passwords or keys.

@@ -478,10 +478,10 @@ class PrinterCli implements Listener
                 'OK'
             );
         } elseif ($backup->okButSkipsOrFails()) {
-                $this->writeWithColor(
-                    'fg-yellow',
-                    'OK, but skipped or failed Crypts, Syncs or Cleanups!'
-                );
+            $this->writeWithColor(
+                'fg-yellow',
+                'OK, but skipped or failed Crypts, Syncs or Cleanups!'
+            );
         } else {
             $this->writeWithColor(
                 'fg-red',

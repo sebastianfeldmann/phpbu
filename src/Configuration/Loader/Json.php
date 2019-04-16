@@ -222,7 +222,7 @@ class Json extends File implements Loader
             throw new Exception('backup requires a target config');
         }
         $compress = Arr::getValue($json['target'], 'compress');
-        $filename = $this->getAdapterizedValue(Arr::getValue($json['target'], 'filename',''));
+        $filename = $this->getAdapterizedValue(Arr::getValue($json['target'], 'filename', ''));
         $dirname  = $this->getAdapterizedValue(Arr::getValue($json['target'], 'dirname', ''));
 
         if ($dirname) {

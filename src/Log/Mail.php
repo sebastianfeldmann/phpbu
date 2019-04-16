@@ -19,7 +19,7 @@ use PHPMailer\PHPMailer\PHPMailer;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class Mail implements Listener, Logger
@@ -361,7 +361,7 @@ class Mail implements Listener, Logger
             if (!$this->mailer->send()) {
                 throw new Exception($this->mailer->ErrorInfo);
             }
-        } catch (\Exception $e)  {
+        } catch (\Exception $e) {
             throw new Exception($e->getMessage());
         }
     }
@@ -448,7 +448,6 @@ class Mail implements Listener, Logger
                         $e->getLine()
                     ) .
                     '</td></tr>';
-
             }
             $html .= '</table>';
         }
@@ -540,7 +539,6 @@ class Mail implements Listener, Logger
                             $backup->cleanupCountFailed() .
                           '</td>' .
                          '</tr>';
-
             }
             $html .= '</table>';
         }

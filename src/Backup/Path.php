@@ -4,7 +4,7 @@ namespace phpbu\App\Backup;
 use phpbu\App\Util;
 
 /**
- * Path class.
+ * Path class
  *
  * @package    phpbu
  * @subpackage Backup

@@ -17,7 +17,7 @@ use RuntimeException;
 abstract class Cli
 {
     /**
-     * List of console color codes.
+     * List of console color codes
      *
      * @var array
      */
@@ -49,7 +49,7 @@ abstract class Cli
     ];
 
     /**
-     * Adds a new 'path' to the list of optional command locations.
+     * Adds a new 'path' to the list of optional command locations
      *
      * @param string $command
      * @param string $path
@@ -60,7 +60,7 @@ abstract class Cli
     }
 
     /**
-     * Returns the list of optional 'mysqldump' locations.
+     * Returns the list of optional 'mysqldump' locations
      *
      * @param  string $command
      * @return array
@@ -71,7 +71,7 @@ abstract class Cli
     }
 
     /**
-     * Detect a given command's location.
+     * Detect a given command's location
      *
      * @param  string $cmd               The command to locate
      * @param  string $path              Directory where the command should be
@@ -82,20 +82,20 @@ abstract class Cli
     public static function detectCmdLocation(string $cmd, string $path = '', array $optionalLocations = []) : string
     {
         $detectionSteps = [
-            function($cmd) use ($path) {
+            function ($cmd) use ($path) {
                 if (!empty($path)) {
                     return self::detectCmdLocationInPath($cmd, $path);
                 }
                 return '';
             },
-            function($cmd) {
+            function ($cmd) {
                 return self::detectCmdLocationWithWhich($cmd);
             },
-            function($cmd) {
+            function ($cmd) {
                 $paths = explode(PATH_SEPARATOR, self::getEnvPath());
                 return self::detectCmdLocationInPaths($cmd, $paths);
             },
-            function($cmd) use ($optionalLocations) {
+            function ($cmd) use ($optionalLocations) {
                 return self::detectCmdLocationInPaths($cmd, $optionalLocations);
             }
         ];
@@ -111,7 +111,7 @@ abstract class Cli
     }
 
     /**
-     * Detect a command in a given path.
+     * Detect a command in a given path
      *
      * @param  string $cmd
      * @param  string $path
@@ -129,7 +129,7 @@ abstract class Cli
     }
 
     /**
-     * Detect command location using which cli command.
+     * Detect command location using which cli command
      *
      * @param  string $cmd
      * @return string
@@ -143,11 +143,10 @@ abstract class Cli
             $bin     = self::isExecutable($command);
         }
         return $bin;
-
     }
 
     /**
-     * Check path list for executable command.
+     * Check path list for executable command
      *
      * @param  string $cmd
      * @param  array  $paths
@@ -166,7 +165,7 @@ abstract class Cli
     }
 
     /**
-     * Return local $PATH variable.
+     * Return local $PATH variable
      *
      * @return string
      * @throws \RuntimeException
@@ -183,7 +182,7 @@ abstract class Cli
     }
 
     /**
-     * Returns the executable command if the command is executable, null otherwise.
+     * Returns the executable command if the command is executable, null otherwise
      * Search for $command.exe on Windows systems.
      *
      * @param  string $command
@@ -205,7 +204,7 @@ abstract class Cli
     }
 
     /**
-     * Formats a buffer with a specified ANSI color sequence if colors are enabled.
+     * Formats a buffer with a specified ANSI color sequence if colors are enabled
      *
      * @author Sebastian Bergmann <sebastian@phpunit.de>
      * @param  string $color
@@ -233,7 +232,7 @@ abstract class Cli
     }
 
     /**
-     * Fills up a text buffer with '*' to consume 72 chars.
+     * Fills up a text buffer with '*' to consume 72 chars
      *
      * @param  string $buffer
      * @param  int    $length
@@ -245,7 +244,7 @@ abstract class Cli
     }
 
     /**
-     * Can command pipe operator be used.
+     * Can command pipe operator be used
      *
      * @return bool
      */
@@ -255,7 +254,7 @@ abstract class Cli
     }
 
     /**
-     * Removes a directory that is not empty.
+     * Removes a directory that is not empty
      *
      * @param string $dir
      */

@@ -17,7 +17,7 @@ use SebastianFeldmann\Ftp\Client;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  */
 class Ftp extends Xtp
 {
@@ -31,14 +31,14 @@ class Ftp extends Xtp
     protected $ftpClient;
 
     /**
-     * Determine should ftp connects via passive mode.
+     * Determine should ftp connects via passive mode
      *
      * @var bool
      */
     protected $passive;
 
     /**
-     * Setup the Ftp sync.
+     * Setup the Ftp sync
      *
      * @param  array $config
      * @throws \phpbu\App\Backup\Sync\Exception
@@ -60,7 +60,7 @@ class Ftp extends Xtp
     }
 
     /**
-     * Check for required loaded libraries or extensions.
+     * Check for required loaded libraries or extensions
      *
      * @throws \phpbu\App\Backup\Sync\Exception
      */
@@ -72,7 +72,7 @@ class Ftp extends Xtp
     }
 
     /**
-     * Return implemented (*)TP protocol name.
+     * Return implemented (*)TP protocol name
      *
      * @return string
      */
@@ -99,14 +99,13 @@ class Ftp extends Xtp
             $client->uploadFile($localFile, Util\Path::withTrailingSlash($this->remotePath), $remoteFilename);
             $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
             $this->cleanup($target, $result);
-
         } catch (\Exception $e) {
             throw new Exception($e->getMessage());
         }
     }
 
     /**
-     * Return FTP client wrapping the ftp connection.
+     * Return FTP client wrapping the ftp connection
      *
      * @return \SebastianFeldmann\Ftp\Client
      */
@@ -120,7 +119,7 @@ class Ftp extends Xtp
     }
 
     /**
-     * Creates FTP remote collector.
+     * Creates FTP remote collector
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector

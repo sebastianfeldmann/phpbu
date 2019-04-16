@@ -142,7 +142,6 @@ class GoogleDrive implements Simulator
             }
             $result->debug(sprintf('upload: done: %s', $apiResult->getId()));
             $this->cleanup($target, $result);
-
         } catch (\Exception $e) {
             throw new Exception($e->getMessage(), null, $e);
         }

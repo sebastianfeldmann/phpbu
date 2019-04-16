@@ -8,7 +8,7 @@ use phpbu\App\Result;
 use phpbu\App\Util;
 
 /**
- * Elasticdump source class.
+ * Elasticdump source class
  *
  * @package    phpbu
  * @subpackage Backup
@@ -16,13 +16,13 @@ use phpbu\App\Util;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 2.0.1
  */
 class Elasticdump extends SimulatorExecutable implements Simulator
 {
     /**
-     * Path to elasticdump binary.
+     * Path to elasticdump binary
      *
      * @var string
      */
@@ -65,11 +65,10 @@ class Elasticdump extends SimulatorExecutable implements Simulator
     private $type;
 
     /**
-     * Setup.
+     * Setup
      *
      * @see    \phpbu\App\Backup\Source
      * @param  array $conf
-     * @throws \phpbu\App\Exception
      */
     public function setup(array $conf = [])
     {
@@ -82,7 +81,7 @@ class Elasticdump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * Get index and type.
+     * Get index and type
      *
      * @param array $conf
      */
@@ -93,7 +92,7 @@ class Elasticdump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * Execute the backup.
+     * Execute the backup
      *
      * @see    \phpbu\App\Backup\Source
      * @param  \phpbu\App\Backup\Target $target
@@ -115,25 +114,24 @@ class Elasticdump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * Create the Executable to run the elasticdump command.
+     * Create the Executable to run the elasticdump command
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
-     * @throws \phpbu\App\Exception
      */
     protected function createExecutable(Target $target) : Executable
     {
-            $executable = new Executable\Elasticdump($this->pathToElasticdump);
-            $executable->useHost($this->host)
-                       ->credentials($this->user, $this->password)
-                       ->dumpIndex($this->index)
-                       ->dumpType($this->type)
-                       ->dumpTo($target->getPathnamePlain());
+        $executable = new Executable\Elasticdump($this->pathToElasticdump);
+        $executable->useHost($this->host)
+                   ->credentials($this->user, $this->password)
+                   ->dumpIndex($this->index)
+                   ->dumpType($this->type)
+                   ->dumpTo($target->getPathnamePlain());
         return $executable;
     }
 
     /**
-     * Create backup status.
+     * Create backup status
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Source\Status

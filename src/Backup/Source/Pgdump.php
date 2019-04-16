@@ -8,14 +8,14 @@ use phpbu\App\Result;
 use phpbu\App\Util;
 
 /**
- * Pgdump source class.
+ * Pgdump source class
  *
  * @package    phpbu
  * @subpackage Backup
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
 class Pgdump extends SimulatorExecutable implements Simulator
@@ -170,7 +170,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
     private $noPrivileges;
 
     /**
-     * Setup.
+     * Setup
      *
      * @see    \phpbu\App\Backup\Source
      * @param  array $conf
@@ -186,7 +186,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * Setup connection settings.
+     * Setup connection settings
      *
      * @param array $conf
      */
@@ -199,7 +199,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * Get tables and databases to backup.
+     * Get tables and databases to backup
      *
      * @param array $conf
      */
@@ -214,7 +214,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * Setup some dump options.
+     * Setup some dump options
      *
      * @param array $conf
      */
@@ -231,7 +231,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
 
 
     /**
-     * Execute the backup.
+     * Execute the backup
      *
      * @see    \phpbu\App\Backup\Source
      * @param  \phpbu\App\Backup\Target $target
@@ -241,7 +241,6 @@ class Pgdump extends SimulatorExecutable implements Simulator
      */
     public function backup(Target $target, Result $result) : Status
     {
-
         $pgDump = $this->execute($target);
         $result->debug($pgDump->getCmdPrintable());
 
@@ -253,10 +252,11 @@ class Pgdump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * Create the Executable to run the mysqldump command.
+     * Create the Executable to run the mysqldump command
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
+     * @throws \phpbu\App\Exception
      */
     protected function createExecutable(Target $target) : Executable
     {
@@ -280,7 +280,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * Create backup status.
+     * Create backup status
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Source\Status

@@ -96,7 +96,6 @@ class Backup extends Compression
                  *   \___/____/___/_/ |_/_/|_/\____/_/
                  */
                 $this->executeCleanup($backup, $target, $collector);
-
             } catch (\Exception $e) {
                 $this->result->debug('exception: ' . $e->getMessage());
                 $this->result->addError($e);
@@ -176,7 +175,6 @@ class Backup extends Compression
                 $crypter->crypt($target, $this->result);
                 $target->setCrypter($crypter);
                 $this->result->cryptEnd($config);
-
             } catch (Crypter\Exception $e) {
                 $this->failure = true;
                 $this->result->addError($e);
@@ -235,7 +233,6 @@ class Backup extends Compression
                 $cleaner = $this->factory->createCleaner($config->type, $config->options);
                 $cleaner->cleanup($target, $collector, $this->result);
                 $this->result->cleanupEnd($config);
-
             } catch (Cleaner\Exception $e) {
                 $this->failure = true;
                 $this->result->addError($e);

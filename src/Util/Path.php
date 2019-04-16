@@ -27,7 +27,7 @@ class Path
         $time = $time === null ? time() : $time;
         return preg_replace_callback(
             '#%([a-zA-Z])#',
-            function($match) use ($time) {
+            function ($match) use ($time) {
                 return date($match[1], $time);
             },
             $string

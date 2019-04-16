@@ -4,6 +4,7 @@ namespace phpbu\App\Backup\Check;
 use phpbu\App\Backup\Collector\Local;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
+use PHPUnit\Framework\TestCase;
 
 /**
  * SizeDiffPreviousPercentTest
@@ -13,10 +14,10 @@ use phpbu\App\Result;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class SizeDiffPreviousPercentTest extends \PHPUnit\Framework\TestCase
+class SizeDiffPreviousPercentTest extends TestCase
 {
     /**
      * Tests SizeDiffPreviousPercent::pass
