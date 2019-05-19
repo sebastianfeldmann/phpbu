@@ -50,7 +50,7 @@
     "sebastianfeldmann/ftp": "~0.9",
     "aws/aws-sdk-php": "~3.10",
     "kunalvarma05/dropbox-php-sdk": "~0.2",
-    "tightenco/collect": "5.*",
+    "tightenco/collect": "5.5.*",
     "phpseclib/phpseclib": "~2.0",
     "softlayer/objectstorage": "dev-master",
     "vlucas/phpdotenv": "~2.4",
