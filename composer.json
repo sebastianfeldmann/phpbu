@@ -55,7 +55,8 @@
     "softlayer/objectstorage": "dev-master",
     "vlucas/phpdotenv": "~2.4",
     "google/apiclient":"^2.0",
-    "php-opencloud/openstack": "^3.0"
+    "php-opencloud/openstack": "^3.0",
+    "arhitector/yandex": "^2.0"
   },
   "suggest": {
     "sebastianfeldmann/ftp": "Require ~0.9 to sync to an FTP server",
@@ -65,7 +66,8 @@
     "softlayer/objectstorage": "Require 'dev-master' to sync to Softlayer",
     "php-opencloud/openstack": "Require ~3.0 to sync to OpenStack",
     "vlucas/phpdotenv": "Require ~2.4 to use Dotenv adapter",
-    "google/apiclient":"Require ~2.0 to sync to Google Drive"
+    "google/apiclient":"Require ~2.0 to sync to Google Drive",
+    "arhitector/yandex":"Require ~2.0 to sync to Yandex Disk"
   },
   "bin": [
     "phpbu"
