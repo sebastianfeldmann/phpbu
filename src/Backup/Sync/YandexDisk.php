@@ -64,7 +64,7 @@ class YandexDisk implements Sync\Simulator
      * @throws \phpbu\App\Exception
      * @see    \phpbu\App\Backup\Sync::setup()
      */
-    public function setup(array $config): void
+    public function setup(array $config)
     {
         if (!class_exists(Disk::class)) {
             throw new Exception('Yandex.Disk sdk not loaded: use composer to install "arhitector/yandex"');
@@ -89,7 +89,7 @@ class YandexDisk implements Sync\Simulator
      * @throws Exception
      * @see    \phpbu\App\Backup\Sync::sync()
      */
-    public function sync(Target $target, Result $result): void
+    public function sync(Target $target, Result $result)
     {
         $sourcePath = $target->getPathname();
         $yandexDiskPath = $this->path . '/' . $target->getFilename();
@@ -115,7 +115,7 @@ class YandexDisk implements Sync\Simulator
         }
     }
 
-    private function createFolders(): void
+    private function createFolders()
     {
         $folderPath = '';
         $folderPaths = explode('/', $this->path->getPath());
@@ -138,7 +138,7 @@ class YandexDisk implements Sync\Simulator
      * @param Target $target
      * @param Result $result
      */
-    public function simulate(Target $target, Result $result): void
+    public function simulate(Target $target, Result $result)
     {
         $result->debug('sync backup to yandex disk' . PHP_EOL);
 
