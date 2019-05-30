@@ -7,7 +7,7 @@ use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 
 /**
- * Cleaner Abstraction.
+ * Cleaner Abstraction
  *
  * @package    phpbu
  * @subpackage Backup
@@ -20,7 +20,14 @@ use phpbu\App\Result;
 abstract class Abstraction
 {
     /**
-     * Cleanup your backup directory.
+     * Backup Result to handle events and IO
+     *
+     * @var \phpbu\App\Result
+     */
+    protected $result;
+
+    /**
+     * Cleanup your backup directory
      *
      * @see    \phpbu\App\Backup\Cleanup::cleanup()
      * @param  \phpbu\App\Backup\Target    $target
@@ -30,6 +37,7 @@ abstract class Abstraction
      */
     public function cleanup(Target $target, Collector $collector, Result $result)
     {
+        $this->result = $result;
         foreach ($this->getFilesToDelete($target, $collector) as $file) {
             if (!$file->isWritable()) {
                 throw new Exception(sprintf('can\'t delete file: %s', $file->getPathname()));
@@ -40,7 +48,7 @@ abstract class Abstraction
     }
 
     /**
-     * Simulate the cleanup execution.
+     * Simulate the cleanup execution
      *
      * @param  \phpbu\App\Backup\Target    $target
      * @param  \phpbu\App\Backup\Collector $collector
@@ -55,7 +63,7 @@ abstract class Abstraction
     }
 
     /**
-     * Return list of files to delete.
+     * Return list of files to delete
      *
      * @param  \phpbu\App\Backup\Target    $target
      * @param  \phpbu\App\Backup\Collector $collector
