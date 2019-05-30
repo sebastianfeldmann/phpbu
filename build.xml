@@ -411,6 +411,15 @@
       </fileset>
     </copy>
 
+    <copy file="${basedir}/vendor/symfony/options-resolver/LICENSE"
+          tofile="${basedir}/build/phar/lib/symfony/options-resolver/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/symfony/options-resolver">
+      <fileset dir="${basedir}/vendor/symfony/options-resolver">
+        <include name="**/*.php"/>
+        <exclude name="**/Test*"/>
+      </fileset>
+    </copy>
+
     <!-- OPENSTACK -->
     <copy file="${basedir}/vendor/php-opencloud/openstack/LICENSE"
           tofile="${basedir}/build/phar/lib/php-opencloud/openstack/LICENSE"/>
@@ -427,6 +436,80 @@
       <fileset dir="${basedir}/vendor/justinrainbow/json-schema/src">
         <include name="**/*.php"/>
         <exclude name="**/Test*"/>
+      </fileset>
+    </copy>
+
+    <!-- PHP-HTTP -->
+    <copy file="${basedir}/vendor/php-http/httplug/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-http/httplug/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-http/httplug">
+      <fileset dir="${basedir}/vendor/php-http/httplug/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <copy file="${basedir}/vendor/php-http/curl-client/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-http/curl-client/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-http/curl-client">
+      <fileset dir="${basedir}/vendor/php-http/curl-client/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <copy file="${basedir}/vendor/php-http/message-factory/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-http/message-factory/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-http/message-factory">
+      <fileset dir="${basedir}/vendor/php-http/message-factory/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <copy file="${basedir}/vendor/php-http/message/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-http/message/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-http/message">
+      <fileset dir="${basedir}/vendor/php-http/message/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <copy file="${basedir}/vendor/php-http/client-common/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-http/client-common/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-http/client-common">
+      <fileset dir="${basedir}/vendor/php-http/client-common/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <copy file="${basedir}/vendor/php-http/promise/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-http/promise/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-http/promise">
+      <fileset dir="${basedir}/vendor/php-http/promise/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- YANDEX -->
+    <copy file="${basedir}/vendor/arhitector/yandex/LICENSE.md"
+          tofile="${basedir}/build/phar/lib/arhitector/yandex/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/arhitector/yandex">
+      <fileset dir="${basedir}/vendor/arhitector/yandex/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <copy file="${basedir}/vendor/zendframework/zend-diactoros/LICENSE.md"
+          tofile="${basedir}/build/phar/lib/zendframework/zend-diactoros/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/zendframework/zend-diactoros">
+      <fileset dir="${basedir}/vendor/zendframework/zend-diactoros/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <copy file="${basedir}/vendor/league/event/LICENCE"
+          tofile="${basedir}/build/phar/lib/league/event/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/league/event">
+      <fileset dir="${basedir}/vendor/league/event/src">
+        <include name="**/*.php"/>
       </fileset>
     </copy>
 
