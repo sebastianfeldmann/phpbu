@@ -29,14 +29,14 @@ class Outdated extends Abstraction implements Simulator
     protected $offsetRaw;
 
     /**
-     * Offset in seconds.
+     * Offset in seconds
      *
      * @var integer
      */
     protected $offsetSeconds;
 
     /**
-     * Setup the Cleaner.
+     * Setup the Cleaner
      *
      * @see    \phpbu\App\Backup\Cleanup::setup()
      * @param  array $options
@@ -57,7 +57,7 @@ class Outdated extends Abstraction implements Simulator
     }
 
     /**
-     * Return list of files to delete.
+     * Return list of files to delete
      *
      * @param  \phpbu\App\Backup\Target    $target
      * @param  \phpbu\App\Backup\Collector $collector
@@ -68,9 +68,11 @@ class Outdated extends Abstraction implements Simulator
         $minTime = time() - $this->offsetSeconds;
         $files   = $collector->getBackupFiles();
         $delete  = [];
+        $this->result->debug('  found ' . count($files) . ' backup files');
 
         /** @var \phpbu\App\Backup\File\Local $file */
         foreach ($files as $file) {
+            $this->result->debug('  checking ' . $file->getFilename() . ' ' . date('Y.m.d H:i:s', $file->getMTime()));
             // last mod date < min date? delete!
             if ($file->getMTime() < $minTime) {
                 $delete[] = $file;
