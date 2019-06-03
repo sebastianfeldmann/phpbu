@@ -139,7 +139,7 @@ class Template extends Abstraction implements ResultFormatter
                 'file'    => $e->getFile(),
                 'line'    => $e->getLine()
             ];
-            $markup = $this->renderTemplate($errorTpl, $data);
+            $markup .= $this->renderTemplate($errorTpl, $data);
         }
         return $markup;
     }
@@ -171,7 +171,7 @@ class Template extends Abstraction implements ResultFormatter
                 'cleanupFailed'  => $b->cleanupCountFailed(),
                 'cleanupSkipped' => $b->cleanupCountSkipped(),
             ];
-            $markup = $this->renderTemplate($backupTpl, $data);
+            $markup .= $this->renderTemplate($backupTpl, $data);
         }
         return $markup;
     }
