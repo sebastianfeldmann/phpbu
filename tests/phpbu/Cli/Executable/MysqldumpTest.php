@@ -30,7 +30,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests Mysqldump::getCommandPrintable
      */
-    public function __testDefaultPrintable()
+    public function testDefaultPrintable()
     {
         $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
         $cmd       = $mysqldump->getCommandPrintable();
@@ -137,6 +137,18 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
         $cmd       = $mysqldump->getCommand();
 
         $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --port=\'1234\' --all-databases', $cmd);
+    }
+
+    /**
+     * Tests Mysqldump::useProtocol
+     */
+    public function testUseProtocol()
+    {
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
+        $mysqldump->useProtocol('TCP');
+        $cmd       = $mysqldump->getCommand();
+
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --protocol=\'TCP\' --all-databases', $cmd);
     }
 
     /**

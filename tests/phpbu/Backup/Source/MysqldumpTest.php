@@ -102,6 +102,20 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests Mysqldump::getExecutable
      */
+    public function testProtocol()
+    {
+        $target    = $this->createTargetMock();
+        $mysqldump = new Mysqldump();
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'protocol' => 'TCP']);
+
+        $executable = $mysqldump->getExecutable($target);
+
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --protocol=\'TCP\' --all-databases', $executable->getCommand());
+    }
+
+    /**
+     * Tests Mysqldump::getExecutable
+     */
     public function testFilePerTable()
     {
         $target    = $this->createTargetMock('/tmp/foo');

@@ -44,6 +44,14 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     private $port;
 
     /**
+     * Port to connect to
+     * --protocol <TCP|SOCKET|PIPE|MEMORY>
+     *
+     * @var string
+     */
+    private $protocol;
+
+    /**
      * User to connect with
      * --user <username>
      *
@@ -183,6 +191,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
         $this->pathToMysqldump   = Util\Arr::getValue($conf, 'pathToMysqldump', '');
         $this->host              = Util\Arr::getValue($conf, 'host', '');
         $this->port              = Util\Arr::getValue($conf, 'port', 0);
+        $this->protocol          = Util\Arr::getValue($conf, 'protocol', '');
         $this->user              = Util\Arr::getValue($conf, 'user', '');
         $this->password          = Util\Arr::getValue($conf, 'password', '');
         $this->gtidPurged        = Util\Arr::getValue($conf, 'gtidPurged', '');
@@ -256,6 +265,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
         $executable->credentials($this->user, $this->password)
                    ->useHost($this->host)
                    ->usePort($this->port)
+                   ->useProtocol($this->protocol)
                    ->useQuickMode($this->quick)
                    ->lockTables($this->lockTables)
                    ->dumpBlobsHexadecimal($this->hexBlob)
