@@ -4,7 +4,7 @@
     "recipients": "forename.lastname@example.com",
     "sendOnlyOnError": true,
     "sendOnSimulation": false,
-    "sender.mail": "no-replay@example.com",
+    "sender.mail": "no-reply@example.com",
     "transport": "sendmail",
     "sendmail.path": "/usr/sbin/sendmail",
     "sendmail.options": "-bs"

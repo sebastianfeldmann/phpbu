@@ -5,7 +5,7 @@
     "sendOnlyOnError": true,
     "sendOnSimulation": false,
     "subject": "My Backup Report Subject",
-    "sender.mail": "no-replay@example.com",
+    "sender.mail": "no-reply@example.com",
     "transport": "smtp",
     "smtp.port": "587",
     "smtp.host": "smtp.example.com",
