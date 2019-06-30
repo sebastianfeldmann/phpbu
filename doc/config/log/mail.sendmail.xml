@@ -10,7 +10,7 @@
   <option name="sendOnSimulation" value="false" />
 
   <!-- optional default=phpbu@hostname -->
-  <option name="sender.mail" value="no-replay@example.com" />
+  <option name="sender.mail" value="no-reply@example.com" />
 
   <!-- mandatory -->
   <option name="transport" value="sendmail" />
