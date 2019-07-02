@@ -49,6 +49,7 @@ If you are not using php 7.0 or greater already you can still use phpbu version 
     + rsync
     + SFTP
     + Softlayer
+    + Yandex Disk
 * Cleanup your local backup
     + Delete backups older x
     + Store only x MB of backups
