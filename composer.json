@@ -67,7 +67,8 @@
     "php-opencloud/openstack": "Require ~3.0 to sync to OpenStack",
     "vlucas/phpdotenv": "Require ~2.4 to use Dotenv adapter",
     "google/apiclient":"Require ~2.0 to sync to Google Drive",
-    "arhitector/yandex":"Require ~2.0 to sync to Yandex Disk"
+    "arhitector/yandex":"Require ~2.0 to sync to Yandex Disk",
+    "microsoft/azure-storage-blob": "Require ~1.4 to sync to Azure Blob Storage"
   },
   "bin": [
     "phpbu"

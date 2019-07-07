@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sync type="azureblob">
+  <!-- mandatory -->
+  <option name="connection_string" value="DefaultEndpointsProtocol=[http|https];AccountName=[yourAccount];AccountKey=[yourKey]" />
+
+  <!-- mandatory -->
+  <option name="container_name" value="mycontainer" />
+
+  <!-- optional, default / -->
+  <option name="path" value="backup" />
+</sync>

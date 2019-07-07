@@ -1,0 +1,8 @@
+{
+  "type": "azureblob",
+  "options": {
+    "connection_string": "DefaultEndpointsProtocol=[http|https];AccountName=[yourAccount];AccountKey=[yourKey]",
+    "container_name": "mycontainer",
+    "path": "backup"
+  }
+}
