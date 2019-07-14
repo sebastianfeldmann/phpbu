@@ -142,7 +142,7 @@ class AzureBlob implements Simulator
      *
      * @return \MicrosoftAzure\Storage\Blob\BlobRestProxy
      */
-    private function createClient() : BlobRestProxy
+    protected function createClient() : BlobRestProxy
     {
         return BlobRestProxy::createBlobService($this->connectionString);
     }
@@ -230,7 +230,7 @@ class AzureBlob implements Simulator
      * @return resource
      * @throws \phpbu\App\Backup\Sync\Exception
      */
-    private function getFileHandle($path, $mode)
+    protected function getFileHandle($path, $mode)
     {
         $handle = fopen($path, $mode);
         if (!is_resource($handle)) {
