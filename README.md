@@ -42,6 +42,7 @@ If you are not using php 7.0 or greater already you can still use phpbu version 
     + openssl
 * Sync backups to other locations
     + Amazon s3
+    + Azure Blob
     + Dropbox
     + FTP
     + Google Drive
