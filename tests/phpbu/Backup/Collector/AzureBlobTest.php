@@ -54,11 +54,11 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
                                 "Etag" => "0x8D702FF4A6EFED0",
                                 "Content-Length" => "100",
                                 "Content-Type" => "application/octet-stream",
-                                "Content-Encoding" => NULL,
-                                "Content-Language" => NULL,
+                                "Content-Encoding" => null,
+                                "Content-Language" => null,
                                 "Content-MD5" => "4zrnbmTxOxLksK3+1ulT8g==",
-                                "Cache-Control" => NULL,
-                                "Content-Disposition" => NULL,
+                                "Cache-Control" => null,
+                                "Content-Disposition" => null,
                                 "BlobType" => "BlockBlob",
                                 "AccessTier" =>"Hot",
                                 "AccessTierInferred" => "true",
@@ -75,11 +75,11 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
                                 "Etag" => "0x8D702FF4A6EFED0",
                                 "Content-Length" => "100",
                                 "Content-Type" => "application/octet-stream",
-                                "Content-Encoding" => NULL,
-                                "Content-Language" => NULL,
+                                "Content-Encoding" => null,
+                                "Content-Language" => null,
                                 "Content-MD5" => "4zrnbmTxOxLksK3+1ulT8g==",
-                                "Cache-Control" => NULL,
-                                "Content-Disposition" => NULL,
+                                "Cache-Control" => null,
+                                "Content-Disposition" => null,
                                 "BlobType" => "BlockBlob",
                                 "AccessTier" =>"Hot",
                                 "AccessTierInferred" => "true",
@@ -96,11 +96,11 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
                                 "Etag" => "0x8D702FF4A6EFED0",
                                 "Content-Length" => "100",
                                 "Content-Type" => "application/octet-stream",
-                                "Content-Encoding" => NULL,
-                                "Content-Language" => NULL,
+                                "Content-Encoding" => null,
+                                "Content-Language" => null,
                                 "Content-MD5" => "4zrnbmTxOxLksK3+1ulT8g==",
-                                "Cache-Control" => NULL,
-                                "Content-Disposition" => NULL,
+                                "Cache-Control" => null,
+                                "Content-Disposition" => null,
                                 "BlobType" => "BlockBlob",
                                 "AccessTier" =>"Hot",
                                 "AccessTierInferred" => "true",
@@ -111,7 +111,7 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
                         ]
                     ]
                 ],
-                "NextMarker" => NULL
+                "NextMarker" => null
             ]
         );
 
@@ -165,7 +165,7 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
                 "Blobs" => [
                     "Blob" => []
                 ],
-                "NextMarker" => NULL
+                "NextMarker" => null
             ]
         );
 

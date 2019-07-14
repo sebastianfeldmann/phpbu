@@ -30,7 +30,8 @@ foreach ($lock->{'packages-dev'} as $package) {
         "softlayer/objectstorage",
         "vlucas/phpdotenv",
         "google/apiclient",
-        "php-opencloud/openstack"
+        "php-opencloud/openstack",
+        "microsoft/azure-storage-blob"
     ])) {
       continue;
     }
