@@ -34,7 +34,7 @@ class Capacity extends Abstraction implements Simulator
     /**
      * Capacity in bytes.
      *
-     * @var mixed <integer|double>
+     * @var int|float
      */
     protected $capacityBytes;
 
