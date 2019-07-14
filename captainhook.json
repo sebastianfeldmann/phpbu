@@ -1,0 +1,56 @@
+{
+    "commit-msg": {
+        "enabled": true,
+        "actions": [
+            {
+                "action": "\\CaptainHook\\App\\Hook\\Message\\Action\\Beams",
+                "options": {
+                    "subjectLength": 50,
+                    "bodyLineLength": 72
+                },
+                "conditions": []
+            }
+        ]
+    },
+    "pre-push": {
+        "enabled": false,
+        "actions": [
+            {
+                "action": "phpunit",
+                "options": [],
+                "conditions": []
+            },
+            {
+                "action": "phpstan analyse src --level=2 --no-progress --error-format=raw",
+                "options": [],
+                "conditions": []
+            }
+        ]
+    },
+    "pre-commit": {
+        "enabled": true,
+        "actions": [
+            {
+                "action": "\\CaptainHook\\App\\Hook\\PHP\\Action\\Linting",
+                "options": [],
+                "conditions": []
+            }
+        ]
+    },
+    "prepare-commit-msg": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-commit": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-merge": {
+        "enabled": false,
+        "actions": []
+    },
+    "post-checkout": {
+        "enabled": false,
+        "actions": []
+    }
+}

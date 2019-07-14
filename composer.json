@@ -57,7 +57,8 @@
     "google/apiclient":"^2.0",
     "php-opencloud/openstack": "^3.0",
     "arhitector/yandex": "^2.0",
-    "microsoft/azure-storage-blob": "~1.4"
+    "microsoft/azure-storage-blob": "~1.4",
+    "captainhook/plugin-composer": "^4.0"
   },
   "suggest": {
     "sebastianfeldmann/ftp": "Require ~0.9 to sync to an FTP server",
