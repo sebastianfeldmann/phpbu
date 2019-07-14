@@ -88,7 +88,7 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
                 "ServiceEndpoint" => "https://accountname.blob.core.windows.net/"
             ],
             "Containers" => [],
-            "NextMarker" => NULL
+            "NextMarker" => null
         ]);
 
         $clientMock = $this->createAzureBlobMock();
@@ -100,7 +100,8 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
         $azureBlob->method('getFileHandle')->willReturn('filehandle');
 
         $azureBlob->setup([
-            'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=accountname;AccountKey=accountkey;EndpointSuffix=core.windows.net',
+            'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=accountname;AccountKey=accountkey;' .
+                                    'EndpointSuffix=core.windows.net',
             'container_name'    => 'dummy-container-name',
             'path'              => 'backup'
         ]);
@@ -123,7 +124,7 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
                 "ServiceEndpoint" => "https://accountname.blob.core.windows.net/"
             ],
             "Containers" => [],
-            "NextMarker" => NULL
+            "NextMarker" => null
         ]);
 
         $azureBlobContents = ListBlobsResult::create(
@@ -137,7 +138,7 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
                 "Blobs" => [
                     "Blob" => []
                 ],
-                "NextMarker" => NULL
+                "NextMarker" => null
             ]
         );
 
@@ -151,7 +152,8 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
         $azureBlob->method('getFileHandle')->willReturn('filehandle');
 
         $azureBlob->setup([
-            'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=accountname;AccountKey=accountkey;EndpointSuffix=core.windows.net',
+            'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=accountname;AccountKey=accountkey;' .
+                                   'EndpointSuffix=core.windows.net',
             'container_name'    => 'dummy-container-name',
             'path'              => 'backup',
             'cleanup.type'      => 'quantity',
@@ -176,7 +178,7 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
                 "ServiceEndpoint" => "https://accountname.blob.core.windows.net/"
             ],
             "Containers" => [],
-            "NextMarker" => NULL
+            "NextMarker" => null
         ]);
 
         $clientMock = $this->createAzureBlobMock();
@@ -189,7 +191,8 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
         $azureBlob->method('getFileHandle')->willReturn('filehandle');
 
         $azureBlob->setup([
-            'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=accountname;AccountKey=accountkey;EndpointSuffix=core.windows.net',
+            'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=accountname;AccountKey=accountkey;' .
+                                   'EndpointSuffix=core.windows.net',
             'container_name'    => 'dummy-container-name',
             'path'              => 'backup'
         ]);

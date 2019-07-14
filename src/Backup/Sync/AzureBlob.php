@@ -78,7 +78,8 @@ class AzureBlob implements Simulator
     public function setup(array $config)
     {
         if (!class_exists('\\MicrosoftAzure\\Storage\\Blob\\BlobRestProxy')) {
-            throw new Exception('Azure Bob Storage SDK not loaded: use composer to install "microsoft/azure-storage-blob"');
+            throw new Exception('Azure Bob Storage SDK not loaded: use composer to install ' .
+                                         '"microsoft/azure-storage-blob"');
         }
 
         // check for mandatory options

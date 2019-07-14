@@ -284,7 +284,22 @@
       </fileset>
     </copy>
 
-    <!-- GUZZLE (AWS / OPENSTACK) -->
+    <!-- AZURE -->
+    <copy file="${basedir}/vendor/microsoft/azure-storage-blob/LICENSE"
+          tofile="${basedir}/build/phar/lib/microsoft/azure-storage-blob/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/microsoft/azure-storage-blob">
+      <fileset dir="${basedir}/vendor/microsoft/azure-storage-blob/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/microsoft/azure-storage-common/LICENSE"
+          tofile="${basedir}/build/phar/lib/microsoft/azure-storage-common/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/microsoft/azure-storage-common">
+      <fileset dir="${basedir}/vendor/microsoft/azure-storage-common/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <!-- GUZZLE (AWS / OPENSTACK / AZURE) -->
     <copy file="${basedir}/vendor/guzzlehttp/guzzle/LICENSE"
           tofile="${basedir}/build/phar/lib/guzzlehttp/guzzle/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/guzzlehttp/guzzle">
