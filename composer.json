@@ -40,7 +40,7 @@
     "ext-dom": "*",
     "ext-json": "*",
     "ext-spl": "*",
-    "sebastian/environment": "~3.0|~4.0",
+    "sebastian/environment": "~3.0|~4",
     "sebastianfeldmann/cli": "~3.1",
     "phpmailer/phpmailer": "~6.0",
     "symfony/event-dispatcher": "~3.0|~4.2"
