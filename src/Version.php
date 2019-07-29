@@ -80,7 +80,7 @@ final class Version
     public static function id() : string
     {
         if (self::$version === null) {
-            $version = new self('5.2.8', dirname(dirname(__DIR__)));
+            $version = new self('5.2.9', dirname(dirname(__DIR__)));
             self::$version = $version->getVersionNumber();
         }
 
