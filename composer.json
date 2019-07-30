@@ -53,7 +53,7 @@
     "tightenco/collect": "5.*",
     "phpseclib/phpseclib": "~2.0",
     "softlayer/objectstorage": "dev-master",
-    "vlucas/phpdotenv": "~2.4",
+    "vlucas/phpdotenv": "~3.0",
     "google/apiclient":"^2.0",
     "php-opencloud/openstack": "^3.0",
     "arhitector/yandex": "^2.0",
@@ -66,7 +66,7 @@
     "phpseclib/phpseclib": "Require '~2.0' to use SFTP sync",
     "softlayer/objectstorage": "Require 'dev-master' to sync to Softlayer",
     "php-opencloud/openstack": "Require ~3.0 to sync to OpenStack",
-    "vlucas/phpdotenv": "Require ~2.4 to use Dotenv adapter",
+    "vlucas/phpdotenv": "Require ~3.0 to use Dotenv adapter",
     "google/apiclient":"Require ~2.0 to sync to Google Drive",
     "arhitector/yandex":"Require ~2.0 to sync to Yandex Disk",
     "microsoft/azure-storage-blob": "Require ~1.4 to sync to Azure Blob Storage"
