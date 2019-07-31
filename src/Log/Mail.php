@@ -109,21 +109,21 @@ class Mail implements Listener, Logger
     private $sendOnlyOnError = false;
 
     /**
-     * Send mails on simulation runs.
+     * Send mails on simulation runs
      *
      * @var bool
      */
     private $sendSimulating = true;
 
     /**
-     * Is current execution a simulation.
+     * Is current execution a simulation
      *
      * @var bool
      */
     private $isSimulation = false;
 
     /**
-     * Returns an array of event names this subscriber wants to listen to.
+     * Returns an array of event names this subscriber wants to listen to
      *
      * The array keys are event names and the value can be:
      *
@@ -147,7 +147,7 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * Setup the Logger.
+     * Setup the Logger
      *
      * @see    \phpbu\App\Log\Logger::setup
      * @param  array $options
@@ -175,10 +175,11 @@ class Mail implements Listener, Logger
     }
 
     /**
-     * Handle the phpbu end event.
+     * Handle the phpbu end event
      *
      * @param  \phpbu\App\Event\App\End $event
      * @throws \phpbu\App\Exception
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     public function onPhpbuEnd(Event\App\End $event)
     {
@@ -199,7 +200,7 @@ class Mail implements Listener, Logger
                      . '</body></html>';
             $state   = $result->allOk() ? 'OK' : ($result->backupOkButSkipsOrFails() ? 'WARNING' : 'ERROR');
 
-            $this->mailer->Subject = $this->subject . ' [' . $state . ']';
+            $this->mailer->Subject = $this->subject . ' [' . ($this->isSimulation ? 'SIMULATION' : $state) . ']';
             $this->mailer->setFrom($this->senderMail, $this->senderName);
             $this->mailer->msgHTML($body);
 
