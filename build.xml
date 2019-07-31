@@ -115,6 +115,12 @@
         <include name="**/*.php"/>
       </fileset>
     </copy>
+    <copy file="${basedir}/vendor/phpoption/phpoption/LICENSE.txt" tofile="${basedir}/build/phar/lib/phpoption/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/phpoption">
+      <fileset dir="${basedir}/vendor/phpoption/phpoption/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
 
     <!-- DROPBOX SDK -->
     <copy file="${basedir}/vendor/kunalvarma05/dropbox-php-sdk/LICENSE" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>

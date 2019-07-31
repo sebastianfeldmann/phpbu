@@ -53,7 +53,7 @@
     "tightenco/collect": "5.5.*",
     "phpseclib/phpseclib": "~2.0",
     "softlayer/objectstorage": "dev-master",
-    "vlucas/phpdotenv": "~2.4",
+    "vlucas/phpdotenv": "~2.4|~3.0",
     "google/apiclient":"^2.0",
     "php-opencloud/openstack": "^3.0",
     "arhitector/yandex": "^2.0",

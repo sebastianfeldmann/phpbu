@@ -14,7 +14,7 @@ use phpbu\App\Util as AppUtil;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 4.0.0
  */
 class Dotenv implements Adapter
@@ -41,9 +41,15 @@ class Dotenv implements Adapter
      */
     public function setup(array $conf)
     {
-        $path         = AppUtil\Arr::getValue($conf, 'file', '.env');
-        $this->file   = AppUtil\Path::toAbsolutePath($path, Configuration::getWorkingDirectory());
-        $this->dotenv = new DotenvLib(dirname($this->file), basename($this->file));
+        $path       = AppUtil\Arr::getValue($conf, 'file', '.env');
+        $this->file = AppUtil\Path::toAbsolutePath($path, Configuration::getWorkingDirectory());
+
+        if (method_exists(DotenvLib::class, 'create')) {
+            $this->dotenv = DotenvLib::create(dirname($this->file), basename($this->file));
+        } else {
+            $this->dotenv = new DotenvLib(dirname($this->file), basename($this->file));
+        }
+
         $this->dotenv->load();
     }
 
