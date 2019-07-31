@@ -115,7 +115,7 @@
         <include name="**/*.php"/>
       </fileset>
     </copy>
-    <copy file="${basedir}/vendor/phpoption/phpoption/LICENSE.txt" tofile="${basedir}/build/phar/lib/phpoption/LICENSE"/>
+    <copy file="${basedir}/vendor/phpoption/phpoption/LICENSE" tofile="${basedir}/build/phar/lib/phpoption/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/phpoption">
       <fileset dir="${basedir}/vendor/phpoption/phpoption/src">
         <include name="**/*.php"/>
