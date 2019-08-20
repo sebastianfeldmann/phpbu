@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<source type="influxdump">
+  <!-- optional, default=localhost:8088 -->
+  <option name="host" value="localhost:8088" />
+
+  <!-- optional, default all databases -->
+  <option name="database" value="myDatabaseName" />
+
+  <!-- define your custom pgdump executable location -->
+  <option name="pathToInfluxdump" value="/path/to/custom/bin" />
+</source>
