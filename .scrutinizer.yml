@@ -6,6 +6,7 @@ build:
     before:
       - composer self-update
       - wget -O phpunit.phar https://phar.phpunit.de/phpunit-7.5.9.phar
+      - chmod +x phpunit.phar
   tests:
     override:
       - command: ./phpunit.phar --coverage-clover=clover.xml
