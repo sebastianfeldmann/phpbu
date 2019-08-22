@@ -74,7 +74,12 @@ class SimulateTest extends \PHPUnit\Framework\TestCase
     public function testCompressDirectoryExtraCompress()
     {
         $source        = $this->createSourceMock($this->createStatusMock('/tmp/foo', true));
-        $factory       = $this->createFactoryMock($source, true, 1, $this->createTargetMock('foo', 'foo.zip'));
+        $factory       = $this->createFactoryMock(
+            $source,
+            true,
+            1,
+            $this->createTargetMock('foo', 'foo.tar.gz')
+        );
         $configuration = $this->createConfigurationMock();
         $configuration->method('isBackupActive')->willReturn(true);
 
