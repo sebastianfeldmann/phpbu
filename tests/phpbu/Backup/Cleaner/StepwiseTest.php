@@ -24,12 +24,7 @@ class StepwiseTest extends TestCase
                 [
                     'size'            => 100,
                     'shouldBeDeleted' => false,
-                    'mTime'           => $this->getMTime('8h'),
-                ],
-                [
-                    'size'            => 100,
-                    'shouldBeDeleted' => false,
-                    'mTime'           => $this->getMTime('12h'),
+                    'mTime'           => $this->getMTime('1d'),
                 ],
                 [
                     'size'            => 100,
@@ -53,28 +48,33 @@ class StepwiseTest extends TestCase
                 ],
                 [
                     'size'            => 100,
-                    'shouldBeDeleted' => false,
-                    'mTime'           => $this->getMTime('2m'),
-                ],
-                [
-                    'size'            => 100,
-                    'shouldBeDeleted' => false,
-                    'mTime'           => $this->getMTime('3m'),
-                ],
-                [
-                    'size'            => 100,
-                    'shouldBeDeleted' => false,
-                    'mTime'           => $this->getMTime('12m'),
-                ],
-                [
-                    'size'            => 100,
-                    'shouldBeDeleted' => false,
-                    'mTime'           => $this->getMTime('13m'),
-                ],
-                [
-                    'size'            => 100,
                     'shouldBeDeleted' => true,
-                    'mTime'           => $this->getMTime('20m'),
+                    'mTime'           => $this->getMTime('2y'),
+                ],
+                [
+                    'size'            => 100,
+                    'shouldBeDeleted' => false,
+                    'mTime'           => $this->getMTime('2i'),
+                ],
+                [
+                    'size'            => 100,
+                    'shouldBeDeleted' => false,
+                    'mTime'           => $this->getMTime('3i'),
+                ],
+                [
+                    'size'            => 100,
+                    'shouldBeDeleted' => false,
+                    'mTime'           => $this->getMTime('5i'),
+                ],
+                [
+                    'size'            => 100,
+                    'shouldBeDeleted' => false,
+                    'mTime'           => $this->getMTime('6i'),
+                ],
+                [
+                    'size'            => 100,
+                    'shouldBeDeleted' => false,
+                    'mTime'           => $this->getMTime('7i'),
                 ],
             ]
         );
