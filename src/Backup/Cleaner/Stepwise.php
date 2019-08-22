@@ -27,49 +27,66 @@ use phpbu\App\Util\Arr;
 class Stepwise extends Abstraction implements Simulator
 {
     /**
-     * Amount of days to keep all backups.
+     * Current timestamp
+     *
+     * @var int
+     */
+    protected $timestamp;
+
+    /**
+     * Amount of days to keep all backups
      *
      * @var int
      */
     protected $daysToKeepAll;
 
     /**
-     * Amount of days to keep at least one backup per day.
+     * Amount of days to keep at least one backup per day
      *
      * @var int
      */
     protected $daysToKeepDaily;
 
     /**
-     * Amount of weeks to keep at least one backup per week.
+     * Amount of weeks to keep at least one backup per week
      *
      * @var int
      */
     protected $weeksToKeepWeekly;
 
     /**
-     * Amount of month to keep at least one backup per month.
+     * Amount of month to keep at least one backup per month
      *
      * @var int
      */
     protected $monthToKeepMonthly;
 
     /**
-     * Amount of years to keep at least one backup per year.
+     * Amount of years to keep at least one backup per year
      *
      * @var int
      */
     protected $yearsToKeepYearly;
 
     /**
-     * List of ranges defined by the configured settings.
+     * List of ranges defined by the configured settings
      *
      * @var \phpbu\App\Backup\Cleaner\Stepwise\Range[]
      */
     protected $ranges;
 
     /**
-     * Setup the Cleaner.
+     * Stepwise constructor.
+     *
+     * @param int $time
+     */
+    public function __construct(int $time = 0)
+    {
+        $this->timestamp = $time === 0 ? time() : $time;
+    }
+
+    /**
+     * Setup the Cleaner
      *
      * @see    \phpbu\App\Backup\Cleanup::setup()
      * @param  array $options
@@ -86,12 +103,12 @@ class Stepwise extends Abstraction implements Simulator
     }
 
     /**
-     * Setup the date ranges.
+     * Setup the date ranges
      */
     protected function setupRanges()
     {
         // keep all backups for x days as specified by 'keep all'
-        $start = time();
+        $start = $this->timestamp;
         $end   = $start - (86400 * $this->daysToKeepAll);
         $all   = new Range($start, $end, new Stepwise\Keeper\All());
 
@@ -118,7 +135,7 @@ class Stepwise extends Abstraction implements Simulator
     }
 
     /**
-     * Return list of files to delete.
+     * Return list of files to delete
      *
      * @param  \phpbu\App\Backup\Target    $target
      * @param  \phpbu\App\Backup\Collector $collector
@@ -143,7 +160,7 @@ class Stepwise extends Abstraction implements Simulator
     }
 
     /**
-     * Get matching range for given file.
+     * Get matching range for given file
      *
      * @param  \phpbu\App\Backup\File $file
      * @return \phpbu\App\Backup\Cleaner\Stepwise\Range
