@@ -1,0 +1,8 @@
+{
+  "type": "influxdump",
+  "options": {
+    "host": "localhost:8088",
+    "database": "myDatabaseName",
+    "pathToInfluxdump": "/path/to/custom/bin"
+  }
+}

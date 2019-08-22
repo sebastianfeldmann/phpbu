@@ -29,6 +29,7 @@ If you are not using php 7.0 or greater already you can still use phpbu version 
     + Percona XtraBackup
     + PostgreSQL
     + Redis
+    + InfluxDB
 * Compress backups
     + bzip2
     + gzip
