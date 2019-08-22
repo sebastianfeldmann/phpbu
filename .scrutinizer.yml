@@ -2,8 +2,16 @@ build:
   environment:
     php:
       version: '7.3'
-tools:
-  external_code_coverage: true
+  dependencies:
+    before:
+      - composer self-update
+      - wget -O phpunit.phar https://phar.phpunit.de/phpunit-7.5.9.phar
+    tests:
+      override:
+        - command: phpunit.phar --coverage-clover=clover.xml
+          coverage:
+            file:  clover.xml
+            format: php-clover
 coding_style:
   php:
     spaces:
