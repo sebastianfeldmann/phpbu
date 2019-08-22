@@ -8,7 +8,7 @@ build:
       - wget -O phpunit.phar https://phar.phpunit.de/phpunit-7.5.9.phar
   tests:
     override:
-      - command: phpunit.phar --coverage-clover=clover.xml
+      - command: ./phpunit.phar --coverage-clover=clover.xml
         coverage:
           file:  clover.xml
           format: php-clover
