@@ -63,8 +63,9 @@ class TestCase extends \PHPUnit\Framework\TestCase
         $fileStub->method('getSize')->willReturn($size);
         $fileStub->method('isWritable')->willReturn($writable);
         if ($shouldBeDeleted) {
-            $fileStub->expects($this->once())
-                     ->method('unlink');
+            $fileStub->expects($this->once())->method('unlink');
+        } else {
+            $fileStub->expects($this->never())->method('unlink');
         }
 
         return $fileStub;
