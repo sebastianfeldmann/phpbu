@@ -26,7 +26,7 @@
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 namespace phpbu\App;
@@ -43,7 +43,7 @@ use phpbu\App\Util\Arr;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class Cmd
@@ -402,6 +402,7 @@ Usage: phpbu [option]
   --generate-configuration Create a new configuration skeleton.
   --limit=<subset>         Limit backup execution to a subset.
   --simulate               Perform a trial run with no changes made.
+  --restore                Print a restore guide.
   -h, --help               Print this usage information.
   -v, --verbose            Output more verbose information.
   -V, --version            Output version information and exit.
