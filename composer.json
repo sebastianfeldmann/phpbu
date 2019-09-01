@@ -50,6 +50,7 @@
   "require-dev": {
     "sebastianfeldmann/git": "^2.2",
     "sebastianfeldmann/ftp": "^0.9",
+    "guzzlehttp/guzzle": "^5.3.3|^6.2.1",
     "aws/aws-sdk-php": "^3.10",
     "kunalvarma05/dropbox-php-sdk": "^0.2",
     "tightenco/collect": "^5.0",
@@ -64,6 +65,7 @@
   },
   "suggest": {
     "sebastianfeldmann/ftp": "Require ^0.9 to sync to an FTP server",
+    "guzzlehttp/guzzle": "Require ^5.3.3|^6.2.1 to write logs to Telegram",
     "aws/aws-sdk-php": "Require '^3.10' to sync to Amazon S3",
     "kunalvarma05/dropbox-php-sdk": "Require '^0.2' to sync to Dropbox",
     "phpseclib/phpseclib": "Require '^2.0' to use SFTP sync",
