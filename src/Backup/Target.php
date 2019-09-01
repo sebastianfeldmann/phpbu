@@ -4,6 +4,7 @@ namespace phpbu\App\Backup;
 use phpbu\App\Backup\File\Local;
 use phpbu\App\Exception;
 use phpbu\App\Util;
+use SplFileInfo;
 
 /**
  * Backup Target class.
@@ -129,9 +130,22 @@ class Target
      *
      * @param string $suffix
      */
-    public function appendFileSuffix(string $suffix)
+    public function appendFileSuffix(string $suffix): void
     {
         $this->fileSuffixes[] = $suffix;
+    }
+
+    /**
+     * Remove last file suffix if it matches
+     *
+     * @param string $suffix
+     */
+    public function removeFileSuffix(string $suffix): void
+    {
+        $lastIndex = count($this->fileSuffixes) - 1;
+        if ($this->fileSuffixes[$lastIndex] === $suffix) {
+            unset($this->fileSuffixes[$lastIndex]);
+        }
     }
 
     /**
@@ -309,7 +323,7 @@ class Target
      */
     public function toFile() : Local
     {
-        return new Local(new \SplFileInfo($this->getPathname()));
+        return new Local(new SplFileInfo($this->getPathname()));
     }
 
     /**

@@ -1,6 +1,10 @@
 <?php
 namespace phpbu\App\Backup;
 
+use Exception;
+use phpbu\App\Backup\Target\Compression;
+use PHPUnit\Framework\TestCase;
+
 /**
  * Target test
  *
@@ -9,10 +13,10 @@ namespace phpbu\App\Backup;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class TargetTest extends \PHPUnit\Framework\TestCase
+class TargetTest extends TestCase
 {
     /**
      * Tests Target::setupPath
@@ -56,7 +60,7 @@ class TargetTest extends \PHPUnit\Framework\TestCase
         try {
             $target = new Target($path, $filename);
             $target->setupPath();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if (isset($target)) {
                 chmod($target->getPath()->getPath(), 0755);
                 rmdir($target->getPath()->getPath());
@@ -78,7 +82,7 @@ class TargetTest extends \PHPUnit\Framework\TestCase
         try {
             $target = new Target($path . '/dirBuz', $filename);
             $target->setupPath();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             chmod($path, 0755);
             rmdir($path);
             throw $e;
@@ -168,6 +172,22 @@ class TargetTest extends \PHPUnit\Framework\TestCase
         $target->appendFileSuffix('tar');
 
         $this->assertEquals('2014-test-01.txt.tar', $target->getFilename());
+    }
+
+    /**
+     * Test date placeholder replacement in filename.
+     */
+    public function testGetFilenameAfterRemovingSuffix()
+    {
+        $path     = '/tmp/foo/bar';
+        $filename = '%Y-test-%d.txt';
+        $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
+        $target->appendFileSuffix('tar');
+        $target->appendFileSuffix('enc');
+        $target->removeFileSuffix('enc');
+        $target->removeFileSuffix('tar');
+
+        $this->assertEquals('2014-test-01.txt', $target->getFilename());
     }
 
     /**
@@ -469,7 +489,7 @@ class TargetTest extends \PHPUnit\Framework\TestCase
      */
     protected function getCompressionMockForCmd($cmd, $suffix, $mimeType)
     {
-        $compressionStub = $this->createMock(\phpbu\App\Backup\Target\Compression::class);
+        $compressionStub = $this->createMock(Compression::class);
         $compressionStub->method('getCommand')->willReturn($cmd);
         $compressionStub->method('getSuffix')->willReturn($suffix);
         $compressionStub->method('getMimeType')->willReturn($mimeType);
@@ -485,7 +505,7 @@ class TargetTest extends \PHPUnit\Framework\TestCase
      */
     protected function getCrypterMock($suffix)
     {
-        $crypterStub = $this->createMock(\phpbu\App\Backup\Crypter::class);
+        $crypterStub = $this->createMock(Crypter::class);
         $crypterStub->method('getSuffix')->willReturn($suffix);
 
         return $crypterStub;

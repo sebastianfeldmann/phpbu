@@ -1,13 +1,13 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
+use phpbu\App\Backup\Restore\Plan;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Configuration;
 use phpbu\App\Exception;
 use phpbu\App\Result;
 use phpbu\App\Util;
-use Symfony\Component\Finder\Tests\Iterator\FilecontentFilterIteratorTest;
 
 /**
  * Tar source class.
@@ -20,7 +20,7 @@ use Symfony\Component\Finder\Tests\Iterator\FilecontentFilterIteratorTest;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Tar extends SimulatorExecutable implements Simulator
+class Tar extends SimulatorExecutable implements Simulator, Restorable
 {
     /**
      * Tar Executable
@@ -176,10 +176,25 @@ class Tar extends SimulatorExecutable implements Simulator
     }
 
     /**
+     * Restore the backup
+     *
+     * @param  \phpbu\App\Backup\Target       $target
+     * @param  \phpbu\App\Backup\Restore\Plan $plan
+     * @return \phpbu\App\Backup\Source\Status
+     * @throws \phpbu\App\Exception
+     */
+    public function restore(Target $target, Plan $plan): Status
+    {
+        $plan->addRestoreCommand('tar -xvf ' . $target->getFilename(true));
+        return Status::create()->uncompressedFile($target->getPathname());
+    }
+
+    /**
      * Setup the Executable to run the 'tar' command.
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
+     * @throws \phpbu\App\Exception
      */
     protected function createExecutable(Target $target) : Executable
     {
