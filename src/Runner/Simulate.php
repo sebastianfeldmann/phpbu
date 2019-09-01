@@ -167,12 +167,12 @@ class Simulate extends Compression
      * Execute the compressor.
      * Returns the path to the created archive file.
      *
-     * @param  \phpbu\App\Backup\Compressor\Executable $compressor
-     * @param  \phpbu\App\Backup\Target                $target
-     * @param  \phpbu\App\Result                       $result
+     * @param  \phpbu\App\Backup\Compressor\Compressible $compressor
+     * @param  \phpbu\App\Backup\Target                  $target
+     * @param  \phpbu\App\Result                         $result
      * @return string
      */
-    protected function executeCompressor(Compressor\Executable $compressor, Target $target, Result $result) : string
+    protected function executeCompressor(Compressor\Compressible $compressor, Target $target, Result $result) : string
     {
         $result->debug($compressor->getExecutable($target)->getCommand());
         return $compressor->getArchiveFile($target);

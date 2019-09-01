@@ -18,7 +18,7 @@ use SebastianFeldmann\Cli\Command\Runner;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-abstract class Abstraction extends Cli implements Executable
+abstract class Abstraction extends Cli implements Compressible
 {
     /**
      * Path to cli binary.

@@ -17,7 +17,7 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-interface Executable
+interface Compressible
 {
     /**
      * Compress the plain target file.
