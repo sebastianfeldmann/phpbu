@@ -28,6 +28,6 @@ class Directory implements Decompressable
      */
     public function decompress(Target $target): string
     {
-        return 'tar -xvf ' . $file;
+        return 'tar -xvf ' . $target->getFilename();
     }
 }
