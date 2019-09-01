@@ -13,7 +13,7 @@ class PlanTest extends TestCase
     {
         $plan = new Plan();
         $this->assertCount(0, $plan->getDecryptionCommands());
-        $this->assertCount(0, $plan->getExtractCommands());
+        $this->assertCount(0, $plan->getDecompressionCommands());
         $this->assertCount(0, $plan->getRestoreCommands());
     }
 
@@ -24,11 +24,11 @@ class PlanTest extends TestCase
     {
         $plan = new Plan();
         $plan->addDecryptionCommand('foo');
-        $plan->addExtractCommand('bar');
+        $plan->addDecompressionCommand('bar');
         $plan->addRestoreCommand('baz');
 
         $this->assertCount(1, $plan->getDecryptionCommands());
-        $this->assertCount(1, $plan->getExtractCommands());
+        $this->assertCount(1, $plan->getDecompressionCommands());
         $this->assertCount(1, $plan->getRestoreCommands());
     }
 }

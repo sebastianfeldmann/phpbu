@@ -24,9 +24,43 @@ class Plan
      */
     private $commands = [
         'decrypt'    => [],
-        'extract'    => [],
+        'decompress'    => [],
         'restore'    => []
     ];
+
+    /**
+     * Is used crypt supported
+     *
+     * @var bool
+     */
+    private $supportedCrypt = true;
+
+    /**
+     * Is used source supported
+     *
+     * @var bool
+     */
+    private $supportedSource = true;
+
+    /**
+     * Mark the crypt implementation as not supported to restore
+     *
+     * @return void
+     */
+    public function markCryptAsUnsupported(): void
+    {
+        $this->supportedCrypt = false;
+    }
+
+    /**
+     * Does crypt support restore
+     *
+     * @return bool
+     */
+    public function isCryptSupported(): bool
+    {
+        return $this->supportedCrypt;
+    }
 
     /**
      * Add a decryption command to the restore plan
@@ -50,24 +84,44 @@ class Plan
     }
 
     /**
-     * Add an extraction command to the restore plan
+     * Add an decompression command to the restore plan
      *
      * @param  string $command
      * @return void
      */
-    public function addExtractCommand(string $command): void
+    public function addDecompressionCommand(string $command): void
     {
-        $this->commands['extract'][] = $command;
+        $this->commands['decompress'][] = $command;
     }
 
     /**
-     * Return the list of extraction commands
+     * Return the list of decompression commands
      *
      * @return array
      */
-    public function getExtractCommands(): array
+    public function getDecompressionCommands(): array
     {
-        return $this->commands['extract'];
+        return $this->commands['decompress'];
+    }
+
+    /**
+     * Mark used source as unsupported to restore
+     *
+     * @return void
+     */
+    public function markSourceAsUnsupported(): void
+    {
+        $this->supportedSource = false;
+    }
+
+    /**
+     * Does the source support restore
+     *
+     * @return bool
+     */
+    public function isSourceSupported(): bool
+    {
+        return $this->supportedSource;
     }
 
     /**
