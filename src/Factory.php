@@ -36,9 +36,9 @@ class Factory
             'env'    => '\\phpbu\\App\\Adapter\\Env',
         ],
         'logger'  => [
-            'json'    => '\\phpbu\\App\\Log\\Json',
-            'mail'    => '\\phpbu\\App\\Log\\Mail',
-            'webhook' => '\\phpbu\\App\\Log\\Webhook',
+            'json'     => '\\phpbu\\App\\Log\\Json',
+            'mail'     => '\\phpbu\\App\\Log\\Mail',
+            'webhook'  => '\\phpbu\\App\\Log\\Webhook',
             'telegram' => '\\phpbu\\App\\Log\\Telegram',
         ],
         'source'  => [
