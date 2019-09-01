@@ -28,11 +28,24 @@ class OpenSSL extends Abstraction implements Executable
     const MODE_PASS = 'enc';
 
     /**
+     * Actions
+     */
+    const ACTION_ENCRYPT = 'e';
+    const ACTION_DECRYPT = 'd';
+
+    /**
      * Use password or key
      *
      * @var string
      */
     private $mode;
+
+    /**
+     * Encryption or decryption
+     *
+     * @var string
+     */
+    private $action;
 
     /**
      * File to encrypt
@@ -152,12 +165,12 @@ class OpenSSL extends Abstraction implements Executable
     /**
      * Keep the not encrypted file
      *
-     * @var boolean
+     * @var bool
      */
-    private $deleteUncrypted = true;
+    private $deleteSource = true;
 
     /**
-     * Constructor.
+     * Constructor
      *
      * @param string $path
      */
@@ -168,39 +181,53 @@ class OpenSSL extends Abstraction implements Executable
     }
 
     /**
-     * Encrypt a file.
+     * Encrypt a file
      *
      * @param  string $file
      * @return \phpbu\App\Cli\Executable\OpenSSL
-     * @throws Exception
      */
-    public function encryptFile(string $file) : OpenSSL
+    public function encryptFile(string $file): OpenSSL
     {
+        $this->action     = self::ACTION_ENCRYPT;
         $this->sourceFile = $file;
         $this->targetFile = $file . '.enc';
         return $this;
     }
 
     /**
-     * Delete the uncrypted data.
+     * Encrypt a file
      *
-     * @param  boolean $bool
+     * @param  string $file
      * @return \phpbu\App\Cli\Executable\OpenSSL
      */
-    public function deleteUncrypted(bool $bool) : OpenSSL
+    public function decryptFile(string $file): OpenSSL
     {
-        $this->deleteUncrypted = $bool;
+        $this->action     = self::ACTION_DECRYPT;
+        $this->sourceFile = $file . '.enc';
+        $this->targetFile = $file;
         return $this;
     }
 
     /**
-     * Password to use for encryption.
+     * Delete the uncrypted data
+     *
+     * @param  boolean $bool
+     * @return \phpbu\App\Cli\Executable\OpenSSL
+     */
+    public function deleteSource(bool $bool): OpenSSL
+    {
+        $this->deleteSource = $bool;
+        return $this;
+    }
+
+    /**
+     * Password to use for encryption
      *
      * @param  string $password
      * @return \phpbu\App\Cli\Executable\OpenSSL
      * @throws \phpbu\App\Exception
      */
-    public function usePassword(string $password) : OpenSSL
+    public function usePassword(string $password): OpenSSL
     {
         if (self::MODE_CERT === $this->mode) {
             throw new Exception('Cert file already set');
@@ -211,13 +238,13 @@ class OpenSSL extends Abstraction implements Executable
     }
 
     /**
-     * Set algorithm to use.
+     * Set algorithm to use
      *
      * @param  string $algorithm
      * @return \phpbu\App\Cli\Executable\OpenSSL
      * @throws \phpbu\App\Exception
      */
-    public function useAlgorithm(string $algorithm) : OpenSSL
+    public function useAlgorithm(string $algorithm): OpenSSL
     {
         if (null === $this->mode) {
             throw new Exception('choose mode first, password or cert');
@@ -235,20 +262,20 @@ class OpenSSL extends Abstraction implements Executable
      * @param bool $encode
      * @return \phpbu\App\Cli\Executable\OpenSSL
      */
-    public function encodeBase64(bool $encode) : OpenSSL
+    public function encodeBase64(bool $encode): OpenSSL
     {
         $this->base64 = $encode;
         return $this;
     }
 
     /**
-     * Public key to use.
+     * Public key to use
      *
      * @param  string $file
      * @return \phpbu\App\Cli\Executable\OpenSSL
      * @throws \phpbu\App\Exception
      */
-    public function useSSLCert(string $file) : OpenSSL
+    public function useSSLCert(string $file): OpenSSL
     {
         if (self::MODE_PASS === $this->mode) {
             throw new Exception('Password already set');
@@ -259,12 +286,12 @@ class OpenSSL extends Abstraction implements Executable
     }
 
     /**
-     * OpenSSL CommandLine generator.
+     * OpenSSL CommandLine generator
      *
      * @return \SebastianFeldmann\Cli\CommandLine
      * @throws \phpbu\App\Exception
      */
-    protected function createCommandLine() : CommandLine
+    protected function createCommandLine(): CommandLine
     {
         if (empty($this->sourceFile)) {
             throw new Exception('file is missing');
@@ -292,7 +319,7 @@ class OpenSSL extends Abstraction implements Executable
      *
      * @param \SebastianFeldmann\Cli\Command\Executable $cmd
      */
-    protected function setOptions(Cmd $cmd)
+    protected function setOptions(Cmd $cmd): void
     {
         if ($this->mode == self::MODE_CERT) {
             $this->setCertOptions($cmd);
@@ -302,14 +329,14 @@ class OpenSSL extends Abstraction implements Executable
     }
 
     /**
-     * Set command line options for SSL cert encryption.
+     * Set command line options for SSL cert encryption
      *
      * @param \SebastianFeldmann\Cli\Command\Executable $cmd
      */
-    protected function setCertOptions(Cmd $cmd)
+    protected function setCertOptions(Cmd $cmd): void
     {
         $cmd->addOption('smime');
-        $cmd->addOption('-encrypt');
+        $cmd->addOption('-' . $this->action);
         $cmd->addOption('-' . $this->algorithm);
         $cmd->addOption('-binary');
         $cmd->addOption('-in', $this->sourceFile, ' ');
@@ -323,12 +350,12 @@ class OpenSSL extends Abstraction implements Executable
      *
      * @param \SebastianFeldmann\Cli\Command\Executable $cmd
      */
-    protected function setPasswordOptions(Cmd $cmd)
+    protected function setPasswordOptions(Cmd $cmd): void
     {
         $password = 'pass:' . $this->password;
 
         $cmd->addOption('enc');
-        $cmd->addOption('-e');
+        $cmd->addOption('-' . $this->action);
         $cmd->addOptionIfNotEmpty('-a', $this->base64, false);
         $cmd->addOption('-' . $this->algorithm);
         $cmd->addOption('-pass', $password, ' ');
@@ -337,13 +364,13 @@ class OpenSSL extends Abstraction implements Executable
     }
 
     /**
-     * Add the 'rm' command to remove the uncrypted file.
+     * Add the 'rm' command to remove the uncrypted file
      *
      * @param \SebastianFeldmann\Cli\CommandLine $process
      */
-    protected function addDeleteCommand(CommandLine $process)
+    protected function addDeleteCommand(CommandLine $process): void
     {
-        if ($this->deleteUncrypted) {
+        if ($this->deleteSource) {
             $cmd = new Cmd('rm');
             $cmd->addArgument($this->sourceFile);
             $process->addCommand($cmd);

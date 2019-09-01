@@ -2,6 +2,7 @@
 namespace phpbu\App\Cli\Executable;
 
 use phpbu\App\Exception;
+use PHPUnit\Framework\TestCase;
 
 /**
  * OpenSSL ExecutableTest
@@ -14,7 +15,7 @@ use phpbu\App\Exception;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.6
  */
-class OpenSLLTest extends \PHPUnit\Framework\TestCase
+class OpenSLLTest extends TestCase
 {
     /**
      * Tests OpenSSL::createCommandLine
@@ -66,6 +67,22 @@ class OpenSLLTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests OpenSSL::createCommandLine
      */
+    public function testDecrypt()
+    {
+        $expected = 'openssl enc -d -aes-256-cbc -pass \'pass:fooBarBaz\' '
+                    . '-in \'/foo/bar.txt.enc\' -out \'/foo/bar.txt\'';
+        $openSSL  = new OpenSSL(PHPBU_TEST_BIN);
+        $openSSL->decryptFile('/foo/bar.txt')
+            ->usePassword('fooBarBaz')
+            ->useAlgorithm('aes-256-cbc')
+            ->deleteSource(false);
+
+        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $openSSL->getCommand());
+    }
+
+    /**
+     * Tests OpenSSL::createCommandLine
+     */
     public function testDoNotDeleteUncrypted()
     {
         $expected = 'openssl enc -e -aes-256-cbc -pass \'pass:fooBarBaz\' '
@@ -74,7 +91,7 @@ class OpenSLLTest extends \PHPUnit\Framework\TestCase
         $openSSL->encryptFile('/foo/bar.txt')
                 ->usePassword('fooBarBaz')
                 ->useAlgorithm('aes-256-cbc')
-                ->deleteUncrypted(false);
+                ->deleteSource(false);
 
         $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $openSSL->getCommand());
     }
@@ -84,7 +101,7 @@ class OpenSLLTest extends \PHPUnit\Framework\TestCase
      */
     public function testCert()
     {
-        $expected = 'openssl smime -encrypt -aes256 -binary -in \'/foo/bar.txt\' '
+        $expected = 'openssl smime -e -aes256 -binary -in \'/foo/bar.txt\' '
                   . '-out \'/foo/bar.txt.enc\' -outform DER \'/foo/my.pem\' '
                   . '&& rm \'/foo/bar.txt\'';
         $openSSL  = new OpenSSL(PHPBU_TEST_BIN);
