@@ -1,12 +1,13 @@
 <?php
 namespace phpbu\App\Backup\Crypter;
 
+use phpbu\App\Backup\Restore\Plan;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Util;
 
 /**
- * OpenSSL crypter class.
+ * OpenSSL crypter class
  *
  * @package    phpbu
  * @subpackage Backup
@@ -16,10 +17,10 @@ use phpbu\App\Util;
  * @link       https://phpbu.de/
  * @since      Class available since Release 2.1.6
  */
-class OpenSSL extends Abstraction implements Simulator
+class OpenSSL extends Abstraction implements Simulator, Restorable
 {
     /**
-     * Path to mcrypt command.
+     * Path to mcrypt command
      *
      * @var string
      */
@@ -54,7 +55,7 @@ class OpenSSL extends Abstraction implements Simulator
     private $keepUncrypted;
 
     /**
-     * Setup.
+     * Setup
      *
      * @see    \phpbu\App\Backup\Crypter
      * @param  array $options
@@ -67,7 +68,7 @@ class OpenSSL extends Abstraction implements Simulator
         }
         if (!Util\Arr::isSetAndNotEmptyString($options, 'password')
          && !Util\Arr::isSetAndNotEmptyString($options, 'certFile')) {
-            throw new Exception('openssl expects \'key\' or \'password\'');
+            throw new Exception('openssl expects \'certFile\' or \'password\'');
         }
 
         $this->pathToOpenSSL = Util\Arr::getValue($options, 'pathToOpenSSL', '');
@@ -78,7 +79,7 @@ class OpenSSL extends Abstraction implements Simulator
     }
 
     /**
-     * Return file suffix of encrypted target.
+     * Return file suffix of encrypted target
      *
      * @see    \phpbu\App\Backup\Crypter
      * @return string
@@ -89,7 +90,20 @@ class OpenSSL extends Abstraction implements Simulator
     }
 
     /**
-     * Create the Executable to run the 'mcrypt' command.
+     * Decrypt the backup
+     *
+     * @param  \phpbu\App\Backup\Target       $target
+     * @param  \phpbu\App\Backup\Restore\Plan $plan
+     * @throws \phpbu\App\Exception
+     */
+    public function restore(Target $target, Plan $plan)
+    {
+        $executable = $this->createDecryptionOpenSSL($target);
+        $plan->addDecryptionCommand($executable->getCommand());
+    }
+
+    /**
+     * Create the Executable to run the 'mcrypt' command
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
@@ -97,9 +111,51 @@ class OpenSSL extends Abstraction implements Simulator
      */
     protected function createExecutable(Target $target) : Executable
     {
-        $executable = new Executable\OpenSSL($this->pathToOpenSSL);
-        $executable->encryptFile($target->getPathname());
+        return $this->createEncryptionOpenSSL($target);
+    }
 
+    /**
+     * Create encryption OpenSSL
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Cli\Executable\OpenSSL
+     * @throws \phpbu\App\Exception
+     */
+    private function createEncryptionOpenSSL(Target $target): Executable\OpenSSL
+    {
+        $executable = $this->createOpenSSL($target);
+        $executable->encryptFile($target->getPathname())
+                   ->deleteSource(!$this->keepUncrypted);
+
+        return $executable;
+    }
+
+    /**
+     * Create decryption OpenSSL
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Cli\Executable\OpenSSL
+     * @throws \phpbu\App\Exception
+     */
+    private function createDecryptionOpenSSL(Target $target): Executable\OpenSSL
+    {
+        $executable = $this->createOpenSSL($target);
+        $executable->decryptFile($target->getPathname())
+                   ->deleteSource(false);
+
+        return $executable;
+    }
+
+    /**
+     * Setup an OpenSSL executable only thing missing is the decision of en or decryption
+     *
+     * @param  \phpbu\App\Backup\Target $target
+     * @return \phpbu\App\Cli\Executable\OpenSSL
+     * @throws \phpbu\App\Exception
+     */
+    private function createOpenSSL(Target $target): Executable\OpenSSL
+    {
+        $executable = new Executable\OpenSSL($this->pathToOpenSSL);
         // use key or password to encrypt
         if (!empty($this->certFile)) {
             $executable->useSSLCert($this->certFile);
@@ -107,8 +163,7 @@ class OpenSSL extends Abstraction implements Simulator
             $executable->usePassword($this->password)
                        ->encodeBase64(true);
         }
-        $executable->useAlgorithm($this->algorithm)
-                   ->deleteUncrypted(!$this->keepUncrypted);
+        $executable->useAlgorithm($this->algorithm);
 
         return $executable;
     }
