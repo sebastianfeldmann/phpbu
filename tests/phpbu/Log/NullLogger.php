@@ -13,7 +13,7 @@ class NullLogger implements Listener
     /**
      * Returns an array of event names this subscriber wants to listen to.
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [];
     }

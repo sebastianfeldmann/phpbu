@@ -108,7 +108,7 @@ class Telegram  implements Listener, Logger
     /**
      * @return array
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             Event\App\End::NAME => 'onPhpbuEnd',

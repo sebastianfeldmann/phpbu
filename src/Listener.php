@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\App;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use phpbu\App\Event\Subscriber;
 
 /**
  * Listener Interface
@@ -14,6 +14,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-interface Listener extends EventSubscriberInterface
+interface Listener extends Subscriber
 {
 }

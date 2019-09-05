@@ -6,6 +6,7 @@ use phpbu\App\Event;
 use phpbu\App\Listener;
 use phpbu\App\Result;
 use phpbu\App\Util\Arr;
+use Throwable;
 
 /**
  * Webhook Logger
@@ -101,7 +102,7 @@ class Webhook implements Listener, Logger
      *
      * @return array The event names to listen to
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             'phpbu.app_end' => 'onPhpbuEnd',
@@ -227,7 +228,7 @@ class Webhook implements Listener, Logger
 
         try {
             file_get_contents($uri, false, $context);
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             throw new Exception('could not reach webhook: ' . $this->uri);
         }
     }

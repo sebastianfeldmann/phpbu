@@ -1,8 +1,6 @@
 <?php
 namespace phpbu\App\Event;
 
-use Symfony\Component\EventDispatcher\Event;
-
 /**
  * phpbu event base class
  *
@@ -14,7 +12,7 @@ use Symfony\Component\EventDispatcher\Event;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-abstract class Action extends Event
+abstract class Action
 {
     /**
      * Application configuration.

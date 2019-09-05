@@ -1,7 +1,7 @@
 <?php
 namespace phpbu\App;
 
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use phpbu\App\Event\Dispatcher;
 
 /**
  * Runner result.
@@ -100,7 +100,7 @@ class Result
     public function __construct()
     {
         $this->start           = microtime(true);
-        $this->eventDispatcher = new EventDispatcher();
+        $this->eventDispatcher = new Dispatcher();
     }
 
     /**

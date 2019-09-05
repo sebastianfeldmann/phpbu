@@ -106,7 +106,7 @@ class PrinterCli implements Listener
      *
      * @return array The event names to listen to
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             'phpbu.debug'           => 'onDebug',

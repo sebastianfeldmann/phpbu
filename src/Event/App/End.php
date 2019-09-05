@@ -15,7 +15,7 @@ use Symfony\Component\EventDispatcher\Event;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class End extends Event
+class End
 {
     /**
      * Event name
