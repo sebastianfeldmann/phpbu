@@ -109,9 +109,15 @@
     </copy>
 
     <!-- DOTENV -->
-    <copy file="${basedir}/vendor/vlucas/phpdotenv/LICENSE.txt" tofile="${basedir}/build/phar/lib/phpdotenv/LICENSE"/>
+    <copy file="${basedir}/vendor/vlucas/phpdotenv/LICENSE" tofile="${basedir}/build/phar/lib/phpdotenv/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/phpdotenv">
       <fileset dir="${basedir}/vendor/vlucas/phpdotenv/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/phpoption/phpoption/LICENSE" tofile="${basedir}/build/phar/lib/phpoption/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/phpoption">
+      <fileset dir="${basedir}/vendor/phpoption/phpoption/src">
         <include name="**/*.php"/>
       </fileset>
     </copy>
@@ -137,9 +143,14 @@
         <exclude name="Acm/**"/>
         <exclude name="ACMPCA/**"/>
         <exclude name="AlexaForBusiness/**"/>
+        <exclude name="Amplify/**"/>
         <exclude name="ApiGateway/**"/>
+        <exclude name="ApiGatewayManagementApi/**"/>
+        <exclude name="ApiGatewayV2/**"/>
         <exclude name="ApplicationAutoScaling/**"/>
         <exclude name="ApplicationDiscoveryService/**"/>
+        <exclude name="ApplicationInsights/**"/>
+        <exclude name="AppMesh/**"/>
         <exclude name="Appstream/**"/>
         <exclude name="AppSync/**"/>
         <exclude name="Athena/**"/>
@@ -166,6 +177,7 @@
         <exclude name="CognitoIdentity/**"/>
         <exclude name="CognitoSync/**"/>
         <exclude name="Comprehend/**"/>
+        <exclude name="ComprehendMedical/**"/>
         <exclude name="ConfigService/**"/>
         <exclude name="ConstantUsageReportService/**"/>
         <exclude name="CostExplorer/**"/>
@@ -176,6 +188,8 @@
         <exclude name="DeviceFarm/**"/>
         <exclude name="DirectConnect/**"/>
         <exclude name="DirectoryService/**"/>
+        <exclude name="DLM/**"/>
+        <exclude name="DocDB/**"/>
         <exclude name="DynamoDb/**"/>
         <exclude name="DynamoDbStreams/**"/>
         <exclude name="Ec2/**"/>
@@ -190,15 +204,19 @@
         <exclude name="ElasticsearchService/**"/>
         <exclude name="ElasticTranscoder/**"/>
         <exclude name="Emr/**"/>
+        <exclude name="EventBridge/**"/>
         <exclude name="Firehose/**"/>
         <exclude name="FMS/**"/>
+        <exclude name="ForecastQueryService/**"/>
+        <exclude name="ForecastService/**"/>
+        <exclude name="FSx/**"/>
         <exclude name="GameLift/**"/>
         <exclude name="Glacier/**"/>
         <exclude name="Glue/**"/>
         <exclude name="Greengrass/**"/>
+        <exclude name="GroundStation/**"/>
         <exclude name="GuardDuty/**"/>
         <exclude name="Health/**"/>
-        <exclude name="Iam/**"/>
         <exclude name="Iam/**"/>
         <exclude name="ImportExport/**"/>
         <exclude name="Iot/**"/>
@@ -206,21 +224,30 @@
         <exclude name="IoT1ClickProjects/**"/>
         <exclude name="IoTAnalytics/**"/>
         <exclude name="IotDataPlane/**"/>
+        <exclude name="IoTEvents/**"/>
+        <exclude name="IoTEventsData/**"/>
         <exclude name="IoTJobsDataPlane/**"/>
+        <exclude name="IoTThingsGraph/**"/>
+        <exclude name="Kafka/**"/>
         <exclude name="Kinesis/**"/>
         <exclude name="KinesisAnalytics/**"/>
+        <exclude name="KinesisAnalyticsV2/**"/>
         <exclude name="KinesisVideo/**"/>
         <exclude name="KinesisVideoArchivedMedia/**"/>
         <exclude name="KinesisVideoMedia/**"/>
         <exclude name="Kms/**"/>
+        <exclude name="LakeFormation/**"/>
         <exclude name="Lambda/**"/>
         <exclude name="LexModelBuildingService/**"/>
         <exclude name="LexRuntimeService/**"/>
         <exclude name="Lightsail/**"/>
         <exclude name="MachineLearning/**"/>
+        <exclude name="Macie/**"/>
+        <exclude name="ManagedBlockchain/**"/>
         <exclude name="MarketplaceCommerceAnalytics/**"/>
         <exclude name="MarketplaceEntitlementService/**"/>
         <exclude name="MarketplaceMetering/**"/>
+        <exclude name="MediaConnect/**"/>
         <exclude name="MediaConvert/**"/>
         <exclude name="MediaLive/**"/>
         <exclude name="MediaPackage/**"/>
@@ -235,22 +262,34 @@
         <exclude name="OpsWorks/**"/>
         <exclude name="OpsWorksCM/**"/>
         <exclude name="Organizations/**"/>
+        <exclude name="Personalize/**"/>
+        <exclude name="PersonalizeEvents/**"/>
+        <exclude name="PersonalizeRuntime/**"/>
         <exclude name="PI/**"/>
         <exclude name="Pinpoint/**"/>
+        <exclude name="PinpointEmail/**"/>
+        <exclude name="PinpointSMSVoice/**"/>
         <exclude name="Polly/**"/>
         <exclude name="Pricing/**"/>
+        <exclude name="QuickSight/**"/>
+        <exclude name="RAM/**"/>
         <exclude name="Rds/**"/>
+        <exclude name="RDSDataService/**"/>
         <exclude name="Redshift/**"/>
         <exclude name="Rekognition/**"/>
         <exclude name="ResourceGroups/**"/>
         <exclude name="ResourceGroupsTaggingAPI/**"/>
+        <exclude name="RoboMaker/**"/>
         <exclude name="Route53/**"/>
         <exclude name="Route53Domains/**"/>
+        <exclude name="Route53Resolver/**"/>
         <exclude name="SageMaker/**"/>
         <exclude name="SageMakerRuntime/**"/>
+        <exclude name="SecretsManager/**"/>
         <exclude name="ServerlessApplicationRepository/**"/>
         <exclude name="ServiceCatalog/**"/>
         <exclude name="ServiceDiscovery/**"/>
+        <exclude name="ServiceQuotas/**"/>
         <exclude name="Ses/**"/>
         <exclude name="Sfn/**"/>
         <exclude name="Shield/**"/>
@@ -263,11 +302,13 @@
         <exclude name="Sts/**"/>
         <exclude name="Support/**"/>
         <exclude name="Swf/**"/>
+        <exclude name="Textract/**"/>
         <exclude name="TranscribeService/**"/>
         <exclude name="Translate/**"/>
         <exclude name="Waf/**"/>
         <exclude name="WafRegional/**"/>
         <exclude name="WorkDocs/**"/>
+        <exclude name="WorkLink/**"/>
         <exclude name="WorkMail/**"/>
         <exclude name="WorkSpaces/**"/>
         <exclude name="XRay/**"/>
@@ -416,16 +457,7 @@
       </fileset>
     </copy>
 
-    <!-- SYMFONY LIBS -->
-    <copy file="${basedir}/vendor/symfony/event-dispatcher/LICENSE"
-          tofile="${basedir}/build/phar/lib/symfony/event-dispatcher/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/symfony/event-dispatcher">
-      <fileset dir="${basedir}/vendor/symfony/event-dispatcher">
-        <include name="**/*.php"/>
-        <exclude name="**/Test*"/>
-      </fileset>
-    </copy>
-
+    <!-- Symfony libs -->
     <copy file="${basedir}/vendor/symfony/options-resolver/LICENSE"
           tofile="${basedir}/build/phar/lib/symfony/options-resolver/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/symfony/options-resolver">
