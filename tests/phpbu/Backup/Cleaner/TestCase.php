@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Cleaner;
 
+use phpbu\App\Backup\File\Local;
 use phpbu\App\Util\Str;
 
 /**
@@ -39,7 +40,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
             $list[$index] = $this->getFileMock(
                 isset($file['size'])            ? $file['size']            : null,
                 isset($file['shouldBeDeleted']) ? $file['shouldBeDeleted'] : null,
-                isset($file['mTime'])           ? $file['mTime']           : null,
+                isset($file['mTime'])           ? $file['mTime']           : 0,
                 isset($file['writable'])        ? $file['writable']        : true
             );
         }
@@ -58,7 +59,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
     protected function getFileMock($size, $shouldBeDeleted, $mTime, $writable)
     {
         /* @var $fileStub \PHPUnit\Framework\MockObject */
-        $fileStub = $this->createMock(\phpbu\App\Backup\File\Local::class);
+        $fileStub = $this->createMock(Local::class);
         $fileStub->method('getMTime')->willReturn($mTime);
         $fileStub->method('getSize')->willReturn($size);
         $fileStub->method('isWritable')->willReturn($writable);
