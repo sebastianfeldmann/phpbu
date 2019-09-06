@@ -1,9 +1,11 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 use phpseclib;
 use phpbu\App\BaseMockery;
+use PHPUnit\Framework\TestCase;
 
 /**
  * SftpTest
@@ -16,7 +18,7 @@ use phpbu\App\BaseMockery;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class SftpTest extends \PHPUnit\Framework\TestCase
+class SftpTest extends TestCase
 {
     use BaseMockery;
 
@@ -42,7 +44,7 @@ class SftpTest extends \PHPUnit\Framework\TestCase
     public function testSync()
     {
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->expects($this->exactly(6))->method('debug');
 
         $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
@@ -73,7 +75,7 @@ class SftpTest extends \PHPUnit\Framework\TestCase
     public function testSyncWithRemoteCleanup()
     {
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->expects($this->exactly(5))->method('debug');
 
         $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
@@ -104,7 +106,7 @@ class SftpTest extends \PHPUnit\Framework\TestCase
     {
         $this->expectException('phpbu\App\Exception');
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->expects($this->exactly(4))->method('debug');
 
         $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
@@ -142,7 +144,7 @@ class SftpTest extends \PHPUnit\Framework\TestCase
         $resultStub->expects($this->once())
                    ->method('debug');
 
-        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+        $targetStub = $this->createMock(Target::class);
 
         $sftp->simulate($targetStub, $resultStub);
     }
@@ -216,24 +218,6 @@ class SftpTest extends \PHPUnit\Framework\TestCase
             'password' => '12345',
             'path'     => '/foo'
         ]);
-    }
-
-    /**
-     * Tests Sftp::setUp
-     */
-    public function testSetUpWithPrivateKey()
-    {
-        $sftp = new Sftp();
-        $sftp->setup([
-            'host'     => 'example.com',
-            'user'     => 'user.name',
-            'key'      => PHPBU_TEST_FILES . '/misc/id_rsa_test',
-            'password' => '12345',
-            'path'     => '/foo'
-        ]);
-
-        $this->assertAttributeEquals(PHPBU_TEST_FILES . '/misc/id_rsa_test', 'privateKey', $sftp);
-        $this->assertAttributeEquals('12345', 'password', $sftp);
     }
 
     /**

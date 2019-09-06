@@ -4,6 +4,7 @@ namespace phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
+use PHPUnit\Framework\TestCase;
 
 /**
  * SFTP Collector test
@@ -17,7 +18,7 @@ use phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class SftpTest extends \PHPUnit\Framework\TestCase
+class SftpTest extends TestCase
 {
     /**
      * Test SFTP collector
@@ -73,17 +74,8 @@ class SftpTest extends \PHPUnit\Framework\TestCase
                ->willReturn($secLibFileList);
 
         $collector = new Sftp($target, $pathUtil, $secLib);
-        $this->assertAttributeEquals($secLib, 'sftp', $collector);
-        $this->assertAttributeEquals($pathUtil, 'path', $collector);
-        $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(null, 'files', $collector);
-        $this->assertAttributeEquals(
-            Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()),
-            'fileRegex',
-            $collector
-        );
+        $files     = $collector->getBackupFiles();
 
-        $files = $collector->getBackupFiles();
         $this->assertCount(2, $files);
         $this->assertArrayHasKey('1525788894-foo-2000-12-01-12_00.txt-1', $files);
         $this->assertEquals(

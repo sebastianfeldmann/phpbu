@@ -1,6 +1,10 @@
 <?php
 namespace phpbu\App\Backup\File;
 
+use Aws\S3\S3Client;
+use Exception;
+use PHPUnit\Framework\TestCase;
+
 /**
  * AmazonS3v3Test
  *
@@ -13,14 +17,14 @@ namespace phpbu\App\Backup\File;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
+class AmazonS3V3Test extends TestCase
 {
     /**
      * Test creating file and handle removing
      */
     public function testCreateFileWithCorrectProperties()
     {
-        $amazonS3 = $this->getMockBuilder(\Aws\S3\S3Client::class)
+        $amazonS3 = $this->getMockBuilder(S3Client::class)
                          ->disableOriginalConstructor()
                          ->setMethods(['deleteObject'])
                          ->getMock();
@@ -43,7 +47,6 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
         $this->assertEquals('dump.tar.gz', $file->getPathname());
         $this->assertEquals(102102, $file->getSize());
         $this->assertEquals(1525788894, $file->getMTime());
-        $this->assertAttributeEquals('test', 'bucket', $file);
 
         $file->unlink();
         $this->assertTrue(true, 'no exception should occur');
@@ -55,7 +58,7 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
     public function testAWSDeleteFailure()
     {
         $this->expectException('phpbu\App\Exception');
-        $amazonS3 = $this->getMockBuilder(\Aws\S3\S3Client::class)
+        $amazonS3 = $this->getMockBuilder(S3Client::class)
                          ->disableOriginalConstructor()
                          ->setMethods(['deleteObject'])
                          ->getMock();
@@ -66,7 +69,7 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
                     'Bucket' => 'test',
                     'Key'    => 'dump.tar.gz',
                  ])
-                 ->will($this->throwException(new \Exception));
+                 ->will($this->throwException(new Exception));
 
         $metadata = [
             'Key'          => 'dump.tar.gz',

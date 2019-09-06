@@ -1,9 +1,11 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
+use Aws\S3\S3Client;
 use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Amazon S3v3 Collector test
@@ -17,7 +19,7 @@ use phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
+class AmazonS3V3Test extends TestCase
 {
     /**
      * Test Amazon S3 collector
@@ -29,7 +31,7 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
         $filename  = 'foo-%Y-%m-%d-%H_%i.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
         $path      = new Path('', $time, false);
-        $amazonS3  = $this->getMockBuilder(\Aws\S3\S3Client::class)
+        $amazonS3  = $this->getMockBuilder(S3Client::class)
                          ->disableOriginalConstructor()
                          ->setMethods(['listObjects'])
                          ->getMock();
@@ -62,17 +64,7 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
                  ->willReturn($amazonS3Contents);
 
         $collector = new AmazonS3v3($target, $path, $amazonS3, 'test');
-        $this->assertAttributeEquals($amazonS3, 'client', $collector);
-        $this->assertAttributeEquals('test', 'bucket', $collector);
-        $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(null, 'files', $collector);
-        $this->assertAttributeEquals(
-            Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()),
-            'fileRegex',
-            $collector
-        );
-
-        $files = $collector->getBackupFiles();
+        $files     = $collector->getBackupFiles();
         $this->assertCount(2, $files);
         $this->assertArrayHasKey('975672000-foo-2000-12-01-12_00.txt-1', $files);
         $this->assertEquals(
@@ -88,7 +80,7 @@ class AmazonS3V3Test extends \PHPUnit\Framework\TestCase
         $filename  = 'foo-%Y-%m-%d-%H_%i.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
         $path      = new Path('', $time, false);
-        $amazonS3  = $this->getMockBuilder(\Aws\S3\S3Client::class)
+        $amazonS3  = $this->getMockBuilder(S3Client::class)
                          ->disableOriginalConstructor()
                          ->setMethods(['listObjects'])
                          ->getMock();

@@ -1,8 +1,13 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
+use Google_Service_Drive;
+use Google_Service_Drive_DriveFile;
+use Google_Service_Drive_FileList;
+use Google_Service_Drive_Resource_Files;
 use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Google Drive collector test.
@@ -15,7 +20,7 @@ use phpbu\App\Backup\Target;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class GoogleDriveTest extends \PHPUnit\Framework\TestCase
+class GoogleDriveTest extends TestCase
 {
     /**
      * Tests GoogleDrive::getBackupFiles
@@ -55,30 +60,25 @@ class GoogleDriveTest extends \PHPUnit\Framework\TestCase
             $googleFileList
         );
 
-        $fileList = $this->createMock(\Google_Service_Drive_FileList::class);
+        $fileList = $this->createMock(Google_Service_Drive_FileList::class);
         $fileList->expects($this->once())
                  ->method('getFiles')
                  ->willReturn($googleFileList);
 
-        $resource = $this->createMock(\Google_Service_Drive_Resource_Files::class);
+        $resource = $this->createMock(Google_Service_Drive_Resource_Files::class);
         $resource->expects($this->once())
                  ->method('listFiles')
                  ->willReturn($fileList);
 
-        $service        = $this->createMock(\Google_Service_Drive::class);
+        $service        = $this->createMock(Google_Service_Drive::class);
         $service->files = $resource;
 
 
         $time       = time();
         $pathObject = new Path($remotePath, $time);
         $collector  = new GoogleDrive($target, $pathObject, $service);
-        $this->assertAttributeEquals($service, 'service', $collector);
-        $this->assertAttributeEquals($pathObject, 'path', $collector);
-        $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(null, 'files', $collector);
+        $files      = $collector->getBackupFiles();
 
-        $files = $collector->getBackupFiles();
-        $this->assertAttributeEquals($files, 'files', $collector);
         $this->assertCount(2, $files);
         $this->assertArrayHasKey('975672000-foo-2000-12-01-12_00.txt-1', $files);
         $this->assertEquals(
@@ -95,7 +95,7 @@ class GoogleDriveTest extends \PHPUnit\Framework\TestCase
      */
     private function createGoogleFileStub(array $data)
     {
-        $googleFile = $this->createMock(\Google_Service_Drive_DriveFile::class);
+        $googleFile = $this->createMock(Google_Service_Drive_DriveFile::class);
         $googleFile->method('getName')->willReturn($data['name']);
         $googleFile->method('getId')->willReturn($data['id']);
         $googleFile->method('getSize')->willReturn($data['size']);

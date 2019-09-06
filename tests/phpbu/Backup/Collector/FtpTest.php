@@ -4,6 +4,8 @@ namespace phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
+use PHPUnit\Framework\TestCase;
+use SebastianFeldmann\Ftp\Client;
 use SebastianFeldmann\Ftp\File;
 
 /**
@@ -18,7 +20,7 @@ use SebastianFeldmann\Ftp\File;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class FtpTest extends \PHPUnit\Framework\TestCase
+class FtpTest extends TestCase
 {
     /**
      * Tests Ftp::getBackupFiles
@@ -30,7 +32,7 @@ class FtpTest extends \PHPUnit\Framework\TestCase
         $filename   = 'foo-%Y-%m-%d-%H_%i.txt';
         $target     = new Target($path, $filename, strtotime('2018-06-01 11:12:13'));
         $pathUtil   = new Path($remotePath);
-        $ftpClient  = $this->createMock(\SebastianFeldmann\Ftp\Client::class);
+        $ftpClient  = $this->createMock(Client::class);
         $fileList   = [
             $target->getFilename() => new File(
                 [
@@ -67,17 +69,7 @@ class FtpTest extends \PHPUnit\Framework\TestCase
                   ->willReturn($fileList);
 
         $collector = new Ftp($target, $pathUtil, $ftpClient);
-        $this->assertAttributeEquals($ftpClient, 'ftpClient', $collector);
-        $this->assertAttributeEquals($pathUtil, 'path', $collector);
-        $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(null, 'files', $collector);
-        $this->assertAttributeEquals(
-            Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()),
-            'fileRegex',
-            $collector
-        );
-
-        $files = $collector->getBackupFiles();
+        $files     = $collector->getBackupFiles();
 
         $this->assertCount(2, $files);
         $this->assertArrayHasKey('1525788894-foo-2018-05-08-14_14.txt-1', $files);
@@ -97,7 +89,7 @@ class FtpTest extends \PHPUnit\Framework\TestCase
         $filename   = 'foo-%Y-%m-%d-%H_%i.txt';
         $target     = new Target($path, $filename, strtotime('2018-06-01 11:12:13'));
         $pathUtil   = new Path($remotePath);
-        $ftpClient  = $this->createMock(\SebastianFeldmann\Ftp\Client::class);
+        $ftpClient  = $this->createMock(Client::class);
 
         $dirList    = [
             'some_dir' => new File(
@@ -179,7 +171,7 @@ class FtpTest extends \PHPUnit\Framework\TestCase
         $filename   = 'foo-%Y-%m-%d-%H_%i.txt';
         $target     = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
         $pathUtil   = new Path($remotePath);
-        $ftpClient  = $this->createMock(\SebastianFeldmann\Ftp\Client::class);
+        $ftpClient  = $this->createMock(Client::class);
         $result     = [];
 
         $ftpClient->expects($this->once())
@@ -202,7 +194,7 @@ class FtpTest extends \PHPUnit\Framework\TestCase
         $filename   = 'foo-%Y-%m-%d-%H_%i.txt';
         $target     = new Target($path, $filename, strtotime('2018-06-01 11:12:13'));
         $pathUtil   = new Path($remotePath);
-        $ftpClient  = $this->createMock(\SebastianFeldmann\Ftp\Client::class);
+        $ftpClient  = $this->createMock(Client::class);
         $fileList   = [
             'foo-2018-05-08-14_14.txt' => new File(
                 [

@@ -1,11 +1,13 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
+use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
 use MicrosoftAzure\Storage\Blob\Models\ListBlobsResult;
 use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
+use PHPUnit\Framework\TestCase;
 
 /**
  * AzureBlob Collector test
@@ -19,7 +21,7 @@ use phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.2.7
  */
-class AzureBlobTest extends \PHPUnit\Framework\TestCase
+class AzureBlobTest extends TestCase
 {
     /**
      * Test Azure Blob collector
@@ -31,7 +33,7 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
         $filename  = 'foo-%Y-%m-%d-%H_%i.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
         $path      = new Path($path, $time, false);
-        $azureBlob = $this->getMockBuilder(\MicrosoftAzure\Storage\Blob\BlobRestProxy::class)
+        $azureBlob = $this->getMockBuilder(BlobRestProxy::class)
                          ->disableOriginalConstructor()
                          ->setMethods(['listBlobs'])
                          ->getMock();
@@ -123,16 +125,7 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
                  ->willReturn($azureBlobContents);
 
         $collector = new AzureBlob($target, $path, $azureBlob, 'mycontainer');
-        $this->assertAttributeEquals($azureBlob, 'client', $collector);
-        $this->assertAttributeEquals('mycontainer', 'containerName', $collector);
-        $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(null, 'files', $collector);
-        $this->assertAttributeEquals(
-            Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()),
-            'fileRegex',
-            $collector
-        );
-        $files = $collector->getBackupFiles();
+        $files     = $collector->getBackupFiles();
 
         $this->assertCount(2, $files);
         $this->assertArrayHasKey('975672000-foo-2000-12-01-12_00.txt-0', $files);
@@ -149,7 +142,7 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
         $filename  = 'foo-%Y-%m-%d-%H_%i.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
         $path      = new Path('', $time, false);
-        $azureBlob = $this->getMockBuilder(\MicrosoftAzure\Storage\Blob\BlobRestProxy::class)
+        $azureBlob = $this->getMockBuilder(BlobRestProxy::class)
             ->disableOriginalConstructor()
             ->setMethods(['listBlobs'])
             ->getMock();

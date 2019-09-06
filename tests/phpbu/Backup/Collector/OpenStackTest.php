@@ -1,9 +1,13 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
+use DateTimeImmutable;
+use OpenStack\ObjectStore\v1\Models\Container;
 use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
+use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * OpenStack Collector test
@@ -17,7 +21,7 @@ use phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class OpenStackTest extends \PHPUnit\Framework\TestCase
+class OpenStackTest extends TestCase
 {
     /**
      * Test OpenStack collector
@@ -28,7 +32,7 @@ class OpenStackTest extends \PHPUnit\Framework\TestCase
         $filename  = 'foo-%Y-%m-%d-%H_%i.txt';
         $target    = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
 
-        $openStackContainerStub = $this->createMock(\OpenStack\ObjectStore\v1\Models\Container::class);
+        $openStackContainerStub = $this->createMock(Container::class);
 
         $remotePath     = '/backups/';
         $openStackFiles = [
@@ -71,17 +75,8 @@ class OpenStackTest extends \PHPUnit\Framework\TestCase
 
         $path      = new Path($remotePath, strtotime('2018-05-08 14:14:54.0 +00:00'));
         $collector = new OpenStack($target, $path, $openStackContainerStub);
-        $this->assertAttributeEquals($openStackContainerStub, 'container', $collector);
-        $this->assertAttributeEquals($path, 'path', $collector);
-        $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(null, 'files', $collector);
-        $this->assertAttributeEquals(
-            Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()),
-            'fileRegex',
-            $collector
-        );
+        $files     = $collector->getBackupFiles();
 
-        $files = $collector->getBackupFiles();
         $this->assertCount(2, $files);
         $this->assertArrayHasKey('1525788894-foo-2000-12-01-12_00.txt-1', $files);
         $this->assertEquals(
@@ -99,11 +94,11 @@ class OpenStackTest extends \PHPUnit\Framework\TestCase
      */
     private function createOpenStackFileStub(array $data)
     {
-        $file                = new \stdClass();
+        $file                = new stdClass();
         $file->contentType   = $data['content_type'];
         $file->name          = $data['pathname'];
         $file->contentLength = $data['size'];
-        $file->lastModified  = new \DateTimeImmutable($data['last_modified']);
+        $file->lastModified  = new DateTimeImmutable($data['last_modified']);
         return $file;
     }
 

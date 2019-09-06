@@ -1,9 +1,13 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
+use Kunnu\Dropbox\Models\FileMetadata;
+use Kunnu\Dropbox\Models\FolderMetadata;
+use Kunnu\Dropbox\Models\MetadataCollection;
 use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Dropbox Collector test
@@ -17,7 +21,7 @@ use phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class DropboxTest extends \PHPUnit\Framework\TestCase
+class DropboxTest extends TestCase
 {
     /**
      * Test Dropbox collector.
@@ -59,9 +63,9 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
         );
 
         // add a folder as well
-        $dropboxFileList[] = $this->createMock(\Kunnu\Dropbox\Models\FolderMetadata::class);
+        $dropboxFileList[] = $this->createMock(FolderMetadata::class);
 
-        $dropboxFileListResult = $this->createMock(\Kunnu\Dropbox\Models\MetadataCollection::class);
+        $dropboxFileListResult = $this->createMock(MetadataCollection::class);
         $dropboxFileListResult->method('getItems')->willReturn($dropboxFileList);
 
         $dropboxClientStub->expects($this->once())
@@ -72,18 +76,8 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
         $time = time();
         $pathObject = new Path($remotePath, $time);
         $collector  = new Dropbox($target, $pathObject, $dropboxClientStub);
-        $this->assertAttributeEquals($dropboxClientStub, 'client', $collector);
-        $this->assertAttributeEquals($pathObject, 'path', $collector);
-        $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(null, 'files', $collector);
-        $this->assertAttributeEquals(
-            Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()),
-            'fileRegex',
-            $collector
-        );
 
         $files = $collector->getBackupFiles();
-        $this->assertAttributeEquals($files, 'files', $collector);
         $this->assertCount(2, $files);
         $this->assertArrayHasKey('975672000-foo-2000-12-01-12_00.txt-1', $files);
         $this->assertEquals(
@@ -100,7 +94,7 @@ class DropboxTest extends \PHPUnit\Framework\TestCase
      */
     private function createDropboxFileStub(array $data)
     {
-        $dropboxFileMetadataStub = $this->createMock(\Kunnu\Dropbox\Models\FileMetadata::class);
+        $dropboxFileMetadataStub = $this->createMock(FileMetadata::class);
         $dropboxFileMetadataStub->method('getName')->willReturn($data['name']);
         $dropboxFileMetadataStub->method('getPathDisplay')->willReturn($data['pathname']);
         $dropboxFileMetadataStub->method('getSize')->willReturn($data['size']);

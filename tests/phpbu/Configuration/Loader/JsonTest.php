@@ -1,7 +1,9 @@
 <?php
 namespace phpbu\App\Configuration\Loader;
 
+use phpbu\App\Configuration\Bootstrapper;
 use phpbu\App\Factory;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Json Configuration Loader test
@@ -14,7 +16,7 @@ use phpbu\App\Factory;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class JsonTest extends \PHPUnit\Framework\TestCase
+class JsonTest extends TestCase
 {
     /**
      * @var \phpbu\App\Factory
@@ -24,7 +26,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     /**
      * Create the AppFactory
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$factory = new Factory();
     }
@@ -279,7 +281,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
      */
     private function getBootstrapperMock(bool $execute = false)
     {
-        $mock = $crypter = $this->createMock(\phpbu\App\Configuration\Bootstrapper::class);
+        $mock = $crypter = $this->createMock(Bootstrapper::class);
         if ($execute) {
             $mock->expects($this->once())->method('run');
         }

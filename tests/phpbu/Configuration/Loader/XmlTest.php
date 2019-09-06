@@ -2,7 +2,9 @@
 namespace phpbu\App\Configuration\Loader;
 
 use phpbu\App\Configuration\Bootstrapper;
+use phpbu\App\Exception;
 use phpbu\App\Factory;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Xml Configuration Loader test
@@ -15,7 +17,7 @@ use phpbu\App\Factory;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class XmlTest extends \PHPUnit\Framework\TestCase
+class XmlTest extends TestCase
 {
     /**
      * @var \phpbu\App\Factory
@@ -25,7 +27,7 @@ class XmlTest extends \PHPUnit\Framework\TestCase
     /**
      * Create the AppFactory
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$factory = new Factory();
     }
@@ -35,7 +37,7 @@ class XmlTest extends \PHPUnit\Framework\TestCase
      */
     public function testFileNotFound()
     {
-        $this->expectException(\phpbu\App\Exception::class);
+        $this->expectException(Exception::class);
         $loader = new Xml('some.xml', $this->getBootstrapperMock());
     }
 
@@ -303,7 +305,7 @@ class XmlTest extends \PHPUnit\Framework\TestCase
      */
     private function getBootstrapperMock(bool $execute = false)
     {
-        $mock = $crypter = $this->createMock(\phpbu\App\Configuration\Bootstrapper::class);
+        $mock = $crypter = $this->createMock(Bootstrapper::class);
         if ($execute) {
             $mock->expects($this->once())->method('run');
         }

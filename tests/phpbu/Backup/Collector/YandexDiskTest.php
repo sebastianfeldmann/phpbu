@@ -73,19 +73,9 @@ class YandexDiskTest extends TestCase
 
         $time = time();
         $pathObject = new Path($remotePath, $time);
-        $collector = new YandexDisk($target, $pathObject, $yandexDiskStub);
-        $this->assertAttributeEquals($yandexDiskStub, 'disk', $collector);
-        $this->assertAttributeEquals($pathObject, 'path', $collector);
-        $this->assertAttributeEquals($target, 'target', $collector);
-        $this->assertAttributeEquals(null, 'files', $collector);
-        $this->assertAttributeEquals(
-            Util\Path::datePlaceholdersToRegex($target->getFilenameRaw()),
-            'fileRegex',
-            $collector
-        );
+        $collector  = new YandexDisk($target, $pathObject, $yandexDiskStub);
+        $files      = $collector->getBackupFiles();
 
-        $files = $collector->getBackupFiles();
-        $this->assertAttributeEquals($files, 'files', $collector);
         $this->assertCount(2, $files);
         $this->assertArrayHasKey('975672000-foo-2000-12-01-12_00.txt-1', $files);
         $this->assertEquals(

@@ -1,8 +1,12 @@
 <?php
 namespace phpbu\App\Backup\File;
 
+use DateTime;
+use Exception;
+use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Blob\Models\Blob;
 use MicrosoftAzure\Storage\Blob\Models\BlobProperties;
+use PHPUnit\Framework\TestCase;
 
 /**
  * AzureBlobTest
@@ -16,14 +20,14 @@ use MicrosoftAzure\Storage\Blob\Models\BlobProperties;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.2.7
  */
-class AzureBlobTest extends \PHPUnit\Framework\TestCase
+class AzureBlobTest extends TestCase
 {
     /**
      * Test creating file and handle removing
      */
     public function testCreateFileWithCorrectProperties()
     {
-        $azureBlob = $this->getMockBuilder(\MicrosoftAzure\Storage\Blob\BlobRestProxy::class)
+        $azureBlob = $this->getMockBuilder(BlobRestProxy::class)
             ->disableOriginalConstructor()
             ->setMethods(['deleteBlob'])
             ->getMock();
@@ -33,7 +37,7 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
                  ->with('mycontainer', 'dump.tar.gz');
 
         $blobProps = new BlobProperties();
-        $blobProps->setLastModified(new \DateTime('2018-05-08 14:14:54.0 +00:00'));
+        $blobProps->setLastModified(new DateTime('2018-05-08 14:14:54.0 +00:00'));
         $blobProps->setContentLength(102102);
 
         $blob = new Blob();
@@ -45,7 +49,6 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('dump.tar.gz', $file->getPathname());
         $this->assertEquals(102102, $file->getSize());
         $this->assertEquals(1525788894, $file->getMTime());
-        $this->assertAttributeEquals('mycontainer', 'containerName', $file);
 
         $file->unlink();
         $this->assertTrue(true, 'no exception should occur');
@@ -57,7 +60,7 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
     public function testAzureBlobDeleteFailure()
     {
         $this->expectException('phpbu\App\Exception');
-        $azureBlob = $this->getMockBuilder(\MicrosoftAzure\Storage\Blob\BlobRestProxy::class)
+        $azureBlob = $this->getMockBuilder(BlobRestProxy::class)
             ->disableOriginalConstructor()
             ->setMethods(['deleteBlob'])
             ->getMock();
@@ -65,10 +68,10 @@ class AzureBlobTest extends \PHPUnit\Framework\TestCase
         $azureBlob->expects($this->once())
                  ->method('deleteBlob')
                  ->with('mycontainer', 'dump.tar.gz')
-                 ->will($this->throwException(new \Exception));
+                 ->will($this->throwException(new Exception));
 
         $blobProps = new BlobProperties();
-        $blobProps->setLastModified(new \DateTime('2018-05-08 14:14:54.0 +00:00'));
+        $blobProps->setLastModified(new DateTime('2018-05-08 14:14:54.0 +00:00'));
         $blobProps->setContentLength(102102);
 
         $blob = new Blob();
