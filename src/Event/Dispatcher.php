@@ -25,7 +25,7 @@ class Dispatcher
     /**
      * Add subscriber that receives events
      *
-     * @param \phpbu\App\Result\Event\Subscriber $subscriber
+     * @param \phpbu\App\Event\Subscriber $subscriber
      */
     public function addSubscriber(Subscriber $subscriber): void
     {
