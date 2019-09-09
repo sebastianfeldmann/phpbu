@@ -8,6 +8,7 @@ use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Configuration;
 use phpbu\App\Result;
+use SebastianFeldmann\Cli\Util;
 
 /**
  * Restore Runner
@@ -135,12 +136,17 @@ class Restore extends Process
     private function printDecryptionCommands(Plan $plan): void
     {
         if (!$plan->isCryptSupported()) {
-            echo "WARNING: Your configured crypt does not support restore for now.\n";
+            echo Util::formatWithColor('fg-red', "WARNING: Your configured crypt does not support restore for now.\n");
+            return;
+        }
+        $commands = $plan->getDecryptionCommands();
+
+        if (empty($commands)) {
             return;
         }
 
-        echo "---- Decrypt your backup\n";
-        foreach ($plan->getDecryptionCommands() as $cmd) {
+        echo Util::formatWithColor('fg-yellow', "# Decrypt your backup\n");
+        foreach ($commands as $cmd) {
             echo $cmd . PHP_EOL;
         }
         echo PHP_EOL;
@@ -155,13 +161,13 @@ class Restore extends Process
     private function printRestoreCommands(Plan $plan): void
     {
         if (!$plan->isSourceSupported()) {
-            echo "WARNING: Your configured source does not support restore for now.\n";
+            echo Util::formatWithColor('fg-red', "WARNING: Your configured source does not support restore for now.\n");
             return;
         }
 
         $this->printExtractionCommands($plan->getDecompressionCommands());
 
-        echo "---- Restore your data [BE CAREFUL]\n";
+        echo Util::formatWithColor('fg-yellow', "# Restore your data [BE CAREFUL]\n");
         foreach ($plan->getRestoreCommands() as $cmd) {
             echo $cmd . PHP_EOL;
         }
@@ -177,7 +183,7 @@ class Restore extends Process
     private function printExtractionCommands(array $commands): void
     {
         if (!empty($commands)) {
-            echo "---- Extract your backup \n";
+            echo Util::formatWithColor('fg-yellow', "# Extract your backup \n");
             foreach ($commands as $cmd) {
                 echo $cmd . PHP_EOL;
             }
