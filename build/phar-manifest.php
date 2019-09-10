@@ -23,6 +23,24 @@ foreach ($lock->packages as $package) {
     echo PHP_EOL;
 }
 foreach ($lock->{'packages-dev'} as $package) {
+    if (!in_array($package->name, [
+        "aws/aws-sdk-php",
+        "google/apiclient",
+        "guzzlehttp/guzzle",
+        "kunalvarma05/dropbox-php-sdk",
+        "microsoft/azure-storage-blob",
+        "php-opencloud/openstack",
+        "phpmailer/phpmailer",
+        "phpseclib/phpseclib",
+        "sebastian/environment",
+        "sebastianfeldmann/cli",
+        "sebastianfeldmann/ftp",
+        "softlayer/objectstorage",
+        "vlucas/phpdotenv",
+
+    ])) {
+      continue;
+    }
     echo $package->name . ': ' . $package->version;
     if (!preg_match('/^[v= ]*(([0-9]+)(\\.([0-9]+)(\\.([0-9]+)(-([0-9]+))?(-?([a-zA-Z-+][a-zA-Z0-9\\.\\-:]*)?)?)?)?)$/', $package->version)) {
         echo '@' . $package->source->reference;
