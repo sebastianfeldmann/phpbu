@@ -109,7 +109,7 @@ class Stepwise extends Abstraction implements Simulator
     {
         // keep all backups for x days as specified by 'keep all'
         $start = $this->timestamp;
-        $end   = $start - (86400 * $this->daysToKeepAll);
+        $end   = mktime(0, 0, 0, date('m', $start), (int) date('d', $start) - $this->daysToKeepAll, date('Y', $start));
         $all   = new Range($start, $end, new Stepwise\Keeper\All());
 
         // define the range that keeps backups per day
