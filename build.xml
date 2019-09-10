@@ -340,7 +340,8 @@
         <include name="**/*.php"/>
       </fileset>
     </copy>
-    <!-- GUZZLE (AWS / OPENSTACK / AZURE) -->
+
+    <!-- GUZZLE (TELEGRAM / AWS / OPENSTACK / AZURE) -->
     <copy file="${basedir}/vendor/guzzlehttp/guzzle/LICENSE"
           tofile="${basedir}/build/phar/lib/guzzlehttp/guzzle/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/guzzlehttp/guzzle">
