@@ -15,6 +15,8 @@ use phpbu\App\Util;
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.3.0
+ *
+ * @deprecated
  */
 class Mcrypt extends Abstraction implements Simulator
 {
