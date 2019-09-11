@@ -2,13 +2,13 @@
 
 **PHP Backup Utility**
 
-*PHPBU* is a php framework that creates and encrypts backups, syncs your backups to other servers or cloud services
+*PHPBU* is a php tool that creates and encrypts backups, syncs your backups to other servers or cloud services
 and assists you monitor your backup creation.
 
 Get an in depth look into all the features and a short 'getting started' tutorial at the [PHPBU Website](https://phpbu.de).
 
 [![Latest Stable Version](https://poser.pugx.org/phpbu/phpbu/v/stable.svg)](https://packagist.org/packages/phpbu/phpbu)
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.0-8892BF.svg)](https://php.net/)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg)](https://php.net/)
 [![Downloads](https://img.shields.io/packagist/dt/phpbu/phpbu.svg?v1)](https://packagist.org/packages/phpbu/phpbu)
 [![License](https://poser.pugx.org/phpbu/phpbu/license.svg)](https://packagist.org/packages/phpbu/phpbu)
 [![Build Status](https://travis-ci.org/sebastianfeldmann/phpbu.svg?branch=master)](https://travis-ci.org/sebastianfeldmann/phpbu)
@@ -16,7 +16,8 @@ Get an in depth look into all the features and a short 'getting started' tutoria
 [![Code Coverage](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/?branch=master)
 [![PHP Website](https://img.shields.io/website-up-down-green-red/https/phpbu.de.svg)](https://phpbu.de)
 
-If you are not using php 7.0 or greater already you can still use phpbu version [4.0.10](https://phar.phpbu.de/phpbu-4.0.10.phar)
+If you are not using php 7.2 or greater already you can still use phpbu version [5.2.10](https://phar.phpbu.de/phpbu-5.2.10.phar) \
+If you are behind php 7.0 you can still use phpbu version [4.0.10](https://phar.phpbu.de/phpbu-4.0.10.phar)
 
 ## Features
 
@@ -57,10 +58,16 @@ If you are not using php 7.0 or greater already you can still use phpbu version 
     + Store only x MB of backups
     + Keep only last x backups
     + Keep less backups for more distant past
+* Writing backup reports
+    + Text file
+    + Json file
+    + Mail
+    + Telegram
+    + Webhook
 
 ## Requirements
 
-* PHP >= 7.0
+* PHP >= 7.2
     + ext/curl
     + ext/dom
     + ext/json
@@ -90,7 +97,7 @@ Installing *PHPBU* via Composer is also supported.
 
 ```json
   "require": {
-    "phpbu/phpbu": "~5.0"
+    "phpbu/phpbu": "^6.0"
   }
 ```
 
@@ -98,15 +105,17 @@ Installing *PHPBU* via Composer is also supported.
 ```
 phpbu [option]
 
-  --bootstrap=<file>     A "bootstrap" PHP file that is included before the backup.
-  --configuration=<file> A phpbu xml config file.
-  --colors               Use colors in output.
-  --debug                Display debugging information during backup generation.
-  --limit=<subset>       Limit backup execution to a subset.
-  --simulate             Perform a trial run with no changes made.
-  -h, --help             Print this usage information.
-  -v, --verbose          Output more verbose information.
-  -V, --version          Output version information and exit.
+  --bootstrap=<file>       A "bootstrap" PHP file that is included before the backup.
+  --configuration=<file>   A phpbu xml config file.
+  --colors                 Use colors in output.
+  --debug                  Display debugging information during backup generation.
+  --generate-configuration Create a new configuration skeleton.
+  --limit=<subset>         Limit backup execution to a subset.
+  --simulate               Perform a trial run with no changes made.
+  --restore                Print a restore guide.
+  -h, --help               Print this usage information.
+  -v, --verbose            Output more verbose information.
+  -V, --version            Output version information and exit.
 ```
 
 ### Usage Examples
@@ -114,7 +123,8 @@ phpbu [option]
     $ phpbu
 
 This requires a valid XML *PHPBU* configuration file (phpbu.xml or phpbu.xml.dist) in your current working directory.
-Alternatively, you can specify the path to your configuration file.
+Alternatively, you can specify the path to your configuration file. An important thing to note is that all path inside
+the configuration should be absolute or relative to the configuration file itself. 
 
     $ phpbu --configuration=backup/config.xml
 
@@ -122,10 +132,14 @@ Use the *--limit* option to execute only a subset of your configured backups.
 
     $ phpbu --limit=myAppDB
 
-Use the *--simulate* option to perform a trial run without actually executing the configured backups.
+A dry run without any actual impact is executed with the *--simulate* option.
 
     $ phpbu --simulate
+    
+To show a guide how to restore your backup use the *--restore* option.
 
+    $ phpbu --restore
+    
 ## Configuration Example
 
 Simple configuration example:
@@ -133,7 +147,7 @@ Simple configuration example:
 ```xml
   <?xml version="1.0" encoding="UTF-8"?>
   <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/5.1/phpbu.xsd"
+         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/6.0/phpbu.xsd"
          verbose="true">
     <backups>
       <backup name="myAppDB">
