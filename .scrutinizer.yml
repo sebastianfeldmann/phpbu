@@ -4,7 +4,9 @@ build:
       version: '7.3'
   dependencies:
     before:
-      - composer self-update
+      - wget -O composer.phar https://getcomposer.org/composer.phar
+      - chmod +x composer.phar
+      - ./composer.phar install
       - wget -O phpunit.phar https://phar.phpunit.de/phpunit-7.5.9.phar
       - chmod +x phpunit.phar
   tests:
