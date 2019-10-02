@@ -147,7 +147,11 @@ class Restore extends Process
 
         echo Util::formatWithColor('fg-yellow', "# Decrypt your backup\n");
         foreach ($commands as $cmd) {
-            echo $cmd . PHP_EOL;
+            if ($cmd['color'] == null) {
+                echo $cmd['command'] . PHP_EOL;
+                continue;
+            }
+            echo Util::formatWithColor($cmd['color'], $cmd['command']);
         }
         echo PHP_EOL;
     }
@@ -169,7 +173,11 @@ class Restore extends Process
 
         echo Util::formatWithColor('fg-yellow', "# Restore your data [BE CAREFUL]\n");
         foreach ($plan->getRestoreCommands() as $cmd) {
-            echo $cmd . PHP_EOL;
+            if ($cmd['color'] == null) {
+                echo $cmd['command'] . PHP_EOL;
+                continue;
+            }
+            echo Util::formatWithColor($cmd['color'], $cmd['command']);
         }
         echo PHP_EOL;
     }
@@ -185,7 +193,11 @@ class Restore extends Process
         if (!empty($commands)) {
             echo Util::formatWithColor('fg-yellow', "# Extract your backup \n");
             foreach ($commands as $cmd) {
-                echo $cmd . PHP_EOL;
+                if ($cmd['color'] == null) {
+                    echo $cmd['command'] . PHP_EOL;
+                    continue;
+                }
+                echo Util::formatWithColor($cmd['color'], $cmd['command']);
             }
             echo PHP_EOL;
         }
