@@ -3,7 +3,6 @@
 
 namespace phpbu\App\Backup\Restore;
 
-
 /**
  * Class Plan
  *
@@ -66,11 +65,15 @@ class Plan
      * Add a decryption command to the restore plan
      *
      * @param  string $command
+     * @param  null|string $color
      * @return void
      */
-    public function addDecryptionCommand(string $command): void
+    public function addDecryptionCommand(string $command, string $color = null): void
     {
-        $this->commands['decrypt'][] = $command;
+        $this->commands['decrypt'][] = [
+            'color' => $color,
+            'command' => $command
+        ];
     }
 
     /**
@@ -87,11 +90,15 @@ class Plan
      * Add an decompression command to the restore plan
      *
      * @param  string $command
+     * @param  null|string $color
      * @return void
      */
-    public function addDecompressionCommand(string $command): void
+    public function addDecompressionCommand(string $command, string $color = null): void
     {
-        $this->commands['decompress'][] = $command;
+        $this->commands['decompress'][] = [
+            'color' => $color,
+            'command' => $command
+        ];
     }
 
     /**
@@ -128,11 +135,15 @@ class Plan
      * Add restore command to the restore plan
      *
      * @param  string $command
+     * @param  null|string $color
      * @return void
      */
-    public function addRestoreCommand(string $command): void
+    public function addRestoreCommand(string $command, string $color = null): void
     {
-        $this->commands['restore'][] = $command;
+        $this->commands['restore'][] = [
+            'color' => $color,
+            'command' => $command
+        ];
     }
 
     /**
