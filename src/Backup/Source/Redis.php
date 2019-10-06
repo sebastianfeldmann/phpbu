@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
+use phpbu\App\Backup\Restore\Plan;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
@@ -18,7 +19,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.12
  */
-class Redis extends SimulatorExecutable implements Simulator
+class Redis extends SimulatorExecutable implements Simulator, Restorable
 {
     /**
      * Executable to handle redis command.
@@ -213,6 +214,26 @@ class Redis extends SimulatorExecutable implements Simulator
      */
     protected function createStatus(Target $target) : Status
     {
+        return Status::create()->uncompressedFile($target->getPathnamePlain());
+    }
+
+    /**
+     * Restore the backup
+     *
+     * @param  \phpbu\App\Backup\Target       $target
+     * @param  \phpbu\App\Backup\Restore\Plan $plan
+     * @return \phpbu\App\Backup\Source\Status
+     */
+    public function restore(Target $target, Plan $plan): Status
+    {
+        $plan->addRestoreCommand(
+            sprintf(
+                'cp %s %s',
+                $target->getPathnamePlain(),
+                $this->pathToRedisData
+            )
+        );
+
         return Status::create()->uncompressedFile($target->getPathnamePlain());
     }
 }
