@@ -59,6 +59,7 @@ class Factory
             'sizediffavgpercent'      => '\\phpbu\\App\\Backup\\Check\\SizeDiffAvgPercent',
         ],
         'crypter'   => [
+            'gpg'     => '\\phpbu\\App\\Backup\\Crypter\\Gpg',
             'mcrypt'  => '\\phpbu\\App\\Backup\\Crypter\\Mcrypt',
             'openssl' => '\\phpbu\\App\\Backup\\Crypter\\OpenSSL',
         ],
