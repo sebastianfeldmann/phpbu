@@ -146,10 +146,7 @@ class Restore extends Process
         }
 
         echo Util::formatWithColor('fg-yellow', "# Decrypt your backup\n");
-        foreach ($commands as $cmd) {
-            echo $cmd . PHP_EOL;
-        }
-        echo PHP_EOL;
+        $this->printCommands($commands);
     }
 
     /**
@@ -168,10 +165,7 @@ class Restore extends Process
         $this->printExtractionCommands($plan->getDecompressionCommands());
 
         echo Util::formatWithColor('fg-yellow', "# Restore your data [BE CAREFUL]\n");
-        foreach ($plan->getRestoreCommands() as $cmd) {
-            echo $cmd . PHP_EOL;
-        }
-        echo PHP_EOL;
+        $this->printCommands($plan->getRestoreCommands());
     }
 
     /**
@@ -184,10 +178,24 @@ class Restore extends Process
     {
         if (!empty($commands)) {
             echo Util::formatWithColor('fg-yellow', "# Extract your backup \n");
-            foreach ($commands as $cmd) {
-                echo $cmd . PHP_EOL;
-            }
-            echo PHP_EOL;
+            $this->printCommands($commands);
         }
+    }
+
+    /**
+     * Print restore plan commands
+     *
+     * @param  array $commands
+     * @return void
+     */
+    private function printCommands(array $commands): void
+    {
+        foreach ($commands as $cmd) {
+            if (!empty($cmd['comment'])) {
+                echo Util::formatWithColor('fg-yellow', '# ' . $cmd['comment'] . PHP_EOL);
+            }
+            echo $cmd['command'] . PHP_EOL;
+        }
+        echo PHP_EOL;
     }
 }

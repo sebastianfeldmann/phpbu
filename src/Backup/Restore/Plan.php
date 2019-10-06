@@ -1,14 +1,12 @@
 <?php
 
-
 namespace phpbu\App\Backup\Restore;
-
 
 /**
  * Class Plan
  *
  * @package    phpbu
- * @subpackage
+ * @subpackage Backup
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
@@ -20,11 +18,13 @@ class Plan
     /**
      * List of commands to execute to restore the backup
      *
+     * Holding multiple lists of commands ['command' => 'foo', 'comment' => 'some comment']
+     *
      * @var array
      */
     private $commands = [
         'decrypt'    => [],
-        'decompress'    => [],
+        'decompress' => [],
         'restore'    => []
     ];
 
@@ -66,11 +66,12 @@ class Plan
      * Add a decryption command to the restore plan
      *
      * @param  string $command
+     * @param  string $comment
      * @return void
      */
-    public function addDecryptionCommand(string $command): void
+    public function addDecryptionCommand(string $command, string $comment = ''): void
     {
-        $this->commands['decrypt'][] = $command;
+        $this->addCommand('decrypt', $command, $comment);
     }
 
     /**
@@ -87,11 +88,12 @@ class Plan
      * Add an decompression command to the restore plan
      *
      * @param  string $command
+     * @param  string $comment
      * @return void
      */
-    public function addDecompressionCommand(string $command): void
+    public function addDecompressionCommand(string $command, string $comment = ''): void
     {
-        $this->commands['decompress'][] = $command;
+        $this->addCommand('decompress', $command, $comment);
     }
 
     /**
@@ -128,11 +130,12 @@ class Plan
      * Add restore command to the restore plan
      *
      * @param  string $command
+     * @param  string $comment
      * @return void
      */
-    public function addRestoreCommand(string $command): void
+    public function addRestoreCommand(string $command, string $comment = ''): void
     {
-        $this->commands['restore'][] = $command;
+        $this->addCommand('restore', $command, $comment);
     }
 
     /**
@@ -143,5 +146,18 @@ class Plan
     public function getRestoreCommands(): array
     {
         return $this->commands['restore'];
+    }
+
+    /**
+     * Add a command to the plan
+     *
+     * @param  string $type
+     * @param  string $command
+     * @param  string $comment
+     * @return void
+     */
+    private function addCommand(string $type, string $command, string $comment): void
+    {
+        $this->commands[$type][] = ['command' => $command, 'comment' => $comment];
     }
 }
