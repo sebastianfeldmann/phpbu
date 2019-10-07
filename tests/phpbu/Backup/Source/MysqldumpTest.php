@@ -306,7 +306,10 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
 
         $plan        = new Plan();
         $planRestore = [
-            'mysql  --passsword=******  < ' . $targetFile,
+            [
+                'command' => 'mysql  --passsword=******  < '.$targetFile,
+                'comment' => '',
+            ],
         ];
 
         $configuration = [
@@ -332,9 +335,18 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
 
         $plan        = new Plan();
         $planRestore = [
-            'tar -xvf ' . $targetFile . '.tar',
-            'find ' . $targetFile . '.dump -name "*.sql" -exec sh -c \' mysql databaseToBackup   < "$0" \' {} ";"',
-            'find ' . $targetFile . '.dump -name "*.txt" -exec sh -c \' mysqlimport databaseToBackup  "$0" \' {} ";"',
+            [
+                'command' => 'tar -xvf ' . $targetFile . '.tar',
+                'comment' => '',
+            ],
+            [
+                'command' => 'find ' . $targetFile . '.dump -name "*.sql" -exec sh -c \' mysql databaseToBackup   < "$0" \' {} ";"',
+                'comment' => '',
+            ],
+            [
+                'command' => 'find ' . $targetFile . '.dump -name "*.txt" -exec sh -c \' mysqlimport databaseToBackup  "$0" \' {} ";"',
+                'comment' => '',
+            ],
         ];
 
         $configuration = [
