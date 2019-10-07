@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
+use phpbu\App\Backup\Restore\Plan;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
@@ -18,7 +19,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Mysqldump extends SimulatorExecutable implements Simulator
+class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
 {
     /**
      * Path to executable.
@@ -251,6 +252,47 @@ class Mysqldump extends SimulatorExecutable implements Simulator
         }
 
         return $this->createStatus($target);
+    }
+
+    /**
+     * Restore the backup
+     *
+     * @param \phpbu\App\Backup\Target       $target
+     * @param \phpbu\App\Backup\Restore\Plan $plan
+     * @return \phpbu\App\Backup\Source\Status
+     * @throws \phpbu\App\Exception
+     */
+    public function restore(Target $target, Plan $plan): Status
+    {
+        $source   = $target->getPathname(true);
+        $host     = empty($this->host) ? '' : ' --host=' . $this->host;
+        $port     = empty($this->port) ? '' : ' --port=' . $this->port;
+        $protocol = empty($this->protocol) ? '' : ' --protocol=' . $this->protocol;
+        $user     = empty($this->user) ? '' : ' --user=' . $this->user;
+        $password = empty($this->password) ? '' : ' --passsword=******';
+        $quick    = empty($this->quick) ? '' : '-q';
+
+        $commonOptions = $host . $port . $protocol . $user . $password;
+
+        if ($this->filePerTable) {
+            $database   = $this->databases[0];
+            $sourceTar  = $source . '.tar';
+            $sourceDump = $source . '.dump';
+
+            $mysqlFormat   = 'find %s -name "*.sql" -exec sh -c \' mysql %s %s %s < "$0" \' {} ";"';
+            $importFormat  = 'find %s -name "*.txt" -exec sh -c \' mysqlimport %s %s "$0" \' {} ";"';
+            $mysqlCommand  = sprintf($mysqlFormat, $sourceDump, $database, $commonOptions, $quick);
+            $importCommand = sprintf($importFormat, $sourceDump, $database, $commonOptions);
+
+            $plan->addRestoreCommand('tar -xvf ' . $sourceTar);
+            $plan->addRestoreCommand($mysqlCommand);
+            $plan->addRestoreCommand($importCommand);
+        } else {
+            $command = sprintf('mysql %s %s < %s', $commonOptions, $quick, $source);
+            $plan->addRestoreCommand($command);
+        }
+
+        return Status::create()->uncompressedFile($target->getPathname());
     }
 
     /**

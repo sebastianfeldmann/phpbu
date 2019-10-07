@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\CliMockery;
+use phpbu\App\Backup\Restore\Plan;
 use phpbu\App\BaseMockery;
 
 /**
@@ -293,5 +294,60 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
             $this->assertFalse(file_exists($file));
             throw $e;
         }
+    }
+
+    /**
+     * Tests Mysqldump::restore
+     */
+    public function testRestorePasswordMasked()
+    {
+        $targetFile = '/tmp/backup/dump.sql';
+        $target     = $this->createTargetMock($targetFile);
+
+        $plan        = new Plan();
+        $planRestore = [
+            'mysql  --passsword=******  < ' . $targetFile,
+        ];
+
+        $configuration = [
+            'pathToMysqldump' => PHPBU_TEST_BIN,
+            'password'        => 'password',
+        ];
+        $mysqldump     = new Mysqldump();
+        $mysqldump->setup($configuration);
+
+        $status = $mysqldump->restore($target, $plan);
+
+        $this->assertEquals($planRestore, $plan->getRestoreCommands());
+        $this->assertFalse($status->handledCompression());
+    }
+
+    /**
+     * Tests Mysqldump::restore
+     */
+    public function testRestoreFilePerTable()
+    {
+        $targetFile = '/tmp/backup/dump.sql';
+        $target     = $this->createTargetMock($targetFile);
+
+        $plan        = new Plan();
+        $planRestore = [
+            'tar -xvf ' . $targetFile . '.tar',
+            'find ' . $targetFile . '.dump -name "*.sql" -exec sh -c \' mysql databaseToBackup   < "$0" \' {} ";"',
+            'find ' . $targetFile . '.dump -name "*.txt" -exec sh -c \' mysqlimport databaseToBackup  "$0" \' {} ";"',
+        ];
+
+        $configuration = [
+            'pathToMysqldump' => PHPBU_TEST_BIN,
+            'filePerTable'    => 'true',
+            'databases'       => 'databaseToBackup',
+        ];
+        $mysqldump     = new Mysqldump();
+        $mysqldump->setup($configuration);
+
+        $status = $mysqldump->restore($target, $plan);
+
+        $this->assertEquals($planRestore, $plan->getRestoreCommands());
+        $this->assertFalse($status->handledCompression());
     }
 }
