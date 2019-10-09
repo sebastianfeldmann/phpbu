@@ -307,7 +307,7 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
         $plan        = new Plan();
         $planRestore = [
             [
-                'command' => PHPBU_TEST_BIN.'/mysql --user=\'mysql\' --password=\'******\' --execute=\'source dump.sql\'',
+                'command' => PHPBU_TEST_BIN . '/mysql --user=\'mysql\' --password=\'******\' --execute=\'source dump.sql\'',
                 'comment' => '',
             ],
         ];
@@ -341,21 +341,22 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
                 'comment' => 'Extract the table files',
             ],
             [
-                'command' => PHPBU_TEST_BIN.'/mysql --user=\'mysql\' --password=\'******\' --database=\'databaseToBackup\' --execute=\'source <table-file>\'',
+                'command' => PHPBU_TEST_BIN . '/mysql --user=\'mysql\' --password=\'******\' --database=\'databaseToBackup\' --execute=\'source <table-file>\'',
                 'comment' => 'Restore the structure, execute this for every table file',
             ],
             [
-                'command' => 'mysqlimport databaseToBackup  --user=mysql --password=****** "<table-file>"',
+                'command' => PHPBU_TEST_BIN . '/mysqlimport \'databaseToBackup\' \'<table-file>\' --user=\'mysql\' --password=\'******\'',
                 'comment' => 'Restore the data, execute this for every table file',
             ],
         ];
 
         $configuration = [
-            'pathToMysql'  => PHPBU_TEST_BIN,
-            'user'         => 'mysql',
-            'password'     => 'password',
-            'filePerTable' => 'true',
-            'databases'    => 'databaseToBackup',
+            'pathToMysql'       => PHPBU_TEST_BIN,
+            'pathToMysqlimport' => PHPBU_TEST_BIN,
+            'user'              => 'mysql',
+            'password'          => 'password',
+            'filePerTable'      => 'true',
+            'databases'         => 'databaseToBackup',
         ];
         $mysqldump     = new Mysqldump();
         $mysqldump->setup($configuration);

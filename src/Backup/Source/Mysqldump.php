@@ -36,6 +36,13 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     private $pathToMysqldump;
 
     /**
+     * Path to mysqlimport executable.
+     *
+     * @var string
+     */
+    private $pathToMysqlimport;
+
+    /**
      * Host to connect to
      * --host <hostname>
      *
@@ -196,8 +203,9 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     {
         $this->setupSourceData($conf);
 
-        $this->pathToMysql = Util\Arr::getValue($conf, 'pathToMysql', '');
+        $this->pathToMysql       = Util\Arr::getValue($conf, 'pathToMysql', '');
         $this->pathToMysqldump   = Util\Arr::getValue($conf, 'pathToMysqldump', '');
+        $this->pathToMysqlimport = Util\Arr::getValue($conf, 'pathToMysqlimport', '');
         $this->host              = Util\Arr::getValue($conf, 'host', '');
         $this->port              = Util\Arr::getValue($conf, 'port', 0);
         $this->protocol          = Util\Arr::getValue($conf, 'protocol', '');
@@ -272,30 +280,24 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
      */
     public function restore(Target $target, Plan $plan): Status
     {
-        $source   = $target->getPathname(true);
-        $host     = empty($this->host) ? '' : ' --host=' . $this->host;
-        $port     = empty($this->port) ? '' : ' --port=' . $this->port;
-        $protocol = empty($this->protocol) ? '' : ' --protocol=' . $this->protocol;
-        $user     = empty($this->user) ? '' : ' --user=' . $this->user;
-        $password = empty($this->password) ? '' : ' --password=******';
-
-        $commonOptions = $host . $port . $protocol . $user . $password;
-
         $executable = $this->createMysqlExecutable();
 
         if ($this->filePerTable) {
-            $database  = $this->databases[0];
-            $sourceTar = $source . '.tar';
+            $database    = $this->databases[0];
+            $sourceTar   = $target->getPathname(true) . '.tar';
+            $mysqlimport = $this->createMysqlimportExecutable('<table-file>', $database);
 
             $executable->useDatabase($database);
             $executable->useSourceFile('<table-file>');
 
             $mysqlCommand  = $executable->getCommandPrintable();
-            $importCommand = sprintf('mysqlimport %s %s "<table-file>"', $database, $commonOptions);
+            $importCommand = $mysqlimport->getCommandPrintable();
+            $mysqlComment  = 'Restore the structure, execute this for every table file';
+            $importComment = 'Restore the data, execute this for every table file';
 
             $plan->addRestoreCommand('tar -xvf ' . $sourceTar, 'Extract the table files');
-            $plan->addRestoreCommand($mysqlCommand, 'Restore the structure, execute this for every table file');
-            $plan->addRestoreCommand($importCommand, 'Restore the data, execute this for every table file');
+            $plan->addRestoreCommand($mysqlCommand, $mysqlComment);
+            $plan->addRestoreCommand($importCommand, $importComment);
         } else {
             $executable->useSourceFile($target->getFilename(true));
             $plan->addRestoreCommand($executable->getCommandPrintable());
@@ -397,6 +399,27 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
             ->usePort($this->port)
             ->useProtocol($this->protocol)
             ->useQuickMode($this->quick)
+            ->useCompression($this->compress);
+
+        return $executable;
+    }
+
+    /**
+     * Create the Executable to run the mysqlimport command.
+     *
+     * @param string $sourceFilename
+     * @param string $targetDatabase
+     *
+     * @return \phpbu\App\Cli\Executable\Mysqlimport
+     */
+    private function createMysqlimportExecutable(string $sourceFilename, string $targetDatabase): Executable\Mysqlimport
+    {
+        $executable = new Executable\Mysqlimport($this->pathToMysqlimport);
+        $executable->setSourceAndTarget($sourceFilename, $targetDatabase)
+            ->credentials($this->user, $this->password)
+            ->useHost($this->host)
+            ->usePort($this->port)
+            ->useProtocol($this->protocol)
             ->useCompression($this->compress);
 
         return $executable;
