@@ -275,18 +275,15 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
         $commonOptions = $host . $port . $protocol . $user . $password;
 
         if ($this->filePerTable) {
-            $database   = $this->databases[0];
-            $sourceTar  = $source . '.tar';
-            $sourceDump = $source . '.dump';
+            $database  = $this->databases[0];
+            $sourceTar = $source . '.tar';
 
-            $mysqlFormat   = 'find %s -name "*.sql" -exec sh -c \' mysql %s %s %s < "$0" \' {} ";"';
-            $importFormat  = 'find %s -name "*.txt" -exec sh -c \' mysqlimport %s %s "$0" \' {} ";"';
-            $mysqlCommand  = sprintf($mysqlFormat, $sourceDump, $database, $commonOptions, $quick);
-            $importCommand = sprintf($importFormat, $sourceDump, $database, $commonOptions);
+            $mysqlCommand  = sprintf('mysql %s %s %s < "<table-file>"', $database, $commonOptions, $quick);
+            $importCommand = sprintf('mysqlimport %s %s "<table-file>"', $database, $commonOptions);
 
-            $plan->addRestoreCommand('tar -xvf ' . $sourceTar);
-            $plan->addRestoreCommand($mysqlCommand);
-            $plan->addRestoreCommand($importCommand);
+            $plan->addRestoreCommand('tar -xvf ' . $sourceTar, 'Extract the table files');
+            $plan->addRestoreCommand($mysqlCommand, 'Restore the structure, execute this for every table file');
+            $plan->addRestoreCommand($importCommand, 'Restore the data, execute this for every table file');
         } else {
             $command = sprintf('mysql %s %s < %s', $commonOptions, $quick, $source);
             $plan->addRestoreCommand($command);
@@ -354,7 +351,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     }
 
     /**
-     * Cann compression be handled via pipe operator.
+     * Can compression be handled via pipe operator.
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return bool

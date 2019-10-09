@@ -337,15 +337,15 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
         $planRestore = [
             [
                 'command' => 'tar -xvf ' . $targetFile . '.tar',
-                'comment' => '',
+                'comment' => 'Extract the table files',
             ],
             [
-                'command' => 'find ' . $targetFile . '.dump -name "*.sql" -exec sh -c \' mysql databaseToBackup   < "$0" \' {} ";"',
-                'comment' => '',
+                'command' => 'mysql databaseToBackup   < "<table-file>"',
+                'comment' => 'Restore the structure, execute this for every table file',
             ],
             [
-                'command' => 'find ' . $targetFile . '.dump -name "*.txt" -exec sh -c \' mysqlimport databaseToBackup  "$0" \' {} ";"',
-                'comment' => '',
+                'command' => 'mysqlimport databaseToBackup  "<table-file>"',
+                'comment' => 'Restore the data, execute this for every table file',
             ],
         ];
 
