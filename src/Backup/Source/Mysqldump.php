@@ -22,7 +22,14 @@ use phpbu\App\Util;
 class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
 {
     /**
-     * Path to executable.
+     * Path to mysql executable.
+     *
+     * @var string
+     */
+    private $pathToMysql;
+
+    /**
+     * Path to mysqldump executable.
      *
      * @var string
      */
@@ -189,6 +196,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     {
         $this->setupSourceData($conf);
 
+        $this->pathToMysql = Util\Arr::getValue($conf, 'pathToMysql', '');
         $this->pathToMysqldump   = Util\Arr::getValue($conf, 'pathToMysqldump', '');
         $this->host              = Util\Arr::getValue($conf, 'host', '');
         $this->port              = Util\Arr::getValue($conf, 'port', 0);
@@ -269,24 +277,28 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
         $port     = empty($this->port) ? '' : ' --port=' . $this->port;
         $protocol = empty($this->protocol) ? '' : ' --protocol=' . $this->protocol;
         $user     = empty($this->user) ? '' : ' --user=' . $this->user;
-        $password = empty($this->password) ? '' : ' --passsword=******';
-        $quick    = empty($this->quick) ? '' : '-q';
+        $password = empty($this->password) ? '' : ' --password=******';
 
         $commonOptions = $host . $port . $protocol . $user . $password;
+
+        $executable = $this->createMysqlExecutable();
 
         if ($this->filePerTable) {
             $database  = $this->databases[0];
             $sourceTar = $source . '.tar';
 
-            $mysqlCommand  = sprintf('mysql %s %s %s < "<table-file>"', $database, $commonOptions, $quick);
+            $executable->useDatabase($database);
+            $executable->useSourceFile('<table-file>');
+
+            $mysqlCommand  = $executable->getCommandPrintable();
             $importCommand = sprintf('mysqlimport %s %s "<table-file>"', $database, $commonOptions);
 
             $plan->addRestoreCommand('tar -xvf ' . $sourceTar, 'Extract the table files');
             $plan->addRestoreCommand($mysqlCommand, 'Restore the structure, execute this for every table file');
             $plan->addRestoreCommand($importCommand, 'Restore the data, execute this for every table file');
         } else {
-            $command = sprintf('mysql %s %s < %s', $commonOptions, $quick, $source);
-            $plan->addRestoreCommand($command);
+            $executable->useSourceFile($target->getFilename(true));
+            $plan->addRestoreCommand($executable->getCommandPrintable());
         }
 
         return Status::create()->uncompressedFile($target->getPathname());
@@ -370,5 +382,23 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     private function getDumpTarget(Target $target) : string
     {
         return $target->getPathnamePlain() . ($this->filePerTable ? '.dump' : '');
+    }
+
+    /**
+     * Create the Executable to run the mysql command.
+     *
+     * @return \phpbu\App\Cli\Executable\Mysql
+     */
+    private function createMysqlExecutable(): Executable\Mysql
+    {
+        $executable = new Executable\Mysql($this->pathToMysql);
+        $executable->credentials($this->user, $this->password)
+            ->useHost($this->host)
+            ->usePort($this->port)
+            ->useProtocol($this->protocol)
+            ->useQuickMode($this->quick)
+            ->useCompression($this->compress);
+
+        return $executable;
     }
 }
