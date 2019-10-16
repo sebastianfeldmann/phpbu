@@ -173,6 +173,14 @@ class Mysqldump extends Abstraction implements Executable
     private $routines = false;
 
     /**
+     * Skip triggers
+     * --skip-triggers
+     *
+     * @var boolean
+     */
+    private $skipTriggers = false;
+
+    /**
      * Path to dump file
      *
      * @var string
@@ -416,6 +424,18 @@ class Mysqldump extends Abstraction implements Executable
     }
 
     /**
+     * Skip triggers.
+     *
+     * @param  bool $bool
+     * @return \phpbu\App\Cli\Executable\Mysqldump
+     */
+    public function skipTriggers(bool $bool) : Mysqldump
+    {
+        $this->skipTriggers = $bool;
+        return $this;
+    }
+
+    /**
      * Pipe compressor.
      *
      * @param  \phpbu\App\Backup\Target\Compression $compression
@@ -464,6 +484,7 @@ class Mysqldump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('--hex-blob', $this->hexBlob, false);
         $cmd->addOptionIfNotEmpty('--set-gtid-purged', $this->gtidPurged);
         $cmd->addOptionIfNotEmpty('--routines', $this->routines, false);
+        $cmd->addOptionIfNotEmpty('--skip-triggers', $this->skipTriggers, false);
 
         $this->configureSourceData($cmd);
         $this->configureIgnoredTables($cmd);
