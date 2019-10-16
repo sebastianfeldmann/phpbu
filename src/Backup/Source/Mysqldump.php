@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
+use phpbu\App\Backup\Restore\Plan;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
@@ -18,14 +19,28 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Mysqldump extends SimulatorExecutable implements Simulator
+class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
 {
     /**
-     * Path to executable.
+     * Path to mysql executable.
+     *
+     * @var string
+     */
+    private $pathToMysql;
+
+    /**
+     * Path to mysqldump executable.
      *
      * @var string
      */
     private $pathToMysqldump;
+
+    /**
+     * Path to mysqlimport executable.
+     *
+     * @var string
+     */
+    private $pathToMysqlimport;
 
     /**
      * Host to connect to
@@ -188,7 +203,9 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     {
         $this->setupSourceData($conf);
 
+        $this->pathToMysql       = Util\Arr::getValue($conf, 'pathToMysql', '');
         $this->pathToMysqldump   = Util\Arr::getValue($conf, 'pathToMysqldump', '');
+        $this->pathToMysqlimport = Util\Arr::getValue($conf, 'pathToMysqlimport', '');
         $this->host              = Util\Arr::getValue($conf, 'host', '');
         $this->port              = Util\Arr::getValue($conf, 'port', 0);
         $this->protocol          = Util\Arr::getValue($conf, 'protocol', '');
@@ -254,6 +271,42 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     }
 
     /**
+     * Restore the backup
+     *
+     * @param \phpbu\App\Backup\Target       $target
+     * @param \phpbu\App\Backup\Restore\Plan $plan
+     * @return \phpbu\App\Backup\Source\Status
+     * @throws \phpbu\App\Exception
+     */
+    public function restore(Target $target, Plan $plan): Status
+    {
+        $executable = $this->createMysqlExecutable();
+
+        if ($this->filePerTable) {
+            $database    = $this->databases[0];
+            $sourceTar   = $target->getPathname(true) . '.tar';
+            $mysqlimport = $this->createMysqlimportExecutable('<table-file>', $database);
+
+            $executable->useDatabase($database);
+            $executable->useSourceFile('<table-file>');
+
+            $mysqlCommand  = $executable->getCommandPrintable();
+            $importCommand = $mysqlimport->getCommandPrintable();
+            $mysqlComment  = 'Restore the structure, execute this for every table file';
+            $importComment = 'Restore the data, execute this for every table file';
+
+            $plan->addRestoreCommand('tar -xvf ' . $sourceTar, 'Extract the table files');
+            $plan->addRestoreCommand($mysqlCommand, $mysqlComment);
+            $plan->addRestoreCommand($importCommand, $importComment);
+        } else {
+            $executable->useSourceFile($target->getFilename(true));
+            $plan->addRestoreCommand($executable->getCommandPrintable());
+        }
+
+        return Status::create()->uncompressedFile($target->getPathname());
+    }
+
+    /**
      * Create the Executable to run the mysqldump command.
      *
      * @param  \phpbu\App\Backup\Target $target
@@ -312,7 +365,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * Cann compression be handled via pipe operator.
+     * Can compression be handled via pipe operator.
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return bool
@@ -331,5 +384,44 @@ class Mysqldump extends SimulatorExecutable implements Simulator
     private function getDumpTarget(Target $target) : string
     {
         return $target->getPathnamePlain() . ($this->filePerTable ? '.dump' : '');
+    }
+
+    /**
+     * Create the Executable to run the mysql command.
+     *
+     * @return \phpbu\App\Cli\Executable\Mysql
+     */
+    private function createMysqlExecutable(): Executable\Mysql
+    {
+        $executable = new Executable\Mysql($this->pathToMysql);
+        $executable->credentials($this->user, $this->password)
+            ->useHost($this->host)
+            ->usePort($this->port)
+            ->useProtocol($this->protocol)
+            ->useQuickMode($this->quick)
+            ->useCompression($this->compress);
+
+        return $executable;
+    }
+
+    /**
+     * Create the Executable to run the mysqlimport command.
+     *
+     * @param string $sourceFilename
+     * @param string $targetDatabase
+     *
+     * @return \phpbu\App\Cli\Executable\Mysqlimport
+     */
+    private function createMysqlimportExecutable(string $sourceFilename, string $targetDatabase): Executable\Mysqlimport
+    {
+        $executable = new Executable\Mysqlimport($this->pathToMysqlimport);
+        $executable->setSourceAndTarget($sourceFilename, $targetDatabase)
+            ->credentials($this->user, $this->password)
+            ->useHost($this->host)
+            ->usePort($this->port)
+            ->useProtocol($this->protocol)
+            ->useCompression($this->compress);
+
+        return $executable;
     }
 }
