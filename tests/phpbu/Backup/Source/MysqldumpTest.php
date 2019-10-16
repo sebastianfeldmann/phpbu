@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\CliMockery;
+use phpbu\App\Backup\Restore\Plan;
 use phpbu\App\BaseMockery;
 
 /**
@@ -176,6 +177,20 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests Mysqldump::getExecutable
+     */
+    public function testSkipTriggers()
+    {
+        $target    = $this->createTargetMock();
+        $mysqldump = new Mysqldump();
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'skipTriggers' => 'true']);
+
+        $executable = $mysqldump->getExecutable($target);
+
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --skip-triggers --all-databases', $executable->getCommand());
+    }
+
+    /**
      * Tests Mysqldump::backup
      */
     public function testBackupOk()
@@ -293,5 +308,76 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
             $this->assertFalse(file_exists($file));
             throw $e;
         }
+    }
+
+    /**
+     * Tests Mysqldump::restore
+     */
+    public function testRestorePasswordMasked()
+    {
+        $targetFile = '/tmp/backup/dump.sql';
+        $target     = $this->createTargetMock($targetFile);
+
+        $plan        = new Plan();
+        $planRestore = [
+            [
+                'command' => PHPBU_TEST_BIN . '/mysql --user=\'mysql\' --password=\'******\' --execute=\'source dump.sql\'',
+                'comment' => '',
+            ],
+        ];
+
+        $configuration = [
+            'pathToMysql' => PHPBU_TEST_BIN,
+            'user'        => 'mysql',
+            'password'    => 'password',
+        ];
+        $mysqldump     = new Mysqldump();
+        $mysqldump->setup($configuration);
+
+        $status = $mysqldump->restore($target, $plan);
+
+        $this->assertEquals($planRestore, $plan->getRestoreCommands());
+        $this->assertFalse($status->handledCompression());
+    }
+
+    /**
+     * Tests Mysqldump::restore
+     */
+    public function testRestoreFilePerTable()
+    {
+        $targetFile = '/tmp/backup/dump.sql';
+        $target     = $this->createTargetMock($targetFile);
+
+        $plan        = new Plan();
+        $planRestore = [
+            [
+                'command' => 'tar -xvf ' . $targetFile . '.tar',
+                'comment' => 'Extract the table files',
+            ],
+            [
+                'command' => PHPBU_TEST_BIN . '/mysql --user=\'mysql\' --password=\'******\' --database=\'databaseToBackup\' --execute=\'source <table-file>\'',
+                'comment' => 'Restore the structure, execute this for every table file',
+            ],
+            [
+                'command' => PHPBU_TEST_BIN . '/mysqlimport \'databaseToBackup\' \'<table-file>\' --user=\'mysql\' --password=\'******\'',
+                'comment' => 'Restore the data, execute this for every table file',
+            ],
+        ];
+
+        $configuration = [
+            'pathToMysql'       => PHPBU_TEST_BIN,
+            'pathToMysqlimport' => PHPBU_TEST_BIN,
+            'user'              => 'mysql',
+            'password'          => 'password',
+            'filePerTable'      => 'true',
+            'databases'         => 'databaseToBackup',
+        ];
+        $mysqldump     = new Mysqldump();
+        $mysqldump->setup($configuration);
+
+        $status = $mysqldump->restore($target, $plan);
+
+        $this->assertEquals($planRestore, $plan->getRestoreCommands());
+        $this->assertFalse($status->handledCompression());
     }
 }

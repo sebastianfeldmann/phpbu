@@ -23,9 +23,9 @@ class PlanTest extends TestCase
     public function testAddCmd()
     {
         $plan = new Plan();
-        $plan->addDecryptionCommand('foo');
-        $plan->addDecompressionCommand('bar');
-        $plan->addRestoreCommand('baz');
+        $plan->addDecryptionCommand('foo', 'foo-comment');
+        $plan->addDecompressionCommand('bar', 'bar-comment');
+        $plan->addRestoreCommand('baz', 'baz-comment');
 
         $this->assertCount(1, $plan->getDecryptionCommands());
         $this->assertCount(1, $plan->getDecompressionCommands());
