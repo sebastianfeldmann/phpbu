@@ -193,6 +193,14 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     private $routines;
 
     /**
+     * Skip triggers
+     * --skip-triggers
+     *
+     * @var bool
+     */
+    private $skipTriggers;
+
+    /**
      * Setup.
      *
      * @see    \phpbu\App\Backup\Source
@@ -221,6 +229,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
         $this->noData            = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
         $this->filePerTable      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'filePerTable', ''), false);
         $this->routines          = Util\Str::toBoolean(Util\Arr::getValue($conf, 'routines', ''), false);
+        $this->skipTriggers      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'skipTriggers', ''), false);
 
         // this doesn't fail, but it doesn't work, so throw an exception so the user understands
         if ($this->filePerTable && count($this->structureOnly)) {
@@ -331,6 +340,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
                    ->produceFilePerTable($this->filePerTable)
                    ->dumpNoData($this->noData)
                    ->dumpRoutines($this->routines)
+                   ->skipTriggers($this->skipTriggers)
                    ->dumpStructureOnly($this->structureOnly)
                    ->dumpTo($this->getDumpTarget($target));
         // if compression is active and commands can be piped

@@ -285,4 +285,18 @@ class MysqldumpTest extends \PHPUnit\Framework\TestCase
             $mysqldump->getCommand()
         );
     }
+
+    /**
+     * Tests Mysqldump::getCommand
+     */
+    public function testSkipTriggers()
+    {
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
+        $mysqldump->skipTriggers(true);
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mysqldump --skip-triggers --all-databases',
+            $mysqldump->getCommand()
+        );
+    }
 }
