@@ -161,7 +161,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     private $extendedInsert;
 
     /**
-     * Dump blob fields as hex.
+     * Dump blob fields as hex
      * --hex-blob
      *
      * @var boolean
@@ -177,7 +177,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     private $noData;
 
     /**
-     * Add general transaction id statement.
+     * Add general transaction id statement
      * --set-gids-purged=['ON', 'OFF', 'AUTO']
      *
      * @var string
@@ -185,7 +185,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     private $gtidPurged;
 
     /**
-     * Dump procedures and functions.
+     * Dump procedures and functions
      * --routines
      *
      * @var bool
@@ -229,7 +229,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     }
 
     /**
-     * Get tables and databases to backup.
+     * Get tables and databases to backup
      *
      * @param array $conf
      */
@@ -242,7 +242,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     }
 
     /**
-     * Execute the backup.
+     * Execute the backup
      *
      * @see    \phpbu\App\Backup\Source
      * @param  \phpbu\App\Backup\Target $target
@@ -273,10 +273,9 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     /**
      * Restore the backup
      *
-     * @param \phpbu\App\Backup\Target       $target
-     * @param \phpbu\App\Backup\Restore\Plan $plan
+     * @param  \phpbu\App\Backup\Target       $target
+     * @param  \phpbu\App\Backup\Restore\Plan $plan
      * @return \phpbu\App\Backup\Source\Status
-     * @throws \phpbu\App\Exception
      */
     public function restore(Target $target, Plan $plan): Status
     {
