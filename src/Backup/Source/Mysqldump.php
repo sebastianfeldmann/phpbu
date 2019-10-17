@@ -153,12 +153,12 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     private $compress;
 
     /**
-     * Use mysqldump with extended insert
-     * -e
+     * Use mysqldump without extended insert
+     * --skip-extended-insert
      *
      * @var boolean
      */
-    private $extendedInsert;
+    private $skipExtendedInsert;
 
     /**
      * Dump blob fields as hex
@@ -211,25 +211,25 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     {
         $this->setupSourceData($conf);
 
-        $this->pathToMysql       = Util\Arr::getValue($conf, 'pathToMysql', '');
-        $this->pathToMysqldump   = Util\Arr::getValue($conf, 'pathToMysqldump', '');
-        $this->pathToMysqlimport = Util\Arr::getValue($conf, 'pathToMysqlimport', '');
-        $this->host              = Util\Arr::getValue($conf, 'host', '');
-        $this->port              = Util\Arr::getValue($conf, 'port', 0);
-        $this->protocol          = Util\Arr::getValue($conf, 'protocol', '');
-        $this->user              = Util\Arr::getValue($conf, 'user', '');
-        $this->password          = Util\Arr::getValue($conf, 'password', '');
-        $this->gtidPurged        = Util\Arr::getValue($conf, 'gtidPurged', '');
-        $this->hexBlob           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'hexBlob', ''), false);
-        $this->quick             = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
-        $this->lockTables        = Util\Str::toBoolean(Util\Arr::getValue($conf, 'lockTables', ''), false);
-        $this->singleTransaction = Util\Str::toBoolean(Util\Arr::getValue($conf, 'singleTransaction', ''), false);
-        $this->compress          = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
-        $this->extendedInsert    = Util\Str::toBoolean(Util\Arr::getValue($conf, 'extendedInsert', ''), false);
-        $this->noData            = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
-        $this->filePerTable      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'filePerTable', ''), false);
-        $this->routines          = Util\Str::toBoolean(Util\Arr::getValue($conf, 'routines', ''), false);
-        $this->skipTriggers      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'skipTriggers', ''), false);
+        $this->pathToMysql        = Util\Arr::getValue($conf, 'pathToMysql', '');
+        $this->pathToMysqldump    = Util\Arr::getValue($conf, 'pathToMysqldump', '');
+        $this->pathToMysqlimport  = Util\Arr::getValue($conf, 'pathToMysqlimport', '');
+        $this->host               = Util\Arr::getValue($conf, 'host', '');
+        $this->port               = Util\Arr::getValue($conf, 'port', 0);
+        $this->protocol           = Util\Arr::getValue($conf, 'protocol', '');
+        $this->user               = Util\Arr::getValue($conf, 'user', '');
+        $this->password           = Util\Arr::getValue($conf, 'password', '');
+        $this->gtidPurged         = Util\Arr::getValue($conf, 'gtidPurged', '');
+        $this->hexBlob            = Util\Str::toBoolean(Util\Arr::getValue($conf, 'hexBlob', ''), false);
+        $this->quick              = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
+        $this->lockTables         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'lockTables', ''), false);
+        $this->singleTransaction  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'singleTransaction', ''), false);
+        $this->compress           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
+        $this->skipExtendedInsert = Util\Str::toBoolean(Util\Arr::getValue($conf, 'skipExtendedInsert', ''), false);
+        $this->noData             = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
+        $this->filePerTable       = Util\Str::toBoolean(Util\Arr::getValue($conf, 'filePerTable', ''), false);
+        $this->routines           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'routines', ''), false);
+        $this->skipTriggers       = Util\Str::toBoolean(Util\Arr::getValue($conf, 'skipTriggers', ''), false);
 
         // this doesn't fail, but it doesn't work, so throw an exception so the user understands
         if ($this->filePerTable && count($this->structureOnly)) {
@@ -332,7 +332,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
                    ->dumpBlobsHexadecimal($this->hexBlob)
                    ->addGTIDStatement($this->gtidPurged)
                    ->useCompression($this->compress)
-                   ->useExtendedInsert($this->extendedInsert)
+                   ->skipExtendedInsert($this->skipExtendedInsert)
                    ->dumpTables($this->tables)
                    ->singleTransaction($this->singleTransaction)
                    ->dumpDatabases($this->databases)
