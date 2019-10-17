@@ -43,6 +43,9 @@
   <option name="hexBlob" value="true" />
 
   <!-- optional, default=false -->
+  <option name="skipTriggers" value="false" />
+
+  <!-- optional, default=false -->
   <option name="routines" value="true" />
 
   <!-- optional, default=none, accepted=ON,OFF,AUTO -->
