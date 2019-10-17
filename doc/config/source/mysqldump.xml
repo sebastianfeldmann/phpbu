@@ -37,7 +37,7 @@
   <option name="compress" value="true" />
 
   <!-- optional, default=false -->
-  <option name="extendedInsert" value="true" />
+  <option name="skipExtendedInsert" value="false" />
 
   <!-- optional, default=false -->
   <option name="hexBlob" value="true" />
