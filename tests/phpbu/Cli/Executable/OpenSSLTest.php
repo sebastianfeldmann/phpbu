@@ -101,7 +101,7 @@ class OpenSLLTest extends TestCase
      */
     public function testCert()
     {
-        $expected = 'openssl smime -e -aes256 -binary -in \'/foo/bar.txt\' '
+        $expected = 'openssl smime -encrypt -aes256 -binary -in \'/foo/bar.txt\' '
                   . '-out \'/foo/bar.txt.enc\' -outform DER \'/foo/my.pem\' '
                   . '&& rm \'/foo/bar.txt\'';
         $openSSL  = new OpenSSL(PHPBU_TEST_BIN);

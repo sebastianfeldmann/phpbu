@@ -83,7 +83,7 @@ class OpenSSLTest extends TestCase
         $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'certFile' => '/foo/my.pem', 'algorithm' => 'aes256']);
 
         $executable = $openSSL->getExecutable($target);
-        $expected = '(' . PHPBU_TEST_BIN . '/openssl smime -e -aes256 -binary -in \'/foo/bar.txt\' '
+        $expected = '(' . PHPBU_TEST_BIN . '/openssl smime -encrypt -aes256 -binary -in \'/foo/bar.txt\' '
                   . '-out \'/foo/bar.txt.enc\' -outform DER \'/foo/my.pem\' '
                   . '&& rm \'/foo/bar.txt\')';
 

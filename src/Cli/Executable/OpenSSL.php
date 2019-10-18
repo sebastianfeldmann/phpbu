@@ -336,7 +336,7 @@ class OpenSSL extends Abstraction implements Executable
     protected function setCertOptions(Cmd $cmd): void
     {
         $cmd->addOption('smime');
-        $cmd->addOption('-' . $this->action);
+        $cmd->addOption('-' . ($this->action === 'e' ? 'encrypt' : 'decrypt'));
         $cmd->addOption('-' . $this->algorithm);
         $cmd->addOption('-binary');
         $cmd->addOption('-in', $this->sourceFile, ' ');
