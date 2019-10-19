@@ -53,7 +53,7 @@ class Quantity extends Abstraction implements Cleaner
      *
      * @param  \phpbu\App\Backup\Target    $target
      * @param  \phpbu\App\Backup\Collector $collector
-     * @return \phpbu\App\Backup\File\Local[]
+     * @return \phpbu\App\Backup\File[]
      */
     protected function getFilesToDelete(Target $target, Collector $collector)
     {
@@ -66,6 +66,9 @@ class Quantity extends Abstraction implements Cleaner
 
             while ($this->isCapacityExceeded($files)) {
                 $file     = array_shift($files);
+                if ($file === null) {
+                    break;
+                }
                 $delete[] = $file;
             }
         }

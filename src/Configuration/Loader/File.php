@@ -209,7 +209,7 @@ abstract class File
      *
      * @param  string $filename
      * @throws \phpbu\App\Exception
-     * @return \stdClass
+     * @return string
      */
     protected function loadFile($filename)
     {
