@@ -27,7 +27,7 @@ class OnePerGroup implements Keeper
     /**
      * List of groups containing the files.
      *
-     * @var \phpbu\App\Backup\File\Local[]
+     * @var \phpbu\App\Backup\File\Local[][]
      */
     private $groups = [];
 

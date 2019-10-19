@@ -36,7 +36,7 @@ abstract class Abstraction
     /**
      * Collection cache
      *
-     * @var \phpbu\App\Backup\File\Local[]
+     * @var \phpbu\App\Backup\File[]
      */
     protected $files;
 
@@ -67,7 +67,7 @@ abstract class Abstraction
     /**
      * Get all created backups.
      *
-     * @return \phpbu\App\Backup\File\Local[]
+     * @return \phpbu\App\Backup\File[]
      */
     public function getBackupFiles() : array
     {
