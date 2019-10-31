@@ -20,7 +20,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 5.2.7
  */
-class AzureBlob implements Simulator
+class AzureBlob implements Simulator, CleanableSyncStore
 {
     use Cleanable;
 
@@ -154,7 +154,7 @@ class AzureBlob implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector
      */
-    protected function createCollector(Target $target) : Collector
+    public function createCollector(Target $target) : Collector
     {
         $path = new Path($this->pathRaw, $this->time);
         return new Collector\AzureBlob($target, $path, $this->client, $this->containerName);

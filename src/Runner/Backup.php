@@ -2,6 +2,7 @@
 namespace phpbu\App\Runner;
 
 use phpbu\App\Backup\Compressor;
+use phpbu\App\Backup\Sync\CleanableSyncStore;
 use phpbu\App\Exception;
 use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Collector\Local;
@@ -233,6 +234,18 @@ class Backup extends Compression
                 $cleaner = $this->factory->createCleaner($config->type, $config->options);
                 $cleaner->cleanup($target, $collector, $this->result);
                 $this->result->cleanupEnd($config);
+
+                foreach ($backup->getSyncs() as $syncConfig) {
+                    $this->result->cleanupStart($config);
+                    $sync = $this->factory->createSync($syncConfig->type, $syncConfig->options);
+                    if (!($sync instanceof CleanableSyncStore)) {
+                        continue;
+                    }
+                    $syncCollector = $sync->createCollector($target);
+                    $cleaner->cleanup($target, $syncCollector, $this->result);
+                    $this->result->cleanupEnd($config);
+                }
+
             } catch (Cleaner\Exception $e) {
                 $this->failure = true;
                 $this->result->addError($e);

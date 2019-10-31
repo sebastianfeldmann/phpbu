@@ -26,7 +26,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 5.1
  */
-class OpenStack implements Simulator
+class OpenStack implements Simulator, CleanableSyncStore
 {
     use Cleanable;
 
@@ -219,7 +219,7 @@ class OpenStack implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector
      */
-    protected function createCollector(Target $target): Collector
+    public function createCollector(Target $target): Collector
     {
         return new Collector\OpenStack($target, $this->path, $this->container);
     }

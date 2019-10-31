@@ -21,7 +21,7 @@ use phpbu\App\Util\Path;
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
  */
-class YandexDisk implements Sync\Simulator
+class YandexDisk implements Sync\Simulator, CleanableSyncStore
 {
     use Cleanable;
     /**
@@ -152,7 +152,7 @@ class YandexDisk implements Sync\Simulator
      * @param Target $target
      * @return Collector
      */
-    protected function createCollector(Target $target): Collector
+    public function createCollector(Target $target): Collector
     {
         $collector = new Collector\YandexDisk($target, $this->path, $this->createDisk());
         $collector->setSimulation($this->isSimulation);

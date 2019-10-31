@@ -72,7 +72,7 @@ trait Cleanable
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector
      */
-    abstract protected function createCollector(Target $target): Collector;
+    abstract public function createCollector(Target $target): Collector;
 
     /**
      * Execute the remote clean up if needed.

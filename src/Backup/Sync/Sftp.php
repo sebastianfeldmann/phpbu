@@ -20,7 +20,7 @@ use phpseclib;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Sftp extends Xtp
+class Sftp extends Xtp implements CleanableSyncStore
 {
     /**
      * @var phpseclib\Net\SFTP
@@ -223,7 +223,7 @@ class Sftp extends Xtp
      * @return \phpbu\App\Backup\Collector
      * @throws \phpbu\App\Backup\Sync\Exception
      */
-    protected function createCollector(Target $target): Collector
+    public function createCollector(Target $target): Collector
     {
         return new Collector\Sftp($target, $this->remotePath, $this->createClient());
     }

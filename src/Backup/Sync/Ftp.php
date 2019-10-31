@@ -19,7 +19,7 @@ use SebastianFeldmann\Ftp\Client;
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       https://phpbu.de/
  */
-class Ftp extends Xtp
+class Ftp extends Xtp implements CleanableSyncStore
 {
     use Cleanable;
 
@@ -124,7 +124,7 @@ class Ftp extends Xtp
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector
      */
-    protected function createCollector(Target $target): Collector
+    public function createCollector(Target $target): Collector
     {
         return new Collector\Ftp($target, new Path($this->remotePath), $this->createClient());
     }

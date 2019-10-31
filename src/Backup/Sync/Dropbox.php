@@ -21,7 +21,7 @@ use phpbu\App\Util;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.1.1
  */
-class Dropbox implements Simulator
+class Dropbox implements Simulator, CleanableSyncStore
 {
     use Cleanable;
 
@@ -151,7 +151,7 @@ class Dropbox implements Simulator
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector
      */
-    protected function createCollector(Target $target) : Collector
+    public function createCollector(Target $target) : Collector
     {
         $collector = new Collector\Dropbox($target, $this->path, $this->createClient());
         $collector->setSimulation($this->isSimulation);

@@ -25,7 +25,7 @@ use Psr\Http\Message\RequestInterface;
  * @link       http://phpbu.de/
  * @since      Class available since Release 3.1.1
  */
-class GoogleDrive implements Simulator
+class GoogleDrive implements Simulator, CleanableSyncStore
 {
     use Cleanable;
 
@@ -252,7 +252,7 @@ class GoogleDrive implements Simulator
      * @return \phpbu\App\Backup\Collector
      * @throws \Google_Exception
      */
-    protected function createCollector(Target $target): Collector
+    public function createCollector(Target $target): Collector
     {
         return new Collector\GoogleDrive($target, new Path($this->parent), $this->createDriveService());
     }

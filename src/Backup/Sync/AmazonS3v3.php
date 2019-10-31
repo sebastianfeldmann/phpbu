@@ -19,7 +19,7 @@ use phpbu\App\Result;
  * @link       http://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class AmazonS3v3 extends AmazonS3
+class AmazonS3v3 extends AmazonS3 implements CleanableSyncStore
 {
     use Cleanable;
 
@@ -111,7 +111,7 @@ class AmazonS3v3 extends AmazonS3
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Backup\Collector
      */
-    protected function createCollector(Target $target) : Collector
+    public function createCollector(Target $target) : Collector
     {
         $path = new Path($this->pathRaw, $this->time);
         return new Collector\AmazonS3v3($target, $path, $this->client, $this->bucket);
