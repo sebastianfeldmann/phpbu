@@ -15,6 +15,11 @@ build:
         coverage:
           file:  clover.xml
           format: php-clover
+  nodes:
+    analysis:
+      tests:
+        override:
+          - php-scrutinizer-run
 coding_style:
   php:
     spaces:
