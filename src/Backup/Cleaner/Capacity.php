@@ -64,7 +64,7 @@ class Capacity extends Abstraction implements Simulator
      *
      * @param  \phpbu\App\Backup\Target    $target
      * @param  \phpbu\App\Backup\Collector $collector
-     * @return \phpbu\App\Backup\File\Local[]
+     * @return \phpbu\App\Backup\File[]
      * @throws \phpbu\App\Exception
      */
     protected function getFilesToDelete(Target $target, Collector $collector)
@@ -76,7 +76,7 @@ class Capacity extends Abstraction implements Simulator
 
 
         // sum up the size of all backups
-        /** @var \phpbu\App\Backup\File\Local $file */
+        /** @var \phpbu\App\Backup\File $file */
         foreach ($files as $file) {
             $size += $file->getSize();
         }
@@ -89,6 +89,9 @@ class Capacity extends Abstraction implements Simulator
             while ($this->isCapacityExceeded($size) && count($files) > 0) {
                 // get oldest backup from list, move it to delete list
                 $file = array_shift($files);
+                if ($file === null) {
+                    break;
+                }
                 $size -= $file->getSize();
                 $delete[] = $file;
             }

@@ -73,6 +73,7 @@
           <xs:enumeration value="gzip"/>
           <xs:enumeration value="zip"/>
           <xs:enumeration value="7zip"/>
+          <xs:enumeration value="xz"/>
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
