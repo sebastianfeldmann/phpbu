@@ -47,7 +47,7 @@
     "phpmailer/phpmailer": "^6.0"
   },
   "require-dev": {
-    "sebastianfeldmann/git": "^2.2",
+    "sebastianfeldmann/git": "^3.2",
     "sebastianfeldmann/ftp": "^0.9",
     "guzzlehttp/guzzle": "^5.3.3|^6.2.1",
     "aws/aws-sdk-php": "^3.10",
@@ -60,7 +60,7 @@
     "php-opencloud/openstack": "^3.0",
     "arhitector/yandex": "^2.0",
     "microsoft/azure-storage-blob": "^1.4",
-    "captainhook/plugin-composer": "^4.0"
+    "captainhook/captainhook": "^5.0"
   },
   "suggest": {
     "sebastianfeldmann/ftp": "Require ^0.9 to sync to an FTP server",
@@ -82,5 +82,8 @@
     "branch-alias": {
       "dev-master": "6.0.x-dev"
     }
+  },
+  "scripts": {
+    "post-autoload-dump": "vendor/bin/captainhook install -f -s"
   }
 }
