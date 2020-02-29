@@ -1,0 +1,11 @@
+{
+  "type": "ldapdump",
+  "options": {
+    "host": "localhost",
+    "port": "389",
+    "searchBase": "ou=Users,dc=fr",
+    "filter": "(objectclass=*)",
+    "attrs": "*",
+    "pathToLdapdump": "/path/to/custom/bin"
+  }
+}

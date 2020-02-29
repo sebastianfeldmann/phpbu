@@ -257,6 +257,18 @@ class MysqldumpTest extends TestCase
     /**
      * Tests Mysqldump::getCommand
      */
+    public function testUseSslCa()
+    {
+        $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
+        $mysqldump->useSslCa('/var/www/html/BaltimoreCyberTrustRoot.crt.pem');
+        $cmd       = $mysqldump->getCommand();
+
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --ssl-ca=\'/var/www/html/BaltimoreCyberTrustRoot.crt.pem\' --all-databases', $cmd);
+    }
+
+    /**
+     * Tests Mysqldump::getCommand
+     */
     public function testCompressor()
     {
         $path        = realpath(__DIR__ . '/../../../_files/bin');

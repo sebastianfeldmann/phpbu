@@ -51,6 +51,9 @@
   <!-- optional, default=none, accepted=ON,OFF,AUTO -->
   <option name="gtidPurged" value="ON" />
 
+  <!-- optional, default=none -->
+  <option name="sslCa" value="/var/www/html/BaltimoreCyberTrustRoot.crt.pem" />
+
   <!-- define your custom mysqldump executable location -->
   <option name="pathToMysqldump" value="/path/to/custom/bin" />
 </source>
