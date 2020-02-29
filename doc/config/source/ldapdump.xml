@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<source type="influxdump">
+  <!-- optional, default=localhost -->
+  <option name="host" value="localhost" />
+
+  <!-- optional, default=389 -->
+  <option name="port" value="389" />
+
+  <!-- optional -->
+  <option name="searchBase" value="ou=Users,dc=fr" />
+
+  <!-- optional -->
+  <option name="filter" value="(objectclass=*)" />
+
+  <!-- optional -->
+  <option name="attrs" value="*" />
+
+  <!-- define your custom ldapdump executable location -->
+  <option name="pathToInfluxdump" value="/path/to/custom/bin" />
+</source>
