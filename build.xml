@@ -577,6 +577,7 @@
 
     <exec executable="phpab">
       <arg value="--all"/>
+      <arg value="--tolerant"/>
       <arg value="--phar"/>
       <arg value="--gzip"/>
       <arg value="--output"/>
