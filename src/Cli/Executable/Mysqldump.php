@@ -141,6 +141,14 @@ class Mysqldump extends Abstraction implements Executable
     private $gtidPurged;
 
     /**
+     * SSL CA
+     * --ssl-ca
+     *
+     * @var string
+     */
+    private $sslCa;
+
+    /**
      * Table separated data files
      * --tab
      *
@@ -400,6 +408,18 @@ class Mysqldump extends Abstraction implements Executable
     }
 
     /**
+     * Allow to use SSL CA option
+     *
+     * @param  string $sslCa
+     * @return \phpbu\App\Cli\Executable\Mysqldump
+     */
+    public function useSslCa(string $sslCa)
+    {
+        $this->sslCa = $sslCa;
+        return $this;
+    }
+
+    /**
      * Produce table separated data files
      *
      * @param  bool $bool
@@ -483,6 +503,7 @@ class Mysqldump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('--skip-extended-insert', $this->skipExtendedInsert, false);
         $cmd->addOptionIfNotEmpty('--hex-blob', $this->hexBlob, false);
         $cmd->addOptionIfNotEmpty('--set-gtid-purged', $this->gtidPurged);
+        $cmd->addOptionIfNotEmpty('--ssl-ca', $this->sslCa);
         $cmd->addOptionIfNotEmpty('--routines', $this->routines, false);
         $cmd->addOptionIfNotEmpty('--skip-triggers', $this->skipTriggers, false);
 

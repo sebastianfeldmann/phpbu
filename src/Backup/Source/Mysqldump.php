@@ -185,6 +185,14 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     private $gtidPurged;
 
     /**
+     * SSL CA
+     * --ssl-ca
+     *
+     * @var string
+     */
+    private $sslCa;
+
+    /**
      * Dump procedures and functions
      * --routines
      *
@@ -220,6 +228,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
         $this->user               = Util\Arr::getValue($conf, 'user', '');
         $this->password           = Util\Arr::getValue($conf, 'password', '');
         $this->gtidPurged         = Util\Arr::getValue($conf, 'gtidPurged', '');
+        $this->sslCa              = Util\Arr::getValue($conf, 'sslCa', '');
         $this->hexBlob            = Util\Str::toBoolean(Util\Arr::getValue($conf, 'hexBlob', ''), false);
         $this->quick              = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
         $this->lockTables         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'lockTables', ''), false);
@@ -331,6 +340,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
                    ->lockTables($this->lockTables)
                    ->dumpBlobsHexadecimal($this->hexBlob)
                    ->addGTIDStatement($this->gtidPurged)
+                   ->useSslCa($this->sslCa)
                    ->useCompression($this->compress)
                    ->skipExtendedInsert($this->skipExtendedInsert)
                    ->dumpTables($this->tables)

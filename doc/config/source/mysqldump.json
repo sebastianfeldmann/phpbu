@@ -18,6 +18,7 @@
     "skipTriggers": false,
     "routines": true,
     "gtidPurged": "AUTO",
+    "sslCa": "/var/www/html/BaltimoreCyberTrustRoot.crt.pem",
     "pathToMysqldump": "/path/to/custom/bin"
   }
 }
