@@ -77,7 +77,7 @@ class Ldapdump extends SimulatorExecutable implements Simulator
     private $password;
 
     /**
-     * Filter 
+     * Filter
      * <filter>
      *
      * @var string $filter
@@ -156,12 +156,11 @@ class Ldapdump extends SimulatorExecutable implements Simulator
         $executable
             ->credentials($this->bindDn, $this->password)
             ->useHost($this->host)
-            ->usePort($this->port)
+            ->usePort((int) $this->port)
             ->useSearchBase($this->searchBase)
             ->useFilter($this->filter)
             ->useAttributes($this->attrs)
             ->dumpTo($this->getDumpTarget($target));
-        ;
         // if compression is active and commands can be piped
         if ($this->isHandlingCompression($target)) {
             $executable->compressOutput($target->getCompression());
