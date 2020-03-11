@@ -27,6 +27,12 @@
   "support": {
     "issues": "https://github.com/sebastianfeldmann/phpbu/issues"
   },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/sebastianfeldmann"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "phpbu\\App\\": "src/"
