@@ -46,7 +46,7 @@ class Bootstrapper
 
         if (!empty($filename)) {
             $pathToFile = stream_resolve_include_path($filename);
-            if (!$pathToFile || !is_readable($pathToFile)) {
+            if (!$pathToFile || !is_readable($pathToFile) || !is_file($pathToFile)) {
                 throw new Exception(sprintf('Cannot open bootstrap file "%s".' . PHP_EOL, $filename));
             }
             require $pathToFile;
