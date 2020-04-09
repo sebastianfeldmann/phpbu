@@ -564,4 +564,15 @@ class Result
         $event = new Event\Debug($msg);
         $this->eventDispatcher->dispatch(Event\Debug::NAME, $event);
     }
+
+    /**
+     * Warning
+     *
+     * @param string $msg
+     */
+    public function warn($msg) : void
+    {
+        $event = new Event\Warning($msg);
+        $this->eventDispatcher->dispatch(Event\Warning::NAME, $event);
+    }
 }
