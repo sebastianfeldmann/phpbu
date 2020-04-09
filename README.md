@@ -166,3 +166,9 @@ Simple configuration example:
     </backups>
   </phpbu>
 ```
+
+# Development
+
+## Running Tests
+
+There is a PHP Unit test suite which can be run using `composer test`
