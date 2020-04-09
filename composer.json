@@ -91,6 +91,7 @@
     }
   },
   "scripts": {
-    "post-autoload-dump": "vendor/bin/captainhook install -f -s"
+    "post-autoload-dump": "vendor/bin/captainhook install -f -s",
+    "test": "phpunit"
   }
 }
