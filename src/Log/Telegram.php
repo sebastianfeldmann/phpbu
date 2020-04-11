@@ -20,7 +20,7 @@ use phpbu\App\Result;
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
  */
-class Telegram  implements Listener, Logger
+class Telegram implements Listener, Logger
 {
     private const URL = 'https://api.telegram.org/bot%d:%s/sendMessage';
 

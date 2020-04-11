@@ -66,7 +66,7 @@ class Ldapdump extends Abstraction implements Executable
     private $password;
 
     /**
-     * Filter 
+     * Filter
      * <filter>
      *
      * @var string
