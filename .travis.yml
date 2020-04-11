@@ -9,7 +9,7 @@ before_script:
   - composer self-update
   - composer install --no-interaction --prefer-source
   - wget -O phpunit.phar https://phar.phpunit.de/phpunit-8.5.3.phar
-  - if [ $TRAVIS_PHP_VERSION = "7.4" ]; then wget -O phpstan.phar https://github.com/phpstan/phpstan/releases/download/0.10.5/phpstan.phar ; fi
+  - if [ $TRAVIS_PHP_VERSION = "7.4" ]; then wget -O phpstan.phar https://github.com/phpstan/phpstan/releases/download/0.12.18/phpstan.phar ; fi
 
 script:
   - php phpunit.phar --configuration ./build/travis-ci.phpunit.xml
