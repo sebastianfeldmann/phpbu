@@ -90,6 +90,10 @@
     }
   },
   "scripts": {
-    "post-autoload-dump": "vendor/bin/captainhook install -f -s"
+    "post-autoload-dump": "vendor/bin/captainhook install -f -s",
+    "setup": "phive install",
+    "test": "tools/phpunit",
+    "analyse": "tools/phpstan analyse",
+    "style": "tools/phpcs --standard=psr2 src"
   }
 }
