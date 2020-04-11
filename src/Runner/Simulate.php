@@ -71,15 +71,16 @@ class Simulate extends Compression
      */
     protected function simulateSource(Configuration\Backup $conf, Target $target)
     {
-        $this->result->backupStart($conf);
         /* @var \phpbu\App\Backup\Source $runner */
         $source = $this->factory->createSource($conf->getSource()->type, $conf->getSource()->options);
+
+        $this->result->backupStart($conf, $target, $source);
 
         if ($source instanceof Source\Simulator) {
             $status = $source->simulate($target, $this->result);
             $this->compress($status, $target, $this->result);
         }
-        $this->result->backupEnd($conf);
+        $this->result->backupEnd($conf, $target, $source);
     }
 
     /**

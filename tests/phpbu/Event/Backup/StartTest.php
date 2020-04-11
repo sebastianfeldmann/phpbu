@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Event\Backup;
 
+use phpbu\App\Backup\Source\FakeSource;
+use phpbu\App\Backup\Target;
 use phpbu\App\Configuration;
 
 /**
@@ -22,7 +24,9 @@ class StartTest extends \PHPUnit\Framework\TestCase
     public function testGetConfiguration()
     {
         $config = new Configuration\Backup('dummy', false);
-        $start  = new Start($config);
+        $target = new Target(sys_get_temp_dir() . '/test', 'targetFile');
+        $source = new FakeSource();
+        $start  = new Start($config, $target, $source);
         $this->assertEquals($config, $start->getConfiguration());
     }
 }
