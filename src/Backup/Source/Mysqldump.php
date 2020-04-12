@@ -271,9 +271,28 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     public function backup(Target $target, Result $result) : Status
     {
         // create the writable dump directory for tables files
-        if ($this->filePerTable && !is_dir($this->getDumpTarget($target))) {
+        $dumpTarget = $this->getDumpTarget($target);
+        if ($this->filePerTable && !is_dir($dumpTarget)) {
+            $fileMode = 0777;
+
+            if (PHP_OS !== 'WINNT') {
+                // get the permissions of the first directory that exists
+                $pathSegments = explode(DIRECTORY_SEPARATOR, $dumpTarget);
+
+                do {
+                    $filename = implode(DIRECTORY_SEPARATOR, $pathSegments);
+
+                    if (is_dir($filename) === false) {
+                        continue;
+                    }
+
+                    $fileMode = substr(fileperms($filename), -4);
+                    break;
+                } while (array_pop($pathSegments) !== null);
+            }
+
             $old = umask(0);
-            mkdir($this->getDumpTarget($target), 0777, true);
+            mkdir($dumpTarget, $fileMode, true);
             umask($old);
         }
 
