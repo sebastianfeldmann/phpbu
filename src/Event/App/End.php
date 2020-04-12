@@ -2,7 +2,6 @@
 namespace phpbu\App\Event\App;
 
 use phpbu\App\Result;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
  * End Event

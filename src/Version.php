@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App;
 
-use SebastianBergmann;
 use function array_slice;
 use function explode;
 use function implode;
