@@ -2,8 +2,6 @@
 namespace phpbu\App\Backup\File;
 
 use phpbu\App\Backup\File;
-use SplFileInfo;
-use phpbu\App\Exception;
 
 /**
  * Simulation

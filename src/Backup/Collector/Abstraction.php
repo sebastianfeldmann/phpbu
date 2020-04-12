@@ -2,8 +2,6 @@
 namespace phpbu\App\Backup\Collector;
 
 use phpbu\App\Backup\File;
-use phpbu\App\Util;
-use phpbu\App\Backup\Target;
 
 /**
  * Abstraction class.
