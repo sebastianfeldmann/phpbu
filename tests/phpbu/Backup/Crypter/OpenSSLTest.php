@@ -171,4 +171,23 @@ class OpenSSLTest extends TestCase
         $suffix  = $openSSL->getSuffix();
         $this->assertEquals('enc', $suffix);
     }
+
+    /**
+     * Tests that a warning is emitted for weak algorithms
+     */
+    public function testWeakAlgorithmsCauseWarnings()
+    {
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->once())
+            ->method('run')
+            ->willReturn($this->getRunnerResultMock(0, 'openssl'));
+
+        $target    = $this->createTargetMock(__FILE__);
+        $appResult = $this->getAppResultMock();
+        $appResult->expects($this->once())->method('warn');
+
+        $openSSL = new OpenSSL($runner);
+        $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'password' => 'fooBarBaz', 'algorithm' => 'des']);
+        $openSSL->crypt($target, $appResult);
+    }
 }

@@ -4,6 +4,7 @@ namespace phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Restore\Plan;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
+use phpbu\App\Result;
 use phpbu\App\Util;
 
 /**
@@ -53,6 +54,36 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
      * @var boolean
      */
     private $keepUncrypted;
+
+
+    /**
+     * @inheritDoc
+     */
+    public function crypt(Target $target, Result $result)
+    {
+        if ($this->getExecutable($target)->isUsingWeakAlgorithm()) {
+            $name = strtolower(get_class($this));
+
+            $result->warn($name . ': The ' . $this->algorithm . ' algorithm is considered weak');
+        }
+
+        return parent::crypt($target, $result);
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function simulate(Target $target, Result $result)
+    {
+        if ($this->getExecutable($target)->isUsingWeakAlgorithm()) {
+            $name = strtolower(get_class($this));
+
+            $result->warn($name . ': The ' . $this->algorithm . ' algorithm is considered weak');
+        }
+
+        return parent::simulate($target, $result);
+    }
 
     /**
      * Setup

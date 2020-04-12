@@ -162,7 +162,7 @@ class OpenSSL extends Abstraction implements Executable
         ]
     ];
 
-    private $weakCiphers = [
+    private $weakAlgorithms = [
         'rc2'          => true,
         'rc2-40'       => true,
         'rc2-64'       => true,
@@ -289,6 +289,15 @@ class OpenSSL extends Abstraction implements Executable
         }
         $this->algorithm = $algorithm;
         return $this;
+    }
+
+    public function isUsingWeakAlgorithm(): bool
+    {
+        if (null === $this->algorithm) {
+            throw new Exception('algorithm is not set');
+        }
+
+        return isset($this->weakAlgorithms[$this->algorithm]);
     }
 
     /**
