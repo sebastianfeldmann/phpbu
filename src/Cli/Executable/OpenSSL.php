@@ -256,15 +256,6 @@ class OpenSSL extends Abstraction implements Executable
         return $this;
     }
 
-    public function isUsingWeakAlgorithm(): bool
-    {
-        if (null === $this->algorithm) {
-            throw new Exception('algorithm is not set');
-        }
-
-        return isset($this->weakAlgorithms[$this->algorithm]);
-    }
-
     /**
      * Use base64 encoding
      *
