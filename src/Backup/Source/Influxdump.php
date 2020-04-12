@@ -88,7 +88,7 @@ class Influxdump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * Create the Executable to run the mysqldump command.
+     * Create the Executable to run the influxd command.
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable
