@@ -55,13 +55,47 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
      */
     private $keepUncrypted;
 
+    private $weakAlgorithms = [
+        'rc2'          => true,
+        'rc2-40'       => true,
+        'rc2-64'       => true,
+        'rc2-128'      => true,
+        'rc2-40-cbc'   => true,
+        'rc2-64-cbc'   => true,
+        'rc2-cbc'      => true,
+        'rc2-cfb'      => true,
+        'rc2-ecb'      => true,
+        'rc2-ofb'      => true,
+        'rc4'          => true,
+        'rc4-40'       => true,
+        'des'          => true,
+        'des-cbc'      => true,
+        'des-cfb'      => true,
+        'des-ecb'      => true,
+        'des-ede'      => true,
+        'des-ede-cbc'  => true,
+        'des-ede-cfb'  => true,
+        'des-ede-ofb'  => true,
+        'des-ede3'     => true,
+        'des-ede3-cbc' => true,
+        'des-ede3-cfb' => true,
+        'des-ede3-ofb' => true,
+        'des-ofb'      => true,
+        'des3'         => true,
+        'desx'         => true,
+        'seed'         => true,
+        'seed-cbc'     => true,
+        'seed-cfb'     => true,
+        'seed-ecb'     => true,
+        'seed-ofb'     => true,
+    ];
 
     /**
      * @inheritDoc
      */
     public function crypt(Target $target, Result $result)
     {
-        if ($this->getExecutable($target)->isUsingWeakAlgorithm()) {
+        if ($this->isUsingWeakAlgorithm()) {
             $name = strtolower(get_class($this));
 
             $result->warn($name . ': The ' . $this->algorithm . ' algorithm is considered weak');
@@ -76,13 +110,22 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
      */
     public function simulate(Target $target, Result $result)
     {
-        if ($this->getExecutable($target)->isUsingWeakAlgorithm()) {
+        if ($this->isUsingWeakAlgorithm()) {
             $name = strtolower(get_class($this));
 
             $result->warn($name . ': The ' . $this->algorithm . ' algorithm is considered weak');
         }
 
         return parent::simulate($target, $result);
+    }
+
+    public function isUsingWeakAlgorithm(): bool
+    {
+        if (null === $this->algorithm) {
+            throw new Exception('algorithm is not set');
+        }
+
+        return isset($this->weakAlgorithms[$this->algorithm]);
     }
 
     /**
