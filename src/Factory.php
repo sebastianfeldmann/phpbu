@@ -40,6 +40,7 @@ class Factory
             'mail'     => '\\phpbu\\App\\Log\\Mail',
             'webhook'  => '\\phpbu\\App\\Log\\Webhook',
             'telegram' => '\\phpbu\\App\\Log\\Telegram',
+            'prometheus' => '\\phpbu\\App\\Log\\Prometheus',
         ],
         'source'  => [
             'arangodump'  => '\\phpbu\\App\\Backup\\Source\\Arangodump',
