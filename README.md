@@ -63,9 +63,9 @@ If you are behind php 7.0 you can still use phpbu version [4.0.10](https://phar.
     + Text file
     + Json file
     + Mail
+    + Prometheus
     + Telegram
     + Webhook
-    + Prometheus
 
 ## Requirements
 
