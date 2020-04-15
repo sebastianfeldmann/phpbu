@@ -44,6 +44,13 @@ class Webhook implements Listener, Logger
     private $method;
 
     /**
+     * Request timeout (seconds)
+     *
+     * @var int
+     */
+    private $timeout;
+
+    /**
      * Basic auth username
      *
      * @var string
@@ -127,6 +134,7 @@ class Webhook implements Listener, Logger
         $this->password        = Arr::getValue($options, 'password', '');
         $this->template        = Arr::getValue($options, 'template', '');
         $this->contentType     = Arr::getValue($options, 'contentType', 'multipart/form-data');
+        $this->timeout         = Arr::getValue($options, 'timeout', '');
     }
 
     /**
@@ -217,6 +225,10 @@ class Webhook implements Listener, Logger
         if (!empty($body)) {
             $headers[]                  = 'Content-Type: ' . $this->contentType;
             $options['http']['content'] = $body;
+        }
+
+        if (!empty($this->timeout)) {
+            $options['http']['timeout'] = $this->timeout;
         }
 
         if (!empty($this->username)) {
