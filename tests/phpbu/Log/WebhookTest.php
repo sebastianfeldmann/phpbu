@@ -34,6 +34,16 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * Tests Webhook::setup
+     */
+    public function testUriMustBeValid()
+    {
+        $this->expectException('phpbu\App\Exception');
+        $json = new Webhook();
+        $json->setup(['uri' => 'not a URI']);
+    }
+
+    /**
      * Tests Webhook::onPhpbuEnd
      */
     public function testGet()
