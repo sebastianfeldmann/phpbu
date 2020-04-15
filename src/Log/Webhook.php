@@ -121,6 +121,11 @@ class Webhook implements Listener, Logger
         if (empty($options['uri'])) {
             throw new Exception('no uri given');
         }
+
+        if (!filter_var($options['uri'], FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
+            throw new Exception('webhook URI is invalid');
+        }
+
         $this->uri             = $options['uri'];
         $this->method          = Arr::getValue($options, 'method', 'GET');
         $this->username        = Arr::getValue($options, 'username', '');
