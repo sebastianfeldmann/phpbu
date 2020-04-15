@@ -133,7 +133,10 @@ class OpenStack implements Simulator
         $this->password      = $config['password'];
         $this->containerName = $config['container_name'];
         $this->serviceName   = Util\Arr::getValue($config, 'service_name', 'swift');
-        $this->path          = new Path(Util\Path::withoutLeadingSlash(Util\Arr::getValue($config, 'path', '')), $this->time);
+        $this->path          = new Path(
+            Util\Path::withoutLeadingSlash(Util\Arr::getValue($config, 'path', '')),
+            $this->time
+        );
 
         $this->setUpCleanable($config);
     }

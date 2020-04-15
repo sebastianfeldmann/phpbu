@@ -35,6 +35,13 @@ use Phar;
 use phpbu\App\Cmd\Args;
 use phpbu\App\Configuration\Bootstrapper;
 use phpbu\App\Util\Arr;
+use function fgets;
+use function file_put_contents;
+use function getcwd;
+use function sprintf;
+use function trim;
+use const PHP_EOL;
+use const STDIN;
 
 /**
  * Main application class.
@@ -46,7 +53,7 @@ use phpbu\App\Util\Arr;
  * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Cmd
+final class Cmd
 {
     const EXIT_SUCCESS   = 0;
     const EXIT_FAILURE   = 1;
@@ -193,16 +200,16 @@ class Cmd
         $configLoader  = Configuration\Loader\Factory::createLoader($configurationFile, $bootstrapper);
 
         if ($configLoader->hasValidationErrors()) {
-            echo "  Warning - The configuration file did not pass validation!" . \PHP_EOL .
-                 "  The following problems have been detected:" . \PHP_EOL;
+            echo "  Warning - The configuration file did not pass validation!" . PHP_EOL .
+                 "  The following problems have been detected:" . PHP_EOL;
 
             foreach ($configLoader->getValidationErrors() as $line => $errors) {
-                echo \sprintf("\n  Line %d:\n", $line);
+                echo sprintf("\n  Line %d:\n", $line);
                 foreach ($errors as $msg) {
-                    echo \sprintf("  - %s\n", $msg);
+                    echo sprintf("  - %s\n", $msg);
                 }
             }
-            echo \PHP_EOL;
+            echo PHP_EOL;
         }
 
         $configuration = $configLoader->getConfiguration($factory);
@@ -315,22 +322,22 @@ class Cmd
         $this->printVersionString();
 
         print 'Configuration file format: xml|json (default: xml): ';
-        $format = \trim(\fgets(\STDIN)) === 'json' ? 'json' : 'xml';
+        $format = trim(fgets(STDIN)) === 'json' ? 'json' : 'xml';
         $file   = 'phpbu.' . $format;
 
         if (file_exists($file)) {
-            echo '  FAILED: The configuration file already exists.' . \PHP_EOL;
+            echo '  FAILED: The configuration file already exists.' . PHP_EOL;
             exit(self::EXIT_EXCEPTION);
         }
 
-        print \PHP_EOL . 'Generating ' . $file . ' in ' . \getcwd() . \PHP_EOL . \PHP_EOL;
+        print PHP_EOL . 'Generating ' . $file . ' in ' . getcwd() . PHP_EOL . PHP_EOL;
 
         print 'Bootstrap script (relative to path shown above; e.g: vendor/autoload.php): ';
-        $bootstrapScript = \trim(\fgets(\STDIN));
+        $bootstrapScript = trim(fgets(STDIN));
 
         $generator = new Configuration\Generator;
 
-        \file_put_contents(
+        file_put_contents(
             $file,
             $generator->generateConfigurationSkeleton(
                 Version::minor(),
@@ -339,9 +346,9 @@ class Cmd
             )
         );
 
-        print \PHP_EOL . 'Generated ' . $file . ' in ' . \getcwd() . \PHP_EOL . \PHP_EOL .
-            'ATTENTION:' . \PHP_EOL .
-            'The created configuration is just a skeleton. You have to finish the configuration manually.' . \PHP_EOL;
+        print PHP_EOL . 'Generated ' . $file . ' in ' . getcwd() . PHP_EOL . PHP_EOL .
+            'ATTENTION:' . PHP_EOL .
+            'The created configuration is just a skeleton. You have to finish the configuration manually.' . PHP_EOL;
     }
 
     /**

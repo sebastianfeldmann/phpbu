@@ -27,6 +27,12 @@
   "support": {
     "issues": "https://github.com/sebastianfeldmann/phpbu/issues"
   },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/sebastianfeldmann"
+    }
+  ],
   "autoload": {
     "psr-4": {
       "phpbu\\App\\": "src/"
@@ -84,6 +90,10 @@
     }
   },
   "scripts": {
-    "post-autoload-dump": "vendor/bin/captainhook install -f -s"
+    "post-autoload-dump": "vendor/bin/captainhook install -f -s",
+    "setup": "phive install",
+    "test": "tools/phpunit",
+    "analyse": "tools/phpstan analyse",
+    "style": "tools/phpcs --standard=psr2 src"
   }
 }

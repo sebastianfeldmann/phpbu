@@ -2,7 +2,6 @@
 namespace phpbu\App\Backup\Cleaner;
 
 use phpbu\App\Backup\Collector;
-use phpbu\App\Backup\File\Simulation;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 

@@ -4,7 +4,6 @@ namespace phpbu\App\Cli\Executable;
 
 use phpbu\App\Backup\Target\Compression;
 use phpbu\App\Cli\Executable;
-use phpbu\App\Exception;
 use phpbu\App\Util\Cli;
 use SebastianFeldmann\Cli\CommandLine;
 use SebastianFeldmann\Cli\Command\Executable as Cmd;
@@ -66,7 +65,7 @@ class Ldapdump extends Abstraction implements Executable
     private $password;
 
     /**
-     * Filter 
+     * Filter
      * <filter>
      *
      * @var string

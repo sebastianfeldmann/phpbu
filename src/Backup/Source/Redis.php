@@ -122,7 +122,7 @@ class Redis extends SimulatorExecutable implements Simulator, Restorable
     }
 
     /**
-     * Setup the Executable to run the 'tar' command.
+     * Setup the Executable to run the 'redis-cli' command.
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable

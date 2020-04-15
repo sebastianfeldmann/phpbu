@@ -30,7 +30,8 @@ class YandexDisk implements Sync\Simulator
      * create your app
      *  - Check all Disks permissions
      *  - generate access token:
-     * 1) Goto https://oauth.yandex.ru/authorize?response_type=token&client_id=APP_ID (replace APP_ID with ID giving to you)
+     * 1) Goto https://oauth.yandex.ru/authorize?response_type=token&client_id=APP_ID
+     *    (replace APP_ID with ID giving to you)
      * 2) Then you should get token parameter from GET-parameters of opened page
      *
      * @var  string

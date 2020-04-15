@@ -2,6 +2,7 @@
 namespace phpbu\App\Runner;
 
 use phpbu\App\Backup\Compressor;
+use phpbu\App\Backup\Source;
 use phpbu\App\Exception;
 use phpbu\App\Backup\Cleaner;
 use phpbu\App\Backup\Collector\Local;
@@ -58,6 +59,7 @@ class Backup extends Compression
             }
             // setup target and collector, reset failure state
             $target        = $this->factory->createTarget($backup->getTarget());
+            $source        = $this->factory->createSource($backup->getSource()->type, $backup->getSource()->options);
             $collector     = new Local($target);
             $this->failure = false;
 
@@ -67,7 +69,7 @@ class Backup extends Compression
                  *    / _  / __ / /__/ ,< / /_/ / ___/
                  *   /____/_/ |_\___/_/|_|\____/_/
                  */
-                $this->executeSource($backup, $target);
+                $this->executeSource($backup, $target, $source);
 
                 /*     _______ _____________ ______
                  *    / ___/ // / __/ ___/ //_/ __/
@@ -99,7 +101,7 @@ class Backup extends Compression
             } catch (\Exception $e) {
                 $this->result->debug('exception: ' . $e->getMessage());
                 $this->result->addError($e);
-                $this->result->backupFailed($backup);
+                $this->result->backupFailed($backup, $target, $source);
                 if ($backup->stopOnFailure()) {
                     $stop = true;
                 }
@@ -113,17 +115,17 @@ class Backup extends Compression
     /**
      * Execute the backup.
      *
-     * @param  \phpbu\App\Configuration\Backup $conf
-     * @param  \phpbu\App\Backup\Target        $target
-     * @throws \Exception
+     * @param \phpbu\App\Configuration\Backup $conf
+     * @param \phpbu\App\Backup\Target $target
+     * @param Source $source
+     * @throws Exception
      */
-    protected function executeSource(Configuration\Backup $conf, Target $target)
+    protected function executeSource(Configuration\Backup $conf, Target $target, Source $source)
     {
-        $this->result->backupStart($conf);
-        $source = $this->factory->createSource($conf->getSource()->type, $conf->getSource()->options);
+        $this->result->backupStart($conf, $target, $source);
         $status = $source->backup($target, $this->result);
         $this->compress($status, $target, $this->result);
-        $this->result->backupEnd($conf);
+        $this->result->backupEnd($conf, $target, $source);
     }
 
     /**

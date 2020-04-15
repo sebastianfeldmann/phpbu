@@ -117,7 +117,10 @@ class Stepwise extends Abstraction implements Simulator
         $daily = new Range($all->getEnd(), $end, new Stepwise\Keeper\OnePerGroup('Ymd'));
 
         // define the range that keeps backups per week
-        $end    = mktime(0, 0, 0, date('m', $end), (int) date('d', $end) - (7 * $this->weeksToKeepWeekly), date('Y', $end));
+        $month  = date('m', $end);
+        $day    = (int) date('d', $end) - (7 * $this->weeksToKeepWeekly);
+        $year   = date('Y', $end);
+        $end    = mktime(0, 0, 0, $month, $day, $year);
         $weekly = new Range($daily->getEnd(), $end, new Stepwise\Keeper\OnePerGroup('YW'));
 
         // define the range that keeps backups per month

@@ -91,13 +91,9 @@ class Location
      * Magic to string method
      *
      * @return string
-     * @throws \phpbu\App\Exception
      */
     public function __toString()
     {
-        if (!$this->isValid()) {
-            throw new Exception('invalid rsync path');
-        }
         $return = '';
         if (!empty($this->host)) {
             // remote user

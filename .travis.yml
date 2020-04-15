@@ -3,16 +3,17 @@ language: php
 php:
   - 7.2
   - 7.3
+  - 7.4
 
 before_script:
   - composer self-update
   - composer install --no-interaction --prefer-source
-  - wget -O phpunit.phar https://phar.phpunit.de/phpunit-7.5.9.phar
-  - if [ $TRAVIS_PHP_VERSION = "7.3" ]; then wget -O phpstan.phar https://github.com/phpstan/phpstan/releases/download/0.10.5/phpstan.phar ; fi
+  - wget -O phpunit.phar https://phar.phpunit.de/phpunit-8.5.3.phar
+  - if [ $TRAVIS_PHP_VERSION = "7.4" ]; then wget -O phpstan.phar https://github.com/phpstan/phpstan/releases/download/0.12.18/phpstan.phar ; fi
 
 script:
   - php phpunit.phar --configuration ./build/travis-ci.phpunit.xml
-  - if [ $TRAVIS_PHP_VERSION = "7.3" ]; then php phpstan.phar analyse --no-progress -c phpstan.neon; fi
+  - if [ $TRAVIS_PHP_VERSION = "7.4" ]; then php phpstan.phar analyse --no-progress -c phpstan.neon; fi
 
 notifications:
   email: false

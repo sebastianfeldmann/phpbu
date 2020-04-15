@@ -54,10 +54,10 @@ EOT;
         "options": {
           "__FIXME__": "__FIXME__"
         }
-      }
+      },
       "target": {
         "dirname": "__FIXME__",
-        "filename": "backup-%Y%m%d-%H%i"
+        "filename": "backup-%Y%m%d-%H%i",
         "compress": "bzip2"
       }
     }

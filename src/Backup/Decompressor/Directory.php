@@ -1,8 +1,6 @@
 <?php
 
-
 namespace phpbu\App\Backup\Decompressor;
-
 
 use phpbu\App\Backup\Target;
 

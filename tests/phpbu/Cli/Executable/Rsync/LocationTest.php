@@ -17,16 +17,6 @@ class LocationTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests Rsync::toString
      */
-    public function testEmptyOnInit()
-    {
-        $this->expectException('phpbu\App\Exception');
-        $location = new Location();
-        $location->toString();
-    }
-
-    /**
-     * Tests Rsync::toString
-     */
     public function testHostAndPath()
     {
         $location = new Location();

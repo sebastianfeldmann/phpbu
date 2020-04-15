@@ -5,3 +5,4 @@ parameters:
   ignoreErrors:
       - '#Call to an undefined method SebastianFeldmann\\Ftp\\Client::delete\(\)#'
       - '#Call to an undefined method ObjectStorage_Abstract::setLocalFile\(\)#'
+      - '#Parameter \#1 \$buffer \(array\) of method phpbu\\App\\Log\\Json::write\(\) should be compatible with parameter \$buffer \(string\) of method phpbu\\App\\Log\\File::write\(\)#'

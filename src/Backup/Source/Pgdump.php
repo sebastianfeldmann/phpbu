@@ -252,7 +252,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
     }
 
     /**
-     * Create the Executable to run the mysqldump command
+     * Create the Executable to run the pg_dump command
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return \phpbu\App\Cli\Executable

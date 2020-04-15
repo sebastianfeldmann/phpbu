@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Event\Backup;
 
+use phpbu\App\Backup\Source;
+use phpbu\App\Backup\Target;
 use phpbu\App\Configuration\Backup;
 use phpbu\App\Event\Action;
 
@@ -17,13 +19,36 @@ use phpbu\App\Event\Action;
  */
 abstract class Abstraction extends Action
 {
+    private $target;
+    private $source;
+
     /**
      * Constructor.
      *
      * @param \phpbu\App\Configuration\Backup $backup
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Backup\Source $source
      */
-    public function __construct(Backup $backup)
+    public function __construct(Backup $backup, Target $target, Source $source)
     {
         $this->configuration = $backup;
+        $this->target = $target;
+        $this->source = $source;
+    }
+
+    /**
+     * @return \phpbu\App\Backup\Target
+     */
+    public function getTarget(): Target
+    {
+        return $this->target;
+    }
+
+    /**
+     * @return \phpbu\App\Backup\Source
+     */
+    public function getSource(): Source
+    {
+        return $this->source;
     }
 }

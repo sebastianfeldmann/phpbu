@@ -16,5 +16,5 @@
   <option name="attrs" value="*" />
 
   <!-- define your custom ldapdump executable location -->
-  <option name="pathToInfluxdump" value="/path/to/custom/bin" />
+  <option name="pathToLdapdump" value="/path/to/custom/bin" />
 </source>

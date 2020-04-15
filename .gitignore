@@ -16,4 +16,5 @@ composer.lock
 /phpbu.xml
 /phpbu.json
 /vendor/
+/tools/
 cache.properties

@@ -2,10 +2,7 @@
 namespace phpbu\App\Backup\Cleaner;
 
 use phpbu\App\Backup\Collector;
-use phpbu\App\Backup\File\Local;
 use phpbu\App\Backup\Target;
-use phpbu\App\Result;
-use phpbu\App\Util\Arr;
 use phpbu\App\Util\Str;
 use RuntimeException;
 

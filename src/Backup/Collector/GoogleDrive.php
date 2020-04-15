@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
-use Google_Client;
 use Google_Service_Drive;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\File;

@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App;
 
+use phpbu\App\Backup\Source;
+use phpbu\App\Backup\Target;
 use phpbu\App\Event\Dispatcher;
 
 /**
@@ -237,14 +239,16 @@ class Result
      * Backup start event
      *
      * @param  \phpbu\App\Configuration\Backup $backup
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Backup\Source $source
      * @throws \phpbu\App\Exception
      */
-    public function backupStart(Configuration\Backup $backup) : void
+    public function backupStart(Configuration\Backup $backup, Target $target, Source $source) : void
     {
         $this->backupActive = new Result\Backup($backup->getName());
         $this->backups[]    = $this->backupActive;
 
-        $event = new Event\Backup\Start($backup);
+        $event = new Event\Backup\Start($backup, $target, $source);
         $this->eventDispatcher->dispatch(Event\Backup\Start::NAME, $event);
     }
 
@@ -252,13 +256,15 @@ class Result
      * Backup failed event
      *
      * @param \phpbu\App\Configuration\Backup $backup
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Backup\Source $source
      */
-    public function backupFailed(Configuration\Backup $backup) : void
+    public function backupFailed(Configuration\Backup $backup, Target $target, Source $source) : void
     {
         $this->backupsFailed++;
         $this->backupActive->fail();
 
-        $event = new Event\Backup\Failed($backup);
+        $event = new Event\Backup\Failed($backup, $target, $source);
         $this->eventDispatcher->dispatch(Event\Backup\Failed::NAME, $event);
     }
 
@@ -276,10 +282,12 @@ class Result
      * Backup end event
      *
      * @param \phpbu\App\Configuration\Backup $backup
+     * @param \phpbu\App\Backup\Target $target
+     * @param \phpbu\App\Backup\Source $source
      */
-    public function backupEnd(Configuration\Backup $backup) : void
+    public function backupEnd(Configuration\Backup $backup, Target $target, Source $source) : void
     {
-        $event = new Event\Backup\End($backup);
+        $event = new Event\Backup\End($backup, $target, $source);
         $this->eventDispatcher->dispatch(Event\Backup\End::NAME, $event);
     }
 
