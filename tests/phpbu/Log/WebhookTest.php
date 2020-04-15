@@ -95,7 +95,7 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
         $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
-        $uri  = PHPBU_TEST_FILES . '/misc/webhook.fake.uri';
+        $uri  = 'file://' . PHPBU_TEST_FILES . '/misc/webhook.fake.uri';
         $json = new Webhook();
         $json->setup(['uri' => $uri, 'contentType' => 'application/json', 'method' => 'post']);
 
