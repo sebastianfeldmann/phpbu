@@ -1,6 +1,11 @@
 <?php
 namespace phpbu\App\Log;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
+
 /**
  * Webhook Test
  *
@@ -29,7 +34,7 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
     public function testSetupNoTarget()
     {
         $this->expectException('phpbu\App\Exception');
-        $json = new Webhook();
+        $json = $this->getWebhookMock(new Response(200));
         $json->setup([]);
     }
 
@@ -48,7 +53,6 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
      */
     public function testGet()
     {
-        $this->expectException('phpbu\App\Exception');
         // result mock
         $result = $this->getResultMock();
 
@@ -56,8 +60,8 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
         $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
-        $uri  = 'https://webhook.fail.uri/hook';
-        $json = new Webhook();
+        $uri  = 'https://webhook.fake.uri/hook';
+        $json = $this->getWebhookMock(new Response(200));
         $json->setup(['uri' => $uri]);
 
         $json->onPhpbuEnd($phpbuEndEvent);
@@ -68,7 +72,6 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
      */
     public function testBasicAuth()
     {
-        $this->expectException('phpbu\App\Exception');
         // result mock
         $result = $this->getResultMock();
 
@@ -76,8 +79,8 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
         $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
-        $uri  = 'https://webhook.fail.uri/hook';
-        $json = new Webhook();
+        $uri  = 'https://webhook.fake.uri/hook';
+        $json = $this->getWebhookMock(new Response(200));
         $json->setup(['uri' => $uri, 'username' => 'foo', 'password' => 'bar']);
 
         $json->onPhpbuEnd($phpbuEndEvent);
@@ -95,8 +98,8 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
         $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
-        $uri  = 'file://' . PHPBU_TEST_FILES . '/misc/webhook.fake.uri';
-        $json = new Webhook();
+        $uri  = 'https://webhook.fake.uri/hook';
+        $json = $this->getWebhookMock(new Response(200));
         $json->setup(['uri' => $uri, 'contentType' => 'application/json', 'method' => 'post']);
 
 
@@ -108,7 +111,6 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
      */
     public function testPostDefaultJson()
     {
-        $this->expectException('phpbu\App\Exception');
         // result mock
         $result = $this->getResultMock();
 
@@ -116,8 +118,8 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
         $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
-        $uri  = 'https://webhook.fail.uri/hook';
-        $json = new Webhook();
+        $uri  = 'https://webhook.fake.uri/hook';
+        $json = $this->getWebhookMock(new Response(200));
         $json->setup(['uri' => $uri, 'contentType' => 'application/json', 'method' => 'post']);
 
 
@@ -129,7 +131,6 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
      */
     public function testPostXmlTemplate()
     {
-        $this->expectException('phpbu\App\Exception');
         // result mock
         $result = $this->getResultMock();
 
@@ -137,9 +138,9 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
         $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
-        $uri  = 'https://webhook.fail.uri/hook';
+        $uri  = 'https://webhook.fake.uri/hook';
         $path = PHPBU_TEST_FILES . '/misc/webhook.tpl';
-        $json = new Webhook();
+        $json = $this->getWebhookMock(new Response(200));
         $json->setup(['uri' => $uri, 'contentType' => 'application/xml', 'method' => 'post', 'template' => $path]);
 
 
@@ -152,7 +153,6 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
      */
     public function testPostNoFormatter()
     {
-        $this->expectException('phpbu\App\Exception');
         $this->expectExceptionMessage('no default formatter for content-type: application/html');
         // result mock
         $result = $this->getResultMock(false);
@@ -161,12 +161,24 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
         $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
-        $uri  = 'https://webhook.fail.uri/hook';
-        $json = new Webhook();
+        $uri  = 'https://webhook.fake.uri/hook';
+        $json = $this->getWebhookMock(new Response(200));
         $json->setup(['uri' => $uri, 'contentType' => 'application/html', 'method' => 'post']);
 
 
         $json->onPhpbuEnd($phpbuEndEvent);
+    }
+
+    protected function getWebhookMock(Response $expectedResponse)
+    {
+        $mock = new MockHandler([
+            $expectedResponse
+        ]);
+
+        $handlerStack = HandlerStack::create($mock);
+        $client = new Client(['handler' => $handlerStack]);
+
+        return new Webhook($client);
     }
 
     /**

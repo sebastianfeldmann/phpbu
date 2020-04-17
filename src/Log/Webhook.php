@@ -1,12 +1,14 @@
 <?php
 namespace phpbu\App\Log;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\RequestException;
 use phpbu\App\Exception;
 use phpbu\App\Event;
 use phpbu\App\Listener;
 use phpbu\App\Result;
 use phpbu\App\Util\Arr;
-use Throwable;
 
 /**
  * Webhook Logger
@@ -90,11 +92,20 @@ class Webhook implements Listener, Logger
     ];
 
     /**
-     * Constructor will only set the start time to be able to log duration
+     * @var Client
      */
-    public function __construct()
+    private $client;
+
+    /**
+     * Constructor will only set the start time to be able to log duration
+     *
+     * @param Client|null $client
+     */
+    public function __construct(Client $client = null)
     {
         $this->start = microtime(true);
+
+        $this->client = $client === null ? new Client() : $client;
     }
 
     /**
@@ -225,33 +236,29 @@ class Webhook implements Listener, Logger
      */
     protected function fireRequest(string $uri, string $body = '')
     {
-        $headers = [];
         $options = [
-            'http' => [
-                'method'  => strtoupper($this->method),
-            ]
+            'headers' => [],
         ];
 
         if (!empty($body)) {
-            $headers[]                  = 'Content-Type: ' . $this->contentType;
-            $options['http']['content'] = $body;
+            $options['body'] = $body;
+            $options['headers'][] = 'Content-Type: ' . $this->contentType;
         }
 
         if (!empty($this->timeout)) {
-            $options['http']['timeout'] = $this->timeout;
+            $options['timeout'] = $this->timeout;
         }
 
         if (!empty($this->username)) {
-            $headers[] = 'Authorization: Basic ' . base64_encode($this->username . ':' . $this->password);
+            $options['auth'] = [$this->username, $this->password];
         }
 
-        $options['http']['header'] = implode("\r\n", $headers);
-        $context                   = stream_context_create($options);
-
         try {
-            file_get_contents($uri, false, $context);
-        } catch (Throwable $t) {
-            throw new Exception('could not reach webhook: ' . $this->uri);
+            $this->client->request(strtoupper($this->method), $uri, $options);
+        } catch (BadResponseException $e) {
+            throw new Exception('webhook failed: ' . $this->uri . ' (' . $e->getResponse()->getStatusCode() . ' ' . $e->getResponse()->getReasonPhrase() . ')');
+        } catch (RequestException $e) {
+            throw new Exception('could not reach webhook: ' . $this->uri. ' (' . $e->getMessage() . ')');
         }
     }
 }
