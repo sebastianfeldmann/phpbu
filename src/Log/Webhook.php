@@ -128,6 +128,16 @@ class Webhook implements Listener, Logger
         if (empty($options['uri'])) {
             throw new Exception('no uri given');
         }
+
+        // PHP >7.2 deprecated the filter options and enabled them by default
+        $filterOptions = version_compare(PHP_VERSION, '7.2.0', '<')
+                       ? FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED
+                       : null;
+
+        if (!filter_var($options['uri'], FILTER_VALIDATE_URL, $filterOptions)) {
+            throw new Exception('webhook URI is invalid');
+        }
+
         $this->uri             = $options['uri'];
         $this->method          = Arr::getValue($options, 'method', 'GET');
         $this->username        = Arr::getValue($options, 'username', '');

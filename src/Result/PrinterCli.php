@@ -110,6 +110,7 @@ class PrinterCli implements Listener
     {
         return [
             'phpbu.debug'           => 'onDebug',
+            'phpbu.warning'         => 'onWarning',
             'phpbu.app_start'       => 'onPhpbuStart',
             'phpbu.backup_start'    => 'onBackupStart',
             'phpbu.backup_failed'   => 'onBackupFailed',
@@ -404,6 +405,16 @@ class PrinterCli implements Listener
         if ($this->debug) {
             $this->write($event->getMessage() . PHP_EOL);
         }
+    }
+
+    /**
+     * Warnings.
+     *
+     * @param \phpbu\App\Event\Warning $event
+     */
+    public function onWarning(Event\Warning $event)
+    {
+        $this->writeWithColor('fg-black, bg-yellow', $event->getMessage() . PHP_EOL);
     }
 
     /**
