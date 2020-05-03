@@ -100,8 +100,7 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
 
             $result->warn($name . ': The ' . $this->algorithm . ' algorithm is considered weak');
         }
-
-        return parent::crypt($target, $result);
+        parent::crypt($target, $result);
     }
 
 
@@ -115,10 +114,15 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
 
             $result->warn($name . ': The ' . $this->algorithm . ' algorithm is considered weak');
         }
-
-        return parent::simulate($target, $result);
+        parent::simulate($target, $result);
     }
 
+    /**
+     * Is the configured cipher secure enough
+     *
+     * @return bool
+     * @throws \phpbu\App\Backup\Crypter\Exception
+     */
     public function isUsingWeakAlgorithm(): bool
     {
         if (null === $this->algorithm) {
