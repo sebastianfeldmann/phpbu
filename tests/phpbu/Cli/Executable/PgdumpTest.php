@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Pgdump Test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class PgdumpTest extends \PHPUnit\Framework\TestCase
+class PgdumpTest extends TestCase
 {
     /**
      * Tests Pgdump::getCommand

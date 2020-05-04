@@ -3,6 +3,7 @@ namespace phpbu\Backup\Sync;
 
 use phpbu\App\Backup\Sync\Exception;
 use phpbu\App\Backup\Sync\OpenStack;
+use PHPUnit\Framework\TestCase;
 
 /**
  * OpenStackTest
@@ -16,7 +17,7 @@ use phpbu\App\Backup\Sync\OpenStack;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1
  */
-class OpenStackTest extends \PHPUnit\Framework\TestCase
+class OpenStackTest extends TestCase
 {
     /**
      * Tests OpenStack::setUp

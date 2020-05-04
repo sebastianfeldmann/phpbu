@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Log;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Json Test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Log;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class JsonTest extends \PHPUnit\Framework\TestCase
+class JsonTest extends TestCase
 {
     /**
      * Tests Json::getSubscribedEvents
@@ -20,7 +22,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
     public function testSubscribedEvents()
     {
         $events = Json::getSubscribedEvents();
-        $this->assertEquals(2, count($events));
+        $this->assertCount(2, $events);
     }
 
     /**
@@ -61,7 +63,7 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $outputPHP  = json_decode($outputJson);
 
 
-        $this->assertTrue($outputPHP instanceof \stdClass);
+        $this->assertInstanceOf(\stdClass::class, $outputPHP);
     }
 
     /**

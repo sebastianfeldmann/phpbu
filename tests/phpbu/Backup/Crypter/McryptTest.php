@@ -6,6 +6,7 @@ use phpbu\App\BaseMockery;
 use phpbu\App\Configuration;
 use SebastianFeldmann\Cli\Command\Result as CommandResult;
 use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
+use PHPUnit\Framework\TestCase;
 
 /**
  * McryptTest
@@ -18,7 +19,7 @@ use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class McryptTest extends \PHPUnit\Framework\TestCase
+class McryptTest extends TestCase
 {
     use BaseMockery;
     use CliMockery;

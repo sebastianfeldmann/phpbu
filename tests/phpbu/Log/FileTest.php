@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Log;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Printer Test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Log;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.2.1
  */
-class FileTest extends \PHPUnit\Framework\TestCase
+class FileTest extends TestCase
 {
     /**
      * Tests Printer::setAutoFlush
@@ -64,7 +66,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
         $file->write('foo');
         $file->close();
 
-        $this->assertTrue(file_exists($log));
+        $this->assertFileExists($log);
 
         unlink($log);
         rmdir(dirname($log));

@@ -150,8 +150,8 @@ class JsonTest extends TestCase
         $config = $loader->getConfiguration(self::$factory);
 
         $this->assertEquals($dir . '/backup/bootstrap.php', $config->getBootstrap());
-        $this->assertEquals(true, $config->getColors());
-        $this->assertEquals(false, $config->getVerbose());
+        $this->assertTrue($config->getColors());
+        $this->assertFalse($config->getVerbose());
     }
 
     /**
@@ -170,10 +170,10 @@ class JsonTest extends TestCase
         $crypt    = $backup->getCrypt();
         $cleanup  = $backup->getCleanup();
 
-        $this->assertTrue(is_array($backups));
-        $this->assertEquals(1, count($backups), 'should be exactly one backup');
+        $this->assertIsArray($backups);
+        $this->assertCount(1, $backups, 'should be exactly one backup');
         $this->assertEquals('tarball', $backup->getName());
-        $this->assertEquals(false, $backup->stopOnFailure());
+        $this->assertFalse($backup->stopOnFailure());
         $this->assertEquals('tar', $backup->getSource()->type);
         $this->assertEquals($dir . '/backup/src', $backup->getTarget()->dirname);
         $this->assertEquals('tarball-%Y%m%d-%H%i.tar', $backup->getTarget()->filename);
@@ -196,9 +196,9 @@ class JsonTest extends TestCase
         $backups = $conf->getBackups();
         $backup  = $backups[0];
 
-        $this->assertEquals(1, count($conf->getBackups()), 'should be exactly one backup');
-        $this->assertTrue(is_array($backup->getChecks()));
-        $this->assertEquals(0, count($backup->getChecks()));
+        $this->assertCount(1, $conf->getBackups(), 'should be exactly one backup');
+        $this->assertIsArray($backup->getChecks());
+        $this->assertCount(0, $backup->getChecks());
     }
 
     /**
@@ -213,7 +213,7 @@ class JsonTest extends TestCase
         $loggers = $conf->getLoggers();
         $log1    = $loggers[0];
 
-        $this->assertEquals(2, count($loggers), 'should be exactly two logger');
+        $this->assertCount(2, $loggers, 'should be exactly two logger');
         $this->assertEquals('json', $log1->type);
         $this->assertEquals($dir . '/backup/json.log', $log1->options['target']);
     }
@@ -228,8 +228,8 @@ class JsonTest extends TestCase
         $conf    = $loader->getConfiguration(self::$factory);
         $loggers = $conf->getLoggers();
 
-        $this->assertTrue(is_array($loggers));
-        $this->assertEquals(1, count($loggers), 'should be exactly one logger');
+        $this->assertIsArray($loggers);
+        $this->assertCount(1, $loggers, 'should be exactly one logger');
     }
 
 

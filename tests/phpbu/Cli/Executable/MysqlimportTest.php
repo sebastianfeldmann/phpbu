@@ -2,6 +2,7 @@
 namespace phpbu\App\Cli\Executable;
 
 use phpbu\App\Exception;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Mysqlimport Test
@@ -14,7 +15,7 @@ use phpbu\App\Exception;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 6.0-dev
  */
-class MysqlimportTest extends \PHPUnit\Framework\TestCase
+class MysqlimportTest extends TestCase
 {
     /**
      * Tests Mysqlimport::getCommand

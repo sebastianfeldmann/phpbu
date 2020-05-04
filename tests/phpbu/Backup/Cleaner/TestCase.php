@@ -3,6 +3,7 @@ namespace phpbu\App\Backup\Cleaner;
 
 use phpbu\App\Backup\File\Local;
 use phpbu\App\Util\Str;
+use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
 /**
  * TestCase
@@ -15,7 +16,7 @@ use phpbu\App\Util\Str;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class TestCase extends \PHPUnit\Framework\TestCase
+class TestCase extends PHPUnitTestCase
 {
     /**
      * Test execution time

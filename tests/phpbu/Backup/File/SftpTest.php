@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Backup\File;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * SftpTest
  *
@@ -13,7 +15,7 @@ namespace phpbu\App\Backup\File;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class SftpTest extends \PHPUnit\Framework\TestCase
+class SftpTest extends TestCase
 {
     /**
      * Test creating file and handle removing
@@ -37,7 +39,7 @@ class SftpTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('/backups/dump.tar.gz', $file->getPathname());
         $this->assertEquals(102102, $file->getSize());
         $this->assertEquals(1525788894, $file->getMTime());
-        $this->assertEquals(true, $file->isWritable());
+        $this->assertTrue($file->isWritable());
 
         $file->unlink();
         $this->assertTrue(true, 'no exception should occur');

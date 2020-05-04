@@ -34,7 +34,7 @@ class CliTest extends TestCase
     /**
      * Restore $_SERVER settings.
      */
-    public function tearDown() : void
+    protected function tearDown() : void
     {
         $_SERVER = self::$server;
     }
@@ -129,7 +129,7 @@ class CliTest extends TestCase
         $plainText   = 'Mein Test';
         $coloredText = Cli::formatWithColor('fg-black, bg-green', $plainText);
 
-        $this->assertTrue(strpos($coloredText, "\x1b[0m") !== false);
+        $this->assertStringContainsString("\x1b[0m", $coloredText);
     }
 
     /**
@@ -140,7 +140,7 @@ class CliTest extends TestCase
         $plainText   = '';
         $coloredText = Cli::formatWithColor('fg-black, bg-green', $plainText);
 
-        $this->assertTrue(strpos($coloredText, "\x1b[0m") === false);
+        $this->assertStringNotContainsString("\x1b[0m", $coloredText);
     }
 
     /**
@@ -152,7 +152,7 @@ class CliTest extends TestCase
         $decoratedText = Cli::formatWithAsterisk($plainText);
 
         $this->assertEquals(75, strlen(trim($decoratedText)));
-        $this->assertTrue(strpos($decoratedText, '*') !== false);
+        $this->assertStringContainsString('*', $decoratedText);
     }
 
     /**
@@ -181,10 +181,10 @@ class CliTest extends TestCase
 
         Cli::removeDir($dirToDelete);
 
-        $this->assertFalse(file_exists($file));
-        $this->assertFalse(file_exists($fileInSub));
-        $this->assertFalse(file_exists($subDir));
-        $this->assertFalse(file_exists($dirToDelete));
+        $this->assertFileNotExists($file);
+        $this->assertFileNotExists($fileInSub);
+        $this->assertFileNotExists($subDir);
+        $this->assertFileNotExists($dirToDelete);
     }
 
     /**
@@ -193,10 +193,10 @@ class CliTest extends TestCase
     public function testCommandLocationsDefault()
     {
         $list = Cli::getCommandLocations('tar');
-        $this->assertEquals(0, count($list));
+        $this->assertCount(0, $list);
 
         $list = Cli::getCommandLocations('mysqldump');
-        $this->assertEquals(2, count($list));
+        $this->assertCount(2, $list);
     }
 
     /**
@@ -207,7 +207,7 @@ class CliTest extends TestCase
         Cli::addCommandLocation('mongodump', '/foo/mongodump');
         $list = Cli::getCommandLocations('mongodump');
 
-        $this->assertEquals(1, count($list));
+        $this->assertCount(1, $list);
         $this->assertEquals('/foo/mongodump', $list[0]);
     }
 

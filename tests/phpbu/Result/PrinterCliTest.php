@@ -2,6 +2,7 @@
 namespace phpbu\App\Result;
 
 use phpbu\App\Configuration;
+use PHPUnit\Framework\TestCase;
 
 /**
  * PrinterCli test
@@ -14,7 +15,7 @@ use phpbu\App\Configuration;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class PrinterCliTest extends \PHPUnit\Framework\TestCase
+class PrinterCliTest extends TestCase
 {
     /**
      * Tests Mail::getSubscribedEvents
@@ -23,9 +24,9 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
     {
         $events = PrinterCli::getSubscribedEvents();
 
-        $this->assertTrue(array_key_exists('phpbu.debug', $events));
-        $this->assertTrue(array_key_exists('phpbu.backup_start', $events));
-        $this->assertTrue(array_key_exists('phpbu.check_start', $events));
+        $this->assertArrayHasKey('phpbu.debug', $events);
+        $this->assertArrayHasKey('phpbu.backup_start', $events);
+        $this->assertArrayHasKey('phpbu.check_start', $events);
 
         $this->assertEquals('onPhpbuEnd', $events['phpbu.app_end']);
     }
@@ -37,7 +38,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
     {
         $printer = new PrinterCli(false, false, false);
 
-        $this->assertTrue(!is_null($printer));
+        $this->assertNotNull($printer);
     }
 
     /**
@@ -77,7 +78,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         ob_start();
         $printer->onPhpbuStart($this->getEventMock('App\\Start', $configuration));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'Runtime') !== false);
+        $this->assertStringContainsString('Runtime', $output);
     }
 
     /**
@@ -113,7 +114,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer->onBackupStart($this->getEventMock('Backup\\Start', $backup));
         $printer->onBackupEnd($this->getEventMock('Backup\\End', $backup));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'backup') !== false);
+        $this->assertStringContainsString('backup', $output);
     }
 
     /**
@@ -131,7 +132,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer->onBackupStart($this->getEventMock('Backup\\Start', $backup));
         $printer->onBackupFailed($this->getEventMock('Backup\\Failed', $backup));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'failed') !== false);
+        $this->assertStringContainsString('failed', $output);
     }
 
     /**
@@ -161,7 +162,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer->onCheckStart($this->getEventMock('Check\\Start', $check));
         $printer->onCheckEnd($this->getEventMock('Check\\End', $check));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'check') !== false);
+        $this->assertStringContainsString('check', $output);
     }
 
     /**
@@ -176,7 +177,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer->onCheckStart($this->getEventMock('Check\\Start', $check));
         $printer->onCheckFailed($this->getEventMock('Check\\Failed', $check));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'failed') !== false);
+        $this->assertStringContainsString('failed', $output);
     }
 
 
@@ -207,8 +208,8 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer->onCryptStart($this->getEventMock('Crypt\\Start', $crypt));
         $printer->onCryptEnd($this->getEventMock('Crypt\\End', $crypt));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'crypt') !== false);
-        $this->assertTrue(strpos($output, 'ok') !== false);
+        $this->assertStringContainsString('crypt', $output);
+        $this->assertStringContainsString('ok', $output);
     }
 
     /**
@@ -223,7 +224,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer->onCryptStart($this->getEventMock('Crypt\\Start', $crypt));
         $printer->onCryptFailed($this->getEventMock('Crypt\\Failed', $crypt));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'failed') !== false);
+        $this->assertStringContainsString('failed', $output);
     }
 
     /**
@@ -238,7 +239,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer->onCryptStart($this->getEventMock('Crypt\\Start', $crypt));
         $printer->onCryptSkipped($this->getEventMock('Crypt\\Skipped', $crypt));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'skipped') !== false);
+        $this->assertStringContainsString('skipped', $output);
     }
 
     /**
@@ -268,7 +269,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer->onSyncStart($this->getEventMock('Sync\\Start', $sync));
         $printer->onSyncEnd($this->getEventMock('Sync\\End', $sync));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'sync') !== false);
+        $this->assertStringContainsString('sync', $output);
     }
 
     /**
@@ -283,7 +284,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer->onSyncStart($this->getEventMock('Sync\\Start', $sync));
         $printer->onSyncFailed($this->getEventMock('Sync\\Failed', $sync));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'failed') !== false);
+        $this->assertStringContainsString('failed', $output);
     }
 
     /**
@@ -298,7 +299,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer->onSyncStart($this->getEventMock('Sync\\Start', $sync));
         $printer->onSyncSkipped($this->getEventMock('Sync\\Skipped', $sync));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'skipped') !== false);
+        $this->assertStringContainsString('skipped', $output);
     }
 
     /**
@@ -328,7 +329,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer->onCleanupStart($this->getEventMock('Cleanup\\Start', $cleanup));
         $printer->onCleanupEnd($this->getEventMock('Cleanup\\End', $cleanup));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'cleanup') !== false);
+        $this->assertStringContainsString('cleanup', $output);
     }
 
     /**
@@ -343,7 +344,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer->onCleanupStart($this->getEventMock('Cleanup\\Start', $cleanup));
         $printer->onCleanupFailed($this->getEventMock('Cleanup\\Failed', $cleanup));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'failed') !== false);
+        $this->assertStringContainsString('failed', $output);
     }
 
     /**
@@ -358,7 +359,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer->onCleanupStart($this->getEventMock('Cleanup\\Start', $cleanup));
         $printer->onCleanupSkipped($this->getEventMock('Cleanup\\Skipped', $cleanup));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'skipped') !== false);
+        $this->assertStringContainsString('skipped', $output);
     }
 
     /**
@@ -371,7 +372,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         ob_start();
         $printer->onDebug($this->getEventMock('Debug', 'foo'));
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'foo') !== false);
+        $this->assertStringContainsString('foo', $output);
     }
 
     /**
@@ -382,8 +383,8 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer = new PrinterCli(true, false, false);
         $result  = $this->createMock(\phpbu\App\Result::class);
         $backup  = $this->createMock(\phpbu\App\Result\Backup::class);
-        $result->method('getBackups')->willReturn(array($backup));
-        $result->method('getErrors')->willReturn(array());
+        $result->method('getBackups')->willReturn([$backup]);
+        $result->method('getErrors')->willReturn([]);
         $result->method('allOk')->willReturn(true);
 
         $backup->method('allOk')->willReturn(true);
@@ -399,7 +400,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         ob_start();
         $printer->printResult($result);
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'OK') !== false);
+        $this->assertStringContainsString('OK', $output);
     }
 
     /**
@@ -410,13 +411,13 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $printer = new PrinterCli(false, true, false);
         $result  = $this->createMock(\phpbu\App\Result::class);
 
-        $result->method('getBackups')->willReturn(array());
-        $result->method('getErrors')->willReturn(array());
+        $result->method('getBackups')->willReturn([]);
+        $result->method('getErrors')->willReturn([]);
 
         ob_start();
         $printer->printResult($result);
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'No backups executed') !== false);
+        $this->assertStringContainsString('No backups executed', $output);
     }
 
     /**
@@ -441,8 +442,8 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $backup->method('cleanupSkipped')->willReturn(0);
         $backup->method('cleanupCountFailed')->willReturn(0);
 
-        $result->method('getBackups')->willReturn(array($backup));
-        $result->method('getErrors')->willReturn(array());
+        $result->method('getBackups')->willReturn([$backup]);
+        $result->method('getErrors')->willReturn([]);
         $result->method('allOk')->willReturn(false);
         $result->method('wasSuccessful')->willReturn(true);
         $result->method('backupOkButSkipsOrFails')->willReturn(true);
@@ -450,7 +451,7 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         ob_start();
         $printer->printResult($result);
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'skipped') !== false);
+        $this->assertStringContainsString('skipped', $output);
     }
 
     /**
@@ -475,15 +476,15 @@ class PrinterCliTest extends \PHPUnit\Framework\TestCase
         $backup->method('cleanupSkipped')->willReturn(0);
         $backup->method('cleanupCountFailed')->willReturn(0);
 
-        $result->method('getBackups')->willReturn(array($backup));
-        $result->method('getErrors')->willReturn(array($e));
+        $result->method('getBackups')->willReturn([$backup]);
+        $result->method('getErrors')->willReturn([$e]);
         $result->method('allOk')->willReturn(false);
         $result->method('wasSuccessful')->willReturn(false);
 
         ob_start();
         $printer->printResult($result);
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, 'FAILURE') !== false);
+        $this->assertStringContainsString('FAILURE', $output);
     }
 
     /**

@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Target;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Compressor test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Backup\Target;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class CompressionTest extends \PHPUnit\Framework\TestCase
+class CompressionTest extends TestCase
 {
     /**
      * Tests Compression::create

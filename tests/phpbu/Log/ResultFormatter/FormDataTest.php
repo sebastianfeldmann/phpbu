@@ -2,6 +2,7 @@
 namespace phpbu\App\Log\ResultFormatter;
 
 use function GuzzleHttp\Psr7\parse_query;
+use PHPUnit\Framework\TestCase;
 
 /**
  * FormData Formatter Test
@@ -14,7 +15,7 @@ use function GuzzleHttp\Psr7\parse_query;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.0.0
  */
-class FormDataTest extends \PHPUnit\Framework\TestCase
+class FormDataTest extends TestCase
 {
     /**
      * Tests FormData::format
@@ -26,7 +27,7 @@ class FormDataTest extends \PHPUnit\Framework\TestCase
         $queryString = $formatter->format($result);
         $rawData     = parse_query($queryString);
 
-        $this->assertTrue(!empty($queryString));
+        $this->assertNotEmpty($queryString);
         $this->assertEquals(0, $rawData['status']);
         $this->assertEquals(1, $rawData['errorCount']);
     }

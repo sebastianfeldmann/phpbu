@@ -5,6 +5,7 @@ use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Blob\Models\ListBlobsResult;
 use MicrosoftAzure\Storage\Blob\Models\ListContainersResult;
 use phpbu\App\BaseMockery;
+use PHPUnit\Framework\TestCase;
 
 /**
  * AzureBlobTest
@@ -18,7 +19,7 @@ use phpbu\App\BaseMockery;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.2.7
  */
-class AzureBlobTest extends \PHPUnit\Framework\TestCase
+class AzureBlobTest extends TestCase
 {
     use BaseMockery;
 

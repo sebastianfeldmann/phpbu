@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Configuration;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Bootstrap Runner test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Configuration;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class BootstrapperTest extends \PHPUnit\Framework\TestCase
+class BootstrapperTest extends TestCase
 {
     /**
      * Tests Bootstrapper::run

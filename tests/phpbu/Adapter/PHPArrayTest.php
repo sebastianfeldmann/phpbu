@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Adapter;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Env test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Adapter;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 4.0.0
  */
-class PHPArrayTest extends \PHPUnit\Framework\TestCase
+class PHPArrayTest extends TestCase
 {
     /**
      * Tests PHPArray::setup

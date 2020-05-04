@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Backup;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Path test
  *
@@ -13,7 +15,7 @@ namespace phpbu\App\Backup;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class PathTest extends \PHPUnit\Framework\TestCase
+class PathTest extends TestCase
 {
     /**
      * Tests Path::getPath

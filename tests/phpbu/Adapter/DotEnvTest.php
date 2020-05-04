@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Adapter;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Factory test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Adapter;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class DotenvTest extends \PHPUnit\Framework\TestCase
+class DotenvTest extends TestCase
 {
     /**
      * Tests DotEnv::setUp

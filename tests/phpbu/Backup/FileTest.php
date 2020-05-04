@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup;
 
 use phpbu\App\Backup\File\Local;
+use PHPUnit\Framework\TestCase;
 
 /**
  * File test
@@ -15,7 +16,7 @@ use phpbu\App\Backup\File\Local;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class FileTest extends \PHPUnit\Framework\TestCase
+class FileTest extends TestCase
 {
     /**
      * Tests File::getFileInfo
@@ -100,7 +101,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
 
         unlink($spl->getPathname());
 
-        $this->assertEquals(true, $writable);
+        $this->assertTrue($writable);
     }
 
     /**
@@ -114,7 +115,7 @@ class FileTest extends \PHPUnit\Framework\TestCase
 
         $existing = file_exists($spl->getPathname());
 
-        $this->assertEquals(false, $existing);
+        $this->assertFalse($existing);
     }
 
     /**
