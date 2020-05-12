@@ -2,6 +2,7 @@
 namespace phpbu\App\Log;
 
 use phpbu\App\Result;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Telegram Test
@@ -15,7 +16,7 @@ use phpbu\App\Result;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class TelegramTest extends \PHPUnit\Framework\TestCase
+class TelegramTest extends TestCase
 {
     public function testSetUpOk()
     {
@@ -82,7 +83,7 @@ class TelegramTest extends \PHPUnit\Framework\TestCase
     {
         $events = Telegram::getSubscribedEvents();
 
-        $this->assertTrue(array_key_exists('phpbu.app_end', $events));
+        $this->assertArrayHasKey('phpbu.app_end', $events);
         $this->assertEquals('onPhpbuEnd', $events['phpbu.app_end']);
     }
 

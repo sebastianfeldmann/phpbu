@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Util;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Array utility test
  *
@@ -12,14 +14,14 @@ namespace phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class ArrTest extends \PHPUnit\Framework\TestCase
+class ArrTest extends TestCase
 {
     /**
      * Test isSetAndNotEmptyString
      */
     public function testIsSetAndNotEmptyString()
     {
-        $arr = array('foo' => 'bar', 'baz' => '', 'fiz' => 0);
+        $arr = ['foo' => 'bar', 'baz' => '', 'fiz' => 0];
 
         $this->assertTrue(Arr::isSetAndNotEmptyString($arr, 'foo'), 'foo should be set and not the empty string');
         $this->assertFalse(Arr::isSetAndNotEmptyString($arr, 'baz'), 'baz should be set but the empty string');
@@ -31,10 +33,10 @@ class ArrTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetValue()
     {
-        $arr = array('foo' => 'bar', 'baz' => '', 'fiz' => 0);
+        $arr = ['foo' => 'bar', 'baz' => '', 'fiz' => 0];
 
         $this->assertEquals('bar', Arr::getValue($arr, 'foo'), 'foo should be bar');
-        $this->assertEquals(null, Arr::getValue($arr, 'buz'), 'buz should be null');
+        $this->assertNull(Arr::getValue($arr, 'buz'), 'buz should be null');
         $this->assertEquals(0, Arr::getValue($arr, 'fiz'), 'fiz should be 0');
     }
 
@@ -43,7 +45,7 @@ class ArrTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetValueDefault()
     {
-        $arr = array('foo' => 'bar', 'baz' => '', 'fiz' => 0);
+        $arr = ['foo' => 'bar', 'baz' => '', 'fiz' => 0];
 
         $this->assertEquals('bar', Arr::getValue($arr, 'foo', 'default'), 'foo should be bar');
         $this->assertEquals('default', Arr::getValue($arr, 'buz', 'default'), 'default should be step in');

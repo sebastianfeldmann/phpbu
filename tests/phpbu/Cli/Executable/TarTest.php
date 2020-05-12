@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Tar Test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class TarTest extends \PHPUnit\Framework\TestCase
+class TarTest extends TestCase
 {
     /**
      * Tests Tar::getCommandLine

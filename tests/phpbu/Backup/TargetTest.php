@@ -28,7 +28,7 @@ class TargetTest extends TestCase
         $target   = new Target($path, $filename);
         $target->setupPath();
 
-        $this->assertTrue(is_dir($target->getPath()->getPath()));
+        $this->assertDirectoryExists($target->getPath()->getPath());
 
         rmdir($target->getPath()->getPath());
     }
@@ -437,7 +437,7 @@ class TargetTest extends TestCase
         $filename = basename(__FILE__);
         $target   = new Target($path, $filename, strtotime('2014-12-01 04:30:57'));
 
-        $this->assertEquals(true, $target->fileExists());
+        $this->assertTrue($target->fileExists());
     }
 
     /**

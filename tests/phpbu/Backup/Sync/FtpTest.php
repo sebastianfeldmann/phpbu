@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\BaseMockery;
+use PHPUnit\Framework\TestCase;
 
 /**
  * FtpTest
@@ -13,7 +14,7 @@ use phpbu\App\BaseMockery;
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://www.phpbu.de/
  */
-class FtpTest extends \PHPUnit\Framework\TestCase
+class FtpTest extends TestCase
 {
     use BaseMockery;
 

@@ -90,7 +90,7 @@ class OutdatedTest extends TestCase
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
 
         $cleaner = new Outdated();
-        $cleaner->setup(array('older' => '3d'));
+        $cleaner->setup(['older' => '3d']);
 
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }
@@ -164,7 +164,7 @@ class OutdatedTest extends TestCase
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
 
         $cleaner = new Outdated();
-        $cleaner->setup(array('older' => '3d'));
+        $cleaner->setup(['older' => '3d']);
 
         $cleaner->cleanup($targetStub, $collectorStub, $resultStub);
     }

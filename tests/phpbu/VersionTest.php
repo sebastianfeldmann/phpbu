@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Version test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class VersionTest extends \PHPUnit\Framework\TestCase
+class VersionTest extends TestCase
 {
     const VERSION = '6.0';
 
@@ -22,10 +24,10 @@ class VersionTest extends \PHPUnit\Framework\TestCase
     public function testId()
     {
         $version = Version::id();
-        $this->assertTrue(strpos($version, self::VERSION) !== false, 'version should match');
+        $this->assertStringContainsString(self::VERSION, $version, 'version should match');
 
         $cachedVersion = Version::id();
-        $this->assertTrue(strpos($cachedVersion, self::VERSION) !== false, 'version should match');
+        $this->assertStringContainsString(self::VERSION, $cachedVersion, 'version should match');
     }
 
     /**

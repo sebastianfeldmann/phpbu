@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Backup\File;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Google Drive file test.
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Backup\File;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class GoogleDriveTest extends \PHPUnit\Framework\TestCase
+class GoogleDriveTest extends TestCase
 {
     /**
      * Test GoogleDrive::unlink

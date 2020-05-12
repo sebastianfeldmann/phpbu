@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Configuration;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Finder test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Configuration;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.0.0
  */
-class FinderTest extends \PHPUnit\Framework\TestCase
+class FinderTest extends TestCase
 {
     /**
      * Tests Finder::findConfiguration

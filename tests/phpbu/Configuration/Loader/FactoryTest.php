@@ -2,6 +2,7 @@
 namespace phpbu\App\Configuration\Loader;
 
 use phpbu\App\Configuration\Bootstrapper;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Loader Factory test
@@ -14,7 +15,7 @@ use phpbu\App\Configuration\Bootstrapper;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-class FactoryTest extends \PHPUnit\Framework\TestCase
+class FactoryTest extends TestCase
 {
     /**
      * Tests Factory::createLoader
@@ -24,7 +25,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/json/config-valid.json';
         $loader = Factory::createLoader($file, new Bootstrapper());
 
-        $this->assertTrue($loader instanceof Json);
+        $this->assertInstanceOf(Json::class, $loader);
     }
 
     /**
@@ -35,6 +36,6 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
         $file   = PHPBU_TEST_FILES . '/conf/json/config-valid.json';
         $loader = Factory::createLoader($file);
 
-        $this->assertTrue($loader instanceof Json);
+        $this->assertInstanceOf(Json::class, $loader);
     }
 }

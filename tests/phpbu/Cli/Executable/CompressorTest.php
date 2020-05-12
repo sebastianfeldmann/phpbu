@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Compressor Test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class CompressorTest extends \PHPUnit\Framework\TestCase
+class CompressorTest extends TestCase
 {
     /**
      * Tests Compressor::getCommand

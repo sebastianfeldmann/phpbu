@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Collector;
 
 use phpbu\App\Backup\Target;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Local test
@@ -14,7 +15,7 @@ use phpbu\App\Backup\Target;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class LocalTest extends \PHPUnit\Framework\TestCase
+class LocalTest extends TestCase
 {
     /**
      * Test the Backup collector with no dynamic directory
@@ -28,7 +29,7 @@ class LocalTest extends \PHPUnit\Framework\TestCase
         $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
-        $this->assertEquals(4, count($files), '4 files should be found');
+        $this->assertCount(4, $files, '4 files should be found');
     }
 
     /**
@@ -44,7 +45,7 @@ class LocalTest extends \PHPUnit\Framework\TestCase
         $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
-        $this->assertEquals(4, count($files), '4 files should be found');
+        $this->assertCount(4, $files, '4 files should be found');
     }
 
     /**
@@ -61,7 +62,7 @@ class LocalTest extends \PHPUnit\Framework\TestCase
         $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
-        $this->assertEquals(3, count($files), '3 files should be found');
+        $this->assertCount(3, $files, '3 files should be found');
     }
 
     /**
@@ -75,7 +76,7 @@ class LocalTest extends \PHPUnit\Framework\TestCase
         $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
-        $this->assertEquals(4, count($files), '4 files should be found');
+        $this->assertCount(4, $files, '4 files should be found');
     }
 
     /**
@@ -89,7 +90,7 @@ class LocalTest extends \PHPUnit\Framework\TestCase
         $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
-        $this->assertEquals(8, count($files), '8 files should be found');
+        $this->assertCount(8, $files, '8 files should be found');
     }
 
     /**
@@ -103,7 +104,7 @@ class LocalTest extends \PHPUnit\Framework\TestCase
         $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
-        $this->assertEquals(2, count($files), '2 files should be found');
+        $this->assertCount(2, $files, '2 files should be found');
     }
 
     /**
@@ -119,7 +120,7 @@ class LocalTest extends \PHPUnit\Framework\TestCase
         $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
-        $this->assertEquals(7, count($files), '5 files should be found');
+        $this->assertCount(7, $files, '5 files should be found');
     }
 
     /**
@@ -133,7 +134,7 @@ class LocalTest extends \PHPUnit\Framework\TestCase
         $collector = new Local($target);
         $files     = $collector->getBackupFiles();
 
-        $this->assertEquals(4, count($files), '4 files should be found');
+        $this->assertCount(4, $files, '4 files should be found');
     }
 
     /**

@@ -4,6 +4,7 @@ namespace phpbu\App\Backup\Compressor;
 use phpbu\App\Backup\Target\Compression;
 use SebastianFeldmann\Cli\Command\Result as CommandResult;
 use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Compressor test
@@ -16,7 +17,7 @@ use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class DirectoryTest extends \PHPUnit\Framework\TestCase
+class DirectoryTest extends TestCase
 {
     /**
      * Tests Directory:__construct

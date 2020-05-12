@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Check;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * SizeMinTest
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Backup\Check;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class SizeMinTest extends \PHPUnit\Framework\TestCase
+class SizeMinTest extends TestCase
 {
     /**
      * Tests SizeMin::pass

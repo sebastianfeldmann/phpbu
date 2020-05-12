@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\BaseMockery;
+use PHPUnit\Framework\TestCase;
 
 /**
  * DropboxTest
@@ -14,7 +15,7 @@ use phpbu\App\BaseMockery;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class DropboxTest extends \PHPUnit\Framework\TestCase
+class DropboxTest extends TestCase
 {
     use BaseMockery;
 

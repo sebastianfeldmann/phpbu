@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Factory test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class FactoryTest extends \PHPUnit\Framework\TestCase
+class FactoryTest extends TestCase
 {
     /**
      * Tests Factory::createAdapter
@@ -39,7 +41,7 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('test-file.bz2', $target->getFilename());
         $this->assertEquals($directory . '/test-file.bz2', $target->getPathname());
 
-        $this->assertTrue(file_exists($directory));
+        $this->assertFileExists($directory);
 
         rmdir($directory);
     }

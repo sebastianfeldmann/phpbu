@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\BaseMockery;
+use PHPUnit\Framework\TestCase;
 
 /**
  * AmazonS3Test
@@ -14,7 +15,7 @@ use phpbu\App\BaseMockery;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class AmazonS3v3Test extends \PHPUnit\Framework\TestCase
+class AmazonS3v3Test extends TestCase
 {
     use BaseMockery;
 

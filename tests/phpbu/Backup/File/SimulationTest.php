@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Backup\File;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * SimulationTest
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Backup\File;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class SimulationTest extends \PHPUnit\Framework\TestCase
+class SimulationTest extends TestCase
 {
     /**
      * Test creating file and handle removing
@@ -37,7 +39,7 @@ class SimulationTest extends \PHPUnit\Framework\TestCase
         $time = time();
         $file = new Simulation($time, 100, '/foo', 'bar.txt');
 
-        $this->assertEquals(true, $file->isWritable());
+        $this->assertTrue($file->isWritable());
 
         $file->unlink();
         $this->assertTrue(true, 'no exception should be thrown');

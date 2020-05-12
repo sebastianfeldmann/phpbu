@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Log\ResultFormatter;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Xml Test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Log\ResultFormatter;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.0.0
  */
-class XmlTest extends \PHPUnit\Framework\TestCase
+class XmlTest extends TestCase
 {
     /**
      * Tests Xml::format
@@ -23,11 +25,11 @@ class XmlTest extends \PHPUnit\Framework\TestCase
         $formatter = new Xml();
         $xml       = $formatter->format($result);
 
-        $this->assertTrue(!empty($xml));
+        $this->assertNotEmpty($xml);
 
         $simpleXml = simplexml_load_string($xml);
 
-        $this->assertTrue($simpleXml instanceof \SimpleXMLElement);
+        $this->assertInstanceOf(\SimpleXMLElement::class, $simpleXml);
     }
 
     /**

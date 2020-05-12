@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Event\App;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * End test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Event\App;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class EndTest extends \PHPUnit\Framework\TestCase
+class EndTest extends TestCase
 {
     /**
      * Tests End::getResult

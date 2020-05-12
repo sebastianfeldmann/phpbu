@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Util;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Math utility test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class MathTest extends \PHPUnit\Framework\TestCase
+class MathTest extends TestCase
 {
     /**
      * @dataProvider providerPercentValues
@@ -38,12 +40,12 @@ class MathTest extends \PHPUnit\Framework\TestCase
      */
     public function providerPercentValues()
     {
-        return array(
-            array(100, 90, 10),
-            array(100, 80, 20),
-            array(100, 50, 50),
-            array(80, 100, 20),
-            array(60, 100, 40),
-        );
+        return [
+            [100, 90, 10],
+            [100, 80, 20],
+            [100, 50, 50],
+            [80, 100, 20],
+            [60, 100, 40],
+        ];
     }
 }

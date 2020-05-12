@@ -3,6 +3,7 @@ namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\CliMockery;
 use phpbu\App\BaseMockery;
+use PHPUnit\Framework\TestCase;
 
 /**
  * XtraBackup Source Test
@@ -16,7 +17,7 @@ use phpbu\App\BaseMockery;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class XtraBackupTest extends \PHPUnit\Framework\TestCase
+class XtraBackupTest extends TestCase
 {
     use BaseMockery;
     use CliMockery;

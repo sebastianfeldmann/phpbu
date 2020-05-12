@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Configuration test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class ConfigurationTest extends \PHPUnit\Framework\TestCase
+class ConfigurationTest extends TestCase
 {
     /**
      * Tests Configuration::getWorkingDirectory
@@ -39,9 +41,9 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
     {
         $conf = new Configuration();
         $conf->setFilename('/tmp/foo.xml');
-        $this->assertEquals(false, $conf->getVerbose());
+        $this->assertFalse($conf->getVerbose());
         $conf->setVerbose(true);
-        $this->assertEquals(true, $conf->getVerbose());
+        $this->assertTrue($conf->getVerbose());
     }
 
     /**
@@ -51,9 +53,9 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
     {
         $conf = new Configuration();
         $conf->setFilename('/tmp/foo.xml');
-        $this->assertEquals(false, $conf->getColors());
+        $this->assertFalse($conf->getColors());
         $conf->setColors(true);
-        $this->assertEquals(true, $conf->getColors());
+        $this->assertTrue($conf->getColors());
     }
 
     /**
@@ -63,9 +65,9 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
     {
         $conf = new Configuration();
         $conf->setFilename('/tmp/foo.xml');
-        $this->assertEquals(false, $conf->getDebug());
+        $this->assertFalse($conf->getDebug());
         $conf->setDebug(true);
-        $this->assertEquals(true, $conf->getDebug());
+        $this->assertTrue($conf->getDebug());
     }
 
     /**
@@ -75,9 +77,9 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
     {
         $conf = new Configuration();
         $conf->setFilename('/tmp/foo.xml');
-        $this->assertEquals(false, $conf->isRestore());
+        $this->assertFalse($conf->isRestore());
         $conf->setRestore(true);
-        $this->assertEquals(true, $conf->isRestore());
+        $this->assertTrue($conf->isRestore());
     }
 
     /**
@@ -87,9 +89,9 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
     {
         $conf = new Configuration();
         $conf->setFilename('/tmp/foo.xml');
-        $this->assertEquals(false, $conf->isSimulation());
+        $this->assertFalse($conf->isSimulation());
         $conf->setSimulate(true);
-        $this->assertEquals(true, $conf->isSimulation());
+        $this->assertTrue($conf->isSimulation());
     }
 
     /**
@@ -112,9 +114,9 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         $conf = new Configuration();
         $conf->setLimit(['foo', 'bar']);
 
-        $this->assertEquals(true, $conf->isBackupActive('foo'));
-        $this->assertEquals(true, $conf->isBackupActive('bar'));
-        $this->assertEquals(false, $conf->isBackupActive('baz'));
+        $this->assertTrue($conf->isBackupActive('foo'));
+        $this->assertTrue($conf->isBackupActive('bar'));
+        $this->assertFalse($conf->isBackupActive('baz'));
     }
 
     /**
@@ -146,9 +148,9 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         $conf = new Configuration();
         $conf->setFilename('/tmp/foo.xml');
         $backup = new Configuration\Backup('backup', true);
-        $this->assertEquals(array(), $conf->getBackups());
+        $this->assertEquals([], $conf->getBackups());
         $conf->addBackup($backup);
-        $this->assertEquals(1, count($conf->getBackups()));
+        $this->assertCount(1, $conf->getBackups());
     }
 
     /**
@@ -158,10 +160,10 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
     {
         $conf = new Configuration();
         $conf->setFilename('/tmp/foo.xml');
-        $logger = new Configuration\Logger('json', array());
-        $this->assertEquals(array(), $conf->getLoggers());
+        $logger = new Configuration\Logger('json', []);
+        $this->assertEquals([], $conf->getLoggers());
         $conf->addLogger($logger);
-        $this->assertEquals(1, count($conf->getLoggers()));
+        $this->assertCount(1, $conf->getLoggers());
     }
 
     /**
@@ -172,9 +174,9 @@ class ConfigurationTest extends \PHPUnit\Framework\TestCase
         $conf = new Configuration();
         $conf->setFilename('/tmp/foo.xml');
         $logger = new Result\PrinterCli(false, false, false);
-        $this->assertEquals(array(), $conf->getLoggers());
+        $this->assertEquals([], $conf->getLoggers());
         $conf->addLogger($logger);
-        $this->assertEquals(1, count($conf->getLoggers()));
+        $this->assertCount(1, $conf->getLoggers());
     }
 
     /**

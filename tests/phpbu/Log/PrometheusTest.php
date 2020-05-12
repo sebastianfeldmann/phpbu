@@ -1,85 +1,59 @@
 <?php
 namespace phpbu\App\Log;
 
-use PHPUnit\Framework\TestCase;
+use phpbu\App\Configuration\Backup;
 
 /**
  * Json Test
  *
  * @package    phpbu
  * @subpackage tests
- * @author     Sebastian Feldmann <sebastian@phpbu.de>
- * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
+ * @author     MoeBrowne
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
- * @since      Class available since Release 3.0.0
+ * @since      Class available since Release 6.0.0
  */
-class JsonTest extends TestCase
+class PrometheusTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * Tests Json::getSubscribedEvents
-     */
-    public function testSubscribedEvents()
-    {
-        $events = Json::getSubscribedEvents();
-        $this->assertCount(2, $events);
-    }
 
     /**
-     * Tests Json::setup
-     */
-    public function testSetupNoTarget()
-    {
-        $this->expectException('phpbu\App\Exception');
-        $json = new Json();
-        $json->setup([]);
-    }
-
-    /**
-     * Tests Json::onPhpbuEnd
+     * Tests Prometheus::onBackupEnd
      */
     public function testOutput()
     {
         // result mock
         $result = $this->getResultMock();
 
-        // debug event mock
-        $debugEvent = $this->createMock(\phpbu\App\Event\Debug::class);
-        $debugEvent->method('getMessage')->willReturn('debug');
+        // config mock
+        $backupConf = $this->createMock(Backup::class);
+        $backupConf->method('getName')->willReturn('backupName');
+
+        // backup start event mock
+        $backupStartEvent = $this->createMock(\phpbu\App\Event\Backup\Start::class);
+        $backupStartEvent->method('getConfiguration')->willReturn($backupConf);
+
+        // backup end event mock
+        $backupEndEvent = $this->createMock(\phpbu\App\Event\Backup\End::class);
+        $backupEndEvent->method('getConfiguration')->willReturn($backupConf);
 
         // phpbu end event mock
         $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
-        $json = new Json();
-        $json->setup(['target' => 'php://output']);
+        $prometheus = new Prometheus();
+        $prometheus->setup(['target' => 'php://output']);
 
-        $json->onDebug($debugEvent);
-
-        ob_flush();
-        ob_start();
-        $json->onPhpbuEnd($phpbuEndEvent);
-        $outputJson = ob_get_clean();
-        $outputPHP  = json_decode($outputJson);
-
-
-        $this->assertInstanceOf(\stdClass::class, $outputPHP);
-    }
-
-    /**
-     * Tests Json::write
-     */
-    public function testWrite()
-    {
-        $json = new Json();
-        $json->setup(['target' => 'php://output']);
+        $prometheus->onBackupStart($backupStartEvent);
+        $prometheus->onBackupEnd($backupEndEvent);
 
         ob_flush();
         ob_start();
-        $json->write(['foo' => 'bar']);
+        $prometheus->onPhpbuEnd($phpbuEndEvent);
         $output = ob_get_clean();
 
-        $this->assertEquals('{"foo":"bar"}', $output);
+        $this->assertStringContainsString('phpbu_backup_success{name="foo"} 0', $output);
+        $this->assertStringContainsString('phpbu_backup_duration{name="backupName"} ', $output);
+        $this->assertStringContainsString('phpbu_backup_last_run{name="backupName"} ', $output);
+        $this->assertStringContainsString('phpbu_backup_size{name="backupName"} ', $output);
     }
 
     /**

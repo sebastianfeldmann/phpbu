@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Util;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * String utility test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class PathTest extends \PHPUnit\Framework\TestCase
+class PathTest extends TestCase
 {
     /**
      * @var integer
@@ -116,9 +118,9 @@ class PathTest extends \PHPUnit\Framework\TestCase
      */
     public function testHasTrailingSlash()
     {
-        $this->assertEquals(false, Path::hasTrailingSlash('foo'));
-        $this->assertEquals(false, Path::hasTrailingSlash('/foo/bar'));
-        $this->assertEquals(true, Path::hasTrailingSlash('baz/'));
+        $this->assertFalse(Path::hasTrailingSlash('foo'));
+        $this->assertFalse(Path::hasTrailingSlash('/foo/bar'));
+        $this->assertTrue(Path::hasTrailingSlash('baz/'));
     }
 
     /**
@@ -147,9 +149,9 @@ class PathTest extends \PHPUnit\Framework\TestCase
      */
     public function testHasLeadingSlash()
     {
-        $this->assertEquals(false, Path::hasLeadingSlash('foo'));
-        $this->assertEquals(false, Path::hasLeadingSlash('foo/bar/'));
-        $this->assertEquals(true, Path::hasLeadingSlash('/baz'));
+        $this->assertFalse(Path::hasLeadingSlash('foo'));
+        $this->assertFalse(Path::hasLeadingSlash('foo/bar/'));
+        $this->assertTrue(Path::hasLeadingSlash('/baz'));
     }
 
     /**

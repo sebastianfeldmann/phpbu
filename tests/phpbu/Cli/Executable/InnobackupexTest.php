@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * XtraBackup Executable Test
  *
@@ -13,7 +15,7 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class InnobackupexTest extends \PHPUnit\Framework\TestCase
+class InnobackupexTest extends TestCase
 {
     /**
      * Tests XtraBackup::createCommandLine

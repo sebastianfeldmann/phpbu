@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Log;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Webhook Test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Log;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.0.0
  */
-class WebhookTest extends \PHPUnit\Framework\TestCase
+class WebhookTest extends TestCase
 {
     /**
      * Tests Webhook::getSubscribedEvents
@@ -20,7 +22,7 @@ class WebhookTest extends \PHPUnit\Framework\TestCase
     public function testSubscribedEvents()
     {
         $events = Webhook::getSubscribedEvents();
-        $this->assertEquals(1, count($events));
+        $this->assertCount(1, $events);
     }
 
     /**

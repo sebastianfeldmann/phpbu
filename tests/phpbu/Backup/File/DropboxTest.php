@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Backup\File;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * DropboxTest
  *
@@ -13,7 +15,7 @@ namespace phpbu\App\Backup\File;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class DropboxTest extends \PHPUnit\Framework\TestCase
+class DropboxTest extends TestCase
 {
     /**
      * Test creating file and handle removing

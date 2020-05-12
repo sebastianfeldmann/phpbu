@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Log;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Mail Test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Log;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class MailTest extends \PHPUnit\Framework\TestCase
+class MailTest extends TestCase
 {
     /**
      * Tests Mail::getSubscribedEvents
@@ -21,8 +23,8 @@ class MailTest extends \PHPUnit\Framework\TestCase
     {
         $events = Mail::getSubscribedEvents();
 
-        $this->assertTrue(array_key_exists('phpbu.backup_start', $events));
-        $this->assertTrue(array_key_exists('phpbu.check_start', $events));
+        $this->assertArrayHasKey('phpbu.backup_start', $events);
+        $this->assertArrayHasKey('phpbu.check_start', $events);
 
         $this->assertEquals('onPhpbuEnd', $events['phpbu.app_end']);
     }

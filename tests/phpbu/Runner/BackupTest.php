@@ -4,6 +4,7 @@ namespace phpbu\App\Runner;
 use phpbu\App\BaseMockery;
 use phpbu\App\Result;
 use phpbu\App\Runner\Mockery as RunnerMockery;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Backup Test
@@ -16,7 +17,7 @@ use phpbu\App\Runner\Mockery as RunnerMockery;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 3.1.0
  */
-class BackupTest extends \PHPUnit\Framework\TestCase
+class BackupTest extends TestCase
 {
     use BaseMockery;
     use RunnerMockery;

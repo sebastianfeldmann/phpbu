@@ -2,6 +2,7 @@
 namespace phpbu\App\Result;
 
 use phpbu\App\Configuration;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Backup test
@@ -14,7 +15,7 @@ use phpbu\App\Configuration;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class BackupTest extends \PHPUnit\Framework\TestCase
+class BackupTest extends TestCase
 {
     /**
      * Tests Backup::wasSuccessFul

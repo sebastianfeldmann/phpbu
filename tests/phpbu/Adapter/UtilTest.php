@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Adapter;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Adapter Util test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Adapter;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.0.7
  */
-class UtilTest extends \PHPUnit\Framework\TestCase
+class UtilTest extends TestCase
 {
     /**
      * Tests Util::getAdapterReplacements
@@ -21,7 +23,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     {
         $values = Util::getAdapterReplacements('adapter:foo:bar');
 
-        $this->assertEquals(1, count($values));
+        $this->assertCount(1, $values);
         $this->assertEquals('adapter:foo:bar', $values[0]['search']);
         $this->assertEquals('foo', $values[0]['adapter']);
         $this->assertEquals('bar', $values[0]['path']);
@@ -34,7 +36,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     {
         $values = Util::getAdapterReplacements(':AdaPteR:foo:bar');
 
-        $this->assertEquals(1, count($values));
+        $this->assertCount(1, $values);
         $this->assertEquals(':AdaPteR:foo:bar', $values[0]['search']);
         $this->assertEquals('foo', $values[0]['adapter']);
         $this->assertEquals('bar', $values[0]['path']);
@@ -47,7 +49,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     {
         $values = Util::getAdapterReplacements('adapter:foo:bar:');
 
-        $this->assertEquals(1, count($values));
+        $this->assertCount(1, $values);
         $this->assertEquals('adapter:foo:bar:', $values[0]['search']);
         $this->assertEquals('foo', $values[0]['adapter']);
         $this->assertEquals('bar', $values[0]['path']);
@@ -60,7 +62,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     {
         $values = Util::getAdapterReplacements(':adapter:foo:bar:');
 
-        $this->assertEquals(1, count($values));
+        $this->assertCount(1, $values);
         $this->assertEquals(':adapter:foo:bar:', $values[0]['search']);
         $this->assertEquals('foo', $values[0]['adapter']);
         $this->assertEquals('bar', $values[0]['path']);
@@ -73,7 +75,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     {
         $values = Util::getAdapterReplacements('adapter:foo:bar:/some/path/:adapter:fiz:baz');
 
-        $this->assertEquals(2, count($values));
+        $this->assertCount(2, $values);
         $this->assertEquals('adapter:foo:bar:', $values[0]['search']);
         $this->assertEquals('foo', $values[0]['adapter']);
         $this->assertEquals('bar', $values[0]['path']);
@@ -90,7 +92,7 @@ class UtilTest extends \PHPUnit\Framework\TestCase
     {
         $values = Util::getAdapterReplacements('/some/:adapter:foo:bar:/path/:adapter:fiz:baz:/end/');
 
-        $this->assertEquals(2, count($values));
+        $this->assertCount(2, $values);
         $this->assertEquals(':adapter:foo:bar:', $values[0]['search']);
         $this->assertEquals('foo', $values[0]['adapter']);
         $this->assertEquals('bar', $values[0]['path']);

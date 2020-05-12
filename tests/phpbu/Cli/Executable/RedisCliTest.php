@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * RedisCli ExecutableTest
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.12
  */
-class RedisCliTest extends \PHPUnit\Framework\TestCase
+class RedisCliTest extends TestCase
 {
     /**
      * Tests RedisCli::getProcess

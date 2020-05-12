@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * SoftLayerTest
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Backup\Sync;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class SoftLayerTest extends \PHPUnit\Framework\TestCase
+class SoftLayerTest extends TestCase
 {
     /**
      * Tests SoftLayer::setUp

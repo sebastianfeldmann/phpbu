@@ -3,6 +3,7 @@ namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\CliMockery;
 use phpbu\App\BaseMockery;
+use PHPUnit\Framework\TestCase;
 
 /**
  * MongodumpTest
@@ -15,7 +16,7 @@ use phpbu\App\BaseMockery;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class MongodumpTest extends \PHPUnit\Framework\TestCase
+class MongodumpTest extends TestCase
 {
     use BaseMockery;
     use CliMockery;

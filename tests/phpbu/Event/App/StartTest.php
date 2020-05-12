@@ -2,6 +2,7 @@
 namespace phpbu\App\Event\App;
 
 use phpbu\App\Configuration;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Start test
@@ -14,7 +15,7 @@ use phpbu\App\Configuration;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class StartTest extends \PHPUnit\Framework\TestCase
+class StartTest extends TestCase
 {
     /**
      * Tests Start::getConfig
@@ -27,6 +28,6 @@ class StartTest extends \PHPUnit\Framework\TestCase
         $start  = new Start($conf);
         $config = $start->getConfiguration();
 
-        $this->assertEquals(true, $config->getDebug());
+        $this->assertTrue($config->getDebug());
     }
 }
