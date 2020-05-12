@@ -87,7 +87,7 @@ class Prometheus extends File implements Listener, Logger
         $this->write('# HELP phpbu_backup_success Whether or not the backup succeeded' . PHP_EOL);
         $this->write('# TYPE phpbu_backup_success gauge' . PHP_EOL);
         foreach ($event->getResult()->getBackups() as $backupResult) {
-            $this->write('phpbu_backup_success{name="' . $backupResult->getName() . '} ' . (int)$backupResult->allOk() . PHP_EOL);
+            $this->write('phpbu_backup_success{name="' . $backupResult->getName() . '"} ' . (int)$backupResult->allOk() . PHP_EOL);
         }
 
         $this->write(PHP_EOL);
@@ -96,7 +96,7 @@ class Prometheus extends File implements Listener, Logger
         $this->write('# TYPE phpbu_backup_duration gauge' . PHP_EOL);
         foreach ($this->backupStats as $backupName => $backupStats) {
             $duration = $this->backupStats[$backupName]['timeEnd'] - $this->backupStats[$backupName]['timeStart'];
-            $this->write('phpbu_backup_duration{name="' . $backupName . '} ' . $duration . PHP_EOL);
+            $this->write('phpbu_backup_duration{name="' . $backupName . '"} ' . $duration . PHP_EOL);
         }
 
         $this->write(PHP_EOL);
@@ -104,7 +104,7 @@ class Prometheus extends File implements Listener, Logger
         $this->write('# HELP phpbu_backup_last_run The unix timestamp of the last run' . PHP_EOL);
         $this->write('# TYPE phpbu_backup_last_run counter' . PHP_EOL);
         foreach ($this->backupStats as $backupName => $backupStats) {
-            $this->write('phpbu_backup_last_run{name="' . $backupName . '} ' . (int)$this->backupStats[$backupName]['lastRun'] . PHP_EOL);
+            $this->write('phpbu_backup_last_run{name="' . $backupName . '"} ' . (int)$this->backupStats[$backupName]['lastRun'] . PHP_EOL);
         }
 
         $this->write(PHP_EOL);
@@ -112,7 +112,7 @@ class Prometheus extends File implements Listener, Logger
         $this->write('# HELP phpbu_backup_size The size of the last successful backup' . PHP_EOL);
         $this->write('# TYPE phpbu_backup_size gauge' . PHP_EOL);
         foreach ($this->backupStats as $backupName => $backupStats) {
-            $this->write('phpbu_backup_size{name="' . $backupName . '} ' . $this->backupStats[$backupName]['size'] . PHP_EOL);
+            $this->write('phpbu_backup_size{name="' . $backupName . '"} ' . $this->backupStats[$backupName]['size'] . PHP_EOL);
         }
 
     }
