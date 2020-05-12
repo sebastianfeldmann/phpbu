@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Configuration\Backup;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Target Configuration test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Configuration\Backup;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class TargetTest extends \PHPUnit\Framework\TestCase
+class TargetTest extends TestCase
 {
     /**
      * Tests Target::__construct()

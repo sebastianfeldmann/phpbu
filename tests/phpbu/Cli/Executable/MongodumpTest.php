@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Mongodump Executable Test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class MongodumpTest extends \PHPUnit\Framework\TestCase
+class MongodumpTest extends TestCase
 {
     /**
      * Tests Mongodump::createCommandLine
@@ -129,7 +131,7 @@ class MongodumpTest extends \PHPUnit\Framework\TestCase
     public function testExcludeCollections()
     {
         $mongo = new Mongodump(PHPBU_TEST_BIN);
-        $mongo->dumpToDirectory('./dump')->excludeCollections(array('col1', 'col2'));
+        $mongo->dumpToDirectory('./dump')->excludeCollections(['col1', 'col2']);
 
         $this->assertEquals(
             PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --excludeCollection \'col1\' \'col2\'',
@@ -143,7 +145,7 @@ class MongodumpTest extends \PHPUnit\Framework\TestCase
     public function testExcludeCollectionsWithPrefix()
     {
         $mongo = new Mongodump(PHPBU_TEST_BIN);
-        $mongo->dumpToDirectory('./dump')->excludeCollectionsWithPrefix(array('pre1', 'pre2'));
+        $mongo->dumpToDirectory('./dump')->excludeCollectionsWithPrefix(['pre1', 'pre2']);
 
         $this->assertEquals(
             PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --excludeCollectionWithPrefix \'pre1\' \'pre2\'',

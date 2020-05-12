@@ -4,6 +4,7 @@ namespace phpbu\App;
 use phpbu\App\Backup\Check\Exception;
 use phpbu\App\Backup\Source\FakeSource;
 use phpbu\App\Backup\Target;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Version test
@@ -16,7 +17,7 @@ use phpbu\App\Backup\Target;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.6
  */
-class ResultTest extends \PHPUnit\Framework\TestCase
+class ResultTest extends TestCase
 {
     /**
      * Tests Result::wasSuccessFul
@@ -40,7 +41,7 @@ class ResultTest extends \PHPUnit\Framework\TestCase
         $result     = new Result();
         $cliPrinter = new Result\PrinterCli();
         $result->addListener($cliPrinter);
-        $this->assertTrue(is_float($result->started()));
+        $this->assertIsFloat($result->started());
     }
 
     /**
@@ -100,8 +101,8 @@ class ResultTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(0, $result->cleanupsFailedCount());
         $this->assertEquals(0, $result->cleanupsSkippedCount());
         $this->assertEquals(0, $result->errorCount());
-        $this->assertEquals(0, count($result->getErrors()));
-        $this->assertEquals(1, count($result->getBackups()));
+        $this->assertCount(0, $result->getErrors());
+        $this->assertCount(1, $result->getBackups());
     }
 
     /**
@@ -136,8 +137,8 @@ class ResultTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(0, $result->cleanupsFailedCount());
         $this->assertEquals(1, $result->cleanupsSkippedCount());
         $this->assertEquals(0, $result->errorCount());
-        $this->assertEquals(0, count($result->getErrors()));
-        $this->assertEquals(1, count($result->getBackups()));
+        $this->assertCount(0, $result->getErrors());
+        $this->assertCount(1, $result->getBackups());
     }
 
     /**
@@ -180,8 +181,8 @@ class ResultTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, $result->cleanupsFailedCount());
         $this->assertEquals(0, $result->cleanupsSkippedCount());
         $this->assertEquals(3, $result->errorCount());
-        $this->assertEquals(3, count($result->getErrors()));
-        $this->assertEquals(1, count($result->getBackups()));
+        $this->assertCount(3, $result->getErrors());
+        $this->assertCount(1, $result->getBackups());
     }
 
     /**
@@ -205,8 +206,8 @@ class ResultTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($result->allOk(), 'should be ok');
         $this->assertEquals(1, $result->backupsFailedCount());
         $this->assertEquals(1, $result->errorCount());
-        $this->assertEquals(1, count($result->getErrors()));
-        $this->assertEquals(1, count($result->getBackups()));
+        $this->assertCount(1, $result->getErrors());
+        $this->assertCount(1, $result->getBackups());
     }
 
     /**
@@ -234,8 +235,8 @@ class ResultTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(1, $result->backupsFailedCount());
         $this->assertEquals(1, $result->checksFailedCount());
         $this->assertEquals(1, $result->errorCount());
-        $this->assertEquals(1, count($result->getErrors()));
-        $this->assertEquals(1, count($result->getBackups()));
+        $this->assertCount(1, $result->getErrors());
+        $this->assertCount(1, $result->getBackups());
     }
 
     /**

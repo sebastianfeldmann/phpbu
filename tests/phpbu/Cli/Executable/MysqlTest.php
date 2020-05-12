@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Mysql Test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 6.0-dev
  */
-class MysqlTest extends \PHPUnit\Framework\TestCase
+class MysqlTest extends TestCase
 {
     /**
      * Tests Mysql::getCommand

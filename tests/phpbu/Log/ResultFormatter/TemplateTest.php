@@ -2,6 +2,7 @@
 namespace phpbu\App\Log\ResultFormatter;
 
 use phpbu\App\Exception;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Template Formatter Test
@@ -14,7 +15,7 @@ use phpbu\App\Exception;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.0.0
  */
-class TemplateTestTest extends \PHPUnit\Framework\TestCase
+class TemplateTestTest extends TestCase
 {
     /**
      * Test Template::__construct
@@ -37,9 +38,9 @@ class TemplateTestTest extends \PHPUnit\Framework\TestCase
         $formatter = new Template($path);
         $body      = $formatter->format($result);
 
-        $this->assertTrue(strpos($body, '<return>0</return>') !== false, 'result should exist');
-        $this->assertTrue(strpos($body, '<status>0</status>') !== false, 'status should exist');
-        $this->assertTrue(!strpos($body, '%%'), 'no % should exist anymore');
+        $this->assertStringContainsString('<return>0</return>', $body, 'result should exist');
+        $this->assertStringContainsString('<status>0</status>', $body, 'status should exist');
+        $this->assertStringNotContainsString('%%', $body, 'no % should exist anymore');
     }
 
     /**

@@ -6,6 +6,7 @@ use phpbu\App\BaseMockery;
 use SebastianFeldmann\Cli\Command\Result as CommandResult;
 use SebastianFeldmann\Cli\Command\Runner\Simple;
 use SebastianFeldmann\Cli\Processor\ProcOpen;
+use PHPUnit\Framework\TestCase;
 
 /**
  * TarTest
@@ -18,7 +19,7 @@ use SebastianFeldmann\Cli\Processor\ProcOpen;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class TarTest extends \PHPUnit\Framework\TestCase
+class TarTest extends TestCase
 {
     use BaseMockery;
     use CliMockery;

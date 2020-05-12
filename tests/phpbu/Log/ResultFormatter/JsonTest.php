@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Log\ResultFormatter;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Json Test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Log\ResultFormatter;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.0.0
  */
-class JsonTest extends \PHPUnit\Framework\TestCase
+class JsonTest extends TestCase
 {
     /**
      * Tests Json::format
@@ -28,8 +30,8 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $raw = json_decode($json, true);
 
         $this->assertEquals(0, $raw['status']);
-        $this->assertEquals(1, count($raw['errors']));
-        $this->assertEquals(1, count($raw['backups']));
+        $this->assertCount(1, $raw['errors']);
+        $this->assertCount(1, $raw['backups']);
         $this->assertEquals('foo', $raw['backups'][0]['name']);
     }
 

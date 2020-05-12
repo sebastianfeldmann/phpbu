@@ -3,6 +3,7 @@ namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\CliMockery;
 use phpbu\App\BaseMockery;
+use PHPUnit\Framework\TestCase;
 
 /**
  * LdapdumpTest
@@ -16,7 +17,7 @@ use phpbu\App\BaseMockery;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.1.12
  */
-class LdapdumpTest extends \PHPUnit\Framework\TestCase
+class LdapdumpTest extends TestCase
 {
     use BaseMockery;
     use CliMockery;
@@ -198,7 +199,7 @@ class LdapdumpTest extends \PHPUnit\Framework\TestCase
         try {
             $ldap->backup($target, $appResult);
         } catch (\Exception $e) {
-            $this->assertFalse(file_exists($file));
+            $this->assertFileNotExists($file);
             throw $e;
         }
     }

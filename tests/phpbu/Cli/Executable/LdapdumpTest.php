@@ -2,6 +2,7 @@
 namespace phpbu\App\Cli\Executable;
 
 use phpbu\App\Backup\Target\Compression;
+use PHPUnit\Framework\TestCase;
 
 /**
  * LdapdumpTest ExecutableTest
@@ -15,7 +16,7 @@ use phpbu\App\Backup\Target\Compression;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.1.12
  */
-class LdapdumpTest extends \PHPUnit\Framework\TestCase
+class LdapdumpTest extends TestCase
 {
     /**
      * Tests Ldapdump::getCommand

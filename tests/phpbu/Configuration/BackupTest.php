@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Configuration;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Backup Configuration test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Configuration;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class BackupTest extends \PHPUnit\Framework\TestCase
+class BackupTest extends TestCase
 {
     /**
      * Tests Backup::__construct()
@@ -22,8 +24,8 @@ class BackupTest extends \PHPUnit\Framework\TestCase
         $backup = new Backup('name', false);
 
         $this->assertEquals('name', $backup->getName());
-        $this->assertTrue(is_array($backup->getChecks()));
-        $this->assertTrue(is_array($backup->getSyncs()));
+        $this->assertIsArray($backup->getChecks());
+        $this->assertIsArray($backup->getSyncs());
     }
 
     /**
@@ -34,9 +36,9 @@ class BackupTest extends \PHPUnit\Framework\TestCase
         $backup = new Backup('name', false);
         $check  = new Backup\Check('SizeMin', '10M');
 
-        $this->assertEquals(0, count($backup->getChecks()));
+        $this->assertCount(0, $backup->getChecks());
         $backup->addCheck($check);
-        $this->assertEquals(1, count($backup->getChecks()));
+        $this->assertCount(1, $backup->getChecks());
     }
 
     /**
@@ -77,9 +79,9 @@ class BackupTest extends \PHPUnit\Framework\TestCase
         $backup = new Backup('name', false);
         $sync   = new Backup\Sync('dropbox', true);
 
-        $this->assertEquals(0, count($backup->getSyncs()));
+        $this->assertCount(0, $backup->getSyncs());
         $backup->addSync($sync);
-        $this->assertEquals(1, count($backup->getSyncs()));
+        $this->assertCount(1, $backup->getSyncs());
     }
 
     /**

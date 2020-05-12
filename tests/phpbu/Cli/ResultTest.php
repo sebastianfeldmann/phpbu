@@ -2,6 +2,7 @@
 namespace phpbu\App\Cli;
 
 use SebastianFeldmann\Cli\Command\Result as CommandResult;
+use PHPUnit\Framework\TestCase;
 
 /**
  * ResultTest
@@ -15,7 +16,7 @@ use SebastianFeldmann\Cli\Command\Result as CommandResult;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class ResultTest extends \PHPUnit\Framework\TestCase
+class ResultTest extends TestCase
 {
     /**
      * Tests Result::getCmdResult

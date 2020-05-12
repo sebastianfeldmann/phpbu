@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\File;
 
 use SebastianFeldmann;
+use PHPUnit\Framework\TestCase;
 
 /**
  * FtpTest
@@ -15,7 +16,7 @@ use SebastianFeldmann;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class FtpTest extends \PHPUnit\Framework\TestCase
+class FtpTest extends TestCase
 {
     /**
      * Test creating file and handle removing

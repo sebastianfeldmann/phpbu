@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\BaseMockery;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Google Drive sync test.
@@ -14,7 +15,7 @@ use phpbu\App\BaseMockery;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.0
  */
-class GoogleDriveTest extends \PHPUnit\Framework\TestCase
+class GoogleDriveTest extends TestCase
 {
     use BaseMockery;
 

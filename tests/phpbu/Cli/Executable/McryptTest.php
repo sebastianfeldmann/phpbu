@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Mcrypt ExecutableTest
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Cli\Executable;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class McryptTest extends \PHPUnit\Framework\TestCase
+class McryptTest extends TestCase
 {
     /**
      * Tests Mcrypt::createCommandLine

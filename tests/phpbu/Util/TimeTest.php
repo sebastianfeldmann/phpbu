@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Util;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Time utility test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.2
  */
-class TimeTest extends \PHPUnit\Framework\TestCase
+class TimeTest extends TestCase
 {
     /**
      * Tests Time::timeSinceExecutionStart

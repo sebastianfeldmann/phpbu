@@ -3,6 +3,7 @@ namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\CliMockery;
 use phpbu\App\BaseMockery;
+use PHPUnit\Framework\TestCase;
 
 /**
  * RedisTest
@@ -15,7 +16,7 @@ use phpbu\App\BaseMockery;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 2.1.12
  */
-class RedisTest extends \PHPUnit\Framework\TestCase
+class RedisTest extends TestCase
 {
     use BaseMockery;
     use CliMockery;
@@ -69,7 +70,7 @@ class RedisTest extends \PHPUnit\Framework\TestCase
         $status = $redis->backup($target, $appResult);
 
         $this->assertEquals('/tmp/dump.rdb', $status->getDataPath());
-        $this->assertEquals(false, $status->handledCompression());
+        $this->assertFalse($status->handledCompression());
     }
 
     /**

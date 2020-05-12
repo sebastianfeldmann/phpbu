@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Adapter;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Env test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Adapter;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 4.0.0
  */
-class EnvTest extends \PHPUnit\Framework\TestCase
+class EnvTest extends TestCase
 {
     /**
      * Tests Env::setup

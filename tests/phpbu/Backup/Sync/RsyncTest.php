@@ -3,6 +3,7 @@ namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Backup\CliMockery;
 use phpbu\App\BaseMockery;
+use PHPUnit\Framework\TestCase;
 
 /**
  * RsyncTest
@@ -15,7 +16,7 @@ use phpbu\App\BaseMockery;
  * @link       https://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class RsyncTest extends \PHPUnit\Framework\TestCase
+class RsyncTest extends TestCase
 {
     use BaseMockery;
     use CliMockery;

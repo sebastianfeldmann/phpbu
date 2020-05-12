@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Status Test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Backup\Source;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 2.0.1
  */
-class StatusTest extends \PHPUnit\Framework\TestCase
+class StatusTest extends TestCase
 {
     /**
      * Tests Status::create

@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Util;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * String utility test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Util;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class StrTest extends \PHPUnit\Framework\TestCase
+class StrTest extends TestCase
 {
     /**
      * @var integer
@@ -111,7 +113,7 @@ class StrTest extends \PHPUnit\Framework\TestCase
     public function testToListFull()
     {
         $list = Str::toList('foo,bar');
-        $this->assertEquals(2, count($list), 'list should contain 2 elements');
+        $this->assertCount(2, $list, 'list should contain 2 elements');
     }
 
     /**
@@ -120,7 +122,7 @@ class StrTest extends \PHPUnit\Framework\TestCase
     public function testToListEmpty()
     {
         $list = Str::toList('');
-        $this->assertEquals(0, count($list), 'list should be empty');
+        $this->assertCount(0, $list, 'list should be empty');
     }
 
     /**
@@ -129,7 +131,7 @@ class StrTest extends \PHPUnit\Framework\TestCase
     public function testToListEmptyTrim()
     {
         $list = Str::toList('foo , bar , baz  ');
-        $this->assertEquals(3, count($list), 'list should be empty');
+        $this->assertCount(3, $list, 'list should be empty');
         $this->assertEquals('foo', $list[0], 'should not contain spaces');
         $this->assertEquals('bar', $list[1], 'should not contain spaces');
         $this->assertEquals('baz', $list[2], 'should noz contain spaces');
@@ -141,7 +143,7 @@ class StrTest extends \PHPUnit\Framework\TestCase
     public function testToListEmptyNoTrim()
     {
         $list = Str::toList('foo  , bar ,  baz', ',', false);
-        $this->assertEquals(3, count($list), 'list should be empty');
+        $this->assertCount(3, $list, 'list should be empty');
         $this->assertEquals('foo  ', $list[0], 'should still contain spaces');
         $this->assertEquals(' bar ', $list[1], 'should still contain spaces');
         $this->assertEquals('  baz', $list[2], 'should still contain spaces');

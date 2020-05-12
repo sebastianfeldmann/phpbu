@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Log;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Mail Test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Log;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 1.1.5
  */
-class MailTemplateTest extends \PHPUnit\Framework\TestCase
+class MailTemplateTest extends TestCase
 {
     /**
      * Tests MailTemplate::setSnippets
@@ -27,7 +29,7 @@ class MailTemplateTest extends \PHPUnit\Framework\TestCase
      */
     public function testSetSnippets()
     {
-        MailTemplate::setSnippets(array('foo' => 'bar'));
+        MailTemplate::setSnippets(['foo' => 'bar']);
 
         $this->assertEquals('bar', MailTemplate::getSnippet('foo'));
     }

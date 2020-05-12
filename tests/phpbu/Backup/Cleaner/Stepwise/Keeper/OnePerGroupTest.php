@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Cleaner\Stepwise\Keeper;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * OnePerGroup test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Backup\Cleaner\Stepwise\Keeper;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.0.0
  */
-class OnePerGroupTest extends \PHPUnit\Framework\TestCase
+class OnePerGroupTest extends TestCase
 {
     /**
      * Tests OnePerGroup::keep

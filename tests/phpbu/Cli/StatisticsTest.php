@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Cli;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * StatisticsTest
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Cli;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.1.2
  */
-class StatisticsTest extends \PHPUnit\Framework\TestCase
+class StatisticsTest extends TestCase
 {
     /**
      * Tests Statistics::resourceUsage
@@ -21,7 +23,7 @@ class StatisticsTest extends \PHPUnit\Framework\TestCase
     {
         $usage = Statistics::resourceUsage();
 
-        $this->assertTrue(strpos($usage, 'Time:') !== false);
-        $this->assertTrue(strpos($usage, 'Memory:') !== false);
+        $this->assertStringContainsString('Time:', $usage);
+        $this->assertStringContainsString('Memory:', $usage);
     }
 }

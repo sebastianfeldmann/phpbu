@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Cleaner\Stepwise;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Range test
  *
@@ -12,7 +14,7 @@ namespace phpbu\App\Backup\Cleaner\Stepwise;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 5.0.0
  */
-class RangeTest extends \PHPUnit\Framework\TestCase
+class RangeTest extends TestCase
 {
     /**
      * Tests Range::getStart
