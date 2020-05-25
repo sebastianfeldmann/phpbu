@@ -35,6 +35,51 @@ class TarTest extends TestCase
     }
 
     /**
+     * Tests Tar::incrementalMetadata
+     *
+     * @throws \phpbu\App\Exception
+     */
+    public function testIncremental()
+    {
+        $dir   = sys_get_temp_dir();
+        $tarC  = dirname($dir);
+        $tarD  = basename($dir);
+        $cache = 'cache.snar';
+
+        $tar   = new Tar(PHPBU_TEST_BIN);
+        $tar->incrementalMetadata($cache);
+        $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar');
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar --listed-incremental=\'' . $cache . '\' -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            $tar->getCommand()
+        );
+    }
+
+    /**
+     * Tests Tar::forceLevelZero
+     *
+     * @throws \phpbu\App\Exception
+     */
+    public function testIncrementalLevelZero()
+    {
+        $dir   = sys_get_temp_dir();
+        $tarC  = dirname($dir);
+        $tarD  = basename($dir);
+        $cache = 'cache.snar';
+
+        $tar   = new Tar(PHPBU_TEST_BIN);
+        $tar->incrementalMetadata($cache);
+        $tar->forceLevelZero(true);
+        $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar');
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/tar --listed-incremental=\'' . $cache . '\' --level=\'0\' -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            $tar->getCommand()
+        );
+    }
+
+    /**
      * Tests Tar::getCommandLine
      */
     public function testDereference()

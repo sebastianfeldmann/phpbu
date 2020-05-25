@@ -106,6 +106,25 @@ class Tar extends Abstraction implements Executable
     private $dereference = false;
 
     /**
+     * File to store the incremental metadata in 'archive.snar'
+     *
+     * @var string
+     */
+    private $metadataFile = '';
+
+    /**
+     * Defines the incremental backup level
+     *
+     * This is used during incremental backup only.
+     *
+     *  0 => backup all
+     *  1 => backup incremental
+     *
+     * @var int
+     */
+    private $level = 1;
+
+    /**
      * Constructor.
      *
      * @param string $path
@@ -261,6 +280,28 @@ class Tar extends Abstraction implements Executable
     }
 
     /**
+     * Set incremental backup metadata file
+     *
+     * @param  string $pathToMetadataFile
+     * @return $this
+     */
+    public function incrementalMetadata(string $pathToMetadataFile): Tar
+    {
+        $this->metadataFile = $pathToMetadataFile;
+        return $this;
+    }
+
+    /**
+     * Force a level 0 backup even if backup is done incrementally
+     *
+     * @param bool $levelZero
+     */
+    public function forceLevelZero(bool $levelZero)
+    {
+        $this->level = $levelZero ? 0 : 1;
+    }
+
+    /**
      * Tar CommandLine generator.
      *
      * @return \SebastianFeldmann\Cli\CommandLine
@@ -277,6 +318,7 @@ class Tar extends Abstraction implements Executable
 
         $this->setExcludeOptions($tar);
         $this->handleWarnings($tar);
+        $this->handleIncremental($tar);
 
         $tar->addOptionIfNotEmpty('-h', $this->dereference, false);
         $tar->addOptionIfNotEmpty('--force-local', $this->local, false);
@@ -324,6 +366,29 @@ class Tar extends Abstraction implements Executable
         if ($this->ignoreFailedRead) {
             $tar->addOption('--ignore-failed-read');
             $this->acceptableExitCodes = [0, 1];
+        }
+    }
+
+    /**
+     * Will set the incremental backup options
+     *
+     * - --listed-incremental=PATH_TO_METADATA_FILE
+     * - --level=0|1
+     *
+     * @param \SebastianFeldmann\Cli\Command\Executable $tar
+     */
+    private function handleIncremental(Cmd $tar)
+    {
+        // if no incremental metadata file is set we can skip this part
+        if (empty($this->metadataFile)) {
+            return;
+        }
+
+        $tar->addOption('--listed-incremental', $this->metadataFile);
+
+        // only set the level if we want to force a level 0 backup since 1 is the default value
+        if ($this->level !== 1) {
+            $tar->addOption('--level', $this->level);
         }
     }
 
