@@ -26,9 +26,18 @@ class FileTest extends TestCase
     public function testDecompress()
     {
         $target  = $this->createTargetMock('foo.gz', 'foo.gz');
-        $dir     = new File();
-        $command = $dir->decompress($target);
+        $file    = new File();
+        $command = $file->decompress($target);
 
         $this->assertEquals('gzip -dk foo.gz', $command);
+    }
+
+    public function testDecompressZip()
+    {
+        $target  = $this->createTargetMock('foo.zip', 'foo.zip');
+        $file    = new File();
+        $command = $file->decompress($target);
+
+        $this->assertEquals('unzip foo.zip', $command);
     }
 }
