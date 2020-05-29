@@ -3,6 +3,8 @@ namespace phpbu\App\Backup;
 
 use phpbu\App\Cli\Executable;
 use phpbu\App\Cli\Result;
+use phpbu\App\Configuration;
+use phpbu\App\Util;
 use SebastianFeldmann\Cli\Command\Runner;
 
 /**
@@ -26,6 +28,13 @@ abstract class Cli
     protected $runner;
 
     /**
+     * Current timestamp
+     *
+     * @var int
+     */
+    protected $time;
+
+    /**
      * Executable command.
      *
      * @var \phpbu\App\Cli\Executable
@@ -36,10 +45,12 @@ abstract class Cli
      * Cli constructor.
      *
      * @param \SebastianFeldmann\Cli\Command\Runner $runner
+     * @param int                                   $time
      */
-    public function __construct(Runner $runner = null)
+    public function __construct(Runner $runner = null, $time = null)
     {
         $this->runner = $runner ? : new Runner\Simple();
+        $this->time   = $time   ? : time();
     }
 
     /**
@@ -96,6 +107,18 @@ abstract class Cli
             $this->executable = $this->createExecutable($target);
         }
         return $this->executable;
+    }
+
+    /**
+     * Return an absolute path relative to the used file.
+     *
+     * @param  string $path
+     * @param  string $default
+     * @return string
+     */
+    protected function toAbsolutePath(string $path, string $default = '')
+    {
+        return !empty($path) ? Util\Path::toAbsolutePath($path, Configuration::getWorkingDirectory()) : $default;
     }
 
     /**

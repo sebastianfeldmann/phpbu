@@ -13,6 +13,12 @@
   <option name="ignoreFailedRead" value="false" />
 
   <!-- optional, default null -->
+  <option name="incrementalFile" value="path/to/metadata.snar" />
+
+  <!-- optional, default null -->
+  <option name="forceLevelZeroOn" value="%D@Sun" />
+
+  <!-- optional, default null -->
   <option name="compressProgram" value="lbzip2" />
 
   <!-- optional, default false -->
