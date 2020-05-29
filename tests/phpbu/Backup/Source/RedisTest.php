@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Source;
 
 use phpbu\App\Backup\CliMockery;
+use phpbu\App\Backup\Restore\Plan;
 use phpbu\App\BaseMockery;
 use PHPUnit\Framework\TestCase;
 
@@ -165,5 +166,21 @@ class RedisTest extends TestCase
         $appResult->expects($this->once())->method('debug');
 
         $redis->backup($target, $appResult);
+    }
+
+    /**
+     * Tests Redis::restore
+     */
+    public function testRestore()
+    {
+        $plan    = new Plan();
+        $target  = $this->createTargetMock('/tmp/backup.redis');
+        $rdbPath = PHPBU_TEST_FILES . '/misc/dump.rdb';
+
+        $redis   = new Redis();
+        $redis->setup(['pathToRedisData' => $rdbPath, 'pathToRedisCli' => PHPBU_TEST_BIN]);
+        $redis->restore($target, $plan);
+
+        $this->assertCount(1, $plan->getRestoreCommands());
     }
 }
