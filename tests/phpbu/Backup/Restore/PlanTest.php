@@ -31,4 +31,15 @@ class PlanTest extends TestCase
         $this->assertCount(1, $plan->getDecompressionCommands());
         $this->assertCount(1, $plan->getRestoreCommands());
     }
+
+    /**
+     * Tests Plan::markSourceAsUnsupported
+     */
+    public function testUnsupported()
+    {
+        $plan = new Plan();
+        $plan->markSourceAsUnsupported();
+
+        $this->assertFalse($plan->isSourceSupported());
+    }
 }
