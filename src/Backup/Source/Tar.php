@@ -202,8 +202,9 @@ class Tar extends SimulatorExecutable implements Simulator, Restorable
      */
     private function isLevelZeroTime(string $date, array $values): bool
     {
-        foreach ($values as $value) {
-            if (Util\Path::replaceDatePlaceholders($date, $this->time) === $value) {
+        $currentDateValue = Util\Path::replaceDatePlaceholders($date, $this->time);
+        foreach ($values as $configuredValue) {
+            if ($currentDateValue === $configuredValue) {
                 return true;
             }
         }
