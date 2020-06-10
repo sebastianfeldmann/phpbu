@@ -41,9 +41,32 @@ class YandexDiskTest extends TestCase
      * @throws ReflectionException
      * @throws Exception
      */
+    public function testYandexDiskDeleteFile()
+    {
+        $yandexDiskFileStub = $this->prepareClosedStub();
+        $yandexDiskFileStub->expects($this->once())
+            ->method('delete')
+            ->with('backups/dump.tar.gz');
+
+        $yandexDiskStub = $this->prepareDiskStub();
+        $yandexDiskStub->expects($this->once())
+            ->method('getResource')
+            ->with('backups/dump.tar.gz')
+            ->willReturn($yandexDiskFileStub);
+
+        $file = new YandexDisk($yandexDiskStub, $yandexDiskFileStub);
+        $file->unlink();
+    }
+
+    /**
+     * Tests YandexDisk::unlink
+     * @throws ReflectionException
+     * @throws Exception
+     */
     public function testYandexDiskDeleteFailure()
     {
         $this->expectException(Exception::class);
+
         $yandexDiskFileStub = $this->prepareClosedStub();
         $yandexDiskFileStub->expects($this->once())
             ->method('delete')

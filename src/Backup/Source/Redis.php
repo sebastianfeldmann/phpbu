@@ -226,13 +226,8 @@ class Redis extends SimulatorExecutable implements Simulator, Restorable
      */
     public function restore(Target $target, Plan $plan): Status
     {
-        $plan->addRestoreCommand(
-            sprintf(
-                'cp %s %s',
-                $target->getPathnamePlain(),
-                $this->pathToRedisData
-            )
-        );
+        $cmd = sprintf('cp %s %s', $target->getPathnamePlain(), $this->pathToRedisData);
+        $plan->addRestoreCommand($cmd);
 
         return Status::create()->uncompressedFile($target->getPathnamePlain());
     }

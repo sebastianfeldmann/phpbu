@@ -3,9 +3,7 @@ namespace phpbu\App\Backup\Crypter;
 
 use phpbu\App\Backup\Cli;
 use phpbu\App\Backup\Target;
-use phpbu\App\Configuration;
 use phpbu\App\Result;
-use phpbu\App\Util;
 
 /**
  * Abstract crypter class.
@@ -52,17 +50,5 @@ abstract class Abstraction extends Cli
             'execute encryption:' . PHP_EOL .
             $this->getExecutable($target)->getCommandPrintable()
         );
-    }
-
-    /**
-     * Return an absolute path relative to the used file.
-     *
-     * @param  string $path
-     * @param  string $default
-     * @return string
-     */
-    protected function toAbsolutePath(string $path, string $default = '')
-    {
-        return !empty($path) ? Util\Path::toAbsolutePath($path, Configuration::getWorkingDirectory()) : $default;
     }
 }
