@@ -5,7 +5,7 @@ use phpbu\App\Backup\Compressor;
 use phpbu\App\Backup\Source;
 use phpbu\App\Exception;
 use phpbu\App\Backup\Cleaner;
-use phpbu\App\Backup\Collector\Local;
+use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
@@ -60,7 +60,6 @@ class Backup extends Compression
             // setup target and collector, reset failure state
             $target        = $this->factory->createTarget($backup->getTarget());
             $source        = $this->factory->createSource($backup->getSource()->type, $backup->getSource()->options);
-            $collector     = new Local($target);
             $this->failure = false;
 
             try {
@@ -76,7 +75,7 @@ class Backup extends Compression
                  *   / /__/ _  / _// /__/ ,< _\ \
                  *   \___/_//_/___/\___/_/|_/___/
                  */
-                $this->executeChecks($backup, $target, $collector);
+                $this->executeChecks($backup, $target, new Collector\Local($target));
 
                 /*     __________  _____  ______
                  *    / ___/ _ \ \/ / _ \/_  __/
@@ -97,7 +96,7 @@ class Backup extends Compression
                  *   / /__/ /__/ _// __ |/    / /_/ / ___/
                  *   \___/____/___/_/ |_/_/|_/\____/_/
                  */
-                $this->executeCleanup($backup, $target, $collector);
+                $this->executeCleanup($backup, $target, new Collector\Local($target));
             } catch (\Exception $e) {
                 $this->result->debug('exception: ' . $e->getMessage());
                 $this->result->addError($e);
@@ -136,7 +135,7 @@ class Backup extends Compression
      * @param  \phpbu\App\Backup\Collector\Local $collector
      * @throws \Exception
      */
-    protected function executeChecks(Configuration\Backup $backup, Target $target, Local $collector)
+    protected function executeChecks(Configuration\Backup $backup, Target $target, Collector\Local $collector)
     {
         foreach ($backup->getChecks() as $config) {
             try {
@@ -221,7 +220,7 @@ class Backup extends Compression
      * @param  \phpbu\App\Backup\Collector\Local $collector
      * @throws \phpbu\App\Exception
      */
-    protected function executeCleanup(Configuration\Backup $backup, Target $target, Local $collector)
+    protected function executeCleanup(Configuration\Backup $backup, Target $target, Collector\Local $collector)
     {
         if ($backup->hasCleanup()) {
             /* @var \phpbu\App\Configuration\Backup\Cleanup $config */
