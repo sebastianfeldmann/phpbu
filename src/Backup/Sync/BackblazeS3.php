@@ -1,4 +1,5 @@
 <?php
+
 namespace phpbu\App\Backup\Sync;
 
 use Aws\S3\S3Client;
@@ -6,7 +7,8 @@ use Aws\S3\S3Client;
 /**
  * Backblaze Sync
  *
- * Docs example  https://help.backblaze.com/hc/en-us/articles/360046980814-Using-the-AWS-SDK-for-PHP-with-Backblaze-B2-Cloud-Storage
+ * Docs example
+ * https://help.backblaze.com/hc/en-us/articles/360046980814-Using-the-AWS-SDK-for-PHP-with-Backblaze-B2-Cloud-Storage
  *
  * @package    phpbu
  * @subpackage Backup
@@ -15,9 +17,8 @@ use Aws\S3\S3Client;
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
  */
-
-class BackblazeS3 extends AmazonS3v3 {
-
+class BackblazeS3 extends AmazonS3v3
+{
     /**
      * Create the Backblaze AWS client.
      *
@@ -43,8 +44,8 @@ class BackblazeS3 extends AmazonS3v3 {
      *
      * @return string
      */
-    protected function createEndpoint() {
-        return sprintf('https://s3.%s.backblazeb2.com', $this->region);
+    private function createEndpoint()
+    {
+        return strtr('https://s3.{region}.backblazeb2.com', '{region}', $this->region);
     }
-
 }
