@@ -69,6 +69,7 @@ class Factory
             'amazons3'    => '\\phpbu\\App\\Backup\\Sync\\AmazonS3v3',
             'amazons3-v3' => '\\phpbu\\App\\Backup\\Sync\\AmazonS3v3',
             'amazons3-v2' => '\\phpbu\\App\\Backup\\Sync\\AmazonS3v2',
+            'backblazes3' => '\\phpbu\\App\\Backup\\Sync\\BackblazeS3',
             'azureblob'   => '\\phpbu\\App\\Backup\\Sync\\AzureBlob',
             'dropbox'     => '\\phpbu\\App\\Backup\\Sync\\Dropbox',
             'ftp'         => '\\phpbu\\App\\Backup\\Sync\\Ftp',
