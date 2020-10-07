@@ -24,8 +24,8 @@ class BackblazeS3Test extends TestCase
      */
     public function testSetUpOk()
     {
-        $amazonS3 = new BackblazeS3();
-        $amazonS3->setup([
+        $b2 = new BackblazeS3();
+        $b2->setup([
             'key'    => 'dummy-key',
             'secret' => 'dummy-secret',
             'bucket' => 'dummy-bucket',
@@ -36,4 +36,23 @@ class BackblazeS3Test extends TestCase
         $this->assertTrue(true, 'no exception should occur');
     }
 
+    public function testEndpoint()
+    {
+        $b2 = new BackblazeS3();
+        $b2->setup([
+            'key'    => 'dummy-key',
+            'secret' => 'dummy-secret',
+            'bucket' => 'dummy-bucket',
+            'region' => 'dummy-region',
+            'path'   => '/'
+        ]);
+
+        $createEndpointPrivateMethod = function () {
+            return $this->createEndpoint();
+        };
+
+        $createEndpointClosure = $createEndpointPrivateMethod->bindTo($b2, $b2);
+
+        $this->assertEquals($createEndpointClosure(), 'https://s3.dummy-region.backblazeb2.com');
+    }
 }
