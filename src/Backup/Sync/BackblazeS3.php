@@ -47,6 +47,6 @@ class BackblazeS3 extends AmazonS3v3
      */
     protected function createEndpoint()
     {
-        return str_replace('{region}', $this->region, 'https://s3.{region}.backblazeb2.com') ;
+        return str_replace('{region}', $this->region, 'https://s3.{region}.backblazeb2.com');
     }
 }
