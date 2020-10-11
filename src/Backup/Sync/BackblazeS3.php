@@ -19,6 +19,7 @@ use Aws\S3\S3Client;
  */
 class BackblazeS3 extends AmazonS3v3
 {
+
     /**
      * Create the Backblaze AWS client.
      *
@@ -44,8 +45,8 @@ class BackblazeS3 extends AmazonS3v3
      *
      * @return string
      */
-    private function createEndpoint()
+    protected function createEndpoint()
     {
-        return strtr('https://s3.{region}.backblazeb2.com', '{region}', $this->region);
+        return str_replace('{region}', $this->region, 'https://s3.{region}.backblazeb2.com');
     }
 }
