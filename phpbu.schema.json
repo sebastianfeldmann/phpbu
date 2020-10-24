@@ -1,0 +1,340 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://www.phpbu.de/phpbu.schema.json",
+    "title": "PHPBU Configuration schema",
+    "type": "object",
+    "required": [
+        "verbose",
+        "logging",
+        "backups"
+    ],
+    "properties": {
+        "verbose": {
+            "$id": "#root/verbose",
+            "title": "Controls the output verbosity",
+            "type": "boolean",
+            "examples": [
+                true
+            ],
+            "default": false
+        },
+        "logging": {
+            "$id": "#root/logging",
+            "title": "Logging",
+            "type": "array",
+            "default": [],
+            "items": {
+                "$id": "#root/logging/items",
+                "title": "Controls where output is logged",
+                "type": "object",
+                "required": [
+                    "type",
+                    "target"
+                ],
+                "properties": {
+                    "type": {
+                        "$id": "#root/logging/items/type",
+                        "title": "Type indicates where stuff is logged",
+                        "type": "string",
+                        "default": "",
+                        "examples": [
+                            "Json"
+                        ],
+                        "enum": [
+                            "Json",
+                            "Mail",
+                            "Webhook",
+                            "Telegram",
+                            "Prometheus"
+                        ]
+                    },
+                    "target": {
+                        "$id": "#root/logging/items/target",
+                        "title": "Target, format depends on log type",
+                        "type": "string",
+                        "default": "",
+                        "examples": [
+                            "/tmp/backup.log.json"
+                        ],
+                        "pattern": "^.*$"
+                    }
+                }
+            }
+        },
+        "backups": {
+            "$id": "#root/backups",
+            "title": "A backup of a project might consist of several specific backups (database, files, ...)",
+            "type": "array",
+            "default": [],
+            "items": {
+                "$id": "#root/backups/items",
+                "title": "A specific backup",
+                "type": "object",
+                "required": [
+                    "name",
+                    "source",
+                    "target"
+                ],
+                "properties": {
+                    "name": {
+                        "$id": "#root/backups/items/name",
+                        "title": "Name",
+                        "type": "string",
+                        "default": "",
+                        "examples": [
+                            "Database backup"
+                        ],
+                        "pattern": "^.*$"
+                    },
+                    "source": {
+                        "$id": "#root/backups/items/source",
+                        "title": "Source",
+                        "type": "object",
+                        "required": [
+                            "type",
+                            "options"
+                        ],
+                        "properties": {
+                            "type": {
+                                "$id": "#root/backups/items/source/type",
+                                "title": "Type",
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "Tar"
+                                ],
+                                "enum": [
+                                    "ArangoDump",
+                                    "ElasticDump",
+                                    "MongoDump",
+                                    "MysqlDump",
+                                    "PgDump",
+                                    "InfluxDump",
+                                    "LdapDump",
+                                    "Redis",
+                                    "RSync",
+                                    "Tar",
+                                    "XtraBackup"
+                                ]
+                            },
+                            "options": {
+                                "$id": "#root/backups/items/source/options",
+                                "title": "Options for the source, content depends on type",
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "target": {
+                        "$id": "#root/backups/items/target",
+                        "title": "Target",
+                        "type": "object",
+                        "required": [
+                            "dirname",
+                            "filename"
+                        ],
+                        "properties": {
+                            "dirname": {
+                                "$id": "#root/backups/items/target/dirname",
+                                "title": "Path to the directory where the backup is stored, absolute or relative to the config file.",
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "/tmp"
+                                ],
+                                "pattern": "^.*$"
+                            },
+                            "filename": {
+                                "$id": "#root/backups/items/target/filename",
+                                "title": "Filename of output, might contain placeholders, see https://www.php.net/manual/en/function.date.php for possible values",
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "backup-%Y%m%d-%H%i.sql"
+                                ],
+                                "pattern": "^.*$"
+                            },
+                            "compress": {
+                                "$id": "#root/backups/items/target/compress",
+                                "title": "The type of compression to use",
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "bzip2"
+                                ],
+                                "enum": [
+                                    "bzip2",
+                                    "gzip",
+                                    "zip",
+                                    "7zip",
+                                    "xz"
+                                ]
+                            }
+                        }
+                    },
+                    "checks": {
+                        "$id": "#root/backups/items/checks",
+                        "title": "Checks applied to created backups",
+                        "type": "array",
+                        "default": [],
+                        "items": {
+                            "$id": "#root/backups/items/checks/items",
+                            "title": "A specific check",
+                            "type": "object",
+                            "required": [
+                                "type",
+                                "value"
+                            ],
+                            "properties": {
+                                "type": {
+                                    "$id": "#root/backups/items/checks/items/type",
+                                    "title": "The type of check",
+                                    "type": "string",
+                                    "default": "",
+                                    "examples": [
+                                        "SizeMin"
+                                    ],
+                                    "enum": [
+                                        "SizeMin",
+                                        "SizeDiffPreviousPercent",
+                                        "SizeDiffAvgPercent"
+                                    ]
+                                },
+                                "value": {
+                                    "$id": "#root/backups/items/checks/items/value",
+                                    "title": "The value for the check, p.ex. 500k for sizemin or 10 for 10% maximum size difference",
+                                    "type": "string",
+                                    "default": "",
+                                    "examples": [
+                                        "50M"
+                                    ],
+                                    "pattern": "^.*$"
+                                }
+                            }
+                        }
+                    },
+                    "crypt": {
+                        "$id": "#root/backups/items/crypt",
+                        "title": "Specifies what type of encryption should be used to encrypt the backup.",
+                        "type": "object",
+                        "default": [],
+                        "properties": {
+                            "type": {
+                                "$id": "#root/backups/items/crypts/items/type",
+                                "title": "The type of sync",
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "gpg"
+                                ],
+                                "enum": [
+                                    "gpg",
+                                    "mcrypt",
+                                    "openssl"
+                                ]
+                            },
+                            "skipOnFailure": {
+                                "$id": "#root/backups/items/crypts/items/value",
+                                "title": "You can still execute the crypt, even if failure(s) occurred.",
+                                "type": "boolean",
+                                "default": "false",
+                                "examples": [
+                                    "true"
+                                ]
+                            },
+                            "options": {
+                                "$id": "#root/backups/items/crypts/items/options",
+                                "title": "The options, content depends on crypt type",
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "syncs": {
+                        "$id": "#root/backups/items/syncs",
+                        "title": "Syncs allow for finished backups to be synced to some other location",
+                        "type": "array",
+                        "default": [],
+                        "items": {
+                            "$id": "#root/backups/items/syncs/items",
+                            "title": "A specific sync",
+                            "type": "object",
+                            "required": [
+                                "type"
+                            ],
+                            "properties": {
+                                "type": {
+                                    "$id": "#root/backups/items/syncs/items/type",
+                                    "title": "The type of sync",
+                                    "type": "string",
+                                    "default": "",
+                                    "examples": [
+                                        "rsync"
+                                    ],
+                                    "enum": [
+                                        "Amazons3",
+                                        "Amazons3-v3",
+                                        "Amazons3-v2",
+                                        "Backblazes3",
+                                        "Azureblob",
+                                        "Dropbox",
+                                        "Ftp",
+                                        "GoogleDrive",
+                                        "RSync",
+                                        "Sftp",
+                                        "Softlayer",
+                                        "Openstack",
+                                        "Yandex-disk"
+                                    ]
+                                },
+                                "skipOnFailure": {
+                                    "$id": "#root/backups/items/checks/items/value",
+                                    "title": "You can still execute the sync, even if failure(s) occurred.",
+                                    "type": "boolean",
+                                    "default": "false",
+                                    "examples": [
+                                        "true"
+                                    ]
+                                },
+                                "options": {
+                                    "$id": "#root/backups/items/syncs/items/options",
+                                    "title": "The options, content depends on sync type",
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "cleanup": {
+                        "$id": "#root/backups/items/cleanup",
+                        "title": "Tells phpbu which files to delete after a successful backup",
+                        "type": "object",
+                        "required": [
+                            "type",
+                            "options"
+                        ],
+                        "properties": {
+                            "type": {
+                                "$id": "#root/backups/items/cleanup/type",
+                                "title": "Type",
+                                "type": "string",
+                                "default": "",
+                                "examples": [
+                                    "quantity"
+                                ],
+                                "enum": [
+                                    "capacity",
+                                    "outdated",
+                                    "stepwise",
+                                    "quantity"
+                                ]
+                            },
+                            "options": {
+                                "$id": "#root/backups/items/cleanup/options",
+                                "title": "Depend on cleanup type",
+                                "type": "object"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

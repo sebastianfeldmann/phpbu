@@ -62,7 +62,7 @@
     "phpseclib/phpseclib": "^2.0",
     "softlayer/objectstorage": "dev-master",
     "vlucas/phpdotenv": "^4.0",
-    "google/apiclient":"^2.0",
+    "google/apiclient":"2.7.*",
     "php-opencloud/openstack": "^3.0",
     "arhitector/yandex": "^2.0",
     "microsoft/azure-storage-blob": "^1.4",

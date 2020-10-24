@@ -1,4 +1,5 @@
 <?php
+
 namespace phpbu\App\Result;
 
 use phpbu\App\Cli\Statistics;
@@ -95,6 +96,28 @@ class PrinterCli implements Listener
     private $runtime;
 
     /**
+     * @var Event\Check\Failed[]
+     */
+    private $failedChecks = [];
+
+    /**
+     * Constructor
+     *
+     * @param bool $verbose
+     * @param bool $colors
+     * @param bool $debug
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(bool $verbose = false, bool $colors = false, bool $debug = false)
+    {
+        $this->console = new Console;
+        $this->runtime = new Runtime;
+        $this->debug   = $debug;
+        $this->verbose = $verbose;
+        $this->colors  = $colors && $this->console->hasColorSupport();
+    }
+
+    /**
      * Returns an array of event names this subscriber wants to listen to.
      *
      * The array keys are event names and the value can be:
@@ -135,28 +158,11 @@ class PrinterCli implements Listener
     }
 
     /**
-     * Constructor
-     *
-     * @param  bool $verbose
-     * @param  bool $colors
-     * @param  bool $debug
-     * @throws \InvalidArgumentException
-     */
-    public function __construct(bool $verbose = false, bool $colors = false, bool $debug = false)
-    {
-        $this->console = new Console;
-        $this->runtime = new Runtime;
-        $this->debug   = $debug;
-        $this->verbose = $verbose;
-        $this->colors  = $colors && $this->console->hasColorSupport();
-    }
-
-    /**
      * phpbu start event.
      *
      * @param \phpbu\App\Event\App\Start $event
      */
-    public function onPhpbuStart(Event\App\Start $event)
+    public function onPhpbuStart(Event\App\Start $event): void
     {
         $configuration = $event->getConfiguration();
         if ($this->verbose) {
@@ -169,11 +175,24 @@ class PrinterCli implements Listener
     }
 
     /**
+     * Writes a buffer.
+     *
+     * @param string $buffer
+     */
+    public function write($buffer): void
+    {
+        if (PHP_SAPI != 'cli') {
+            $buffer = htmlspecialchars($buffer);
+        }
+        echo $buffer;
+    }
+
+    /**
      * Backup start event.
      *
      * @param \phpbu\App\Event\Backup\Start $event
      */
-    public function onBackupStart(Event\Backup\Start $event)
+    public function onBackupStart(Event\Backup\Start $event): void
     {
         $this->numBackups++;
         if ($this->debug) {
@@ -183,11 +202,21 @@ class PrinterCli implements Listener
     }
 
     /**
+     * Writes a buffer with Ansible like asterisk decoration.
+     *
+     * @param string $buffer
+     */
+    protected function writeWithAsterisk($buffer): void
+    {
+        $this->write(Util\Cli::formatWithAsterisk($buffer));
+    }
+
+    /**
      * Backup failed event.
      *
      * @param \phpbu\App\Event\Backup\Failed $event
      */
-    public function onBackupFailed(Event\Backup\Failed $event)
+    public function onBackupFailed(Event\Backup\Failed $event): void
     {
         if ($this->debug) {
             $this->writeWithColor('fg-white, bg-red, bold', 'failed' . PHP_EOL);
@@ -195,11 +224,26 @@ class PrinterCli implements Listener
     }
 
     /**
+     * Writes a buffer out with a color sequence if colors are enabled.
+     *
+     * @param string $color
+     * @param string $buffer
+     * @author Sebastian Bergmann <sebastian@phpunit.de>
+     */
+    protected function writeWithColor($color, $buffer): void
+    {
+        if ($this->colors) {
+            $buffer = Util\Cli::formatWithColor($color, $buffer);
+        }
+        $this->write($buffer . PHP_EOL);
+    }
+
+    /**
      * Backup end event.
      *
      * @param \phpbu\App\Event\Backup\End $event
      */
-    public function onBackupEnd(Event\Backup\End $event)
+    public function onBackupEnd(Event\Backup\End $event): void
     {
         if ($this->debug) {
             $this->writeWithColor('fg-black, bg-green', 'ok' . PHP_EOL);
@@ -211,7 +255,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Check\Start $event
      */
-    public function onCheckStart(Event\Check\Start $event)
+    public function onCheckStart(Event\Check\Start $event): void
     {
         $this->numChecks++;
         if ($this->debug) {
@@ -226,8 +270,10 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Check\Failed $event
      */
-    public function onCheckFailed(Event\Check\Failed $event)
+    public function onCheckFailed(Event\Check\Failed $event): void
     {
+        $this->failedChecks[] = $event;
+
         if ($this->debug) {
             $this->writeWithColor('fg-white, bg-red, bold', 'failed' . PHP_EOL);
         }
@@ -238,7 +284,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Check\End $event
      */
-    public function onCheckEnd(Event\Check\End $event)
+    public function onCheckEnd(Event\Check\End $event): void
     {
         if ($this->debug) {
             $this->writeWithColor('fg-black, bg-green', 'ok' . PHP_EOL);
@@ -250,7 +296,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Crypt\Start $event
      */
-    public function onCryptStart(Event\Crypt\Start $event)
+    public function onCryptStart(Event\Crypt\Start $event): void
     {
         $this->numCrypts++;
         if ($this->debug) {
@@ -264,7 +310,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Crypt\Skipped $event
      */
-    public function onCryptSkipped(Event\Crypt\Skipped $event)
+    public function onCryptSkipped(Event\Crypt\Skipped $event): void
     {
         if ($this->debug) {
             $this->writeWithColor('fg-black, bg-yellow', 'skipped' . PHP_EOL);
@@ -276,7 +322,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Crypt\Failed $event
      */
-    public function onCryptFailed(Event\Crypt\Failed $event)
+    public function onCryptFailed(Event\Crypt\Failed $event): void
     {
         if ($this->debug) {
             $this->writeWithColor('fg-white, bg-red, bold', 'failed' . PHP_EOL);
@@ -288,7 +334,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Crypt\End $event
      */
-    public function onCryptEnd(Event\Crypt\End $event)
+    public function onCryptEnd(Event\Crypt\End $event): void
     {
         if ($this->debug) {
             $this->writeWithColor('fg-black, bg-green', 'ok' . PHP_EOL);
@@ -300,7 +346,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Sync\Start $event
      */
-    public function onSyncStart(Event\Sync\Start $event)
+    public function onSyncStart(Event\Sync\Start $event): void
     {
         $this->numSyncs++;
         if ($this->debug) {
@@ -314,7 +360,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Sync\Skipped $event
      */
-    public function onSyncSkipped(Event\Sync\Skipped $event)
+    public function onSyncSkipped(Event\Sync\Skipped $event): void
     {
         if ($this->debug) {
             $this->writeWithColor('fg-black, bg-yellow', 'skipped' . PHP_EOL);
@@ -326,7 +372,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Sync\Failed $event
      */
-    public function onSyncFailed(Event\Sync\Failed $event)
+    public function onSyncFailed(Event\Sync\Failed $event): void
     {
         if ($this->debug) {
             $this->writeWithColor('fg-white, bg-red, bold', 'failed' . PHP_EOL);
@@ -338,7 +384,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Sync\End $event
      */
-    public function onSyncEnd(Event\Sync\End $event)
+    public function onSyncEnd(Event\Sync\End $event): void
     {
         if ($this->debug) {
             $this->writeWithColor('fg-black, bg-green', 'ok' . PHP_EOL);
@@ -350,7 +396,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Cleanup\Start $event
      */
-    public function onCleanupStart(Event\Cleanup\Start $event)
+    public function onCleanupStart(Event\Cleanup\Start $event): void
     {
         $this->numCleanups++;
         if ($this->debug) {
@@ -364,7 +410,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Cleanup\Skipped $event
      */
-    public function onCleanupSkipped(Event\Cleanup\Skipped $event)
+    public function onCleanupSkipped(Event\Cleanup\Skipped $event): void
     {
         if ($this->debug) {
             $this->writeWithColor('fg-black, bg-yellow', 'skipped' . PHP_EOL);
@@ -376,7 +422,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Cleanup\Failed $event
      */
-    public function onCleanupFailed(Event\Cleanup\Failed $event)
+    public function onCleanupFailed(Event\Cleanup\Failed $event): void
     {
         if ($this->debug) {
             $this->writeWithColor('fg-white, bg-red, bold', 'failed' . PHP_EOL);
@@ -388,7 +434,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Cleanup\End $event
      */
-    public function onCleanupEnd(Event\Cleanup\End $event)
+    public function onCleanupEnd(Event\Cleanup\End $event): void
     {
         if ($this->debug) {
             $this->writeWithColor('fg-black, bg-green', 'ok' . PHP_EOL);
@@ -400,7 +446,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Debug $event
      */
-    public function onDebug(Event\Debug $event)
+    public function onDebug(Event\Debug $event): void
     {
         if ($this->debug) {
             $this->write($event->getMessage() . PHP_EOL);
@@ -412,7 +458,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\Warning $event
      */
-    public function onWarning(Event\Warning $event)
+    public function onWarning(Event\Warning $event): void
     {
         $this->writeWithColor('fg-black, bg-yellow', $event->getMessage() . PHP_EOL);
     }
@@ -422,7 +468,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Event\App\End $event
      */
-    public function onPhpbuEnd(Event\App\End $event)
+    public function onPhpbuEnd(Event\App\End $event): void
     {
         $result = $event->getResult();
         $this->printResult($result);
@@ -433,10 +479,11 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Result $result
      */
-    public function printResult(Result $result)
+    public function printResult(Result $result): void
     {
         $this->printHeader();
         $this->printErrors($result);
+        $this->printFailedChecks($result);
 
         if ($this->verbose) {
             foreach ($result->getBackups() as $backup) {
@@ -449,7 +496,7 @@ class PrinterCli implements Listener
     /**
      * Prints the result header with memory usage info.
      */
-    protected function printHeader()
+    protected function printHeader(): void
     {
         $this->write(Statistics::resourceUsage() . PHP_EOL . PHP_EOL);
     }
@@ -459,7 +506,7 @@ class PrinterCli implements Listener
      *
      * @param \phpbu\App\Result $result
      */
-    protected function printErrors(Result $result)
+    protected function printErrors(Result $result): void
     {
         /* @var $e \Exception */
         foreach ($result->getErrors() as $e) {
@@ -476,11 +523,31 @@ class PrinterCli implements Listener
     }
 
     /**
+     * Print information on failed checks.
+     *
+     * @param \phpbu\App\Result $result
+     */
+    protected function printFailedChecks(Result $result): void
+    {
+        foreach ($this->failedChecks as $failedCheck) {
+            /** @var \phpbu\App\Configuration\Backup\Check $configuration */
+            $configuration = $failedCheck->getConfiguration();
+            $this->write(
+                sprintf(
+                    "Check %s (%s) FAILED \n\n",
+                    $configuration->type,
+                    $configuration->value
+                )
+            );
+        }
+    }
+
+    /**
      * Prints verbose backup information.
      *
      * @param \phpbu\App\Result\Backup $backup
      */
-    protected function printBackupVerbose(Result\Backup $backup)
+    protected function printBackupVerbose(Result\Backup $backup): void
     {
         $this->write(sprintf('backup %s: ', $backup->getName()));
         if ($backup->allOk()) {
@@ -527,7 +594,7 @@ class PrinterCli implements Listener
      *
      * @param Result $result
      */
-    protected function printFooter(Result $result)
+    protected function printFooter(Result $result): void
     {
         if (count($result->getBackups()) === 0) {
             $this->writeWithColor(
@@ -584,43 +651,5 @@ class PrinterCli implements Listener
                 )
             );
         }
-    }
-
-    /**
-     * Writes a buffer out with a color sequence if colors are enabled.
-     *
-     * @author Sebastian Bergmann <sebastian@phpunit.de>
-     * @param  string $color
-     * @param  string $buffer
-     */
-    protected function writeWithColor($color, $buffer)
-    {
-        if ($this->colors) {
-            $buffer = Util\Cli::formatWithColor($color, $buffer);
-        }
-        $this->write($buffer . PHP_EOL);
-    }
-
-    /**
-     * Writes a buffer with Ansible like asterisk decoration.
-     *
-     * @param string $buffer
-     */
-    protected function writeWithAsterisk($buffer)
-    {
-        $this->write(Util\Cli::formatWithAsterisk($buffer));
-    }
-
-    /**
-     * Writes a buffer.
-     *
-     * @param string $buffer
-     */
-    public function write($buffer)
-    {
-        if (PHP_SAPI != 'cli') {
-            $buffer = htmlspecialchars($buffer);
-        }
-        echo $buffer;
     }
 }
