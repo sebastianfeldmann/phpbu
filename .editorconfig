@@ -22,7 +22,7 @@ ij_editorconfig_space_before_colon = false
 ij_editorconfig_space_before_comma = false
 ij_editorconfig_spaces_around_assignment_operators = true
 
-[{*.ant,*.fxml,*.jhm,*.jnlp,*.jrxml,*.rng,*.tld,*.wsdl,*.xml,*.xsd,*.xsl,*.xslt,*.xul,phpunit.xml.dist}]
+[{*.ant, *.fxml, *.jhm, *.jnlp, *.jrxml, *.rng, *.tld, *.wsdl, *.xml, *.xsd, *.xsl, *.xslt, *.xul, phpunit.xml.dist}]
 ij_xml_align_attributes = true
 ij_xml_align_text = false
 ij_xml_attribute_wrap = normal
@@ -42,12 +42,12 @@ ij_xml_text_wrap = normal
 
 [*.php]
 ij_continuation_indent_size = 4
-ij_php_align_assignments = false
+ij_php_align_assignments = true
 ij_php_align_class_constants = false
 ij_php_align_group_field_declarations = false
 ij_php_align_inline_comments = false
-ij_php_align_key_value_pairs = false
-ij_php_align_multiline_array_initializer_expression = false
+ij_php_align_key_value_pairs = true
+ij_php_align_multiline_array_initializer_expression = true
 ij_php_align_multiline_binary_operation = false
 ij_php_align_multiline_chained_methods = false
 ij_php_align_multiline_extends_list = true
@@ -73,7 +73,7 @@ ij_php_blank_lines_after_opening_tag = 1
 ij_php_blank_lines_after_package = 1
 ij_php_blank_lines_around_class = 1
 ij_php_blank_lines_around_constants = 0
-ij_php_blank_lines_around_field = 0
+ij_php_blank_lines_around_field = 1
 ij_php_blank_lines_around_method = 1
 ij_php_blank_lines_before_class_end = 0
 ij_php_blank_lines_before_imports = 1
@@ -89,7 +89,7 @@ ij_php_catch_on_new_line = false
 ij_php_category_weight = 28
 ij_php_class_brace_style = next_line
 ij_php_comma_after_last_array_element = true
-ij_php_concat_spaces = false
+ij_php_concat_spaces = true
 ij_php_copyright_weight = 28
 ij_php_deprecated_weight = 28
 ij_php_do_while_brace_force = always
@@ -147,7 +147,7 @@ ij_php_method_weight = 28
 ij_php_modifier_list_wrap = false
 ij_php_multiline_chained_calls_semicolon_on_new_line = false
 ij_php_namespace_brace_style = 1
-ij_php_new_line_after_php_opening_tag = false
+ij_php_new_line_after_php_opening_tag = true
 ij_php_null_type_position = in_the_end
 ij_php_package_weight = 28
 ij_php_param_weight = 0
@@ -250,7 +250,7 @@ ij_php_version_weight = 28
 ij_php_while_brace_force = always
 ij_php_while_on_new_line = false
 
-[{*.example,*.markdown,*.md}]
+[{*.example, *.markdown, *.md}]
 ij_wrap_on_typing = true
 
 [*.yml]
