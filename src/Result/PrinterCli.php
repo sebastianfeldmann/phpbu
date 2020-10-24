@@ -112,9 +112,9 @@ class PrinterCli implements Listener
     {
         $this->console = new Console;
         $this->runtime = new Runtime;
-        $this->debug = $debug;
+        $this->debug   = $debug;
         $this->verbose = $verbose;
-        $this->colors = $colors && $this->console->hasColorSupport();
+        $this->colors  = $colors && $this->console->hasColorSupport();
     }
 
     /**
@@ -194,7 +194,7 @@ class PrinterCli implements Listener
      */
     public function onBackupStart(Event\Backup\Start $event): void
     {
-        $this->numBackups ++;
+        $this->numBackups++;
         if ($this->debug) {
             $backup = $event->getConfiguration();
             $this->writeWithAsterisk('backup: [' . $backup->getSource()->type . '] ');
@@ -257,7 +257,7 @@ class PrinterCli implements Listener
      */
     public function onCheckStart(Event\Check\Start $event): void
     {
-        $this->numChecks ++;
+        $this->numChecks++;
         if ($this->debug) {
             $check = $event->getConfiguration();
             $this->writeWithAsterisk('check: [' . $check->type . '] ');
@@ -298,7 +298,7 @@ class PrinterCli implements Listener
      */
     public function onCryptStart(Event\Crypt\Start $event): void
     {
-        $this->numCrypts ++;
+        $this->numCrypts++;
         if ($this->debug) {
             $crypt = $event->getConfiguration();
             $this->writeWithAsterisk('crypt: [' . $crypt->type . '] ');
@@ -348,7 +348,7 @@ class PrinterCli implements Listener
      */
     public function onSyncStart(Event\Sync\Start $event): void
     {
-        $this->numSyncs ++;
+        $this->numSyncs++;
         if ($this->debug) {
             $sync = $event->getConfiguration();
             $this->writeWithAsterisk('sync: [' . $sync->type . '] ');
@@ -398,7 +398,7 @@ class PrinterCli implements Listener
      */
     public function onCleanupStart(Event\Cleanup\Start $event): void
     {
-        $this->numCleanups ++;
+        $this->numCleanups++;
         if ($this->debug) {
             $cleanup = $event->getConfiguration();
             $this->writeWithAsterisk('cleanup: [' . $cleanup->type . '] ');
@@ -567,16 +567,16 @@ class PrinterCli implements Listener
             );
         }
         $chExecuted = str_pad($backup->checkCount(), 8, ' ', STR_PAD_LEFT);
-        $chFailed = str_pad($backup->checkCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $chFailed   = str_pad($backup->checkCountFailed(), 6, ' ', STR_PAD_LEFT);
         $crExecuted = str_pad($backup->cryptCount(), 8, ' ', STR_PAD_LEFT);
-        $crSkipped = str_pad($backup->cryptCountSkipped(), 7, ' ', STR_PAD_LEFT);
-        $crFailed = str_pad($backup->cryptCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $crSkipped  = str_pad($backup->cryptCountSkipped(), 7, ' ', STR_PAD_LEFT);
+        $crFailed   = str_pad($backup->cryptCountFailed(), 6, ' ', STR_PAD_LEFT);
         $syExecuted = str_pad($backup->syncCount(), 8, ' ', STR_PAD_LEFT);
-        $sySkipped = str_pad($backup->syncCountSkipped(), 7, ' ', STR_PAD_LEFT);
-        $syFailed = str_pad($backup->syncCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $sySkipped  = str_pad($backup->syncCountSkipped(), 7, ' ', STR_PAD_LEFT);
+        $syFailed   = str_pad($backup->syncCountFailed(), 6, ' ', STR_PAD_LEFT);
         $clExecuted = str_pad($backup->cleanupCount(), 8, ' ', STR_PAD_LEFT);
-        $clSkipped = str_pad($backup->cleanupCountSkipped(), 7, ' ', STR_PAD_LEFT);
-        $clFailed = str_pad($backup->cleanupCountFailed(), 6, ' ', STR_PAD_LEFT);
+        $clSkipped  = str_pad($backup->cleanupCountSkipped(), 7, ' ', STR_PAD_LEFT);
+        $clFailed   = str_pad($backup->cleanupCountFailed(), 6, ' ', STR_PAD_LEFT);
 
         $out = PHP_EOL . '          | executed | skipped | failed |' . PHP_EOL
             . '----------+----------+---------+--------+' . PHP_EOL

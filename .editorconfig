@@ -42,7 +42,7 @@ ij_xml_text_wrap = normal
 
 [*.php]
 ij_continuation_indent_size = 4
-ij_php_align_assignments = false
+ij_php_align_assignments = true
 ij_php_align_class_constants = false
 ij_php_align_group_field_declarations = false
 ij_php_align_inline_comments = false
@@ -221,7 +221,7 @@ ij_php_spaces_around_multiplicative_operators = true
 ij_php_spaces_around_null_coalesce_operator = true
 ij_php_spaces_around_relational_operators = true
 ij_php_spaces_around_shift_operators = true
-ij_php_spaces_around_unary_operator = true
+ij_php_spaces_around_unary_operator = false
 ij_php_spaces_around_var_within_brackets = false
 ij_php_spaces_within_array_initializer_braces = false
 ij_php_spaces_within_brackets = false
