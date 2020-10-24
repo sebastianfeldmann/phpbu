@@ -24,6 +24,7 @@ class Finder
     private $defaultConfigNames = [
         'phpbu.xml',
         'phpbu.xml.dist',
+        'phpbu.json',
     ];
 
     /**
