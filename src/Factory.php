@@ -35,6 +35,7 @@ class Factory
             'constants' => '\\phpbu\\App\\Adapter\\PHPConstant',
             'dotenv'    => '\\phpbu\\App\\Adapter\\Dotenv',
             'env'       => '\\phpbu\\App\\Adapter\\Env',
+            'wordpress' => '\\phpbu\\App\\Adapter\\PHPWordPress',
         ],
         'logger'  => [
             'json'     => '\\phpbu\\App\\Log\\Json',
