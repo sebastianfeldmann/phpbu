@@ -7,7 +7,7 @@ use phpbu\App\Exception;
 use phpbu\App\Util as AppUtil;
 
 /**
- * PHPVars Adapter
+ * PHPConstant Adapter
  *
  * @package    phpbu
  * @subpackage App
@@ -15,9 +15,9 @@ use phpbu\App\Util as AppUtil;
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
  * @link       http://phpbu.de/
- * @since      Class available since Release 4.0.1
+ * @since      Class available since Release 6.0.11
  */
-class PHPVars implements Adapter
+class PHPConstant implements Adapter
 {
     /**
      * Path to the config file
@@ -27,18 +27,11 @@ class PHPVars implements Adapter
     private $file;
 
     /**
-     * Configuration
-     *
-     * @var array
-     */
-    private $config;
-
-    /**
      * Setup the adapter.
      *
      * @param  array $conf
      * @return void
-     * @throws \phpbu\App\Exception
+     * @throws Exception
      */
     public function setup(array $conf)
     {
@@ -50,25 +43,28 @@ class PHPVars implements Adapter
     /**
      * Load config file to local file.
      *
-     * @throws \phpbu\App\Exception
+     * @throws Exception
      */
     private function load()
     {
         if (!file_exists($this->file)) {
             throw new Exception('config file not found');
         }
-        $this->config = require $this->file;
+        require $this->file;
     }
 
     /**
-     * Return a value for a given path.
+     * Return value a the constant with the given name.
      *
      * @param  string $path
      * @return string
-     * @throws \phpbu\App\Exception
+     * @throws Exception
      */
     public function getValue(string $path) : string
     {
+        if (!defined($path)) {
+            throw new Exception('constant not defined');
+        }
         return (string) constant($path);
     }
 }

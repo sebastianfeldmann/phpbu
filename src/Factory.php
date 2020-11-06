@@ -31,9 +31,10 @@ class Factory
         // type
         //   alias => fqcn
         'adapter'  => [
-            'array'  => '\\phpbu\\App\\Adapter\\PHPArray',
-            'dotenv' => '\\phpbu\\App\\Adapter\\Dotenv',
-            'env'    => '\\phpbu\\App\\Adapter\\Env',
+            'array'     => '\\phpbu\\App\\Adapter\\PHPArray',
+            'constants' => '\\phpbu\\App\\Adapter\\PHPConstant',
+            'dotenv'    => '\\phpbu\\App\\Adapter\\Dotenv',
+            'env'       => '\\phpbu\\App\\Adapter\\Env',
         ],
         'logger'  => [
             'json'     => '\\phpbu\\App\\Log\\Json',
@@ -94,8 +95,8 @@ class Factory
      *
      * @param  string $type
      * @param  string $alias
-     * @throws \phpbu\App\Exception
      * @return mixed
+     *@throws Exception
      */
     protected function create($type, $alias)
     {
@@ -114,12 +115,12 @@ class Factory
      *
      * @param  string $alias
      * @param  array  $conf
-     * @throws \phpbu\App\Exception
-     * @return \phpbu\App\Adapter
+     * @return Adapter
+     *@throws Exception
      */
     public function createAdapter($alias, $conf = []) : Adapter
     {
-        /** @var \phpbu\App\Adapter $adapter */
+        /** @var Adapter $adapter */
         $adapter = $this->create('adapter', $alias);
         if (!($adapter instanceof Adapter)) {
             throw new Exception(sprintf('adapter \'%s\' has to implement the \'Adapter\' interfaces', $alias));
@@ -133,12 +134,12 @@ class Factory
      *
      * @param  string $alias
      * @param  array  $conf
-     * @throws \phpbu\App\Exception
-     * @return \phpbu\App\Log\Logger
+     * @return Logger
+     *@throws Exception
      */
     public function createLogger($alias, $conf = []) : Logger
     {
-        /** @var \phpbu\App\Log\Logger $logger */
+        /** @var Logger $logger */
         $logger = $this->create('logger', $alias);
         if (!($logger instanceof Logger)) {
             throw new Exception(sprintf('logger \'%s\' has to implement the \'Logger\' interfaces', $alias));
@@ -153,9 +154,9 @@ class Factory
     /**
      * Create a backup target
      *
-     * @param  \phpbu\App\Configuration\Backup\Target $conf
-     * @return \phpbu\App\Backup\Target
-     * @throws \phpbu\App\Exception
+     * @param Configuration\Backup\Target $conf
+     * @return Target
+     * @throws Exception
      */
     public function createTarget(Configuration\Backup\Target $conf) : Target
     {
@@ -174,12 +175,12 @@ class Factory
      *
      * @param  string $alias
      * @param  array  $conf
-     * @throws \phpbu\App\Exception
-     * @return \phpbu\App\Backup\Source
+     * @return Source
+     *@throws Exception
      */
     public function createSource($alias, $conf = []) : Source
     {
-        /** @var \phpbu\App\Backup\Source $source */
+        /** @var Source $source */
         $source = $this->create('source', $alias);
         if (!($source instanceof Source)) {
             throw new Exception(sprintf('source \'%s\' has to implement the \'Source\' interface', $alias));
@@ -192,12 +193,12 @@ class Factory
      * Check Factory
      *
      * @param  string $alias
-     * @throws \phpbu\App\Exception
-     * @return \phpbu\App\Backup\Check
+     * @return Check
+     *@throws Exception
      */
     public function createCheck($alias) : Check
     {
-        /** @var \phpbu\App\Backup\Check $check */
+        /** @var Check $check */
         $check = $this->create('check', $alias);
         if (!($check instanceof Check)) {
             throw new Exception(sprintf('Check \'%s\' has to implement the \'Check\' interface', $alias));
@@ -210,12 +211,12 @@ class Factory
      *
      * @param  string $alias
      * @param  array  $conf
-     * @throws \phpbu\App\Exception
-     * @return \phpbu\App\Backup\Crypter
+     * @return Crypter
+     *@throws Exception
      */
     public function createCrypter($alias, $conf = []) : Crypter
     {
-        /** @var \phpbu\App\Backup\Crypter $crypter */
+        /** @var Crypter $crypter */
         $crypter = $this->create('crypter', $alias);
         if (!($crypter instanceof Crypter)) {
             throw new Exception(sprintf('Crypter \'%s\' has to implement the \'Crypter\' interface', $alias));
@@ -229,12 +230,12 @@ class Factory
      *
      * @param  string $alias
      * @param  array  $conf
-     * @throws \phpbu\App\Exception
-     * @return \phpbu\App\Backup\Sync
+     * @return Sync
+     *@throws Exception
      */
     public function createSync($alias, $conf = []) : Sync
     {
-        /** @var \phpbu\App\Backup\Sync $sync */
+        /** @var Sync $sync */
         $sync = $this->create('sync', $alias);
         if (!($sync instanceof Sync)) {
             throw new Exception(sprintf('sync \'%s\' has to implement the \'Sync\' interface', $alias));
@@ -248,12 +249,12 @@ class Factory
      *
      * @param  string $alias
      * @param  array  $conf
-     * @throws \phpbu\App\Exception
-     * @return \phpbu\App\Backup\Cleaner
+     * @return Cleaner
+     *@throws Exception
      */
     public function createCleaner($alias, $conf = []) : Cleaner
     {
-        /** @var \phpbu\App\Backup\Cleaner $cleaner */
+        /** @var Cleaner $cleaner */
         $cleaner = $this->create('cleaner', $alias);
         if (!($cleaner instanceof Cleaner)) {
             throw new Exception(sprintf('cleaner \'%s\' has to implement the \'Cleaner\' interface', $alias));
@@ -269,7 +270,7 @@ class Factory
      * @param  string  $alias       Name the class is registered at
      * @param  string  $fqcn        Full Qualified Class Name
      * @param  boolean $force       Overwrite already registered class
-     * @throws \phpbu\App\Exception
+     * @throws Exception
      */
     public static function register($type, $alias, $fqcn, $force = false)
     {
@@ -286,7 +287,7 @@ class Factory
      * Throws an exception if type is invalid
      *
      * @param  string $type
-     * @throws \phpbu\App\Exception
+     * @throws Exception
      */
     private static function checkType($type)
     {
