@@ -7,7 +7,7 @@ use phpbu\App\Exception;
 use phpbu\App\Util as AppUtil;
 
 /**
- * PHPWordPress Adapter by @planetahuevo based on https://rokaweb.ir/read-wpconfig-php/
+ * WordPress Adapter by @planetahuevo based on https://rokaweb.ir/read-wpconfig-php/
  * It reads the wordpress database variables and return them
  *
  * @package    phpbu
