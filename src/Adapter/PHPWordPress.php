@@ -70,7 +70,9 @@ class PHPWordPress implements Adapter
      */
     public function getValue(string $path) : string
     {
-
+        if ( !in_array($path, ['DB_NAME','DB_USER','DB_PASSWORD','DB_HOST'], true )) {
+            throw new Exception('constant not valid');
+        }
         $data    = $this->config;
         if( !$data ) {
             throw new Exception('config file empty');
