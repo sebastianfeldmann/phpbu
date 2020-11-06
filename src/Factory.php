@@ -32,10 +32,10 @@ class Factory
         //   alias => fqcn
         'adapter'  => [
             'array'     => '\\phpbu\\App\\Adapter\\PHPArray',
-            'constants' => '\\phpbu\\App\\Adapter\\PHPConstant',
+            'constant'  => '\\phpbu\\App\\Adapter\\PHPConstant',
             'dotenv'    => '\\phpbu\\App\\Adapter\\Dotenv',
             'env'       => '\\phpbu\\App\\Adapter\\Env',
-            'wordpress' => '\\phpbu\\App\\Adapter\\PHPWordPress',
+            'wordpress' => '\\phpbu\\App\\Adapter\\WordPress',
         ],
         'logger'  => [
             'json'     => '\\phpbu\\App\\Log\\Json',

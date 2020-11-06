@@ -8,7 +8,7 @@ use phpbu\App\Util as AppUtil;
 
 /**
  * PHPWordPress Adapter by @planetahuevo based on https://rokaweb.ir/read-wpconfig-php/
- * It reads the wordpress database variables and return them 
+ * It reads the wordpress database variables and return them
  *
  * @package    phpbu
  * @subpackage App
@@ -18,7 +18,7 @@ use phpbu\App\Util as AppUtil;
  * @link       http://phpbu.de/
  * @since      Class available since Release 6.0.11
  */
-class PHPWordPress implements Adapter
+class WordPress implements Adapter
 {
     /**
      * Path to the config file
@@ -26,8 +26,9 @@ class PHPWordPress implements Adapter
      * @var string
      */
     private $file;
+
     /**
-     * Configuration
+     * Contents of wordpress configuration
      *
      * @var string
      */
@@ -57,8 +58,9 @@ class PHPWordPress implements Adapter
         if (!file_exists($this->file)) {
             throw new Exception('config file not found');
         }
-        // read content of 
-        $this->config = @file_get_contents($this->file);
+        // read contents of wordpress config
+        // we can not require the configuration because it requires a shit load of other files
+        $this->config = file_get_contents($this->file);
     }
 
     /**
@@ -70,29 +72,11 @@ class PHPWordPress implements Adapter
      */
     public function getValue(string $path) : string
     {
-        if ( !in_array($path, ['DB_NAME','DB_USER','DB_PASSWORD','DB_HOST'], true )) {
-            throw new Exception('constant not valid');
+        $regex = "/define.+?'" . $path . "'.+?'(.*?)'.+/";
+        $match = [];
+        if (!preg_match($regex, $this->config, $match)) {
+            throw new Exception('constant ' . $path . ' not found');
         }
-        $data    = $this->config;
-        if( !$data ) {
-            throw new Exception('config file empty');
-        }
-        $params = [
-        'DB_NAME' => "/define.+?'DB_NAME'.+?'(.*?)'.+/",
-        'DB_USER' => "/define.+?'DB_USER'.+?'(.*?)'.+/",
-        'DB_PASSWORD' => "/define.+?'DB_PASSWORD'.+?'(.*?)'.+/",
-        'DB_HOST' => "/define.+?'DB_HOST'.+?'(.*?)'.+/",
-        ];
-        $wpconstants = [];
-        foreach( $params as $key => $value ) {
-            $found = preg_match_all( $value, $data, $result );
-            if( $found ) {
-                    $wpconstants[ $key ] = $result[ 1 ][ 0 ];
-            } else {
-                $wpconstants[ $key ] = false;
-            }
-        }
-        $data = $wpconstants[$path];
-        return (string) $data;
+        return (string) $match[1];
     }
 }
