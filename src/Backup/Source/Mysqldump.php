@@ -201,6 +201,13 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     private $routines;
 
     /**
+     * Dump scheduled events
+     *
+     * @var bool
+     */
+    private $events;
+
+    /**
      * Skip triggers
      * --skip-triggers
      *
@@ -238,6 +245,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
         $this->noData             = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noData', ''), false);
         $this->filePerTable       = Util\Str::toBoolean(Util\Arr::getValue($conf, 'filePerTable', ''), false);
         $this->routines           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'routines', ''), false);
+        $this->events             = Util\Str::toBoolean(Util\Arr::getValue($conf, 'events', ''), false);
         $this->skipTriggers       = Util\Str::toBoolean(Util\Arr::getValue($conf, 'skipTriggers', ''), false);
 
         // this doesn't fail, but it doesn't work, so throw an exception so the user understands
@@ -369,6 +377,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
                    ->produceFilePerTable($this->filePerTable)
                    ->dumpNoData($this->noData)
                    ->dumpRoutines($this->routines)
+                   ->dumpEvents($this->events)
                    ->skipTriggers($this->skipTriggers)
                    ->dumpStructureOnly($this->structureOnly)
                    ->dumpTo($this->getDumpTarget($target));
