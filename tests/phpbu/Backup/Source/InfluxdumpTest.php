@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Source;
 
+use Exception;
 use phpbu\App\Backup\CliMockery;
 use phpbu\App\BaseMockery;
 use PHPUnit\Framework\TestCase;
@@ -113,8 +114,8 @@ class InfluxdumpTest extends TestCase
 
         try {
             $influxd->backup($target, $appResult);
-        } catch (\Exception $e) {
-            $this->assertFileNotExists($file);
+        } catch (Exception $e) {
+            $this->assertFileDoesNotExist($file);
             throw $e;
         }
     }
