@@ -227,6 +227,18 @@ class MysqldumpTest extends TestCase
     }
 
     /**
+     * Tests Mysqldump::dumpEvents
+     */
+    public function testEvents()
+    {
+        $path      = realpath(__DIR__ . '/../../../_files/bin');
+        $mysqldump = new Mysqldump($path);
+        $mysqldump->dumpEvents(true);
+
+        $this->assertEquals($path . '/mysqldump --events --all-databases', $mysqldump->getCommand());
+    }
+
+    /**
      * Tests Mysqldump::getCommand
      */
     public function testGTIDValid()

@@ -181,6 +181,14 @@ class Mysqldump extends Abstraction implements Executable
     private $routines = false;
 
     /**
+     * Dump scheduled events.
+     * --events
+     *
+     * @var bool
+     */
+    private $events = false;
+
+    /**
      * Skip triggers
      * --skip-triggers
      *
@@ -444,6 +452,18 @@ class Mysqldump extends Abstraction implements Executable
     }
 
     /**
+     * Dump scheduled events
+     *
+     * @param  bool $bool
+     * @return \phpbu\App\Cli\Executable\Mysqldump
+     */
+    public function dumpEvents(bool $bool) : Mysqldump
+    {
+        $this->events = $bool;
+        return $this;
+    }
+
+    /**
      * Skip triggers
      *
      * @param  bool $bool
@@ -505,6 +525,7 @@ class Mysqldump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('--set-gtid-purged', $this->gtidPurged);
         $cmd->addOptionIfNotEmpty('--ssl-ca', $this->sslCa);
         $cmd->addOptionIfNotEmpty('--routines', $this->routines, false);
+        $cmd->addOptionIfNotEmpty('--events', $this->events, false);
         $cmd->addOptionIfNotEmpty('--skip-triggers', $this->skipTriggers, false);
 
         $this->configureSourceData($cmd);
