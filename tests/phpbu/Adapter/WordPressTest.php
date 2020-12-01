@@ -14,14 +14,14 @@ use PHPUnit\Framework\TestCase;
  * @link       http://www.phpbu.de/
  * @since      Class available since Release 6.0.12
  */
-class WordpressTest extends TestCase
+class WordPressTest extends TestCase
 {
     /**
      * Tests Wordpress::setup
      */
     public function testSetup()
     {
-        $arr = new Wordpress();
+        $arr = new WordPress();
         $arr->setup(['file' => PHPBU_TEST_FILES . '/misc/wp-config.php']);
 
         $this->assertTrue(true);
@@ -33,7 +33,7 @@ class WordpressTest extends TestCase
     public function testSetupFail()
     {
         $this->expectException('phpbu\App\Exception');
-        $arr = new Wordpress();
+        $arr = new WordPress();
         $arr->setup(['file' => 'wp-config.php']);
     }
 
@@ -42,7 +42,7 @@ class WordpressTest extends TestCase
      */
     public function testGetValue()
     {
-        $arr = new Wordpress();
+        $arr = new WordPress();
         $arr->setup(['file' => PHPBU_TEST_FILES . '/misc/wp-config.php']);
 
         $dbName = $arr->getValue('DB_NAME');
@@ -57,7 +57,7 @@ class WordpressTest extends TestCase
     public function testGetValueFail()
     {
         $this->expectException('phpbu\App\Exception');
-        $arr = new Wordpress();
+        $arr = new WordPress();
         $arr->setup(['file' => PHPBU_TEST_FILES . '/misc/wp-config.php']);
 
         $arr->getValue('DB_FAIL');

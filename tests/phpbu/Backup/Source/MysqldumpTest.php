@@ -210,6 +210,20 @@ class MysqldumpTest extends TestCase
     }
 
     /**
+     * Tests Mysqldump::
+     */
+    public function testEvents()
+    {
+        $target    = $this->createTargetMock();
+        $mysqldump = new Mysqldump();
+        $mysqldump->setup(['pathToMysqldump' => PHPBU_TEST_BIN, 'events' => 'true']);
+
+        $executable = $mysqldump->getExecutable($target);
+
+        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --events --all-databases', $executable->getCommand());
+    }
+
+    /**
      * Tests Mysqldump::backup
      */
     public function testBackupOk()
@@ -324,7 +338,7 @@ class MysqldumpTest extends TestCase
         try {
             $mysqldump->backup($target, $appResult);
         } catch (Exception $e) {
-            $this->assertFileNotExists($file);
+            $this->assertFileDoesNotExist($file);
             throw $e;
         }
     }
