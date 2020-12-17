@@ -41,6 +41,23 @@ class PgdumpTest extends TestCase
     /**
      * Tests Pgdump::getExecutable
      */
+    public function testSslMode()
+    {
+        $target = $this->createTargetMock('foo.sql');
+        $pgDump = new Pgdump();
+        $pgDump->setup(['pathToPgdump' => PHPBU_TEST_BIN, 'sslMode' => 'require']);
+
+        $executable = $pgDump->getExecutable($target);
+
+        $this->assertEquals(
+            'PGSSLMODE=\'require\' ' . PHPBU_TEST_BIN . '/pg_dump -w --file=\'foo.sql\' --format=\'p\'',
+            $executable->getCommand()
+        );
+    }
+
+    /**
+     * Tests Pgdump::getExecutable
+     */
     public function testDatabase()
     {
         $target = $this->createTargetMock('foo.sql');

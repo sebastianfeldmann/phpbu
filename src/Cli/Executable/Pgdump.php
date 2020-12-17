@@ -38,6 +38,14 @@ class Pgdump extends Abstraction implements Executable
     private $port;
 
     /**
+     * Set SSL mode
+     * PGSSLMODE=allow pg_dump ...
+     *
+     * @var string
+     */
+    private $sslMode;
+
+    /**
      * User to connect with
      * --user=<username>
      *
@@ -190,6 +198,20 @@ class Pgdump extends Abstraction implements Executable
     ];
 
     /**
+     * List of available sslmode
+     *
+     * @var array
+     */
+    private $availableSslMode = [
+        'disable' => true,
+        'allow' => true,
+        'prefer' => true,
+        'require' => true,
+        'verify-ca' => true,
+        'verify-full' => true,
+    ];
+
+    /**
      * Constructor.
      *
      * @param string $path
@@ -235,6 +257,21 @@ class Pgdump extends Abstraction implements Executable
     public function usePort(int $port) : Pgdump
     {
         $this->port = $port;
+        return $this;
+    }
+
+    /**
+     * Set the sslmode
+     *
+     * @param string $sslMode
+     * @return Pgdump
+     */
+    public function sslMode(string $sslMode): Pgdump
+    {
+        if ($sslMode && !isset($this->availableSslMode[$sslMode])) {
+            throw new Exception('invalid sslMode');
+        }
+        $this->sslMode = $sslMode;
         return $this;
     }
 
@@ -454,7 +491,8 @@ class Pgdump extends Abstraction implements Executable
     {
         $process  = new CommandLine();
         $password = $this->password ? 'PGPASSWORD=' . escapeshellarg($this->password) . ' ' : '';
-        $cmd      = new Cmd($password . $this->binary);
+        $sslMode  = $this->sslMode ? 'PGSSLMODE=' . escapeshellarg($this->sslMode) . ' ' : '';
+        $cmd      = new Cmd($sslMode . $password . $this->binary);
         $process->addCommand($cmd);
 
         // always disable password prompt
