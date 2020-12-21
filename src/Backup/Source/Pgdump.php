@@ -170,6 +170,14 @@ class Pgdump extends SimulatorExecutable implements Simulator
     private $noPrivileges;
 
     /**
+     * Set SSL mode
+     * PGSSLMODE=allow pg_dump ...
+     *
+     * @var string
+     */
+    private $sslMode;
+
+    /**
      * Setup
      *
      * @see    \phpbu\App\Backup\Source
@@ -196,6 +204,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
         $this->port     = Util\Arr::getValue($conf, 'port', 0);
         $this->user     = Util\Arr::getValue($conf, 'user', '');
         $this->password = Util\Arr::getValue($conf, 'password', '');
+        $this->sslMode  = Util\Arr::getValue($conf, 'sslMode', '');
     }
 
     /**
@@ -264,6 +273,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
         $executable->credentials($this->user, $this->password)
                    ->useHost($this->host)
                    ->usePort($this->port)
+                   ->sslMode($this->sslMode)
                    ->dumpDatabase($this->database)
                    ->dumpSchemas($this->schemas)
                    ->excludeSchemas($this->excludeSchemas)
