@@ -51,6 +51,15 @@ class Pgdump extends SimulatorExecutable implements Simulator
     private $port;
 
     /**
+     * Run the dump in parallel by dumping njobs tables simultaneously.
+     * Reduces the time of the dump but it also increases the load on the database server.
+     * --jobs=<NJobs>
+     *
+     * @var int
+     */
+    private $jobs
+
+    /**
      * User to connect with
      * --user=<username>
      *
@@ -236,6 +245,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
         $this->noOwner      = Util\Str::toBoolean(Util\Arr::getValue($conf, 'noOwner', ''), false);
         $this->encoding     = Util\Arr::getValue($conf, 'encoding', '');
         $this->format       = Util\Arr::getValue($conf, 'format', self::DEFAULT_FORMAT);
+        $this->jobs         = Util\Arr::getValue($conf, 'jobs', 0);
     }
 
 
@@ -285,6 +295,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
                    ->dumpNoPrivileges($this->noPrivileges)
                    ->dumpNoOwner($this->noOwner)
                    ->dumpFormat($this->format)
+                   ->dumpJobs($this->jobs)
                    ->dumpTo($target->getPathnamePlain());
         return $executable;
     }
