@@ -7,6 +7,9 @@
   <option name="port" value="1234" />
 
   <!-- optional, default none -->
+  <option name="jobs" value="4" />
+
+  <!-- optional, default none -->
   <option name="user" value="myUserName" />
 
   <!-- optional, default none -->
