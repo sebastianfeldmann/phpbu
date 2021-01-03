@@ -273,8 +273,11 @@ class Pgdump extends Abstraction implements Executable
      * @param  int $jobs
      * @return \phpbu\App\Cli\Executable\Pgdump
      */
-    public function dumpJobs(int $jobs) : Pgdump
+    public function dumpJobs(int $jobs): Pgdump
     {
+        if ($jobs < 0) {
+            throw new Exception('invalid jobs value');
+        }
         $this->jobs = $jobs;
         return $this;
     }
