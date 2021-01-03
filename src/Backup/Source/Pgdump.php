@@ -57,7 +57,7 @@ class Pgdump extends SimulatorExecutable implements Simulator
      *
      * @var int
      */
-    private $jobs
+    private $jobs;
 
     /**
      * User to connect with
