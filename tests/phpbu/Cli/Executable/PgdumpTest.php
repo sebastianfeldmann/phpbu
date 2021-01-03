@@ -261,7 +261,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->dumpJobs(4)->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --file=\'/tmp/foo\' --jobs=4',
+            PHPBU_TEST_BIN . '/pg_dump -w --jobs=4 --dbname=\'phpbu\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
