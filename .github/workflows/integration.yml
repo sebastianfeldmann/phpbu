@@ -45,7 +45,7 @@ jobs:
       run: tools/phpunit --configuration=phpunit.xml
 
     - name: Check coding style
-      run: tools/phpcs --standard=psr12 src
+      run: tools/phpcs --standard=psr2 src
 
     - name: Static code analysis
       run: tools/phpstan analyse
