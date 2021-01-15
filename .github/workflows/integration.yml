@@ -1,0 +1,53 @@
+name: "Continuous Integration"
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        php: ['7.3', '7.4', '8.0']
+        include:
+          - php: "8.0"
+            composeroptions: "--ignore-platform-req=php"
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        tools:
+          composer:v2
+          phive
+        extensions: mbstring
+
+    - name: PHP Version
+      run: php -v
+
+    - name: Update composer
+      run: composer self-update
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest ${{ matrix.composeroptions }}
+
+    - name: Install tooling
+      run: GITHUB_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }} phive --no-progress --home ./.phive install --force-accept-unsigned --trust-gpg-keys 4AA394086372C20A,31C7E470E2138192,8E730BA25823D8B5,CF1A108D0E7AE720
+
+    - name: Execute unit tests
+      run: tools/phpunit --configuration=phpunit.ci.xml
+
+    - name: Check coding style
+      run: tools/phpcs --standard=psr12 src
+
+    - name: Static code analysis
+      run: tools/phpstan analyse
