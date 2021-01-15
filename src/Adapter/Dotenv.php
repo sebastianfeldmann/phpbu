@@ -29,7 +29,7 @@ class Dotenv implements Adapter
     /**
      * Actual dot env reader
      *
-     * @var \Dotenv\Dotenv
+     * @var DotenvLib
      */
     private $dotenv;
 
@@ -43,9 +43,8 @@ class Dotenv implements Adapter
     {
         $path         = AppUtil\Arr::getValue($conf, 'file', '.env');
         $this->file   = AppUtil\Path::toAbsolutePath($path, Configuration::getWorkingDirectory());
-
         // dotenv version 4 and higher
-        if (method_exists('Dotenv\\Dotenv','createImmutable')) {
+        if (method_exists('Dotenv\\Dotenv', 'createImmutable')) {
             $this->dotenv = DotenvLib::createImmutable(dirname($this->file), basename($this->file));
         } else {
             $this->dotenv = DotenvLib::create(dirname($this->file), basename($this->file));

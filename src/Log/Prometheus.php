@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Log;
 
+use phpbu\App\Event\App\End;
+use phpbu\App\Event\Backup\Start;
 use phpbu\App\Exception;
 use phpbu\App\Event;
 use phpbu\App\Listener;
@@ -45,7 +47,7 @@ class Prometheus extends File implements Listener, Logger
      *
      * @see    \phpbu\App\Log\Logger::setup
      * @param  array $options
-     * @throws \phpbu\App\Exception
+     * @throws Exception
      */
     public function setup(array $options)
     {
@@ -58,9 +60,9 @@ class Prometheus extends File implements Listener, Logger
     /**
      * Backup start event.
      *
-     * @param \phpbu\App\Event\Backup\Start $event
+     * @param Start $event
      */
-    public function onBackupStart(Event\Backup\Start $event)
+    public function onBackupStart(Start $event)
     {
         $this->backupStats[$event->getConfiguration()->getName()]['timeStart'] = microtime(true);
     }
@@ -80,14 +82,18 @@ class Prometheus extends File implements Listener, Logger
     /**
      * App end event.
      *
-     * @param \phpbu\App\Event\App\End $event
+     * @param End $event
      */
-    public function onPhpbuEnd(Event\App\End $event)
+    public function onPhpbuEnd(End $event)
     {
         $this->write('# HELP phpbu_backup_success Whether or not the backup succeeded' . PHP_EOL);
         $this->write('# TYPE phpbu_backup_success gauge' . PHP_EOL);
         foreach ($event->getResult()->getBackups() as $backupResult) {
-            $this->write('phpbu_backup_success{name="' . $backupResult->getName() . '"} ' . (int)$backupResult->allOk() . PHP_EOL);
+            $this->write(
+                'phpbu_backup_success{name="' . $backupResult->getName() . '"} ' .
+                (int)$backupResult->allOk() .
+                PHP_EOL
+            );
         }
 
         $this->write(PHP_EOL);
@@ -104,7 +110,11 @@ class Prometheus extends File implements Listener, Logger
         $this->write('# HELP phpbu_backup_last_run The unix timestamp of the last run' . PHP_EOL);
         $this->write('# TYPE phpbu_backup_last_run counter' . PHP_EOL);
         foreach ($this->backupStats as $backupName => $backupStats) {
-            $this->write('phpbu_backup_last_run{name="' . $backupName . '"} ' . (int)$this->backupStats[$backupName]['lastRun'] . PHP_EOL);
+            $this->write(
+                'phpbu_backup_last_run{name="' . $backupName . '"} ' .
+                (int)$this->backupStats[$backupName]['lastRun'] .
+                PHP_EOL
+            );
         }
 
         $this->write(PHP_EOL);
@@ -112,8 +122,11 @@ class Prometheus extends File implements Listener, Logger
         $this->write('# HELP phpbu_backup_size The size of the last successful backup' . PHP_EOL);
         $this->write('# TYPE phpbu_backup_size gauge' . PHP_EOL);
         foreach ($this->backupStats as $backupName => $backupStats) {
-            $this->write('phpbu_backup_size{name="' . $backupName . '"} ' . $this->backupStats[$backupName]['size'] . PHP_EOL);
+            $this->write(
+                'phpbu_backup_size{name="' . $backupName . '"} ' .
+                $this->backupStats[$backupName]['size'] .
+                PHP_EOL
+            );
         }
-
     }
 }
