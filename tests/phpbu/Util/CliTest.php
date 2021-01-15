@@ -181,10 +181,10 @@ class CliTest extends TestCase
 
         Cli::removeDir($dirToDelete);
 
-        $this->assertFileDoesNotExist($file);
-        $this->assertFileDoesNotExist($fileInSub);
-        $this->assertFileDoesNotExist($subDir);
-        $this->assertFileDoesNotExist($dirToDelete);
+        $this->assertFileNotExists($file);
+        $this->assertFileNotExists($fileInSub);
+        $this->assertFileNotExists($subDir);
+        $this->assertFileNotExists($dirToDelete);
     }
 
     /**

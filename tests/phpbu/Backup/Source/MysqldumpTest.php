@@ -338,7 +338,7 @@ class MysqldumpTest extends TestCase
         try {
             $mysqldump->backup($target, $appResult);
         } catch (Exception $e) {
-            $this->assertFileDoesNotExist($file);
+            $this->assertFileNotExists($file);
             throw $e;
         }
     }

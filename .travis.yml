@@ -12,7 +12,7 @@ before_script:
   - if [ $TRAVIS_PHP_VERSION = "7.4" ]; then wget -O phpstan.phar https://github.com/phpstan/phpstan/releases/download/0.12.18/phpstan.phar ; fi
 
 script:
-  - php phpunit.phar --configuration ./build/travis-ci.phpunit.xml
+  - XDEBUG_MODE=coverage php phpunit.phar --configuration ./build/travis-ci.phpunit.xml
   - if [ $TRAVIS_PHP_VERSION = "7.4" ]; then php phpstan.phar analyse --no-progress -c phpstan.neon; fi
 
 notifications:

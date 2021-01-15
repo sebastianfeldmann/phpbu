@@ -254,6 +254,33 @@ class PgdumpTest extends TestCase
     /**
      * Tests Pgdump::getCommand
      */
+    public function testJobs()
+    {
+        $file   = '/tmp/foo';
+        $pgdump = new Pgdump(PHPBU_TEST_BIN);
+        $pgdump->dumpDatabase('phpbu')->dumpJobs(4)->dumpTo($file);
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/pg_dump -w --jobs=\'4\' --dbname=\'phpbu\' --file=\'/tmp/foo\'',
+            $pgdump->getCommand()
+        );
+    }
+
+    /**
+     * Tests Pgdump::getCommand
+     */
+    public function testInvalidJobs()
+    {
+        $this->expectException('phpbu\App\Exception');
+        $file   = '/tmp/foo';
+        $pgdump = new Pgdump(PHPBU_TEST_BIN);
+        $pgdump->dumpDatabase('phpbu')->dumpJobs(-1)->dumpTo($file);
+    }
+
+
+    /**
+     * Tests Pgdump::getCommand
+     */
     public function testFormat()
     {
         $file   = '/tmp/foo';

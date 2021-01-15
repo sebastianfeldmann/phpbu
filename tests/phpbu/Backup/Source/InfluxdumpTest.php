@@ -115,7 +115,7 @@ class InfluxdumpTest extends TestCase
         try {
             $influxd->backup($target, $appResult);
         } catch (Exception $e) {
-            $this->assertFileDoesNotExist($file);
+            $this->assertFileNotExists($file);
             throw $e;
         }
     }
