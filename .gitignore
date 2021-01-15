@@ -7,6 +7,7 @@
 .project
 .phpunit.result.cache
 .settings
+.phive
 composer.lock
 /backup/*
 /build/coverage
