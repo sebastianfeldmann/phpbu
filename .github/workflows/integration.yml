@@ -42,7 +42,7 @@ jobs:
       run: GITHUB_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }} phive --no-progress --home ./.phive install --force-accept-unsigned --trust-gpg-keys 4AA394086372C20A,31C7E470E2138192,8E730BA25823D8B5,CF1A108D0E7AE720
 
     - name: Execute unit tests
-      run: tools/phpunit --configuration=phpunit.ci.xml
+      run: tools/phpunit --configuration=phpunit.xml
 
     - name: Check coding style
       run: tools/phpcs --standard=psr12 src
