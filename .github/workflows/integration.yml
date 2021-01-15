@@ -23,7 +23,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
-        tools: composer:v2 phive
+        tools: composer:v2, phive
         extensions: mbstring
 
     - name: PHP Version
