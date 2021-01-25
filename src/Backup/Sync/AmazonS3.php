@@ -90,6 +90,28 @@ abstract class AmazonS3 implements Simulator
     protected $multiPartUpload;
 
     /**
+     * Set a custom S3 endpoint
+     *
+     * @var string
+     */
+    protected $endpoint;
+
+    /**
+     * Use specific S3 signature version
+     *
+     * @var string
+     */
+    protected $signature_version;
+
+    /**
+     * Set path style endpoint 
+     *
+     * @var boolean
+     */
+    protected $use_path_style_endpoint;
+
+
+    /**
      * Min multi part upload size
      *
      * @var int
@@ -130,6 +152,9 @@ abstract class AmazonS3 implements Simulator
         $this->pathRaw         = $cleanedPath;
         $this->acl             = Util\Arr::getValue($config, 'acl', 'private');
         $this->multiPartUpload = Util\Str::toBoolean(Util\Arr::getValue($config, 'useMultiPartUpload'), false);
+        $this->use_path_style_endpoint = Util\Str::toBoolean(Util\Arr::getValue($config, 'use_path_style_endpoint'), false);
+        if (Util\Arr::isSetAndNotEmptyString($config, 'endpoint')) $this->endpoint = $config['endpoint'];
+        if (Util\Arr::isSetAndNotEmptyString($config, 'signature_version')) $this->signature_version = $config['signature_version'];
     }
 
     /**
@@ -158,10 +183,10 @@ abstract class AmazonS3 implements Simulator
     {
         $result->debug(
             'sync backup to Amazon S3' . PHP_EOL
-            . '  region:   ' . $this->region . PHP_EOL
-            . '  key:      ' . $this->key . PHP_EOL
-            . '  secret:    ********' . PHP_EOL
-            . '  location: ' . $this->bucket . PHP_EOL
+                . '  region:   ' . $this->region . PHP_EOL
+                . '  key:      ' . $this->key . PHP_EOL
+                . '  secret:    ********' . PHP_EOL
+                . '  location: ' . $this->bucket . PHP_EOL
         );
     }
 
@@ -178,6 +203,6 @@ abstract class AmazonS3 implements Simulator
         // files uploaded with multi part upload has to be at least 5MB
         return (
             ($target->getSize() > $this->maxStreamUploadSize || $this->multiPartUpload)
-        ) && $target->getSize() > $this->minMultiPartUploadSize;
+            ) && $target->getSize() > $this->minMultiPartUploadSize;
     }
 }
