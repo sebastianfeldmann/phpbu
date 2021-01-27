@@ -95,7 +95,7 @@ abstract class AmazonS3 implements Simulator
      * @var string
      */
     protected $endpoint;
-    
+
     /**
      * Set path style endpoint
      *
@@ -129,7 +129,7 @@ abstract class AmazonS3 implements Simulator
      *
      * @see    \phpbu\App\Backup\Sync::setup()
      * @param  array $config
-     * @throws \phpbu\App\Backup\Sync\Exception
+     * @throws Exception
      */
     public function setup(array $config)
     {
@@ -138,7 +138,7 @@ abstract class AmazonS3 implements Simulator
         }
 
         // check for mandatory options
-        $this->validateConfig($config, ['key', 'secret', 'bucket', 'region', 'path']);
+        $this->validateConfig($config, ['key', 'secret', 'bucket', 'region']);
 
         $cleanedPath            = Util\Path::withoutTrailingSlash(Util\Path::withoutLeadingSlash($config['path']));
         $this->time             = time();
@@ -175,8 +175,8 @@ abstract class AmazonS3 implements Simulator
     /**
      * Simulate the sync execution
      *
-     * @param \phpbu\App\Backup\Target $target
-     * @param \phpbu\App\Result        $result
+     * @param Target $target
+     * @param Result $result
      */
     public function simulate(Target $target, Result $result)
     {
@@ -192,7 +192,7 @@ abstract class AmazonS3 implements Simulator
     /**
      * Should multi part upload be used
      *
-     * @param  \phpbu\App\Backup\Target $target
+     * @param Target $target
      * @return bool
      * @throws \phpbu\App\Exception
      */
