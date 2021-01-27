@@ -97,7 +97,7 @@ abstract class AmazonS3 implements Simulator
     protected $endpoint;
     
     /**
-     * Set path style endpoint 
+     * Set path style endpoint
      *
      * @var boolean
      */
@@ -197,7 +197,7 @@ abstract class AmazonS3 implements Simulator
      * @throws \phpbu\App\Exception
      */
     protected function useMultiPartUpload(Target $target)
-    {    
+    {
         return (
             // files uploaded with multi part upload have to be at least 5MB
             $target->getSize() > $this->minMultiPartUploadSize
