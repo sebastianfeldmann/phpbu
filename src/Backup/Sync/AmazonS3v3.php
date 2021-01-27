@@ -80,18 +80,23 @@ class AmazonS3v3 extends AmazonS3
      */
     protected function createClient() : S3Client
     {
-        $client_config = [
-            'region'      => $this->region,
-            'version'     => '2006-03-01',
-            'credentials' => [
+        $config = [
+            'region'                  => $this->region,
+            'version'                 => '2006-03-01',
+            'use_path_style_endpoint' => $this->usePathStyle,
+            'credentials'             => [
                 'key'    => $this->key,
                 'secret' => $this->secret,
-            ],
-            'use_path_style_endpoint'     => $this->use_path_style_endpoint,
+            ]
         ];
-        if ($this->endpoint) $client_config['endpoint'] = $this->endpoint;
-        if ($this->signature_version) $client_config['signature_version'] = $this->signature_version;
-        return new S3Client($client_config);
+        if ($this->endpoint) {
+            $config['endpoint'] = $this->endpoint;
+        }
+        if ($this->signatureVersion) {
+            $config['signature_version'] = $this->signatureVersion;
+        }
+        
+        return new S3Client($config);
     }
 
     /**
