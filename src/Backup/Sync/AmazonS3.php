@@ -95,21 +95,20 @@ abstract class AmazonS3 implements Simulator
      * @var string
      */
     protected $endpoint;
+    
+    /**
+     * Set path style endpoint 
+     *
+     * @var boolean
+     */
+    protected $usePathStyle = false;
 
     /**
      * Use specific S3 signature version
      *
      * @var string
      */
-    protected $signature_version;
-
-    /**
-     * Set path style endpoint 
-     *
-     * @var boolean
-     */
-    protected $use_path_style_endpoint;
-
+    protected $signatureVersion;
 
     /**
      * Min multi part upload size
@@ -126,7 +125,7 @@ abstract class AmazonS3 implements Simulator
     protected $maxStreamUploadSize = 104857600;
 
     /**
-     * Configure the sync.
+     * Configure the sync
      *
      * @see    \phpbu\App\Backup\Sync::setup()
      * @param  array $config
@@ -141,24 +140,24 @@ abstract class AmazonS3 implements Simulator
         // check for mandatory options
         $this->validateConfig($config, ['key', 'secret', 'bucket', 'region', 'path']);
 
-        $cleanedPath           = Util\Path::withoutTrailingSlash(Util\Path::withoutLeadingSlash($config['path']));
-        $this->time            = time();
-        $this->key             = $config['key'];
-        $this->secret          = $config['secret'];
-        $this->bucket          = $config['bucket'];
-        $this->bucketTTL       = Util\Arr::getValue($config, 'bucketTTL');
-        $this->region          = $config['region'];
-        $this->path            = Util\Path::replaceDatePlaceholders($cleanedPath, $this->time);
-        $this->pathRaw         = $cleanedPath;
-        $this->acl             = Util\Arr::getValue($config, 'acl', 'private');
-        $this->multiPartUpload = Util\Str::toBoolean(Util\Arr::getValue($config, 'useMultiPartUpload'), false);
-        $this->use_path_style_endpoint = Util\Str::toBoolean(Util\Arr::getValue($config, 'use_path_style_endpoint'), false);
-        if (Util\Arr::isSetAndNotEmptyString($config, 'endpoint')) $this->endpoint = $config['endpoint'];
-        if (Util\Arr::isSetAndNotEmptyString($config, 'signature_version')) $this->signature_version = $config['signature_version'];
+        $cleanedPath            = Util\Path::withoutTrailingSlash(Util\Path::withoutLeadingSlash($config['path']));
+        $this->time             = time();
+        $this->key              = $config['key'];
+        $this->secret           = $config['secret'];
+        $this->bucket           = $config['bucket'];
+        $this->bucketTTL        = Util\Arr::getValue($config, 'bucketTTL');
+        $this->region           = $config['region'];
+        $this->path             = Util\Path::replaceDatePlaceholders($cleanedPath, $this->time);
+        $this->pathRaw          = $cleanedPath;
+        $this->acl              = Util\Arr::getValue($config, 'acl', 'private');
+        $this->multiPartUpload  = Util\Str::toBoolean(Util\Arr::getValue($config, 'useMultiPartUpload'), false);
+        $this->usePathStyle     = Util\Str::toBoolean(Util\Arr::getValue($config, 'usePathStyleEndpoint'), false);
+        $this->endpoint         = Util\Arr::getValue($config, 'endpoint');
+        $this->signatureVersion = Util\Arr::getValue($config, 'signatureVersion');
     }
 
     /**
-     * Make sure all mandatory keys are present in given config.
+     * Make sure all mandatory keys are present in given config
      *
      * @param  array    $config
      * @param  string[] $keys
@@ -174,7 +173,7 @@ abstract class AmazonS3 implements Simulator
     }
 
     /**
-     * Simulate the sync execution.
+     * Simulate the sync execution
      *
      * @param \phpbu\App\Backup\Target $target
      * @param \phpbu\App\Result        $result
@@ -183,26 +182,32 @@ abstract class AmazonS3 implements Simulator
     {
         $result->debug(
             'sync backup to Amazon S3' . PHP_EOL
-                . '  region:   ' . $this->region . PHP_EOL
-                . '  key:      ' . $this->key . PHP_EOL
-                . '  secret:    ********' . PHP_EOL
-                . '  location: ' . $this->bucket . PHP_EOL
+            . '  region:   ' . $this->region . PHP_EOL
+            . '  key:      ' . $this->key . PHP_EOL
+            . '  secret:    ********' . PHP_EOL
+            . '  location: ' . $this->bucket . PHP_EOL
         );
     }
 
     /**
-     * Should multi part upload be used.
+     * Should multi part upload be used
      *
      * @param  \phpbu\App\Backup\Target $target
      * @return bool
      * @throws \phpbu\App\Exception
      */
     protected function useMultiPartUpload(Target $target)
-    {
-        // files bigger 5GB have to be uploaded via multi part
-        // files uploaded with multi part upload has to be at least 5MB
+    {    
         return (
-            ($target->getSize() > $this->maxStreamUploadSize || $this->multiPartUpload)
-            ) && $target->getSize() > $this->minMultiPartUploadSize;
+            // files uploaded with multi part upload have to be at least 5MB
+            $target->getSize() > $this->minMultiPartUploadSize
+            && (
+                // files bigger 5GB have to be uploaded via multi part
+                $target->getSize() > $this->maxStreamUploadSize
+                ||
+                // multipart upload is triggered manually
+                $this->multiPartUpload
+            )
+        );
     }
 }
