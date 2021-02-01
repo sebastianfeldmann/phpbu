@@ -60,6 +60,6 @@ class Dotenv implements Adapter
      */
     public function getValue(string $path) : string
     {
-        return (string) getenv($path);
+        return (string) $_ENV[$path] ?? '';
     }
 }
