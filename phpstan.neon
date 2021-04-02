@@ -1,4 +1,6 @@
 parameters:
+  bootstrapFiles:
+      - tests/bootstrap.phpstan.php
   level: 3
   paths:
   - %currentWorkingDirectory%/src/

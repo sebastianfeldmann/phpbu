@@ -11,7 +11,7 @@ Get an in depth look into all the features and a short 'getting started' tutoria
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg)](https://php.net/)
 [![Downloads](https://img.shields.io/packagist/dt/phpbu/phpbu.svg?v1)](https://packagist.org/packages/phpbu/phpbu)
 [![License](https://poser.pugx.org/phpbu/phpbu/license.svg)](https://packagist.org/packages/phpbu/phpbu)
-[![Build Status](https://travis-ci.org/sebastianfeldmann/phpbu.svg?branch=master)](https://travis-ci.org/sebastianfeldmann/phpbu)
+[![Build Status](https://github.com/sebastianfeldmann/phpbu/workflows/Integration/badge.svg)](https://github.com/sebastianfeldmann/phpbu/actions)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/?branch=master)
 [![PHP Website](https://img.shields.io/website-up-down-green-red/https/phpbu.de.svg)](https://phpbu.de)
@@ -126,7 +126,7 @@ phpbu [option]
 
 This requires a valid XML *PHPBU* configuration file (phpbu.xml or phpbu.xml.dist) in your current working directory.
 Alternatively, you can specify the path to your configuration file. An important thing to note is that all path inside
-the configuration should be absolute or relative to the configuration file itself. 
+the configuration should be absolute or relative to the configuration file itself.
 
     $ phpbu --configuration=backup/config.xml
 
@@ -137,11 +137,11 @@ Use the *--limit* option to execute only a subset of your configured backups.
 A dry run without any actual impact is executed with the *--simulate* option.
 
     $ phpbu --simulate
-    
+
 To show a guide how to restore your backup use the *--restore* option.
 
     $ phpbu --restore
-    
+
 ## Configuration Example
 
 Simple configuration example:

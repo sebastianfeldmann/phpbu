@@ -90,6 +90,27 @@ abstract class AmazonS3 implements Simulator
     protected $multiPartUpload;
 
     /**
+     * Set a custom S3 endpoint
+     *
+     * @var string
+     */
+    protected $endpoint;
+
+    /**
+     * Set path style endpoint
+     *
+     * @var boolean
+     */
+    protected $usePathStyle = false;
+
+    /**
+     * Use specific S3 signature version
+     *
+     * @var string
+     */
+    protected $signatureVersion;
+
+    /**
      * Min multi part upload size
      *
      * @var int
@@ -104,11 +125,11 @@ abstract class AmazonS3 implements Simulator
     protected $maxStreamUploadSize = 104857600;
 
     /**
-     * Configure the sync.
+     * Configure the sync
      *
      * @see    \phpbu\App\Backup\Sync::setup()
      * @param  array $config
-     * @throws \phpbu\App\Backup\Sync\Exception
+     * @throws Exception
      */
     public function setup(array $config)
     {
@@ -117,23 +138,27 @@ abstract class AmazonS3 implements Simulator
         }
 
         // check for mandatory options
-        $this->validateConfig($config, ['key', 'secret', 'bucket', 'region', 'path']);
+        $this->validateConfig($config, ['key', 'secret', 'bucket', 'region']);
 
-        $cleanedPath           = Util\Path::withoutTrailingSlash(Util\Path::withoutLeadingSlash($config['path']));
-        $this->time            = time();
-        $this->key             = $config['key'];
-        $this->secret          = $config['secret'];
-        $this->bucket          = $config['bucket'];
-        $this->bucketTTL       = Util\Arr::getValue($config, 'bucketTTL');
-        $this->region          = $config['region'];
-        $this->path            = Util\Path::replaceDatePlaceholders($cleanedPath, $this->time);
-        $this->pathRaw         = $cleanedPath;
-        $this->acl             = Util\Arr::getValue($config, 'acl', 'private');
-        $this->multiPartUpload = Util\Str::toBoolean(Util\Arr::getValue($config, 'useMultiPartUpload'), false);
+        $path                   = Util\Arr::getValue($config, 'path', '');
+        $pathCleaned            = Util\Path::withoutTrailingSlash(Util\Path::withoutLeadingSlash($path));
+        $this->time             = time();
+        $this->key              = $config['key'];
+        $this->secret           = $config['secret'];
+        $this->bucket           = $config['bucket'];
+        $this->bucketTTL        = Util\Arr::getValue($config, 'bucketTTL');
+        $this->region           = $config['region'];
+        $this->path             = Util\Path::replaceDatePlaceholders($pathCleaned, $this->time);
+        $this->pathRaw          = $pathCleaned;
+        $this->acl              = Util\Arr::getValue($config, 'acl', 'private');
+        $this->multiPartUpload  = Util\Str::toBoolean(Util\Arr::getValue($config, 'useMultiPartUpload'), false);
+        $this->usePathStyle     = Util\Str::toBoolean(Util\Arr::getValue($config, 'usePathStyleEndpoint'), false);
+        $this->endpoint         = Util\Arr::getValue($config, 'endpoint');
+        $this->signatureVersion = Util\Arr::getValue($config, 'signatureVersion');
     }
 
     /**
-     * Make sure all mandatory keys are present in given config.
+     * Make sure all mandatory keys are present in given config
      *
      * @param  array    $config
      * @param  string[] $keys
@@ -149,10 +174,10 @@ abstract class AmazonS3 implements Simulator
     }
 
     /**
-     * Simulate the sync execution.
+     * Simulate the sync execution
      *
-     * @param \phpbu\App\Backup\Target $target
-     * @param \phpbu\App\Result        $result
+     * @param Target $target
+     * @param Result $result
      */
     public function simulate(Target $target, Result $result)
     {
@@ -166,18 +191,24 @@ abstract class AmazonS3 implements Simulator
     }
 
     /**
-     * Should multi part upload be used.
+     * Should multi part upload be used
      *
-     * @param  \phpbu\App\Backup\Target $target
+     * @param Target $target
      * @return bool
      * @throws \phpbu\App\Exception
      */
     protected function useMultiPartUpload(Target $target)
     {
-        // files bigger 5GB have to be uploaded via multi part
-        // files uploaded with multi part upload has to be at least 5MB
         return (
-            ($target->getSize() > $this->maxStreamUploadSize || $this->multiPartUpload)
-        ) && $target->getSize() > $this->minMultiPartUploadSize;
+            // files uploaded with multi part upload have to be at least 5MB
+            $target->getSize() > $this->minMultiPartUploadSize
+            && (
+                // files bigger 5GB have to be uploaded via multi part
+                $target->getSize() > $this->maxStreamUploadSize
+                ||
+                // multipart upload is triggered manually
+                $this->multiPartUpload
+            )
+        );
     }
 }

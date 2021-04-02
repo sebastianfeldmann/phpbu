@@ -23,16 +23,16 @@ use phpbu\App\Util;
 class OpenStack extends Remote implements Collector
 {
     /**
-     * @var \OpenStack\ObjectStore\v1\Models\Container
+     * @var Container
      */
     protected $container;
 
     /**
      * OpenStack constructor.
      *
-     * @param \phpbu\App\Backup\Target                   $target
-     * @param \phpbu\App\Backup\Path                     $path
-     * @param \OpenStack\ObjectStore\v1\Models\Container $container
+     * @param Target $target
+     * @param Path $path
+     * @param Container $container
      */
     public function __construct(Target $target, Path $path, Container $container)
     {
@@ -62,7 +62,5 @@ class OpenStack extends Remote implements Collector
                 $this->files[$index] = $file;
             }
         }
-
-        return $this->files;
     }
 }

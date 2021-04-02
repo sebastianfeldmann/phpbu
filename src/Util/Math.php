@@ -30,6 +30,6 @@ class Math
             $whole = $b;
             $part  = $a;
         }
-        return 100 - ceil(($part / $whole) * 100);
+        return intval(100 - ceil(($part / $whole) * 100));
     }
 }

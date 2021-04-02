@@ -200,7 +200,7 @@ class LdapdumpTest extends TestCase
         try {
             $ldap->backup($target, $appResult);
         } catch (Exception $e) {
-            $this->assertFileNotExists($file);
+            $this->assertFileDoesNotExist($file);
             throw $e;
         }
     }

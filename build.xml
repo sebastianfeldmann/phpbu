@@ -47,7 +47,7 @@
   </target>
 
   <target name="phpcs" description="Find coding standard violations using PHP_CodeSniffer">
-    <exec executable="phpcs">
+    <exec executable="tools/phpcs">
       <arg value="--standard=PSR2"/>
       <arg value="--extensions=php"/>
       <arg path="${basedir}/src"/>
@@ -56,7 +56,7 @@
   </target>
 
   <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer">
-    <exec executable="phpcs" output="/dev/null">
+    <exec executable="tools/phpcs" output="/dev/null">
       <arg value="--report=checkstyle"/>
       <arg value="--report-file=${basedir}/build/logs/checkstyle.xml"/>
       <arg value="--standard=PSR2"/>
@@ -67,7 +67,7 @@
   </target>
 
   <target name="phpunit" description="Run unit tests with PHPUnit">
-    <exec executable="phpunit" failonerror="true">
+    <exec executable="tools/phpunit" failonerror="true">
     </exec>
   </target>
 
@@ -575,7 +575,7 @@
       <arg value="${version}"/>
     </exec>
 
-    <exec executable="phpab">
+    <exec executable="tools/phpab">
       <arg value="--all"/>
       <arg value="--tolerant"/>
       <arg value="--phar"/>
