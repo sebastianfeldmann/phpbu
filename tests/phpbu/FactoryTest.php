@@ -24,7 +24,7 @@ class FactoryTest extends TestCase
         $factory = new Factory();
         $adapter = $factory->createAdapter('env', []);
 
-        $this->assertEquals('phpbu\\App\\Adapter\\Env', get_class($adapter), 'adapter classes should match');
+        $this->assertInstanceOf('phpbu\\App\\Adapter\\Env', $adapter, 'adapter classes should match');
     }
 
     /**
@@ -37,7 +37,7 @@ class FactoryTest extends TestCase
         $factory   = new Factory();
         $target    = $factory->createTarget($conf);
 
-        $this->assertEquals('phpbu\\App\\Backup\\Target', get_class($target), 'should be a target');
+        $this->assertInstanceOf('phpbu\\App\\Backup\\Target', $target, 'should be a target');
         $this->assertEquals('test-file.bz2', $target->getFilename());
         $this->assertEquals($directory . '/test-file.bz2', $target->getPathname());
 
@@ -56,7 +56,7 @@ class FactoryTest extends TestCase
         $factory = new Factory();
         $source  = $factory->createSource('dummy', []);
 
-        $this->assertEquals('phpbu\\App\\Backup\\Source\\FakeSource', get_class($source), 'classes should match');
+        $this->assertInstanceOf('phpbu\\App\\Backup\\Source\\FakeSource', $source, 'classes should match');
     }
 
     /**
@@ -67,7 +67,7 @@ class FactoryTest extends TestCase
         $factory = new Factory();
         $logger  = $factory->createLogger('mail', ['recipients' => 'no-reply@phpbu.de']);
 
-        $this->assertEquals('phpbu\\App\\Log\\Mail', get_class($logger), 'classes should match');
+        $this->assertInstanceOf('phpbu\\App\\Log\\Mail', $logger, 'classes should match');
     }
 
     /**
@@ -78,7 +78,7 @@ class FactoryTest extends TestCase
         $factory = new Factory();
         $check  = $factory->createCheck('sizemin');
 
-        $this->assertEquals('phpbu\\App\\Backup\\Check\\SizeMin', get_class($check), 'classes should match');
+        $this->assertInstanceOf('phpbu\\App\\Backup\\Check\\SizeMin', $check, 'classes should match');
     }
 
     /**
@@ -91,7 +91,7 @@ class FactoryTest extends TestCase
         $factory = new Factory();
         $crypter = $factory->createCrypter('dummy', []);
 
-        $this->assertEquals('phpbu\\App\\Backup\\Crypter\\FakeCrypter', get_class($crypter), 'classes should match');
+        $this->assertInstanceOf('phpbu\\App\\Backup\\Crypter\\FakeCrypter', $crypter, 'classes should match');
     }
 
     /**
@@ -102,7 +102,7 @@ class FactoryTest extends TestCase
         $factory = new Factory();
         $sync    = $factory->createSync('Rsync', ['args' => 'foo']);
 
-        $this->assertEquals('phpbu\\App\\Backup\\Sync\\Rsync', get_class($sync), 'classes should match');
+        $this->assertInstanceOf('phpbu\\App\\Backup\\Sync\\Rsync', $sync, 'classes should match');
     }
 
     /**
@@ -113,7 +113,7 @@ class FactoryTest extends TestCase
         $factory = new Factory();
         $sync    = $factory->createCleaner('Capacity', ['size' => '10M']);
 
-        $this->assertEquals('phpbu\\App\\Backup\\Cleaner\\Capacity', get_class($sync), 'classes should match');
+        $this->assertInstanceOf('phpbu\\App\\Backup\\Cleaner\\Capacity', $sync, 'classes should match');
     }
 
     /**
@@ -139,9 +139,9 @@ class FactoryTest extends TestCase
         $factory = new Factory();
         $dummy   = $factory->createCheck('dummy');
 
-        $this->assertEquals(
+        $this->assertInstanceOf(
             'phpbu\\App\\Backup\\Check\\FakeCheck',
-            get_class($dummy),
+            $dummy,
             'Factory should create dummy object'
         );
     }
@@ -306,9 +306,9 @@ class FactoryTest extends TestCase
         $factory = new Factory();
         $dummy   = $factory->createCheck('sizemin');
 
-        $this->assertEquals(
-            get_class($dummy),
+        $this->assertInstanceOf(
             'phpbu\\App\\Backup\\Check\\FakeCheck',
+            $dummy,
             'Factory should create dummy object'
         );
     }
