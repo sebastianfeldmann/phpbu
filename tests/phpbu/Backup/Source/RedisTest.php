@@ -44,7 +44,7 @@ class RedisTest extends TestCase
 
         $exec = $redis->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/redis-cli BGSAVE', $exec->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/redis-cli" BGSAVE', $exec->getCommand());
     }
 
     /**

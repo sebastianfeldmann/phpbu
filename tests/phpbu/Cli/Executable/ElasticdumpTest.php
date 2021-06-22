@@ -22,11 +22,11 @@ class ElasticdumpTest extends TestCase
      */
     public function testDefault()
     {
-        $expected = 'elasticdump --input=\'http://localhost:9200/\' --output=\'./foo.json\'';
+        $expected = 'elasticdump" --input=\'http://localhost:9200/\' --output=\'./foo.json\'';
         $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200')->dumpTo('./foo.json');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
     }
 
     /**
@@ -34,11 +34,11 @@ class ElasticdumpTest extends TestCase
      */
     public function testUser()
     {
-        $expected = 'elasticdump --input=\'http://root@localhost:9200/\' --output=\'./foo.json\'';
+        $expected = 'elasticdump" --input=\'http://root@localhost:9200/\' --output=\'./foo.json\'';
         $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200')->dumpTo('./foo.json')->credentials('root');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
     }
 
     /**
@@ -46,11 +46,11 @@ class ElasticdumpTest extends TestCase
      */
     public function testUserPassword()
     {
-        $expected = 'elasticdump --input=\'http://root:secret@localhost:9200/\' --output=\'./foo.json\'';
+        $expected = 'elasticdump" --input=\'http://root:secret@localhost:9200/\' --output=\'./foo.json\'';
         $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200')->dumpTo('./foo.json')->credentials('root', 'secret');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
     }
 
     /**
@@ -58,11 +58,11 @@ class ElasticdumpTest extends TestCase
      */
     public function testIndex()
     {
-        $expected = 'elasticdump --input=\'http://localhost:9200/myIndex\' --output=\'./foo.json\'';
+        $expected = 'elasticdump" --input=\'http://localhost:9200/myIndex\' --output=\'./foo.json\'';
         $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200')->dumpIndex('myIndex')->dumpTo('./foo.json');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
     }
 
     /**
@@ -70,11 +70,11 @@ class ElasticdumpTest extends TestCase
      */
     public function testType()
     {
-        $expected = 'elasticdump --input=\'http://localhost:9200/\' --type=\'mapping\' --output=\'./foo.json\'';
+        $expected = 'elasticdump" --input=\'http://localhost:9200/\' --type=\'mapping\' --output=\'./foo.json\'';
         $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200')->dumpType('mapping')->dumpTo('./foo.json');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
     }
 
     /**
@@ -82,11 +82,11 @@ class ElasticdumpTest extends TestCase
      */
     public function testHostWithPath()
     {
-        $expected = 'elasticdump --input=\'http://localhost:9200/foo/\' --output=\'./foo.json\'';
+        $expected = 'elasticdump" --input=\'http://localhost:9200/foo/\' --output=\'./foo.json\'';
         $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200/foo')->dumpTo('./foo.json');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
     }
 
     /**

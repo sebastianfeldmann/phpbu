@@ -25,7 +25,7 @@ class MongodumpTest extends TestCase
         $mongo->dumpToDirectory('./dump');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\'',
+            '"' . PHPBU_TEST_BIN . '/mongodump" --out \'./dump' . '\'',
             $mongo->getCommand()
         );
     }
@@ -49,7 +49,7 @@ class MongodumpTest extends TestCase
         $mongo->dumpToDirectory('./dump')->credentials('root');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --username \'root\'',
+            '"' . PHPBU_TEST_BIN . '/mongodump" --out \'./dump' . '\' --username \'root\'',
             $mongo->getCommand()
         );
     }
@@ -63,7 +63,7 @@ class MongodumpTest extends TestCase
         $mongo->dumpToDirectory('./dump')->credentials('', 'secret');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --password \'secret\'',
+            '"' . PHPBU_TEST_BIN . '/mongodump" --out \'./dump' . '\' --password \'secret\'',
             $mongo->getCommand()
         );
     }
@@ -77,7 +77,7 @@ class MongodumpTest extends TestCase
         $mongo->dumpToDirectory('./dump')->useHost('example.com');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --host \'example.com\'',
+            '"' . PHPBU_TEST_BIN . '/mongodump" --out \'./dump' . '\' --host \'example.com\'',
             $mongo->getCommand()
         );
     }
@@ -91,7 +91,7 @@ class MongodumpTest extends TestCase
         $mongo->dumpToDirectory('./dump')->dumpDatabases(['db1', 'db2']);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --db \'db1\' --db \'db2\'',
+            '"' . PHPBU_TEST_BIN . '/mongodump" --out \'./dump' . '\' --db \'db1\' --db \'db2\'',
             $mongo->getCommand()
         );
     }
@@ -105,7 +105,7 @@ class MongodumpTest extends TestCase
         $mongo->dumpToDirectory('./dump')->dumpCollections(['collection1', 'collection2']);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mongodump --out \'./dump'
+            '"' . PHPBU_TEST_BIN . '/mongodump" --out \'./dump'
             . '\' --collection \'collection1\' --collection \'collection2\'',
             $mongo->getCommand()
         );
@@ -120,7 +120,7 @@ class MongodumpTest extends TestCase
         $mongo->dumpToDirectory('./dump')->useIpv6(true);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --ipv6',
+            '"' . PHPBU_TEST_BIN . '/mongodump" --out \'./dump' . '\' --ipv6',
             $mongo->getCommand()
         );
     }
@@ -134,7 +134,7 @@ class MongodumpTest extends TestCase
         $mongo->dumpToDirectory('./dump')->excludeCollections(['col1', 'col2']);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --excludeCollection \'col1\' \'col2\'',
+            '"' . PHPBU_TEST_BIN . '/mongodump" --out \'./dump' . '\' --excludeCollection \'col1\' \'col2\'',
             $mongo->getCommand()
         );
     }
@@ -148,7 +148,7 @@ class MongodumpTest extends TestCase
         $mongo->dumpToDirectory('./dump')->excludeCollectionsWithPrefix(['pre1', 'pre2']);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --excludeCollectionWithPrefix \'pre1\' \'pre2\'',
+            '"' . PHPBU_TEST_BIN . '/mongodump" --out \'./dump' . '\' --excludeCollectionWithPrefix \'pre1\' \'pre2\'',
             $mongo->getCommand()
         );
     }

@@ -21,11 +21,11 @@ class RsyncTest extends TestCase
      */
     public function testGetExecWithCustomArgs()
     {
-        $expected = 'rsync --foo --bar';
+        $expected = 'rsync" --foo --bar';
         $rsync    = new Rsync(PHPBU_TEST_BIN);
         $rsync->useArgs('--foo --bar');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
     }
 
     /**
@@ -33,11 +33,11 @@ class RsyncTest extends TestCase
      */
     public function testMinimal()
     {
-        $expected = 'rsync -av \'./foo\' \'/tmp\'';
+        $expected = 'rsync" -av \'./foo\' \'/tmp\'';
         $rsync    = new Rsync(PHPBU_TEST_BIN);
         $rsync->fromPath('./foo')->toPath('/tmp');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
     }
 
     /**
@@ -47,13 +47,13 @@ class RsyncTest extends TestCase
     {
         $password = 'secret';
         $export   = 'RSYNC_PASSWORD=' . escapeshellarg($password) . ' ';
-        $expected = 'rsync -av \'./foo\' \'/tmp\'';
+        $expected = 'rsync" -av \'./foo\' \'/tmp\'';
         $rsync    = new Rsync(PHPBU_TEST_BIN);
         $rsync->usePassword($password)
               ->fromPath('./foo')
               ->toPath('/tmp');
 
-        $this->assertEquals($export . PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
+        $this->assertEquals('"' . $export . PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
     }
 
     /**
@@ -63,12 +63,12 @@ class RsyncTest extends TestCase
     {
         $password = 'secret';
         $env      = 'RSYNC_PASSWORD=\'******\' ';
-        $expected = 'rsync -av \'./foo\' \'/tmp\'';
+        $expected = 'rsync" -av \'./foo\' \'/tmp\'';
         $rsync    = new Rsync(PHPBU_TEST_BIN);
         $rsync->usePassword($password);
         $rsync->fromPath('./foo')->toPath('/tmp');
 
-        $this->assertEquals($env . PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandPrintable());
+        $this->assertEquals('"' . $env . PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandPrintable());
     }
 
     /**
@@ -76,13 +76,13 @@ class RsyncTest extends TestCase
      */
     public function testPasswordFile()
     {
-        $expected = 'rsync -av --password-file=\'./.rsync-password\' \'./foo\' \'/tmp\'';
+        $expected = 'rsync" -av --password-file=\'./.rsync-password\' \'./foo\' \'/tmp\'';
         $rsync    = new Rsync(PHPBU_TEST_BIN);
         $rsync->usePasswordFile('./.rsync-password')
               ->fromPath('./foo')
               ->toPath('/tmp');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
     }
 
     /**
@@ -90,11 +90,11 @@ class RsyncTest extends TestCase
      */
     public function testWithCompression()
     {
-        $expected = 'rsync -avz \'./foo\' \'/tmp\'';
+        $expected = 'rsync" -avz \'./foo\' \'/tmp\'';
         $rsync    = new Rsync(PHPBU_TEST_BIN);
         $rsync->fromPath('./foo')->toPath('/tmp')->compressed(true);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
     }
 
     /**
@@ -102,11 +102,11 @@ class RsyncTest extends TestCase
      */
     public function testDelete()
     {
-        $expected = 'rsync -av --delete \'./foo\' \'/tmp\'';
+        $expected = 'rsync" -av --delete \'./foo\' \'/tmp\'';
         $rsync    = new Rsync(PHPBU_TEST_BIN);
         $rsync->fromPath('./foo')->toPath('/tmp')->removeDeleted(true);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
     }
 
     /**
@@ -114,11 +114,11 @@ class RsyncTest extends TestCase
      */
     public function testExcludes()
     {
-        $expected = 'rsync -av --exclude=\'fiz\' --exclude=\'buz\' \'./foo\' \'/tmp\'';
+        $expected = 'rsync" -av --exclude=\'fiz\' --exclude=\'buz\' \'./foo\' \'/tmp\'';
         $rsync    = new Rsync(PHPBU_TEST_BIN);
         $rsync->fromPath('./foo')->toPath('/tmp')->exclude(['fiz', 'buz']);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $rsync->getCommandLine());
     }
 
 

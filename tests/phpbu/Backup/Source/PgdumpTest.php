@@ -33,7 +33,7 @@ class PgdumpTest extends TestCase
         $executable = $pgDump->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --file=\'foo.sql\' --format=\'p\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --file=\'foo.sql\' --format=\'p\'',
             $executable->getCommand()
         );
     }
@@ -50,7 +50,7 @@ class PgdumpTest extends TestCase
         $executable = $pgDump->getExecutable($target);
 
         $this->assertEquals(
-            'PGSSLMODE=\'require\' ' . PHPBU_TEST_BIN . '/pg_dump -w --file=\'foo.sql\' --format=\'p\'',
+            '"' . 'PGSSLMODE=\'require\' ' . PHPBU_TEST_BIN . '/pg_dump" -w --file=\'foo.sql\' --format=\'p\'',
             $executable->getCommand()
         );
     }
@@ -67,7 +67,7 @@ class PgdumpTest extends TestCase
         $executable = $pgDump->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'myDatabase\' --file=\'foo.sql\' --format=\'p\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --dbname=\'myDatabase\' --file=\'foo.sql\' --format=\'p\'',
             $executable->getCommand()
         );
     }

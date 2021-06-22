@@ -32,7 +32,7 @@ class MongodumpTest extends TestCase
 
         $executable = $mongodump->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mongodump --out \'' . __DIR__ . '/dump\'', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mongodump" --out \'' . __DIR__ . '/dump\'', $executable->getCommand());
     }
 
     /**

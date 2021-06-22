@@ -32,9 +32,9 @@ class ElasticdumpTest extends TestCase
         $elasticdump->setup(['pathToElasticdump' => PHPBU_TEST_BIN]);
 
         $executable = $elasticdump->getExecutable($target);
-        $expected   = 'elasticdump --input=\'http://localhost:9200/\' --output=\'backup.json\'';
+        $expected   = 'elasticdump" --input=\'http://localhost:9200/\' --output=\'backup.json\'';
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $executable->getCommand());
     }
 
     /**
@@ -47,9 +47,9 @@ class ElasticdumpTest extends TestCase
         $elasticdump->setup(['pathToElasticdump' => PHPBU_TEST_BIN, 'user' => 'root']);
 
         $executable = $elasticdump->getExecutable($target);
-        $expected   = 'elasticdump --input=\'http://root@localhost:9200/\' --output=\'backup.json\'';
+        $expected   = 'elasticdump" --input=\'http://root@localhost:9200/\' --output=\'backup.json\'';
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $executable->getCommand());
     }
 
     /**

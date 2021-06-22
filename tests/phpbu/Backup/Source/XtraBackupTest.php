@@ -33,10 +33,10 @@ class XtraBackupTest extends TestCase
         $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN]);
 
         $executable    = $xtrabackup->getExecutable($target);
-        $expectedDump  = 'innobackupex --no-timestamp \'./dump\'';
-        $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $expected      = '(' . PHPBU_TEST_BIN . '/'
-                       . $expectedDump . ' && ' . PHPBU_TEST_BIN
+        $expectedDump  = 'innobackupex" --no-timestamp \'./dump\'';
+        $expectedApply = 'innobackupex" --apply-log \'./dump\'';
+        $expected      = '("' . PHPBU_TEST_BIN . '/'
+                       . $expectedDump . ' && "' . PHPBU_TEST_BIN
                        . '/' . $expectedApply . ')';
 
         $this->assertEquals($expected, $executable->getCommand());
@@ -53,10 +53,10 @@ class XtraBackupTest extends TestCase
         $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN, 'dataDir' => '/x/mysql']);
 
         $executable    = $xtrabackup->getExecutable($target);
-        $expectedDump  = 'innobackupex --no-timestamp --datadir=\'/x/mysql\' \'./dump\'';
-        $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $expected      = '(' . PHPBU_TEST_BIN . '/'
-                       . $expectedDump . ' && ' . PHPBU_TEST_BIN
+        $expectedDump  = 'innobackupex" --no-timestamp --datadir=\'/x/mysql\' \'./dump\'';
+        $expectedApply = 'innobackupex" --apply-log \'./dump\'';
+        $expected      = '("' . PHPBU_TEST_BIN . '/'
+                       . $expectedDump . ' && "' . PHPBU_TEST_BIN
                        . '/' . $expectedApply . ')';
 
         $this->assertEquals($expected, $executable->getCommand());
@@ -73,11 +73,11 @@ class XtraBackupTest extends TestCase
         $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN, 'databases' => 'db1,db2,db3.table1']);
 
         $executable    = $xtrabackup->getExecutable($target);
-        $expectedDump  = 'innobackupex --no-timestamp --databases=\'db1 db2 db3.table1\' \'./dump\'';
-        $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $expected      = '(' . PHPBU_TEST_BIN . '/'
-                       . $expectedDump . ' && ' . PHPBU_TEST_BIN
-                       . '/' . $expectedApply . ')';
+        $expectedDump  = 'innobackupex" --no-timestamp --databases=\'db1 db2 db3.table1\' \'./dump\'';
+        $expectedApply = 'innobackupex" --apply-log \'./dump\'';
+        $expected      = '("' . PHPBU_TEST_BIN . '/'
+                        . $expectedDump . ' && "' . PHPBU_TEST_BIN
+                        . '/' . $expectedApply . ')';
 
         $this->assertEquals($expected, $executable->getCommand());
     }

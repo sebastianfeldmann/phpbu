@@ -64,7 +64,7 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar -cf \'/tmp/backup.tar\' -C \''
+            '"' . PHPBU_TEST_BIN . '/tar" -cf \'/tmp/backup.tar\' -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\'',
             $exec->getCommand()
@@ -86,7 +86,7 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar -h -cf \'/tmp/backup.tar\' -C \''
+            '"' . PHPBU_TEST_BIN . '/tar" -h -cf \'/tmp/backup.tar\' -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\'',
             $exec->getCommand()
@@ -108,7 +108,7 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar --exclude=\'./foo\' --exclude=\'./bar\' -cf \'/tmp/backup.tar\' -C \''
+            '"' . PHPBU_TEST_BIN . '/tar" --exclude=\'./foo\' --exclude=\'./bar\' -cf \'/tmp/backup.tar\' -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\'',
             $exec->getCommand()
@@ -136,7 +136,7 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar --listed-incremental=\'' . $incFile . '\' '
+            '"' . PHPBU_TEST_BIN . '/tar" --listed-incremental=\'' . $incFile . '\' '
             . '-cf \'/tmp/backup.tar\' -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\'',
@@ -191,7 +191,7 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar --listed-incremental=\'' . $incFile . '\' --level=\'0\' '
+            '"' . PHPBU_TEST_BIN . '/tar" --listed-incremental=\'' . $incFile . '\' --level=\'0\' '
             . '-cf \'/tmp/backup.tar\' -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\'',
@@ -226,7 +226,7 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar --listed-incremental=\'' . $incFile . '\' '
+            '"' . PHPBU_TEST_BIN . '/tar" --listed-incremental=\'' . $incFile . '\' '
             . '-cf \'/tmp/backup.tar\' -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\'',
@@ -249,7 +249,7 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar --force-local -cf \'/tmp/backup.tar\' -C \''
+            '"' . PHPBU_TEST_BIN . '/tar" --force-local -cf \'/tmp/backup.tar\' -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\'',
             $exec->getCommand()
@@ -271,7 +271,7 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar --ignore-failed-read -cf \'/tmp/backup.tar\' -C \''
+            '"' . PHPBU_TEST_BIN . '/tar" --ignore-failed-read -cf \'/tmp/backup.tar\' -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\'',
             $exec->getCommand()
@@ -293,9 +293,9 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            '(' . PHPBU_TEST_BIN . '/tar -cf \'/tmp/backup.tar\' -C \''
+            '("' . PHPBU_TEST_BIN . '/tar" -cf \'/tmp/backup.tar\' -C \''
             . dirname(__DIR__) . '\' \'' . basename(__DIR__)
-            . '\' && rm -rf \'' . __DIR__ . '\')',
+            . '\' && "rm" -rf \'' . __DIR__ . '\')',
             $exec->getCommand()
         );
     }
@@ -315,10 +315,10 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar -c -C \''
+            '"' . PHPBU_TEST_BIN . '/tar" -c -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\''
-            . ' | pv -qL \'1m\' > /tmp/backup.tar',
+            . ' | "pv" -qL \'1m\' > /tmp/backup.tar',
             $exec->getCommand()
         );
     }
@@ -362,7 +362,7 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar -zcf \'/tmp/backup.tar.gz\' -C \''
+            '"' . PHPBU_TEST_BIN . '/tar" -zcf \'/tmp/backup.tar.gz\' -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\'',
             $exec->getCommand()
@@ -386,7 +386,7 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar --use-compress-program=\'lbzip2\' -cf \'/tmp/backup.tar.bz2\' -C \''
+            '"' . PHPBU_TEST_BIN . '/tar" --use-compress-program=\'lbzip2\' -cf \'/tmp/backup.tar.bz2\' -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\'',
             $exec->getCommand()
@@ -411,7 +411,7 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar -cf \'/tmp/backup.tar\' -C \''
+            '"' . PHPBU_TEST_BIN . '/tar" -cf \'/tmp/backup.tar\' -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\'',
             $exec->getCommand()
