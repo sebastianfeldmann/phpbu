@@ -44,7 +44,7 @@ class RedisCliTest extends TestCase
         $redis = new RedisCli(PHPBU_TEST_BIN);
         $redis->backup();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/redis-cli BGSAVE', $redis->getCommandLine());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/redis-cli" BGSAVE', $redis->getCommandLine());
     }
 
     /**
@@ -55,7 +55,7 @@ class RedisCliTest extends TestCase
         $redis = new RedisCli(PHPBU_TEST_BIN);
         $redis->lastBackupTime();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/redis-cli LASTSAVE', $redis->getCommandLine());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/redis-cli" LASTSAVE', $redis->getCommandLine());
     }
 
     /**
@@ -63,11 +63,11 @@ class RedisCliTest extends TestCase
      */
     public function testPassword()
     {
-        $expected = 'redis-cli -a \'fooBarBaz\' BGSAVE';
+        $expected = 'redis-cli" -a \'fooBarBaz\' BGSAVE';
         $redis  = new RedisCli(PHPBU_TEST_BIN);
         $redis->backup()->usePassword('fooBarBaz');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $redis->getCommandLine());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $redis->getCommandLine());
     }
 
     /**
@@ -75,11 +75,11 @@ class RedisCliTest extends TestCase
      */
     public function testHost()
     {
-        $expected = 'redis-cli -h \'example.com\' BGSAVE';
+        $expected = 'redis-cli" -h \'example.com\' BGSAVE';
         $redis  = new RedisCli(PHPBU_TEST_BIN);
         $redis->backup()->useHost('example.com');
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $redis->getCommandLine());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $redis->getCommandLine());
     }
 
     /**
@@ -87,10 +87,10 @@ class RedisCliTest extends TestCase
      */
     public function testPort()
     {
-        $expected = 'redis-cli -p \'1313\' BGSAVE';
+        $expected = 'redis-cli" -p \'1313\' BGSAVE';
         $redis  = new RedisCli(PHPBU_TEST_BIN);
         $redis->backup()->usePort(1313);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/' . $expected, $redis->getCommandLine());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $redis->getCommandLine());
     }
 }

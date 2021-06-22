@@ -98,7 +98,7 @@ class RsyncTest extends TestCase
         $target = $this->createTargetMock('/foo/bar.txt');
         $exec   = $rsync->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/rsync --foo --bar', $exec->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/rsync" --foo --bar', $exec->getCommand());
     }
 
     /**
@@ -112,7 +112,7 @@ class RsyncTest extends TestCase
         $target = $this->createTargetMock('/foo/bar.txt');
         $exec   = $rsync->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/rsync -avz \'/foo/bar.txt\' \'/tmp\'', $exec->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/rsync" -avz \'/foo/bar.txt\' \'/tmp\'', $exec->getCommand());
     }
 
     /**
@@ -128,7 +128,7 @@ class RsyncTest extends TestCase
         $target = $this->createTargetMock('/foo/bar.txt');
         $exec   = $rsync->getExecutable($target);
 
-        $this->assertEquals($env . PHPBU_TEST_BIN . '/rsync -avz \'/foo/bar.txt\' \'/tmp\'', $exec->getCommand());
+        $this->assertEquals('"' . $env . PHPBU_TEST_BIN . '/rsync" -avz \'/foo/bar.txt\' \'/tmp\'', $exec->getCommand());
     }
 
     /**
@@ -144,7 +144,7 @@ class RsyncTest extends TestCase
         $exec   = $rsync->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/rsync -avz --password-file=' . escapeshellarg($file) . ' \'/foo/bar.txt\' \'/tmp\'',
+            '"' . PHPBU_TEST_BIN . '/rsync" -avz --password-file=' . escapeshellarg($file) . ' \'/foo/bar.txt\' \'/tmp\'',
             $exec->getCommand()
         );
     }
@@ -160,7 +160,7 @@ class RsyncTest extends TestCase
         $exec   = $rsync->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/rsync -av \'/foo/bar.txt.gz\' \'/tmp\'',
+            '"' . PHPBU_TEST_BIN . '/rsync" -av \'/foo/bar.txt.gz\' \'/tmp\'',
             $exec->getCommand()
         );
     }
@@ -179,7 +179,7 @@ class RsyncTest extends TestCase
         $exec = $rsync->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/rsync -avz --exclude=\'fiz\' --exclude=\'buz\' \'/foo/bar.txt\' \'/tmp\'',
+            '"' . PHPBU_TEST_BIN . '/rsync" -avz --exclude=\'fiz\' --exclude=\'buz\' \'/foo/bar.txt\' \'/tmp\'',
             $exec->getCommand()
         );
     }

@@ -37,7 +37,7 @@ class MysqlimportTest extends TestCase
         $mysqlimport->setSourceAndTarget('source.sql', 'database');
         $cmd = $mysqlimport->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysqlimport \'database\' \'source.sql\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqlimport" \'database\' \'source.sql\'', $cmd);
     }
 
     /**
@@ -49,7 +49,7 @@ class MysqlimportTest extends TestCase
         $mysqlimport->setSourceAndTarget('source.sql', 'database');
         $cmd = $mysqlimport->getCommandPrintable();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysqlimport \'database\' \'source.sql\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqlimport" \'database\' \'source.sql\'', $cmd);
     }
 
     /**
@@ -62,7 +62,7 @@ class MysqlimportTest extends TestCase
         $mysqlimport->credentials('foo', 'bar');
         $cmd = $mysqlimport->getCommand();
 
-        $expected = PHPBU_TEST_BIN . '/mysqlimport \'database\' \'source.sql\' --user=\'foo\' --password=\'bar\'';
+        $expected = '"' . PHPBU_TEST_BIN . '/mysqlimport" \'database\' \'source.sql\' --user=\'foo\' --password=\'bar\'';
         $this->assertEquals($expected, $cmd);
     }
 
@@ -78,8 +78,8 @@ class MysqlimportTest extends TestCase
         $cmd = $mysqlimport->getCommandPrintable();
         $restored = $mysqlimport->getCommand();
 
-        $expected1 = PHPBU_TEST_BIN . '/mysqlimport \'database\' \'source.sql\' --user=\'foo\' --password=\'bar\'';
-        $expected2 = PHPBU_TEST_BIN . '/mysqlimport \'database\' \'source.sql\' --user=\'foo\' --password=\'******\'';
+        $expected1 = '"' . PHPBU_TEST_BIN . '/mysqlimport" \'database\' \'source.sql\' --user=\'foo\' --password=\'bar\'';
+        $expected2 = '"' . PHPBU_TEST_BIN . '/mysqlimport" \'database\' \'source.sql\' --user=\'foo\' --password=\'******\'';
         $this->assertEquals($expected1, $original);
         $this->assertEquals($expected2, $cmd);
         $this->assertEquals($expected1, $restored);
@@ -95,7 +95,7 @@ class MysqlimportTest extends TestCase
         $mysqlimport->useHost('localhost');
         $cmd = $mysqlimport->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysqlimport \'database\' \'source.sql\' --host=\'localhost\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqlimport" \'database\' \'source.sql\' --host=\'localhost\'', $cmd);
     }
 
     /**
@@ -108,7 +108,7 @@ class MysqlimportTest extends TestCase
         $mysqlimport->usePort(1234);
         $cmd = $mysqlimport->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysqlimport \'database\' \'source.sql\' --port=\'1234\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqlimport" \'database\' \'source.sql\' --port=\'1234\'', $cmd);
     }
 
     /**
@@ -121,6 +121,6 @@ class MysqlimportTest extends TestCase
         $mysqlimport->useProtocol('TCP');
         $cmd = $mysqlimport->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysqlimport \'database\' \'source.sql\' --protocol=\'TCP\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqlimport" \'database\' \'source.sql\' --protocol=\'TCP\'', $cmd);
     }
 }

@@ -22,10 +22,10 @@ class InnobackupexTest extends TestCase
      */
     public function testDefault()
     {
-        $expectedDump  = 'innobackupex --no-timestamp \'./dump\'';
-        $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $expected      = '(' . PHPBU_TEST_BIN . '/'
-                       . $expectedDump . ' && ' . PHPBU_TEST_BIN
+        $expectedDump  = 'innobackupex" --no-timestamp \'./dump\'';
+        $expectedApply = 'innobackupex" --apply-log \'./dump\'';
+        $expected      = '("' . PHPBU_TEST_BIN . '/'
+                       . $expectedDump . ' && "' . PHPBU_TEST_BIN
                        . '/' . $expectedApply . ')';
         $xtra          = new Innobackupex(PHPBU_TEST_BIN);
         $xtra->dumpTo('./dump');
@@ -38,9 +38,9 @@ class InnobackupexTest extends TestCase
      */
     public function testDataDir()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --datadir=\'/foo/bar\' \'./dump\'';
-        $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $expected      = '(' . PHPBU_TEST_BIN . '/' . $expectedDump . ' && '
+        $expectedDump  = 'innobackupex" --no-timestamp --datadir=\'/foo/bar\' \'./dump\'';
+        $expectedApply = 'innobackupex" --apply-log \'./dump\'';
+        $expected      = '("' . PHPBU_TEST_BIN . '/' . $expectedDump . ' && "'
                        . PHPBU_TEST_BIN . '/' . $expectedApply . ')';
         $xtra          = new Innobackupex(PHPBU_TEST_BIN);
         $xtra->dumpFrom('/foo/bar')->dumpTo('./dump');
@@ -63,10 +63,10 @@ class InnobackupexTest extends TestCase
      */
     public function testUser()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --user=\'root\' \'./dump\'';
-        $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $expected      = '(' . PHPBU_TEST_BIN . '/' . $expectedDump
-                       . ' && ' . PHPBU_TEST_BIN . '/' . $expectedApply . ')';
+        $expectedDump  = 'innobackupex" --no-timestamp --user=\'root\' \'./dump\'';
+        $expectedApply = 'innobackupex" --apply-log \'./dump\'';
+        $expected      = '("' . PHPBU_TEST_BIN . '/' . $expectedDump
+                       . ' && "' . PHPBU_TEST_BIN . '/' . $expectedApply . ')';
         $xtra          = new Innobackupex(PHPBU_TEST_BIN);
         $xtra->credentials('root')->dumpTo('./dump');
 
@@ -78,9 +78,9 @@ class InnobackupexTest extends TestCase
      */
     public function testPassword()
     {
-        $expectedDump  = 'innobackupex --no-timestamp --password=\'secret\' \'./dump\'';
-        $expectedApply = 'innobackupex --apply-log \'./dump\'';
-        $expected      = '(' . PHPBU_TEST_BIN . '/' . $expectedDump . ' && '
+        $expectedDump  = 'innobackupex" --no-timestamp --password=\'secret\' \'./dump\'';
+        $expectedApply = 'innobackupex" --apply-log \'./dump\'';
+        $expected      = '("' . PHPBU_TEST_BIN . '/' . $expectedDump . ' && "'
                        . PHPBU_TEST_BIN . '/' . $expectedApply . ')';
         $xtra          = new Innobackupex(PHPBU_TEST_BIN);
         $xtra->credentials('', 'secret')->dumpTo('./dump');
@@ -93,8 +93,8 @@ class InnobackupexTest extends TestCase
      */
     public function testHost()
     {
-        $expectedDump  = PHPBU_TEST_BIN . '/innobackupex --no-timestamp --host=\'example.com\' \'./dump\'';
-        $expectedApply = PHPBU_TEST_BIN . '/innobackupex --apply-log \'./dump\'';
+        $expectedDump  = '"' . PHPBU_TEST_BIN . '/innobackupex" --no-timestamp --host=\'example.com\' \'./dump\'';
+        $expectedApply = '"' . PHPBU_TEST_BIN . '/innobackupex" --apply-log \'./dump\'';
         $expected      = '(' . $expectedDump . ' && ' . $expectedApply . ')';
         $xtra          = new Innobackupex(PHPBU_TEST_BIN);
         $xtra->useHost('example.com')->dumpTo('./dump');
@@ -107,8 +107,8 @@ class InnobackupexTest extends TestCase
      */
     public function testDatabases()
     {
-        $expectedDump  = PHPBU_TEST_BIN . '/innobackupex --no-timestamp --databases=\'db1 db2 db3.table1\' \'./dump\'';
-        $expectedApply = PHPBU_TEST_BIN . '/innobackupex --apply-log \'./dump\'';
+        $expectedDump  = '"' . PHPBU_TEST_BIN . '/innobackupex" --no-timestamp --databases=\'db1 db2 db3.table1\' \'./dump\'';
+        $expectedApply = '"' . PHPBU_TEST_BIN . '/innobackupex" --apply-log \'./dump\'';
         $expected      = '(' . $expectedDump . ' && ' . $expectedApply . ')';
         $xtra          = new Innobackupex(PHPBU_TEST_BIN);
         $xtra->dumpDatabases(['db1', 'db2', 'db3.table1'])->dumpTo('./dump');
@@ -121,8 +121,8 @@ class InnobackupexTest extends TestCase
      */
     public function testInclude()
     {
-        $expectedDump  = PHPBU_TEST_BIN . '/innobackupex --no-timestamp --include=\'^myDatabase[.]myTable\' \'./dump\'';
-        $expectedApply = PHPBU_TEST_BIN . '/innobackupex --apply-log \'./dump\'';
+        $expectedDump  = '"' . PHPBU_TEST_BIN . '/innobackupex" --no-timestamp --include=\'^myDatabase[.]myTable\' \'./dump\'';
+        $expectedApply = '"' . PHPBU_TEST_BIN . '/innobackupex" --apply-log \'./dump\'';
         $expected      = '(' . $expectedDump . ' && ' . $expectedApply . ')';
         $xtra          = new Innobackupex(PHPBU_TEST_BIN);
         $xtra->including('^myDatabase[.]myTable')->dumpTo('./dump');

@@ -33,7 +33,7 @@ class FileTest extends TestCase
         $file       = new File(__FILE__, PHPBU_TEST_BIN);
         $executable = $file->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/gzip -f \'' . __FILE__ . '\'', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/gzip" -f \'' . __FILE__ . '\'', $executable->getCommand());
     }
 
     /**

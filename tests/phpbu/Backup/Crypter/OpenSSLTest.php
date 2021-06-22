@@ -64,9 +64,9 @@ class OpenSSLTest extends TestCase
         $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'password' => 'fooBarBaz', 'algorithm' => 'aes-256-cbc']);
 
         $executable = $openSSL->getExecutable($target);
-        $expected   = '(' . PHPBU_TEST_BIN . '/openssl enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' '
+        $expected   = '("' . PHPBU_TEST_BIN . '/openssl" enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' '
                     . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
-                    . '&& rm \'/foo/bar.txt\')';
+                    . '&& "rm" \'/foo/bar.txt\')';
 
         $this->assertEquals($expected, $executable->getCommand());
     }
@@ -83,9 +83,9 @@ class OpenSSLTest extends TestCase
         $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'certFile' => '/foo/my.pem', 'algorithm' => 'aes256']);
 
         $executable = $openSSL->getExecutable($target);
-        $expected = '(' . PHPBU_TEST_BIN . '/openssl smime -encrypt -aes256 -binary -in \'/foo/bar.txt\' '
+        $expected = '("' . PHPBU_TEST_BIN . '/openssl" smime -encrypt -aes256 -binary -in \'/foo/bar.txt\' '
                   . '-out \'/foo/bar.txt.enc\' -outform DER \'/foo/my.pem\' '
-                  . '&& rm \'/foo/bar.txt\')';
+                  . '&& "rm" \'/foo/bar.txt\')';
 
         $this->assertEquals($expected, $executable->getCommand());
     }

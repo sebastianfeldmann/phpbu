@@ -22,7 +22,7 @@ class ArangodumpTest extends TestCase
      */
     public function testDefault()
     {
-        $expected = PHPBU_TEST_BIN . '/arangodump --output-directory \'./dump\'';
+        $expected = '"' . PHPBU_TEST_BIN . '/arangodump" --output-directory \'./dump\'';
         $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->dumpTo('./dump');
 
@@ -44,7 +44,7 @@ class ArangodumpTest extends TestCase
      */
     public function testUser()
     {
-        $expected = PHPBU_TEST_BIN . '/arangodump --server.username \'root\' --output-directory \'./dump\'';
+        $expected = '"' . PHPBU_TEST_BIN . '/arangodump" --server.username \'root\' --output-directory \'./dump\'';
         $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->credentials('root')->dumpTo('./dump');
 
@@ -56,7 +56,7 @@ class ArangodumpTest extends TestCase
      */
     public function testPassword()
     {
-        $expected = PHPBU_TEST_BIN . '/arangodump --server.password \'secret\' --output-directory \'./dump\'';
+        $expected = '"' . PHPBU_TEST_BIN . '/arangodump" --server.password \'secret\' --output-directory \'./dump\'';
         $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->credentials('', 'secret')->dumpTo('./dump');
 
@@ -68,8 +68,8 @@ class ArangodumpTest extends TestCase
      */
     public function testEndpoint()
     {
-        $expected = PHPBU_TEST_BIN
-                  . '/arangodump --server.endpoint \'tcp://example.com:8529\' --output-directory \'./dump\'';
+        $expected = '"' . PHPBU_TEST_BIN
+                  . '/arangodump" --server.endpoint \'tcp://example.com:8529\' --output-directory \'./dump\'';
         $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->useEndpoint('tcp://example.com:8529')->dumpTo('./dump');
 
@@ -81,7 +81,7 @@ class ArangodumpTest extends TestCase
      */
     public function testDatabase()
     {
-        $expected = PHPBU_TEST_BIN . '/arangodump --server.database \'myDatabase\' --output-directory \'./dump\'';
+        $expected = '"' . PHPBU_TEST_BIN . '/arangodump" --server.database \'myDatabase\' --output-directory \'./dump\'';
         $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->dumpDatabase('myDatabase')->dumpTo('./dump');
 
@@ -93,8 +93,8 @@ class ArangodumpTest extends TestCase
      */
     public function testCollections()
     {
-        $expected = PHPBU_TEST_BIN
-                  . '/arangodump --collection \'col1\' --collection \'col2\' --output-directory \'./dump\'';
+        $expected = '"' . PHPBU_TEST_BIN
+                  . '/arangodump" --collection \'col1\' --collection \'col2\' --output-directory \'./dump\'';
         $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->dumpCollections(['col1', 'col2'])->dumpTo('./dump');
 
@@ -106,8 +106,8 @@ class ArangodumpTest extends TestCase
      */
     public function testDisableAuthentication()
     {
-        $expected = PHPBU_TEST_BIN
-                  . '/arangodump --server.disable-authentication \'true\' --output-directory \'./dump\'';
+        $expected = '"' . PHPBU_TEST_BIN
+                  . '/arangodump" --server.disable-authentication \'true\' --output-directory \'./dump\'';
         $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->disableAuthentication(true)->dumpTo('./dump');
 
@@ -119,7 +119,7 @@ class ArangodumpTest extends TestCase
      */
     public function testIncludeSystemCollections()
     {
-        $expected = PHPBU_TEST_BIN . '/arangodump --include-system-collections \'true\' --output-directory \'./dump\'';
+        $expected = '"' . PHPBU_TEST_BIN . '/arangodump" --include-system-collections \'true\' --output-directory \'./dump\'';
         $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->includeSystemCollections(true)->dumpTo('./dump');
 
@@ -131,7 +131,7 @@ class ArangodumpTest extends TestCase
      */
     public function testDumpData()
     {
-        $expected = PHPBU_TEST_BIN . '/arangodump --dump-data \'true\' --output-directory \'./dump\'';
+        $expected = '"' . PHPBU_TEST_BIN . '/arangodump" --dump-data \'true\' --output-directory \'./dump\'';
         $arango   = new Arangodump(PHPBU_TEST_BIN);
         $arango->dumpData(true)->dumpTo('./dump');
 

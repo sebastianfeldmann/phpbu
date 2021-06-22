@@ -45,7 +45,7 @@ class RsyncTest extends TestCase
         $exec = $rsync->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/rsync -av \'' . __DIR__ . '\' \'/tmp/backup.rsync\'',
+            '"' . PHPBU_TEST_BIN . '/rsync" -av \'' . __DIR__ . '\' \'/tmp/backup.rsync\'',
             $exec->getCommand()
         );
     }
@@ -63,7 +63,7 @@ class RsyncTest extends TestCase
         $exec = $rsync->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/rsync -av \'example.com:/foo/bar\' \'/tmp/backup.rsync\'',
+            '"' . PHPBU_TEST_BIN . '/rsync" -av \'example.com:/foo/bar\' \'/tmp/backup.rsync\'',
             $exec->getCommand()
         );
     }
@@ -86,7 +86,7 @@ class RsyncTest extends TestCase
         $exec = $rsync->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/rsync -av \'username@example.com:/foo/bar\' \'/tmp/backup.rsync\'',
+            '"' . PHPBU_TEST_BIN . '/rsync" -av \'username@example.com:/foo/bar\' \'/tmp/backup.rsync\'',
             $exec->getCommand()
         );
     }
@@ -107,7 +107,7 @@ class RsyncTest extends TestCase
         $exec = $rsync->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/rsync -av /foo /tmp/backup.rsync',
+            '"' . PHPBU_TEST_BIN . '/rsync" -av /foo /tmp/backup.rsync',
             $exec->getCommand()
         );
     }

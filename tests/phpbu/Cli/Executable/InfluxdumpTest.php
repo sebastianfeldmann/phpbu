@@ -23,7 +23,7 @@ class InfluxdumpTest extends TestCase
     {
         $influxd = new Influxdump(PHPBU_TEST_BIN);
         $cmd       = $influxd->getCommand();
-        $this->assertEquals(PHPBU_TEST_BIN . '/influxd backup -portable /tmp/influxdump', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/influxd" backup -portable /tmp/influxdump', $cmd);
     }
 
     /**
@@ -34,7 +34,7 @@ class InfluxdumpTest extends TestCase
         $influxd = new Influxdump(PHPBU_TEST_BIN);
         $cmd       = $influxd->getCommandPrintable();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/influxd backup -portable /tmp/influxdump', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/influxd" backup -portable /tmp/influxdump', $cmd);
     }
 
     /**
@@ -46,6 +46,6 @@ class InfluxdumpTest extends TestCase
         $influxd->useHost('localhost:8088');
         $cmd       = $influxd->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/influxd backup -portable -host=\'localhost:8088\' /tmp/influxdump', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/influxd" backup -portable -host=\'localhost:8088\' /tmp/influxdump', $cmd);
     }
 }
