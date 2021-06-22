@@ -65,7 +65,8 @@
     "php-opencloud/openstack": "^3.0",
     "arhitector/yandex": "^2.0",
     "microsoft/azure-storage-blob": "^1.4",
-    "captainhook/captainhook": "^5.0"
+    "captainhook/captainhook": "^5.0",
+    "phpmailer/phpmailer": "^6.0"
   },
   "suggest": {
     "sebastianfeldmann/ftp": "Require ^0.9 to sync to an FTP server",
