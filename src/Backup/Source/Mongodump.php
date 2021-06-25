@@ -36,6 +36,14 @@ class Mongodump extends SimulatorExecutable implements Simulator
     private $useIPv6;
 
     /**
+     * Uri to connect to
+     * --uri <uri>
+     *
+     * @var string
+     */
+    private $uri;
+
+    /**
      * Host to connect to
      * --host <hostname:port>
      *
@@ -113,6 +121,8 @@ class Mongodump extends SimulatorExecutable implements Simulator
 
         $this->pathToMongodump = Util\Arr::getValue($conf, 'pathToMongodump', '');
         $this->useIPv6         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ipv6', ''), false);
+
+        $this->setupValidation();
     }
 
     /**
@@ -137,10 +147,30 @@ class Mongodump extends SimulatorExecutable implements Simulator
      */
     protected function setupCredentials(array $conf)
     {
+        $this->uri                    = Util\Arr::getValue($conf, 'uri', '');
         $this->host                   = Util\Arr::getValue($conf, 'host', '');
         $this->user                   = Util\Arr::getValue($conf, 'user', '');
         $this->password               = Util\Arr::getValue($conf, 'password', '');
         $this->authenticationDatabase = Util\Arr::getValue($conf, 'authenticationDatabase', '');
+    }
+
+    /**
+     * Validate source setup
+     *
+     * @throws \phpbu\App\Exception
+     */
+    protected function setupValidation()
+    {
+        if (empty($this->uri)) {
+            return;
+        }
+
+        // If uri is set, cannot set other configurations
+        foreach (['user', 'host', 'password', 'authenticationDatabase', 'databases'] as $attr) {
+            if (!empty($this->{$attr})) {
+                throw new Exception("cannot specify $attr and uri");
+            }
+        }
     }
 
     /**
@@ -177,6 +207,7 @@ class Mongodump extends SimulatorExecutable implements Simulator
         $executable = new Executable\Mongodump($this->pathToMongodump);
         $executable->dumpToDirectory($this->getDumpDir($target))
                    ->useIpv6($this->useIPv6)
+                   ->useUri($this->uri)
                    ->useHost($this->host)
                    ->credentials($this->user, $this->password, $this->authenticationDatabase)
                    ->dumpDatabases($this->databases)

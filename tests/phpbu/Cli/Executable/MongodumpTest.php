@@ -152,4 +152,18 @@ class MongodumpTest extends TestCase
             $mongo->getCommand()
         );
     }
+
+    /**
+     * Tests Mongodump::createCommandLine
+     */
+    public function testUri()
+    {
+        $mongo = new Mongodump(PHPBU_TEST_BIN);
+        $mongo->dumpToDirectory('./dump')->useUri('mymongouri');
+
+        $this->assertEquals(
+            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --uri \'mymongouri\'',
+            $mongo->getCommand()
+        );
+    }
 }
