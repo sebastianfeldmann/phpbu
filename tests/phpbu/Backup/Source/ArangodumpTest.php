@@ -32,7 +32,7 @@ class ArangodumpTest extends TestCase
         $arangodump->setup(['pathToArangodump' => PHPBU_TEST_BIN]);
 
         $executable = $arangodump->getExecutable($target);
-        $expected   = PHPBU_TEST_BIN . '/arangodump --output-directory \'./dir/dump\'';
+        $expected   = '"' . PHPBU_TEST_BIN . '/arangodump" --output-directory \'./dir/dump\'';
 
         $this->assertEquals($expected, $executable->getCommand());
     }
@@ -47,7 +47,7 @@ class ArangodumpTest extends TestCase
         $arangodump->setup(['pathToArangodump' => PHPBU_TEST_BIN, 'username' => 'root']);
 
         $executable = $arangodump->getExecutable($target);
-        $expected   = PHPBU_TEST_BIN . '/arangodump --server.username \'root\' --output-directory \'./dir/dump\'';
+        $expected   = '"' . PHPBU_TEST_BIN . '/arangodump" --server.username \'root\' --output-directory \'./dir/dump\'';
 
         $this->assertEquals($expected, $executable->getCommand());
     }
@@ -62,7 +62,7 @@ class ArangodumpTest extends TestCase
         $arangodump->setup(['pathToArangodump' => PHPBU_TEST_BIN, 'collections' => 'collection1,collection2']);
 
         $executable = $arangodump->getExecutable($target);
-        $expected   = PHPBU_TEST_BIN . '/arangodump --collection \'collection1\' '
+        $expected   = '"' . PHPBU_TEST_BIN . '/arangodump" --collection \'collection1\' '
                     . '--collection \'collection2\' --output-directory \'./dir/dump\'';
 
         $this->assertEquals($expected, $executable->getCommand());

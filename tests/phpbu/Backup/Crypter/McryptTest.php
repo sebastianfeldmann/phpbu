@@ -70,7 +70,7 @@ class McryptTest extends TestCase
         $mcrypt->setup(['pathToMcrypt' => PHPBU_TEST_BIN, 'key' => 'fooBarBaz', 'algorithm' => 'blowfish']);
 
         $executable = $mcrypt->getExecutable($target);
-        $expected = PHPBU_TEST_BIN . '/mcrypt -u -k \'fooBarBaz\' -a \'blowfish\' \'/foo/bar.txt\'';
+        $expected = '"' . PHPBU_TEST_BIN . '/mcrypt" -u -k \'fooBarBaz\' -a \'blowfish\' \'/foo/bar.txt\'';
 
         $this->assertEquals($expected, $executable->getCommand());
     }
@@ -87,7 +87,7 @@ class McryptTest extends TestCase
         $mcrypt->setup(['pathToMcrypt' => PHPBU_TEST_BIN, 'keyFile' => '/foo/my.key', 'algorithm' => 'blowfish']);
 
         $executable = $mcrypt->getExecutable($target);
-        $expected   = PHPBU_TEST_BIN . '/mcrypt -u -f \'/foo/my.key\' -a \'blowfish\' \'/foo/bar.txt\'';
+        $expected   = '"' . PHPBU_TEST_BIN . '/mcrypt" -u -f \'/foo/my.key\' -a \'blowfish\' \'/foo/bar.txt\'';
 
         $this->assertEquals($expected, $executable->getCommand());
     }

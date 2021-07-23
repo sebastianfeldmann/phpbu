@@ -34,7 +34,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --all-databases', $executable->getCommand());
     }
 
     /**
@@ -68,8 +68,8 @@ class MysqldumpTest extends TestCase
         $executable = $mysqldump->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mysqldump --all-databases | '
-            . PHPBU_TEST_BIN . '/gzip > /tmp/foo.sql.gz',
+            '"' . PHPBU_TEST_BIN . '/mysqldump" --all-databases | '
+            . '"' . PHPBU_TEST_BIN . '/gzip" > /tmp/foo.sql.gz',
             $executable->getCommand()
         );
     }
@@ -85,7 +85,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --lock-tables --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables --all-databases', $executable->getCommand());
     }
 
     /**
@@ -99,7 +99,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --port=\'4711\' --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --port=\'4711\' --all-databases', $executable->getCommand());
     }
 
     /**
@@ -113,7 +113,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --protocol=\'TCP\' --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --protocol=\'TCP\' --all-databases', $executable->getCommand());
     }
 
     /**
@@ -128,7 +128,7 @@ class MysqldumpTest extends TestCase
         $executable = $mysqldump->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mysqldump --all-databases --tab=\'/tmp/foo.dump\'',
+            '"' . PHPBU_TEST_BIN . '/mysqldump" --all-databases --tab=\'/tmp/foo.dump\'',
             $executable->getCommand()
         );
     }
@@ -145,7 +145,7 @@ class MysqldumpTest extends TestCase
         $executable = $mysqldump->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mysqldump --set-gtid-purged=\'AUTO\' --all-databases > /tmp/foo',
+            '"' . PHPBU_TEST_BIN . '/mysqldump" --set-gtid-purged=\'AUTO\' --all-databases > /tmp/foo',
             $executable->getCommand()
         );
     }
@@ -162,7 +162,7 @@ class MysqldumpTest extends TestCase
         $executable = $mysqldump->getExecutable($target);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mysqldump --ssl-ca=\'/var/www/html/BaltimoreCyberTrustRoot.crt.pem\' --all-databases > /tmp/foo',
+            '"' . PHPBU_TEST_BIN . '/mysqldump" --ssl-ca=\'/var/www/html/BaltimoreCyberTrustRoot.crt.pem\' --all-databases > /tmp/foo',
             $executable->getCommand()
         );
     }
@@ -178,7 +178,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --hex-blob --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --hex-blob --all-databases', $executable->getCommand());
     }
 
     /**
@@ -192,7 +192,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --skip-extended-insert --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --skip-extended-insert --all-databases', $executable->getCommand());
     }
 
     /**
@@ -206,7 +206,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --skip-triggers --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --skip-triggers --all-databases', $executable->getCommand());
     }
 
     /**
@@ -220,7 +220,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysqldump --events --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --events --all-databases', $executable->getCommand());
     }
 
     /**
@@ -338,7 +338,7 @@ class MysqldumpTest extends TestCase
         try {
             $mysqldump->backup($target, $appResult);
         } catch (Exception $e) {
-            $this->assertFileNotExists($file);
+            $this->assertFileDoesNotExist($file);
             throw $e;
         }
     }
@@ -354,7 +354,7 @@ class MysqldumpTest extends TestCase
         $plan        = new Plan();
         $planRestore = [
             [
-                'command' => PHPBU_TEST_BIN . '/mysql --user=\'mysql\' --password=\'******\' --execute=\'source dump.sql\'',
+                'command' => '"' . PHPBU_TEST_BIN . '/mysql" --user=\'mysql\' --password=\'******\' --execute=\'source dump.sql\'',
                 'comment' => '',
             ],
         ];
@@ -388,11 +388,11 @@ class MysqldumpTest extends TestCase
                 'comment' => 'Extract the table files',
             ],
             [
-                'command' => PHPBU_TEST_BIN . '/mysql --user=\'mysql\' --password=\'******\' --database=\'databaseToBackup\' --execute=\'source <table-file>\'',
+                'command' => '"' . PHPBU_TEST_BIN . '/mysql" --user=\'mysql\' --password=\'******\' --database=\'databaseToBackup\' --execute=\'source <table-file>\'',
                 'comment' => 'Restore the structure, execute this for every table file',
             ],
             [
-                'command' => PHPBU_TEST_BIN . '/mysqlimport \'databaseToBackup\' \'<table-file>\' --user=\'mysql\' --password=\'******\'',
+                'command' => '"' . PHPBU_TEST_BIN . '/mysqlimport" \'databaseToBackup\' \'<table-file>\' --user=\'mysql\' --password=\'******\'',
                 'comment' => 'Restore the data, execute this for every table file',
             ],
         ];

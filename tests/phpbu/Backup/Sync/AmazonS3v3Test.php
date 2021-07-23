@@ -1,7 +1,11 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use Aws\S3\MultipartUploader;
+use Aws\S3\S3Client;
+use phpbu\App\Backup\Target;
 use phpbu\App\BaseMockery;
+use phpbu\App\Result;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -50,7 +54,7 @@ class AmazonS3v3Test extends TestCase
             'path'   => '/'
         ]);
 
-        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+        $targetStub = $this->createMock(Target::class);
         $targetStub->expects($this->once())->method('getFilename')->willReturn('foo.zip');
 
         $this->assertEquals('foo.zip', $amazonS3->getUploadPath($targetStub));
@@ -70,7 +74,7 @@ class AmazonS3v3Test extends TestCase
             'path'   => 'fiz'
         ]);
 
-        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+        $targetStub = $this->createMock(Target::class);
         $targetStub->expects($this->once())->method('getFilename')->willReturn('foo.zip');
 
         $this->assertEquals('fiz/foo.zip', $amazonS3->getUploadPath($targetStub));
@@ -83,7 +87,7 @@ class AmazonS3v3Test extends TestCase
     {
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
 
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->expects($this->exactly(2))->method('debug');
 
         $clientMock = $this->createAWSS3Mock();
@@ -116,7 +120,7 @@ class AmazonS3v3Test extends TestCase
     {
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
 
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->expects($this->exactly(3))->method('debug');
 
         $clientMock = $this->createAWSS3Mock();
@@ -151,7 +155,7 @@ class AmazonS3v3Test extends TestCase
     {
         $this->expectException('phpbu\App\Exception');
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
 
         $clientMock = $this->createAWSS3Mock();
         $clientMock->expects($this->once())->method('doesBucketExist')->willReturn(true);
@@ -189,11 +193,11 @@ class AmazonS3v3Test extends TestCase
             'path'   => '/'
         ]);
 
-        $resultStub = $this->createMock(\phpbu\App\Result::class);
+        $resultStub = $this->createMock(Result::class);
         $resultStub->expects($this->once())
                    ->method('debug');
 
-        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+        $targetStub = $this->createMock(Target::class);
 
         $amazonS3->simulate($targetStub, $resultStub);
     }
@@ -261,9 +265,8 @@ class AmazonS3v3Test extends TestCase
     /**
      * Tests AmazonS3::setUp
      */
-    public function testSetUpNoPath()
+    public function testSetUpWithoutPathIsValid()
     {
-        $this->expectException('phpbu\App\Backup\Sync\Exception');
         $amazonS3 = new AmazonS3v3();
         $amazonS3->setup([
             'key'    => 'dummy-key',
@@ -271,23 +274,26 @@ class AmazonS3v3Test extends TestCase
             'bucket' => 'dummy-bucket',
             'region' => 'dummy-region'
         ]);
+
+        // no error should be thrown by this point
+        $this->assertTrue(true);
     }
 
     /**
      * Create an aws s3 client mock
-     * @return \Aws\S3\S3Client
+     * @return S3Client
      */
     private function createAWSS3Mock()
     {
-        /** @var $awsMock \Aws\S3\S3Client */
-        $awsMock = $this->createMock(\Aws\S3\S3Client::class);
+        /** @var $awsMock S3Client */
+        $awsMock = $this->createMock(S3Client::class);
         return $awsMock;
     }
 
     private function createAWSS3UploaderMock()
     {
-        /** @var $awsMock \Aws\S3\S3Client */
-        $awsMock = $this->createMock(\Aws\S3\MultipartUploader::class);
+        /** @var $awsMock S3Client */
+        $awsMock = $this->createMock(MultipartUploader::class);
         return $awsMock;
     }
 }

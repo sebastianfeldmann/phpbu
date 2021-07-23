@@ -33,7 +33,7 @@ class InfluxdumpTest extends TestCase
 
         $executable = $influxd->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/influxd backup -portable -host=\'localhost:8088\' ', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/influxd" backup -portable -host=\'localhost:8088\' ', $executable->getCommand());
     }
 
     /**
@@ -47,7 +47,7 @@ class InfluxdumpTest extends TestCase
 
         $executable = $influxd->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/influxd backup -portable -host=\'localhost:8088\' ', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/influxd" backup -portable -host=\'localhost:8088\' ', $executable->getCommand());
     }
 
     /**
@@ -115,7 +115,7 @@ class InfluxdumpTest extends TestCase
         try {
             $influxd->backup($target, $appResult);
         } catch (Exception $e) {
-            $this->assertFileNotExists($file);
+            $this->assertFileDoesNotExist($file);
             throw $e;
         }
     }

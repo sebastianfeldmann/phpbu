@@ -36,6 +36,13 @@ class Pgdump extends Abstraction implements Executable
      * @var int
      */
     private $port;
+    
+    /**
+    * Run the dump in parallel by dumping njobs tables simultaneously.
+    * --jobs=njobs
+    * @var int
+    */
+    private $jobs;
 
     /**
      * Set SSL mode
@@ -180,7 +187,7 @@ class Pgdump extends Abstraction implements Executable
      * @var string
      */
     private $file;
-
+    
     /**
      * List of available output formats
      *
@@ -257,6 +264,21 @@ class Pgdump extends Abstraction implements Executable
     public function usePort(int $port) : Pgdump
     {
         $this->port = $port;
+        return $this;
+    }
+
+    /**
+     * Define njobs tables simultaneously..
+     *
+     * @param  int $jobs
+     * @return \phpbu\App\Cli\Executable\Pgdump
+     */
+    public function dumpJobs(int $jobs): Pgdump
+    {
+        if ($jobs < 0) {
+            throw new Exception('invalid jobs value');
+        }
+        $this->jobs = $jobs;
         return $this;
     }
 
@@ -501,6 +523,7 @@ class Pgdump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('--username', $this->user);
         $cmd->addOptionIfNotEmpty('--host', $this->host);
         $cmd->addOptionIfNotEmpty('--port', $this->port);
+        $cmd->addOptionIfNotEmpty('--jobs', $this->jobs);
         $cmd->addOptionIfNotEmpty('--dbname', $this->databaseToDump);
         $cmd->addOptionIfNotEmpty('--schema-only', $this->schemaOnly, false);
         $cmd->addOptionIfNotEmpty('--data-only', $this->dataOnly, false);
@@ -509,6 +532,7 @@ class Pgdump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('--encoding', $this->encoding);
         $cmd->addOptionIfNotEmpty('--no-tablespaces', $this->noTablespaces, false);
         $cmd->addOptionIfNotEmpty('--no-acl', $this->noPrivileges, false);
+        
 
         $this->handleSchemas($cmd);
         $this->handleTables($cmd);

@@ -3,6 +3,7 @@
   "options": {
     "host": "localhost",
     "port": "1234",
+    "jobs": "4",
     "user": "myUserName",
     "password": "topSecret",
     "database": "myDatabaseName",
