@@ -70,11 +70,25 @@ class CompressionTest extends TestCase
         $bzip = Compression\Factory::create('bzip2');
         $this->assertTrue($bzip->isPipeable());
 
+        $tar = Compression\Factory::create('tar -cf');
+        $this->assertTrue($tar->isPipeable());
+
         $xz = Compression\Factory::create('xz');
         $this->assertTrue($bzip->isPipeable());
 
         $zip = Compression\Factory::create('zip');
         $this->assertFalse($zip->isPipeable());
+    }
+
+    /**
+     * Test tar compressor
+     */
+    public function testTar()
+    {
+        $tar = Compression\Factory::create('tar');
+        $this->assertEquals('tar', $tar->getSuffix());
+        $this->assertEquals('tar -cf', $tar->getCommand());
+        $this->assertEquals('application/x-tar', $tar->getMimeType());
     }
 
     /**

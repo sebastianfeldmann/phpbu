@@ -24,6 +24,7 @@ class Factory
     protected static $availableCompressors = [
         'gzip'  => 'Gzip',
         'bzip2' => 'Bzip2',
+        'tar -cf'   => 'Tar',
         'xz'    => 'Xz',
         'zip'   => 'Zip'
     ];

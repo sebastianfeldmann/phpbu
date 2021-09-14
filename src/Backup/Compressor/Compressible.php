@@ -7,7 +7,7 @@ use phpbu\App\Result;
 /**
  * Executable Compressor
  *
- * Compress a file via CLI commands like bzip2, gzip or zip.
+ * Compress a file via CLI commands like bzip2, gzip, tar or zip.
  *
  * @package    phpbu
  * @subpackage app
