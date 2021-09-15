@@ -100,6 +100,9 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
 
             $result->warn($name . ': The ' . $this->algorithm . ' algorithm is considered weak');
         }
+        if ($target->getSize() > 1610612736) {
+            throw new Exception('Backup to big to encrypt: OpenSSL SMIME can only encrypt files smaller 1.5GB.');
+        }
         parent::crypt($target, $result);
     }
 
@@ -121,7 +124,7 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
      * Is the configured cipher secure enough
      *
      * @return bool
-     * @throws \phpbu\App\Backup\Crypter\Exception
+     * @throws Exception
      */
     public function isUsingWeakAlgorithm(): bool
     {
@@ -170,8 +173,8 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
     /**
      * Decrypt the backup
      *
-     * @param  \phpbu\App\Backup\Target       $target
-     * @param  \phpbu\App\Backup\Restore\Plan $plan
+     * @param Target $target
+     * @param Plan $plan
      * @throws \phpbu\App\Exception
      */
     public function restore(Target $target, Plan $plan)
@@ -183,8 +186,8 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
     /**
      * Create the Executable to run the 'mcrypt' command
      *
-     * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Cli\Executable
+     * @param Target $target
+     * @return Executable
      * @throws \phpbu\App\Exception
      */
     protected function createExecutable(Target $target) : Executable
@@ -195,8 +198,8 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
     /**
      * Create encryption OpenSSL
      *
-     * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Cli\Executable\OpenSSL
+     * @param Target $target
+     * @return Executable\OpenSSL
      * @throws \phpbu\App\Exception
      */
     private function createEncryptionOpenSSL(Target $target): Executable\OpenSSL
@@ -211,8 +214,8 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
     /**
      * Create decryption OpenSSL
      *
-     * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Cli\Executable\OpenSSL
+     * @param Target $target
+     * @return Executable\OpenSSL
      * @throws \phpbu\App\Exception
      */
     private function createDecryptionOpenSSL(Target $target): Executable\OpenSSL
@@ -227,8 +230,8 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
     /**
      * Setup an OpenSSL executable only thing missing is the decision of en or decryption
      *
-     * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Cli\Executable\OpenSSL
+     * @param Target $target
+     * @return Executable\OpenSSL
      * @throws \phpbu\App\Exception
      */
     private function createOpenSSL(Target $target): Executable\OpenSSL
