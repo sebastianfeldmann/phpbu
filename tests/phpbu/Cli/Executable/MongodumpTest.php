@@ -162,7 +162,7 @@ class MongodumpTest extends TestCase
         $mongo->dumpToDirectory('./dump')->useUri('mymongouri');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/mongodump --out \'./dump' . '\' --uri \'mymongouri\'',
+            '"' . PHPBU_TEST_BIN . '/mongodump" --out \'./dump' . '\' --uri \'mymongouri\'',
             $mongo->getCommand()
         );
     }
