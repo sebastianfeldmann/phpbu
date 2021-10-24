@@ -26,7 +26,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -44,7 +44,7 @@ class PgdumpTest extends TestCase
                ->dumpTo($file);
 
         $this->assertEquals(
-            'PGPASSWORD=\'secret\' ' . PHPBU_TEST_BIN . '/pg_dump -w --username=\'mrx\' --file=\'/tmp/foo\'',
+            'PGPASSWORD=\'secret\' "' . PHPBU_TEST_BIN . '/pg_dump" -w --username=\'mrx\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -59,7 +59,7 @@ class PgdumpTest extends TestCase
         $pgdump->useHost('localhost')->usePort('1234')->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --host=\'localhost\' --port=\'1234\' --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --host=\'localhost\' --port=\'1234\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -74,7 +74,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --dbname=\'phpbu\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -89,7 +89,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->dumpSchemaOnly(true)->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --schema-only --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --dbname=\'phpbu\' --schema-only --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
 
@@ -97,7 +97,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->dumpSchemaOnly(false)->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --dbname=\'phpbu\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -126,7 +126,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->dumpDataOnly(true)->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --data-only --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --dbname=\'phpbu\' --data-only --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
 
@@ -134,7 +134,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->dumpDataOnly(false)->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --dbname=\'phpbu\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -163,7 +163,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->dumpSchemas(['fiz', 'baz'])->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --schema=\'fiz\' --schema=\'baz\' --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --dbname=\'phpbu\' --schema=\'fiz\' --schema=\'baz\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -178,8 +178,8 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->excludeSchemas(['fiz', 'baz'])->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN
-            . '/pg_dump -w --dbname=\'phpbu\' --exclude-schema=\'fiz\' '
+            '"' . PHPBU_TEST_BIN
+            . '/pg_dump" -w --dbname=\'phpbu\' --exclude-schema=\'fiz\' '
             . '--exclude-schema=\'baz\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
@@ -195,8 +195,8 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->dumpTables(['fiz', 'baz'])->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN
-            . '/pg_dump -w --dbname=\'phpbu\' --table=\'fiz\' '
+            '"' . PHPBU_TEST_BIN
+            . '/pg_dump" -w --dbname=\'phpbu\' --table=\'fiz\' '
             . '--table=\'baz\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
@@ -212,8 +212,8 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->excludeTables(['fiz', 'baz'])->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN
-            . '/pg_dump -w --dbname=\'phpbu\' --exclude-table=\'fiz\' '
+            '"' . PHPBU_TEST_BIN
+            . '/pg_dump" -w --dbname=\'phpbu\' --exclude-table=\'fiz\' '
             . '--exclude-table=\'baz\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
@@ -229,8 +229,8 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->excludeTableData(['fiz', 'baz'])->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN
-            . '/pg_dump -w --dbname=\'phpbu\' --exclude-table-data=\'fiz\' '
+            '"' . PHPBU_TEST_BIN
+            . '/pg_dump" -w --dbname=\'phpbu\' --exclude-table-data=\'fiz\' '
             . '--exclude-table-data=\'baz\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
@@ -246,7 +246,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->encode('utf-8')->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --encoding=\'utf-8\' --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --dbname=\'phpbu\' --encoding=\'utf-8\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -261,7 +261,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->dumpJobs(4)->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --jobs=\'4\' --dbname=\'phpbu\' --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --jobs=\'4\' --dbname=\'phpbu\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -288,7 +288,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->dumpFormat('c')->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --file=\'/tmp/foo\' --format=\'c\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --dbname=\'phpbu\' --file=\'/tmp/foo\' --format=\'c\'',
             $pgdump->getCommand()
         );
     }
@@ -314,7 +314,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->addDropStatements(true)->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --clean --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --dbname=\'phpbu\' --clean --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -329,7 +329,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->skipOwnerCommands(true)->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --no-owner --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --dbname=\'phpbu\' --no-owner --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -344,7 +344,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->dumpNoTablespaces(true)->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --no-tablespaces --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --dbname=\'phpbu\' --no-tablespaces --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
@@ -359,7 +359,7 @@ class PgdumpTest extends TestCase
         $pgdump->dumpDatabase('phpbu')->dumpNoPrivileges(true)->dumpTo($file);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/pg_dump -w --dbname=\'phpbu\' --no-acl --file=\'/tmp/foo\'',
+            '"' . PHPBU_TEST_BIN . '/pg_dump" -w --dbname=\'phpbu\' --no-acl --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }

@@ -32,7 +32,7 @@ class MongodumpTest extends TestCase
 
         $executable = $mongodump->getExecutable($target);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mongodump --out \'' . __DIR__ . '/dump\'', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mongodump" --out \'' . __DIR__ . '/dump\'', $executable->getCommand());
     }
 
     /**
@@ -74,5 +74,27 @@ class MongodumpTest extends TestCase
         $mongodump = new Mongodump($runner);
         $mongodump->setup(['pathToMongodump' => PHPBU_TEST_BIN]);
         $mongodump->backup($target, $appResult);
+    }
+
+    /**
+     * Tests Mongodump::backup
+     *
+     * @testWith ["user", "myuser"]
+     *           ["host", "myhost"]
+     *           ["password", "mypassword"]
+     *           ["authenticationDatabase", "myAuthenticationDatabase"]
+     */
+    public function testUriNotCompatibleWithOtherSettings($key, $value)
+    {
+        $this->expectException('phpbu\App\Exception');
+
+        $runner = $this->getRunnerMock();
+        $runner->expects($this->never())
+            ->method('run');
+
+        $conf = array_merge(['uri' => 'mymongouri'], [$key => $value]);
+
+        $mongo = new Mongodump($runner);
+        $mongo->setup($conf);
     }
 }

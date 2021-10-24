@@ -37,6 +37,14 @@ class Mongodump extends Abstraction implements Executable
     private $useIPv6;
 
     /**
+     * Uri to connect to
+     * --uri <uri>
+     *
+     * @var string
+     */
+    private $uri;
+
+    /**
      * Host to connect to
      * --host <hostname:port>
      *
@@ -136,6 +144,18 @@ class Mongodump extends Abstraction implements Executable
     }
 
     /**
+     * Set uri to dump from
+     *
+     * @param string $uri
+     * @return \phpbu\App\Cli\Executable\Mongodump
+     */
+    public function useUri(string $uri) : Mongodump
+    {
+        $this->uri = $uri;
+        return $this;
+    }
+
+    /**
      * Set host to dump from.
      *
      * @param  string $host
@@ -228,6 +248,7 @@ class Mongodump extends Abstraction implements Executable
 
         $cmd->addOption('--out', $this->dumpDir, ' ');
         $cmd->addOptionIfNotEmpty('--ipv6', $this->useIPv6, false);
+        $cmd->addOptionIfNotEmpty('--uri', $this->uri, true, ' ');
         $cmd->addOptionIfNotEmpty('--host', $this->host, true, ' ');
         $cmd->addOptionIfNotEmpty('--username', $this->user, true, ' ');
         $cmd->addOptionIfNotEmpty('--password', $this->password, true, ' ');

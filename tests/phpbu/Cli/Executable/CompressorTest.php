@@ -24,7 +24,7 @@ class CompressorTest extends TestCase
         $gzip = new Compressor('gzip', PHPBU_TEST_BIN);
         $gzip->force(true)->compressFile(__FILE__);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/gzip -f \'' . __FILE__ . '\'', $gzip->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/gzip" -f \'' . __FILE__ . '\'', $gzip->getCommand());
     }
 
     /**
@@ -35,7 +35,7 @@ class CompressorTest extends TestCase
         $gzip = new Compressor('zip', PHPBU_TEST_BIN);
         $gzip->force(true)->compressFile(__FILE__);
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/zip \'' . __FILE__ . '\'', $gzip->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/zip" \'' . __FILE__ . '\'', $gzip->getCommand());
     }
 
     /**

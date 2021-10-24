@@ -25,7 +25,7 @@ class LdapdumpTest extends TestCase
     {
         $ldap = new Ldapdump(PHPBU_TEST_BIN);
         $cmd       = $ldap->getCommand();
-        $this->assertEquals(PHPBU_TEST_BIN . '/ldapsearch -x \'\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/ldapsearch" -x \'\'', $cmd);
     }
 
     /**
@@ -36,7 +36,7 @@ class LdapdumpTest extends TestCase
         $ldap = new Ldapdump(PHPBU_TEST_BIN);
         $cmd       = $ldap->getCommandPrintable();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/ldapsearch -x \'\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/ldapsearch" -x \'\'', $cmd);
     }
 
     /**
@@ -48,7 +48,7 @@ class LdapdumpTest extends TestCase
         $ldap->useHost('localhost');
         $cmd       = $ldap->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/ldapsearch -x -h \'localhost\' \'\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/ldapsearch" -x -h \'localhost\' \'\'', $cmd);
     }
 
     /**
@@ -60,7 +60,7 @@ class LdapdumpTest extends TestCase
         $ldap->usePort(389);
         $cmd       = $ldap->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/ldapsearch -x -p \'389\' \'\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/ldapsearch" -x -p \'389\' \'\'', $cmd);
     }
 
     /**
@@ -72,7 +72,7 @@ class LdapdumpTest extends TestCase
         $ldap->useSearchBase('ou=Users,dc=fr');
         $cmd       = $ldap->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/ldapsearch -b \'ou=Users,dc=fr\' -x \'\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/ldapsearch" -b \'ou=Users,dc=fr\' -x \'\'', $cmd);
     }
 
     /**
@@ -84,7 +84,7 @@ class LdapdumpTest extends TestCase
         $ldap->credentials('cn=admin,dc=fr', 'test');
         $cmd       = $ldap->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/ldapsearch -x -D \'cn=admin,dc=fr\' -w \'test\' \'\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/ldapsearch" -x -D \'cn=admin,dc=fr\' -w \'test\' \'\'', $cmd);
     }
 
     /**
@@ -96,7 +96,7 @@ class LdapdumpTest extends TestCase
         $ldap->useFilter('(objectclass=*)');
         $cmd       = $ldap->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/ldapsearch -x \'(objectclass=*)\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/ldapsearch" -x \'(objectclass=*)\'', $cmd);
     }
 
     /**
@@ -108,7 +108,7 @@ class LdapdumpTest extends TestCase
         $ldap->useAttributes(['*', '+']);
         $cmd       = $ldap->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/ldapsearch -x \'\' \'*\' \'+\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/ldapsearch" -x \'\' \'*\' \'+\'', $cmd);
     }
 
     /**
@@ -122,7 +122,7 @@ class LdapdumpTest extends TestCase
         $ldapdump->compressOutput($compression)->dumpTo('/tmp/foo.ldap');
 
         $this->assertEquals(
-            $path . '/ldapsearch -x \'\' | ' . $path . '/gzip > /tmp/foo.ldap.gz',
+            '"' . $path . '/ldapsearch" -x \'\' | "' . $path . '/gzip" > /tmp/foo.ldap.gz',
             $ldapdump->getCommand()
         );
     }

@@ -29,7 +29,7 @@ class TarTest extends TestCase
 
         $this->assertEquals([0], $tar->getAcceptableExitCodes());
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            '"' . PHPBU_TEST_BIN . '/tar" -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommand()
         );
     }
@@ -51,7 +51,7 @@ class TarTest extends TestCase
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar --listed-incremental=\'' . $cache . '\' -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            '"' . PHPBU_TEST_BIN . '/tar" --listed-incremental=\'' . $cache . '\' -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommand()
         );
     }
@@ -74,7 +74,7 @@ class TarTest extends TestCase
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar --listed-incremental=\'' . $cache . '\' --level=\'0\' -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            '"' . PHPBU_TEST_BIN . '/tar" --listed-incremental=\'' . $cache . '\' --level=\'0\' -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommand()
         );
     }
@@ -92,7 +92,7 @@ class TarTest extends TestCase
 
         $this->assertEquals([0], $tar->getAcceptableExitCodes());
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar -h -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            '"' . PHPBU_TEST_BIN . '/tar" -h -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommand()
         );
     }
@@ -109,7 +109,7 @@ class TarTest extends TestCase
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->addExclude('./foo')->addExclude('./bar');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar --exclude=\'./foo\' --exclude=\'./bar\' -cf \'/tmp/foo.tar\' -C \''
+            '"' . PHPBU_TEST_BIN . '/tar" --exclude=\'./foo\' --exclude=\'./bar\' -cf \'/tmp/foo.tar\' -C \''
             . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommand()
         );
@@ -127,7 +127,7 @@ class TarTest extends TestCase
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->forceLocal(true);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar --force-local -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            '"' . PHPBU_TEST_BIN . '/tar" --force-local -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommand()
         );
     }
@@ -144,7 +144,7 @@ class TarTest extends TestCase
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->ignoreFailedRead(true);
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar --ignore-failed-read -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            '"' . PHPBU_TEST_BIN . '/tar" --ignore-failed-read -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommand()
         );
         $this->assertEquals([0, 1], $tar->getAcceptableExitCodes());
@@ -162,7 +162,7 @@ class TarTest extends TestCase
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            '"' . PHPBU_TEST_BIN . '/tar" -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommandPrintable()
         );
     }
@@ -179,7 +179,7 @@ class TarTest extends TestCase
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar.gz')->useCompression('gzip');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar -zcf \'/tmp/foo.tar.gz\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            '"' . PHPBU_TEST_BIN . '/tar" -zcf \'/tmp/foo.tar.gz\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommand()
         );
     }
@@ -196,7 +196,7 @@ class TarTest extends TestCase
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar.bzip2')->useCompression('bzip2');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar -jcf \'/tmp/foo.tar.bzip2\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            '"' . PHPBU_TEST_BIN . '/tar" -jcf \'/tmp/foo.tar.bzip2\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommand()
         );
     }
@@ -216,8 +216,8 @@ class TarTest extends TestCase
             ->throttle('1m');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN . '/tar -jc -C \'' . $tarC .  '\' \'' . $tarD . '\''
-            . ' | pv -qL \'1m\' > /tmp/foo.tar.bzip2',
+            '"' . PHPBU_TEST_BIN . '/tar" -jc -C \'' . $tarC .  '\' \'' . $tarD . '\''
+            . ' | "pv" -qL \'1m\' > /tmp/foo.tar.bzip2',
             $tar->getCommand()
         );
     }
@@ -238,9 +238,9 @@ class TarTest extends TestCase
             ->throttle('1m');
 
         $this->assertEquals(
-            '(' . PHPBU_TEST_BIN . '/tar -jc -C \'' . $tarC .  '\' \'' . $tarD . '\''
-            . ' && rm -rf \'' . $dir . '\')'
-            . ' | pv -qL \'1m\' > /tmp/foo.tar.bzip2',
+            '("' . PHPBU_TEST_BIN . '/tar" -jc -C \'' . $tarC .  '\' \'' . $tarD . '\''
+            . ' && "rm" -rf \'' . $dir . '\')'
+            . ' | "pv" -qL \'1m\' > /tmp/foo.tar.bzip2',
             $tar->getCommand()
         );
     }
@@ -257,8 +257,8 @@ class TarTest extends TestCase
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar')->removeSourceDirectory(true);
 
         $this->assertEquals(
-            '(' . PHPBU_TEST_BIN . '/tar -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\''
-            . ' && rm -rf \'' . $dir . '\')',
+            '("' . PHPBU_TEST_BIN . '/tar" -cf \'/tmp/foo.tar\' -C \'' . $tarC .  '\' \'' . $tarD . '\''
+            . ' && "rm" -rf \'' . $dir . '\')',
             $tar->getCommand()
         );
     }
@@ -286,8 +286,8 @@ class TarTest extends TestCase
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar');
 
         $this->assertEquals(
-            PHPBU_TEST_BIN
-            . '/tar --use-compress-program=\'lbzip2\' -cf \'/tmp/foo.tar\' -C '
+            '"' . PHPBU_TEST_BIN
+            . '/tar" --use-compress-program=\'lbzip2\' -cf \'/tmp/foo.tar\' -C '
             . '\'' . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommand()
         );

@@ -24,7 +24,7 @@ class MysqlTest extends TestCase
         $mysql = new Mysql(PHPBU_TEST_BIN);
         $cmd = $mysql->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysql', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysql"', $cmd);
     }
 
     /**
@@ -35,7 +35,7 @@ class MysqlTest extends TestCase
         $mysql = new Mysql(PHPBU_TEST_BIN);
         $cmd = $mysql->getCommandPrintable();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysql', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysql"', $cmd);
     }
 
     /**
@@ -47,7 +47,7 @@ class MysqlTest extends TestCase
         $mysql->credentials('foo', 'bar');
         $cmd = $mysql->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysql --user=\'foo\' --password=\'bar\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysql" --user=\'foo\' --password=\'bar\'', $cmd);
     }
 
     /**
@@ -61,9 +61,9 @@ class MysqlTest extends TestCase
         $cmd = $mysql->getCommandPrintable();
         $restored = $mysql->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysql --user=\'foo\' --password=\'bar\'', $original);
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysql --user=\'foo\' --password=\'******\'', $cmd);
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysql --user=\'foo\' --password=\'bar\'', $restored);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysql" --user=\'foo\' --password=\'bar\'', $original);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysql" --user=\'foo\' --password=\'******\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysql" --user=\'foo\' --password=\'bar\'', $restored);
     }
 
     /**
@@ -75,7 +75,7 @@ class MysqlTest extends TestCase
         $mysql->useHost('localhost');
         $cmd = $mysql->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysql --host=\'localhost\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysql" --host=\'localhost\'', $cmd);
     }
 
     /**
@@ -87,7 +87,7 @@ class MysqlTest extends TestCase
         $mysql->usePort(1234);
         $cmd = $mysql->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysql --port=\'1234\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysql" --port=\'1234\'', $cmd);
     }
 
     /**
@@ -99,7 +99,7 @@ class MysqlTest extends TestCase
         $mysql->useProtocol('TCP');
         $cmd = $mysql->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysql --protocol=\'TCP\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysql" --protocol=\'TCP\'', $cmd);
     }
 
     /**
@@ -111,7 +111,7 @@ class MysqlTest extends TestCase
         $mysql->useDatabase('some_database');
         $cmd = $mysql->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysql --database=\'some_database\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysql" --database=\'some_database\'', $cmd);
     }
 
     /**
@@ -123,6 +123,6 @@ class MysqlTest extends TestCase
         $mysql->useSourceFile('fileToRestore.sql');
         $cmd = $mysql->getCommand();
 
-        $this->assertEquals(PHPBU_TEST_BIN . '/mysql --execute=\'source fileToRestore.sql\'', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysql" --execute=\'source fileToRestore.sql\'', $cmd);
     }
 }

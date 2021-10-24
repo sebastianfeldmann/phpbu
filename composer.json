@@ -49,8 +49,7 @@
     "ext-json": "*",
     "ext-spl": "*",
     "sebastian/environment": "^3.0|^4.0|^5.0",
-    "sebastianfeldmann/cli": "^3.1",
-    "phpmailer/phpmailer": "^6.0"
+    "sebastianfeldmann/cli": "^3.4"
   },
   "require-dev": {
     "sebastianfeldmann/git": "^3.2",
@@ -66,7 +65,8 @@
     "php-opencloud/openstack": "^3.0",
     "arhitector/yandex": "^2.0",
     "microsoft/azure-storage-blob": "^1.4",
-    "captainhook/captainhook": "^5.0"
+    "captainhook/captainhook": "^5.0",
+    "phpmailer/phpmailer": "^6.0"
   },
   "suggest": {
     "sebastianfeldmann/ftp": "Require ^0.9 to sync to an FTP server",
@@ -79,7 +79,8 @@
     "vlucas/phpdotenv": "Require ^3.0 or ^4.0 or ^5.0 to use the Dotenv adapter",
     "google/apiclient":"Require ^2.0 to sync to Google Drive",
     "arhitector/yandex":"Require ^2.0 to sync to Yandex Disk",
-    "microsoft/azure-storage-blob": "Require ^1.4 to sync to Azure Blob Storage"
+    "microsoft/azure-storage-blob": "Require ^1.4 to sync to Azure Blob Storage",
+    "phpmailer/phpmailer": "Require ^6.0 to receive logs via email"
   },
   "bin": [
     "phpbu"
