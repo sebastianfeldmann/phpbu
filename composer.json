@@ -49,7 +49,7 @@
     "ext-json": "*",
     "ext-spl": "*",
     "sebastian/environment": "^3.0|^4.0|^5.0",
-    "sebastianfeldmann/cli": "^3.1"
+    "sebastianfeldmann/cli": "^3.4"
   },
   "require-dev": {
     "sebastianfeldmann/git": "^3.2",

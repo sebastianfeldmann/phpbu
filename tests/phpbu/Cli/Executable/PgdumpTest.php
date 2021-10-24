@@ -44,7 +44,7 @@ class PgdumpTest extends TestCase
                ->dumpTo($file);
 
         $this->assertEquals(
-            '"PGPASSWORD=\'secret\' ' . PHPBU_TEST_BIN . '/pg_dump" -w --username=\'mrx\' --file=\'/tmp/foo\'',
+            'PGPASSWORD=\'secret\' "' . PHPBU_TEST_BIN . '/pg_dump" -w --username=\'mrx\' --file=\'/tmp/foo\'',
             $pgdump->getCommand()
         );
     }
