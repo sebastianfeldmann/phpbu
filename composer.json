@@ -49,15 +49,15 @@
     "ext-json": "*",
     "ext-spl": "*",
     "sebastian/environment": "^3.0|^4.0|^5.0",
-    "sebastianfeldmann/cli": "^3.4"
+    "sebastianfeldmann/cli": "^3.4",
+    "symfony/process": "^3.0|^4.0|^5.0|^6.0"
   },
   "require-dev": {
     "sebastianfeldmann/git": "^3.2",
     "sebastianfeldmann/ftp": "^0.9",
-    "guzzlehttp/guzzle": "^5.3.3|^6.2.1",
+    "guzzlehttp/guzzle": "^5.3.3|^6.2.1|^7.0.0",
     "aws/aws-sdk-php": "^3.10",
     "kunalvarma05/dropbox-php-sdk": "^0.2",
-    "tightenco/collect": "^5.0",
     "phpseclib/phpseclib": "^2.0",
     "softlayer/objectstorage": "dev-master",
     "vlucas/phpdotenv": "^4.0",

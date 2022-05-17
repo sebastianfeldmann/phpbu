@@ -136,7 +136,7 @@
     </copy>
 
     <!-- AMAZON AWS -->
-    <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE.md" tofile="${basedir}/build/phar/lib/aws-sdk/LICENSE"/>
+    <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE" tofile="${basedir}/build/phar/lib/aws-sdk/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/aws-sdk">
       <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src">
         <include name="**/*.php"/>
@@ -413,14 +413,6 @@
         <include name="**/*.php"/>
       </fileset>
     </copy>
-    <copy file="${basedir}/vendor/psr/log/LICENSE"
-          tofile="${basedir}/build/phar/lib/psr/log/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/psr/log">
-      <fileset dir="${basedir}/vendor/psr/log/Psr">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
 
     <!-- PHPSECLIB -->
     <copy file="${basedir}/vendor/phpseclib/phpseclib/LICENSE" tofile="${basedir}/build/phar/lib/phpseclib/LICENSE"/>
@@ -463,25 +455,6 @@
           tofile="${basedir}/build/phar/lib/symfony/options-resolver/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/symfony/options-resolver">
       <fileset dir="${basedir}/vendor/symfony/options-resolver">
-        <include name="**/*.php"/>
-        <exclude name="**/Test*"/>
-      </fileset>
-    </copy>
-
-    <!-- OPENSTACK -->
-    <copy file="${basedir}/vendor/php-opencloud/openstack/LICENSE"
-          tofile="${basedir}/build/phar/lib/php-opencloud/openstack/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/php-opencloud/openstack">
-      <fileset dir="${basedir}/vendor/php-opencloud/openstack/src">
-        <include name="**/*.php"/>
-        <exclude name="**/Test*"/>
-      </fileset>
-    </copy>
-
-    <copy file="${basedir}/vendor/justinrainbow/json-schema/LICENSE"
-          tofile="${basedir}/build/phar/lib/justinrainbow/json-schema/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/justinrainbow/json-schema">
-      <fileset dir="${basedir}/vendor/justinrainbow/json-schema/src">
         <include name="**/*.php"/>
         <exclude name="**/Test*"/>
       </fileset>
@@ -545,15 +518,7 @@
       </fileset>
     </copy>
 
-    <copy file="${basedir}/vendor/zendframework/zend-diactoros/LICENSE.md"
-          tofile="${basedir}/build/phar/lib/zendframework/zend-diactoros/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/zendframework/zend-diactoros">
-      <fileset dir="${basedir}/vendor/zendframework/zend-diactoros/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
-    <copy file="${basedir}/vendor/league/event/LICENCE"
+    <copy file="${basedir}/vendor/league/event/LICENSE"
           tofile="${basedir}/build/phar/lib/league/event/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/league/event">
       <fileset dir="${basedir}/vendor/league/event/src">
