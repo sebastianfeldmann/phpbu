@@ -6,6 +6,7 @@ use phpbu\App\Cli\Result;
 use phpbu\App\Configuration;
 use phpbu\App\Util;
 use SebastianFeldmann\Cli\Command\Runner;
+use SebastianFeldmann\Cli\Processor\Symfony;
 
 /**
  * Base class for Actions using cli tools.
@@ -49,7 +50,7 @@ abstract class Cli
      */
     public function __construct(Runner $runner = null, $time = null)
     {
-        $this->runner = $runner ? : new Runner\Simple();
+        $this->runner = $runner ? : new Runner\Simple(new Symfony());
         $this->time   = $time   ? : time();
     }
 
