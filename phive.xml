@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phive xmlns="https://phar.io/phive">
-  <phar name="phpunit" version="^9.4.3" location="./tools/phpunit" copy="true" installed="9.5.9"/>
-  <phar name="phpab" version="^1.20.0" location="./tools/phpab" copy="true" installed="1.26.3"/>
-  <phar name="phpcs" version="^3.5.2" location="./tools/phpcs" copy="true" installed="3.6.0"/>
+  <phar name="phpunit" version="^9.4.3" location="./tools/phpunit" copy="true" installed="9.5.19"/>
+  <phar name="phpab" version="^1.20.0" location="./tools/phpab" copy="true" installed="1.27.1"/>
+  <phar name="phpcs" version="^3.5.2" location="./tools/phpcs" copy="true" installed="3.6.2"/>
   <phar name="phpstan" version="^0.12.2" location="./tools/phpstan" copy="true" installed="0.12.99"/>
 </phive>
