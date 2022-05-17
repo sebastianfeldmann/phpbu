@@ -21,7 +21,7 @@ class GoogleDrive extends Remote
     /**
      * Google drive api service.
      *
-     * @var \Google_Service_Drive
+     * @var Google_Service_Drive
      */
     private $service;
 
@@ -35,8 +35,8 @@ class GoogleDrive extends Remote
     /**
      * Constructor.
      *
-     * @param \Google_Service_Drive           $service
-     * @param \Google_Service_Drive_DriveFile $googleFile
+     * @param Google_Service_Drive $service
+     * @param Google_Service_Drive_DriveFile $googleFile
      */
     public function __construct(Google_Service_Drive $service, Google_Service_Drive_DriveFile $googleFile)
     {
@@ -44,14 +44,14 @@ class GoogleDrive extends Remote
         $this->filename     = $googleFile->getName();
         $this->pathname     = $googleFile->getId();
         $this->fileId       = $googleFile->getId();
-        $this->size         = $googleFile->getSize();
+        $this->size         = (int) $googleFile->getSize();
         $this->lastModified = strtotime($googleFile->getCreatedTime());
     }
 
     /**
      * Deletes the file from Google Drive.
      *
-     * @throws \phpbu\App\Exception
+     * @throws Exception
      */
     public function unlink()
     {
