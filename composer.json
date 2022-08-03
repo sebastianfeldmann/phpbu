@@ -65,7 +65,6 @@
     "php-opencloud/openstack": "^3.0",
     "arhitector/yandex": "^2.0",
     "microsoft/azure-storage-blob": "^1.4",
-    "captainhook/captainhook": "^5.0",
     "phpmailer/phpmailer": "^6.0"
   },
   "suggest": {
@@ -91,7 +90,7 @@
     }
   },
   "scripts": {
-    "post-autoload-dump": "vendor/bin/captainhook install -f -s",
+    "post-autoload-dump": "tools/captainhook install -f -s",
     "setup": "phive install",
     "test": "tools/phpunit",
     "analyse": "tools/phpstan analyse",
