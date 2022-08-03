@@ -30,7 +30,7 @@ jobs:
       run: php -v
 
     - name : Install tooling
-      run : GITHUB_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }} phive --no-progress --home ./.phive install --force-accept-unsigned --trust-gpg-keys 4AA394086372C20A,31C7E470E2138192,8E730BA25823D8B5,CF1A108D0E7AE720,2A8299CE842DD38C
+      run : GITHUB_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }} phive --no-progress --home ./.phive install --force-accept-unsigned --trust-gpg-keys 4AA394086372C20A,31C7E470E2138192,8E730BA25823D8B5,CF1A108D0E7AE720,2A8299CE842DD38C,661E97400F658E25
 
     - name: Update composer
       run: composer self-update
