@@ -146,6 +146,15 @@ class XmlTest extends TestCase
         $this->assertEquals('demo', $source->options['password']);
     }
 
+    public function testWithDebug(): void
+    {
+        $loader = new Xml(PHPBU_TEST_FILES . '/conf/xml/config-with-debug.xml', $this->getBootstrapperMock(true));
+        $config = $loader->getConfiguration(self::$factory);
+
+        $this->assertFalse($loader->hasValidationErrors());
+        $this->assertTrue($config->getDebug());
+    }
+
     /**
      * Tests Xml::getConfiguration
      */
@@ -161,6 +170,7 @@ class XmlTest extends TestCase
         $this->assertEquals($dir . '/backup/bootstrap.php', $config->getBootstrap());
         $this->assertTrue($config->getColors());
         $this->assertFalse($config->getVerbose());
+        $this->assertFalse($config->getDebug());
     }
 
     /**

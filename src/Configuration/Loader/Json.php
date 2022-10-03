@@ -121,6 +121,9 @@ class Json extends File implements Loader
         if (isset($this->json['colors'])) {
             $configuration->setColors($this->json['colors']);
         }
+        if (isset($this->json['debug'])) {
+            $configuration->setDebug($this->json['debug']);
+        }
     }
 
     /**
