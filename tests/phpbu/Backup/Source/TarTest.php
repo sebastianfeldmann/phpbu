@@ -40,13 +40,12 @@ class TarTest extends TestCase
     /**
      * Tests Tar::setUp
      */
-    public function testSetupPathDoesNotExist()
+    public function testSetupPathDoesNotExistDoesNotThrowException(): void
     {
-        $this->expectException('phpbu\App\Exception');
+        $this->expectNotToPerformAssertions();
+
         $tar = new Tar();
         $tar->setup(['path' => getcwd() . '/foo']);
-
-        $this->assertFalse(true, 'exception should be thrown');
     }
 
     /**
@@ -519,12 +518,29 @@ class TarTest extends TestCase
     /**
      * Tests Tar::backup
      */
-    public function testBackupInvalidPath()
+    public function testBackupThrowsExceptionWhenPathPointsToFile(): void
     {
         $this->expectException('phpbu\App\Exception');
+        $this->expectExceptionMessage(sprintf('Cannot compress at path "%s": not a directory.', __FILE__));
+
         $runner = $this->getRunnerMock();
         $tar    = new Tar($runner);
         $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => __FILE__]);
+
+        $target    = $this->createTargetMock('/tmp/backup.tar');
+        $appResult = $this->getAppResultMock();
+
+        $tar->backup($target, $appResult);
+    }
+
+    public function testBackupThrowsExceptionWhenNoDirectoryExistsAtPath(): void
+    {
+        $this->expectException('phpbu\App\Exception');
+        $this->expectExceptionMessage('Could not find directory to compress at "/some/directory/that/does/not/exist".');
+
+        $runner = $this->getRunnerMock();
+        $tar    = new Tar($runner);
+        $tar->setup(['pathToTar' => PHPBU_TEST_BIN, 'path' => '/some/directory/that/does/not/exist']);
 
         $target    = $this->createTargetMock('/tmp/backup.tar');
         $appResult = $this->getAppResultMock();
