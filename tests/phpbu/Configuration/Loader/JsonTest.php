@@ -139,6 +139,13 @@ class JsonTest extends TestCase
         $config = $loader->getConfiguration(self::$factory);
     }
 
+    public function testWithDebug(): void
+    {
+        $loader = new Json(PHPBU_TEST_FILES . '/conf/json/config-with-debug.json', $this->getBootstrapperMock(true));
+        $config = $loader->getConfiguration(self::$factory);
+        $this->assertTrue($config->getDebug());
+    }
+
     /**
      * Tests Json::getConfiguration
      */
@@ -152,6 +159,7 @@ class JsonTest extends TestCase
         $this->assertEquals($dir . '/backup/bootstrap.php', $config->getBootstrap());
         $this->assertTrue($config->getColors());
         $this->assertFalse($config->getVerbose());
+        $this->assertFalse($config->getDebug());
     }
 
     /**

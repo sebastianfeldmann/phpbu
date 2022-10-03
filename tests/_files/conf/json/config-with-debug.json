@@ -1,0 +1,19 @@
+{
+  "debug": true,
+  "backups": [
+    {
+      "name": "tarball",
+      "source": {
+        "type": "tar",
+        "options": {
+          "path": "src"
+        }
+      },
+      "target": {
+        "dirname": "backup/src",
+        "filename": "tarball-%Y%m%d-%H%i.tar",
+        "compress": "bzip2"
+      }
+    }
+  ]
+}
