@@ -12,10 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        php: ['7.3', '7.4', '8.0']
-        include:
-          - php: "8.0"
-            composeroptions: "--ignore-platform-req=php"
+        php: ['7.3', '7.4', '8.0', '8.1']
     steps:
     - uses: actions/checkout@master
 
