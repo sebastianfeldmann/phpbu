@@ -132,7 +132,7 @@ class Webhook implements Listener, Logger
         // PHP >7.2 deprecated the filter options and enabled them by default
         $filterOptions = version_compare(PHP_VERSION, '7.2.0', '<')
                        ? FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED
-                       : null;
+                       : 0;
 
         if (!filter_var($options['uri'], FILTER_VALIDATE_URL, $filterOptions)) {
             throw new Exception('webhook URI is invalid');
