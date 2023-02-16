@@ -516,7 +516,7 @@ class Mysqldump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('--host', $this->host);
         $cmd->addOptionIfNotEmpty('--port', $this->port);
         $cmd->addOptionIfNotEmpty('--protocol', $this->protocol);
-        $cmd->addOptionIfNotEmpty('--lock-tables', $this->lockTables, false);
+        $cmd->addOptionIfNotEmpty('--lock-tables', json_encode($this->lockTables));
         $cmd->addOptionIfNotEmpty('--single-transaction', $this->singleTransaction, false);
         $cmd->addOptionIfNotEmpty('-q', $this->quick, false);
         $cmd->addOptionIfNotEmpty('-C', $this->compress, false);
