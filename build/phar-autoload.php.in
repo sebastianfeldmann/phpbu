@@ -47,7 +47,7 @@ if ($execute) {
     require __PHPBU_PHAR_ROOT__ . '/lib/guzzlehttp/promises/functions_include.php';
     // dropbox collection helper
     require __PHPBU_PHAR_ROOT__ . '/lib/tightenco/Collect/Support/helpers.php';
-    require __PHPBU_PHAR_ROOT__ . '/lib/tightenco/Collect/Support/alias.php';
+    //require __PHPBU_PHAR_ROOT__ . '/lib/tightenco/Collect/Support/alias.php';
     
     phpbu\App\Cmd::main();
 }
