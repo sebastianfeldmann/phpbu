@@ -139,6 +139,9 @@ class Xml extends File implements Loader
         if ($root->hasAttribute('colors')) {
             $configuration->setColors(Str::toBoolean($root->getAttribute('colors'), false));
         }
+        if ($root->hasAttribute('debug')) {
+            $configuration->setDebug(Str::toBoolean($root->getAttribute('debug'), false));
+        }
     }
 
     /**

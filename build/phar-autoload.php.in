@@ -48,7 +48,11 @@ if ($execute) {
     // dropbox collection helper
     require __PHPBU_PHAR_ROOT__ . '/lib/tightenco/Collect/Support/helpers.php';
     //require __PHPBU_PHAR_ROOT__ . '/lib/tightenco/Collect/Support/alias.php';
-    
+    // load the symfony polyfills
+    require __PHPBU_PHAR_ROOT__ . '/lib/symfony/polyfill-ctype/bootstrap.php';
+    require __PHPBU_PHAR_ROOT__ . '/lib/symfony/polyfill-mbstring/bootstrap.php';
+    require __PHPBU_PHAR_ROOT__ . '/lib/symfony/polyfill-php80/bootstrap.php';
+
     phpbu\App\Cmd::main();
 }
 

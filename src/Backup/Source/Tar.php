@@ -224,9 +224,6 @@ class Tar extends SimulatorExecutable implements Simulator, Restorable
             throw new Exception('path option is mandatory');
         }
         $this->path = Util\Path::toAbsolutePath($path, Configuration::getWorkingDirectory());
-        if (!file_exists($this->path)) {
-            throw new Exception('could not find directory to compress');
-        }
     }
 
     /**
@@ -329,10 +326,14 @@ class Tar extends SimulatorExecutable implements Simulator, Restorable
      *
      * @throws \phpbu\App\Exception
      */
-    private function validatePath()
+    private function validatePath(): void
     {
+        if (!file_exists($this->path)) {
+            throw new Exception(sprintf('Could not find directory to compress at "%s".', $this->path));
+        }
+
         if (!is_dir($this->path)) {
-            throw new Exception('path to compress has to be a directory');
+            throw new Exception(sprintf('Cannot compress at path "%s": not a directory.', $this->path));
         }
     }
 

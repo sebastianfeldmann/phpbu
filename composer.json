@@ -55,7 +55,7 @@
   "require-dev": {
     "sebastianfeldmann/git": "^3.2",
     "sebastianfeldmann/ftp": "^0.9",
-    "guzzlehttp/guzzle": "^5.3.3|^6.2.1|^7.0.0",
+    "guzzlehttp/guzzle": "^5.3.4|^6.5.8|^7.5.0",
     "aws/aws-sdk-php": "^3.10",
     "kunalvarma05/dropbox-php-sdk": "^0.2",
     "phpseclib/phpseclib": "^2.0",
@@ -65,7 +65,6 @@
     "php-opencloud/openstack": "^3.0",
     "arhitector/yandex": "^2.0",
     "microsoft/azure-storage-blob": "^1.4",
-    "captainhook/captainhook": "^5.0",
     "phpmailer/phpmailer": "^6.0"
   },
   "suggest": {
@@ -91,7 +90,7 @@
     }
   },
   "scripts": {
-    "post-autoload-dump": "vendor/bin/captainhook install -f -s",
+    "post-autoload-dump": "tools/captainhook install -f -s",
     "setup": "phive install",
     "test": "tools/phpunit",
     "analyse": "tools/phpstan analyse",

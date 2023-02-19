@@ -37,6 +37,16 @@ class Str
     }
 
     /**
+     * Returns 'true' or 'false' or '' if null is given
+     * @param bool|null $value
+     * @return string
+     */
+    public static function fromBoolean($value) : string
+    {
+        return $value === null ? '' : ($value ? 'true' : 'false');
+    }
+
+    /**
      * Return given size in bytes
      * Allowed units:
      *   B => byte

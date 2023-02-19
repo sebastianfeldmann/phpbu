@@ -85,10 +85,10 @@ class MysqldumpTest extends TestCase
     public function testLockTables()
     {
         $mysqldump = new Mysqldump(PHPBU_TEST_BIN);
-        $mysqldump->lockTables(true);
+        $mysqldump->lockTables('true');
         $cmd       = $mysqldump->getCommand();
 
-        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables --all-databases', $cmd);
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables=\'true\' --all-databases', $cmd);
     }
 
     /**

@@ -135,7 +135,14 @@
       </fileset>
     </copy>
 
-    <!-- AMAZON AWS -->
+    <!-- SYMFONY -->
+    <copy todir="${basedir}/build/phar/lib/symfony/">
+      <fileset dir="${basedir}/vendor/symfony/">
+         <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+      <!-- AMAZON AWS -->
     <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE" tofile="${basedir}/build/phar/lib/aws-sdk/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/aws-sdk">
       <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src">
@@ -447,16 +454,6 @@
     <copy todir="${basedir}/build/phar/lib/phpmailer">
       <fileset dir="${basedir}/vendor/phpmailer/phpmailer/src">
         <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
-    <!-- Symfony libs -->
-    <copy file="${basedir}/vendor/symfony/options-resolver/LICENSE"
-          tofile="${basedir}/build/phar/lib/symfony/options-resolver/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/symfony/options-resolver">
-      <fileset dir="${basedir}/vendor/symfony/options-resolver">
-        <include name="**/*.php"/>
-        <exclude name="**/Test*"/>
       </fileset>
     </copy>
 

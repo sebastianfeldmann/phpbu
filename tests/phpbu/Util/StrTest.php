@@ -48,6 +48,16 @@ class StrTest extends TestCase
     }
 
     /**
+     * Test fromBoolean
+     */
+    public function testFromBooleanDefault()
+    {
+        $this->assertEquals('', Str::fromBoolean(null));
+        $this->assertEquals('false', Str::fromBoolean(false));
+        $this->assertEquals('true', Str::fromBoolean(true));
+    }
+
+    /**
      * Test byte values
      */
     public function testToByteUpperCase()
