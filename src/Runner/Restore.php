@@ -7,6 +7,7 @@ use phpbu\App\Backup\Restore\Plan;
 use phpbu\App\Backup\Source;
 use phpbu\App\Backup\Target;
 use phpbu\App\Configuration;
+use phpbu\App\Exception;
 use phpbu\App\Result;
 use SebastianFeldmann\Cli\Util;
 
@@ -26,8 +27,8 @@ class Restore extends Process
     /**
      * Restore all backups
      *
-     * @param  \phpbu\App\Configuration $configuration
-     * @return \phpbu\App\Result
+     * @param Configuration $configuration
+     * @return Result
      * @throws \Exception
      */
     public function run(Configuration $configuration) : Result
@@ -45,8 +46,8 @@ class Restore extends Process
      * Collects all restore commands in a restore plan
      *
      * @param  \phpbu\App\Configuration\Backup $backup
-     * @return \phpbu\App\Backup\Restore\Plan
-     * @throws \phpbu\App\Exception
+     * @return Plan
+     * @throws Exception
      */
     private function createRestorePlan(Configuration\Backup $backup): Plan
     {
@@ -61,7 +62,7 @@ class Restore extends Process
     /**
      * Output the restore plan
      *
-     * @param \phpbu\App\Backup\Restore\Plan $plan
+     * @param Plan $plan
      */
     private function printPlan(Plan $plan)
     {
@@ -70,10 +71,10 @@ class Restore extends Process
     }
 
     /**
-     * @param  \phpbu\App\Backup\Target        $target
+     * @param Target $target
      * @param  \phpbu\App\Configuration\Backup $backup
-     * @param  \phpbu\App\Backup\Restore\Plan  $plan
-     * @throws \phpbu\App\Exception
+     * @param Plan $plan
+     * @throws Exception
      */
     private function decryptBackup(Target $target, Configuration\Backup $backup, Plan $plan)
     {
@@ -92,10 +93,10 @@ class Restore extends Process
     }
 
     /**
-     * @param  \phpbu\App\Backup\Target        $target
+     * @param Target $target
      * @param  \phpbu\App\Configuration\Backup $backup
-     * @param  \phpbu\App\Backup\Restore\Plan  $plan
-     * @throws \phpbu\App\Exception
+     * @param Plan $plan
+     * @throws Exception
      */
     private function restoreBackup(Target $target, Configuration\Backup $backup, Plan $plan)
     {
@@ -130,13 +131,13 @@ class Restore extends Process
     /**
      * Output the decryption commands
      *
-     * @param \phpbu\App\Backup\Restore\Plan $plan
+     * @param Plan $plan
      * @return void
      */
     private function printDecryptionCommands(Plan $plan): void
     {
         if (!$plan->isCryptSupported()) {
-            echo Util::formatWithColor('fg-red', "WARNING: Your configured crypt does not support restore for now.\n");
+            echo Util::formatWithColor('fg-red', "WARNING: Your configured crypt does not support restore for now.\n\n");
             return;
         }
         $commands = $plan->getDecryptionCommands();
@@ -152,13 +153,13 @@ class Restore extends Process
     /**
      * Output the restore commands
      *
-     * @param \phpbu\App\Backup\Restore\Plan $plan
+     * @param Plan $plan
      * @return void
      */
     private function printRestoreCommands(Plan $plan): void
     {
         if (!$plan->isSourceSupported()) {
-            echo Util::formatWithColor('fg-red', "WARNING: Your configured source does not support restore for now.\n");
+            echo Util::formatWithColor('fg-red', "WARNING: Your configured source does not support restore for now.\n\n");
             return;
         }
 
