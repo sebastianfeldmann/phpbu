@@ -5,6 +5,7 @@ use phpbu\App\Backup\Target\Compression;
 use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
 use phpbu\App\Util\Cli;
+use phpbu\App\Util\Str;
 use SebastianFeldmann\Cli\CommandLine;
 use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
@@ -105,9 +106,9 @@ class Mysqldump extends Abstraction implements Executable
      * Lock tables option
      * --lock-tables
      *
-     * @var bool
+     * @var string
      */
-    private $lockTables;
+    private $lockTables = '';
 
     /**
      * Issue a BEGIN SQL statement before dumping data from server
@@ -206,7 +207,7 @@ class Mysqldump extends Abstraction implements Executable
     /**
      * Compression command to pipe output to
      *
-     * @var \phpbu\App\Backup\Target\Compression
+     * @var Compression
      */
     private $compression;
 
@@ -226,7 +227,7 @@ class Mysqldump extends Abstraction implements Executable
      *
      * @param  string $user
      * @param  string $password
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function credentials(string $user = '', string $password = '') : Mysqldump
     {
@@ -239,7 +240,7 @@ class Mysqldump extends Abstraction implements Executable
      * Set the mysql hostname
      *
      * @param  string $host
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function useHost(string $host) : Mysqldump
     {
@@ -251,7 +252,7 @@ class Mysqldump extends Abstraction implements Executable
      * Set the mysql port
      *
      * @param  int $port
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function usePort(int $port) : Mysqldump
     {
@@ -263,7 +264,7 @@ class Mysqldump extends Abstraction implements Executable
      * Set the connection protocol.
      *
      * @param  string $protocol
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function useProtocol(string $protocol) : Mysqldump
     {
@@ -275,7 +276,7 @@ class Mysqldump extends Abstraction implements Executable
      * Use '-q' quick mode
      *
      * @param  boolean $bool
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function useQuickMode(bool $bool) : Mysqldump
     {
@@ -284,14 +285,14 @@ class Mysqldump extends Abstraction implements Executable
     }
 
     /**
-     * Use '--lock-tables' option
+     * Use '--lock-tables' option 'true', 'false' or ''
      *
-     * @param  bool $bool
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @param  string $bool
+     * @return Mysqldump
      */
-    public function lockTables(bool $bool) : Mysqldump
+    public function lockTables(string $value) : Mysqldump
     {
-        $this->lockTables = $bool;
+        $this->lockTables = $value;
         return $this;
     }
 
@@ -299,7 +300,7 @@ class Mysqldump extends Abstraction implements Executable
      * Use '--single-transaction' option
      *
      * @param  bool $bool
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function singleTransaction(bool $bool) : Mysqldump
     {
@@ -311,7 +312,7 @@ class Mysqldump extends Abstraction implements Executable
      * Use '-C' compress mode
      *
      * @param  bool $bool
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function useCompression(bool $bool) : Mysqldump
     {
@@ -323,7 +324,7 @@ class Mysqldump extends Abstraction implements Executable
      * Use '--skip-extended-insert' option
      *
      * @param  bool $bool
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function skipExtendedInsert(bool $bool) : Mysqldump
     {
@@ -335,7 +336,7 @@ class Mysqldump extends Abstraction implements Executable
      * Use '--hex-blob' to encode binary fields
      *
      * @param  bool $bool
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function dumpBlobsHexadecimal(bool $bool) : Mysqldump
     {
@@ -347,7 +348,7 @@ class Mysqldump extends Abstraction implements Executable
      * Set tables to dump
      *
      * @param  array $tables
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function dumpTables(array $tables) : Mysqldump
     {
@@ -359,7 +360,7 @@ class Mysqldump extends Abstraction implements Executable
      * Set databases to dump
      *
      * @param  array $databases
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function dumpDatabases(array $databases) : Mysqldump
     {
@@ -371,7 +372,7 @@ class Mysqldump extends Abstraction implements Executable
      * Set tables to ignore
      *
      * @param  array $tables
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function ignoreTables(array $tables) : Mysqldump
     {
@@ -383,7 +384,7 @@ class Mysqldump extends Abstraction implements Executable
      * Set tables where only table structure should be dumped
      *
      * @param  array $tables
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function dumpStructureOnly(array $tables) : Mysqldump
     {
@@ -395,7 +396,7 @@ class Mysqldump extends Abstraction implements Executable
      * Dump no table data at all
      *
      * @param  bool $bool
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function dumpNoData(bool $bool) : Mysqldump
     {
@@ -407,7 +408,7 @@ class Mysqldump extends Abstraction implements Executable
      * Add a general transaction ID statement to the dump file
      *
      * @param  string $purge
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function addGTIDStatement(string $purge)
     {
@@ -419,7 +420,7 @@ class Mysqldump extends Abstraction implements Executable
      * Allow to use SSL CA option
      *
      * @param  string $sslCa
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function useSslCa(string $sslCa)
     {
@@ -431,7 +432,7 @@ class Mysqldump extends Abstraction implements Executable
      * Produce table separated data files
      *
      * @param  bool $bool
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function produceFilePerTable(bool $bool) : Mysqldump
     {
@@ -443,7 +444,7 @@ class Mysqldump extends Abstraction implements Executable
      * Dump procedures and functions
      *
      * @param  bool $bool
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function dumpRoutines(bool $bool) : Mysqldump
     {
@@ -455,7 +456,7 @@ class Mysqldump extends Abstraction implements Executable
      * Dump scheduled events
      *
      * @param  bool $bool
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function dumpEvents(bool $bool) : Mysqldump
     {
@@ -467,7 +468,7 @@ class Mysqldump extends Abstraction implements Executable
      * Skip triggers
      *
      * @param  bool $bool
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function skipTriggers(bool $bool) : Mysqldump
     {
@@ -478,8 +479,8 @@ class Mysqldump extends Abstraction implements Executable
     /**
      * Pipe compressor
      *
-     * @param  \phpbu\App\Backup\Target\Compression $compression
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @param Compression $compression
+     * @return Mysqldump
      */
     public function compressOutput(Compression $compression) : Mysqldump
     {
@@ -491,7 +492,7 @@ class Mysqldump extends Abstraction implements Executable
      * Set the dump target path
      *
      * @param  string $path
-     * @return \phpbu\App\Cli\Executable\Mysqldump
+     * @return Mysqldump
      */
     public function dumpTo(string $path) : Mysqldump
     {
@@ -502,8 +503,8 @@ class Mysqldump extends Abstraction implements Executable
     /**
      * Mysqldump CommandLine generator
      *
-     * @return \SebastianFeldmann\Cli\CommandLine
-     * @throws \phpbu\App\Exception
+     * @return CommandLine
+     * @throws Exception
      */
     protected function createCommandLine() : CommandLine
     {
@@ -516,7 +517,7 @@ class Mysqldump extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('--host', $this->host);
         $cmd->addOptionIfNotEmpty('--port', $this->port);
         $cmd->addOptionIfNotEmpty('--protocol', $this->protocol);
-        $cmd->addOptionIfNotEmpty('--lock-tables', $this->lockTables, false);
+        $cmd->addOptionIfNotEmpty('--lock-tables', $this->lockTables);
         $cmd->addOptionIfNotEmpty('--single-transaction', $this->singleTransaction, false);
         $cmd->addOptionIfNotEmpty('-q', $this->quick, false);
         $cmd->addOptionIfNotEmpty('-C', $this->compress, false);
@@ -558,8 +559,8 @@ class Mysqldump extends Abstraction implements Executable
     /**
      * Configure source data (tables, databases)
      *
-     * @param  \SebastianFeldmann\Cli\Command\Executable $cmd
-     * @throws \phpbu\App\Exception
+     * @param Cmd $cmd
+     * @throws Exception
      */
     private function configureSourceData(Cmd $cmd)
     {
@@ -573,8 +574,8 @@ class Mysqldump extends Abstraction implements Executable
     /**
      * Configure source tables
      *
-     * @param  \SebastianFeldmann\Cli\Command\Executable $cmd
-     * @throws \phpbu\App\Exception
+     * @param Cmd $cmd
+     * @throws Exception
      */
     private function configureSourceTables(Cmd $cmd)
     {
@@ -588,7 +589,7 @@ class Mysqldump extends Abstraction implements Executable
     /**
      * Configure source databases
      *
-     * @param \SebastianFeldmann\Cli\Command\Executable $cmd
+     * @param Cmd $cmd
      */
     private function configureSourceDatabases(Cmd $cmd)
     {
@@ -610,7 +611,7 @@ class Mysqldump extends Abstraction implements Executable
     /**
      * Add --ignore-table options
      *
-     * @param \SebastianFeldmann\Cli\Command\Executable $cmd
+     * @param Cmd $cmd
      */
     private function configureIgnoredTables(Cmd $cmd)
     {
@@ -624,7 +625,7 @@ class Mysqldump extends Abstraction implements Executable
     /**
      * Add compressor pipe if set
      *
-     * @param \SebastianFeldmann\Cli\CommandLine $process
+     * @param CommandLine $process
      */
     private function configureCompression(CommandLine $process)
     {
@@ -639,7 +640,7 @@ class Mysqldump extends Abstraction implements Executable
     /**
      * Configure output redirect
      *
-     * @param \SebastianFeldmann\Cli\CommandLine $process
+     * @param CommandLine $process
      */
     private function configureOutput(CommandLine $process)
     {

@@ -4,6 +4,8 @@ namespace phpbu\App\Backup\Source;
 use phpbu\App\Backup\Restore\Plan;
 use phpbu\App\Backup\Target;
 use phpbu\App\Cli\Executable;
+use phpbu\App\Cli\Executable\Mysql;
+use phpbu\App\Cli\Executable\Mysqlimport;
 use phpbu\App\Exception;
 use phpbu\App\Result;
 use phpbu\App\Util;
@@ -132,7 +134,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
      * Lock tables option
      * --lock-tables
      *
-     * @var bool
+     * @var string
      */
     private $lockTables;
 
@@ -238,7 +240,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
         $this->sslCa              = Util\Arr::getValue($conf, 'sslCa', '');
         $this->hexBlob            = Util\Str::toBoolean(Util\Arr::getValue($conf, 'hexBlob', ''), false);
         $this->quick              = Util\Str::toBoolean(Util\Arr::getValue($conf, 'quick', ''), false);
-        $this->lockTables         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'lockTables', ''), false);
+        $this->lockTables         = Util\Arr::getValue($conf, 'lockTables', '');
         $this->singleTransaction  = Util\Str::toBoolean(Util\Arr::getValue($conf, 'singleTransaction', ''), false);
         $this->compress           = Util\Str::toBoolean(Util\Arr::getValue($conf, 'compress', ''), false);
         $this->skipExtendedInsert = Util\Str::toBoolean(Util\Arr::getValue($conf, 'skipExtendedInsert', ''), false);
@@ -270,11 +272,11 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     /**
      * Execute the backup
      *
-     * @see    \phpbu\App\Backup\Source
-     * @param  \phpbu\App\Backup\Target $target
+     * @param  Target $target
      * @param  \phpbu\App\Result        $result
-     * @return \phpbu\App\Backup\Source\Status
+     * @return Status
      * @throws \phpbu\App\Exception
+     *@see    \phpbu\App\Backup\Source
      */
     public function backup(Target $target, Result $result) : Status
     {
@@ -318,9 +320,9 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     /**
      * Restore the backup
      *
-     * @param  \phpbu\App\Backup\Target       $target
-     * @param  \phpbu\App\Backup\Restore\Plan $plan
-     * @return \phpbu\App\Backup\Source\Status
+     * @param Target $target
+     * @param Plan $plan
+     * @return Status
      */
     public function restore(Target $target, Plan $plan): Status
     {
@@ -353,8 +355,8 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     /**
      * Create the Executable to run the mysqldump command.
      *
-     * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Cli\Executable
+     * @param Target $target
+     * @return Executable
      */
     protected function createExecutable(Target $target) : Executable
     {
@@ -391,8 +393,8 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     /**
      * Create backup status.
      *
-     * @param  \phpbu\App\Backup\Target $target
-     * @return \phpbu\App\Backup\Source\Status
+     * @param Target $target
+     * @return Status
      */
     protected function createStatus(Target $target) : Status
     {
@@ -414,7 +416,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     /**
      * Can compression be handled via pipe operator.
      *
-     * @param  \phpbu\App\Backup\Target $target
+     * @param Target $target
      * @return bool
      */
     private function isHandlingCompression(Target $target) : bool
@@ -425,7 +427,7 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     /**
      * Return dump target path.
      *
-     * @param  \phpbu\App\Backup\Target $target
+     * @param Target $target
      * @return string
      */
     private function getDumpTarget(Target $target) : string
@@ -436,11 +438,11 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
     /**
      * Create the Executable to run the mysql command.
      *
-     * @return \phpbu\App\Cli\Executable\Mysql
+     * @return Mysql
      */
-    private function createMysqlExecutable(): Executable\Mysql
+    private function createMysqlExecutable(): Mysql
     {
-        $executable = new Executable\Mysql($this->pathToMysql);
+        $executable = new Mysql($this->pathToMysql);
         $executable->credentials($this->user, $this->password)
             ->useHost($this->host)
             ->usePort($this->port)
@@ -457,11 +459,11 @@ class Mysqldump extends SimulatorExecutable implements Simulator, Restorable
      * @param string $sourceFilename
      * @param string $targetDatabase
      *
-     * @return \phpbu\App\Cli\Executable\Mysqlimport
+     * @return Mysqlimport
      */
-    private function createMysqlimportExecutable(string $sourceFilename, string $targetDatabase): Executable\Mysqlimport
+    private function createMysqlimportExecutable(string $sourceFilename, string $targetDatabase): Mysqlimport
     {
-        $executable = new Executable\Mysqlimport($this->pathToMysqlimport);
+        $executable = new Mysqlimport($this->pathToMysqlimport);
         $executable->setSourceAndTarget($sourceFilename, $targetDatabase)
             ->credentials($this->user, $this->password)
             ->useHost($this->host)
