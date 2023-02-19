@@ -137,7 +137,10 @@ class Restore extends Process
     private function printDecryptionCommands(Plan $plan): void
     {
         if (!$plan->isCryptSupported()) {
-            echo Util::formatWithColor('fg-red', "WARNING: Your configured crypt does not support restore for now.\n\n");
+            echo Util::formatWithColor(
+                'fg-red',
+                "WARNING: Your configured crypt does not support restore for now.\n\n"
+            );
             return;
         }
         $commands = $plan->getDecryptionCommands();
@@ -159,7 +162,10 @@ class Restore extends Process
     private function printRestoreCommands(Plan $plan): void
     {
         if (!$plan->isSourceSupported()) {
-            echo Util::formatWithColor('fg-red', "WARNING: Your configured source does not support restore for now.\n\n");
+            echo Util::formatWithColor(
+                'fg-red',
+                "WARNING: Your configured source does not support restore for now.\n\n"
+            );
             return;
         }
 
