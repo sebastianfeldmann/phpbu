@@ -34,7 +34,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables=\'false\' --all-databases', $executable->getCommand());
     }
 
     /**
@@ -68,7 +68,7 @@ class MysqldumpTest extends TestCase
         $executable = $mysqldump->getExecutable($target);
 
         $this->assertEquals(
-            '"' . PHPBU_TEST_BIN . '/mysqldump" --all-databases | '
+            '"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables=\'false\' --all-databases | '
             . '"' . PHPBU_TEST_BIN . '/gzip" > /tmp/foo.sql.gz',
             $executable->getCommand()
         );
@@ -85,7 +85,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables=\'true\' --all-databases', $executable->getCommand());
     }
 
     /**
@@ -99,7 +99,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --port=\'4711\' --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --port=\'4711\' --lock-tables=\'false\' --all-databases', $executable->getCommand());
     }
 
     /**
@@ -113,7 +113,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --protocol=\'TCP\' --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --protocol=\'TCP\' --lock-tables=\'false\' --all-databases', $executable->getCommand());
     }
 
     /**
@@ -128,7 +128,7 @@ class MysqldumpTest extends TestCase
         $executable = $mysqldump->getExecutable($target);
 
         $this->assertEquals(
-            '"' . PHPBU_TEST_BIN . '/mysqldump" --all-databases --tab=\'/tmp/foo.dump\'',
+            '"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables=\'false\' --all-databases --tab=\'/tmp/foo.dump\'',
             $executable->getCommand()
         );
     }
@@ -145,7 +145,7 @@ class MysqldumpTest extends TestCase
         $executable = $mysqldump->getExecutable($target);
 
         $this->assertEquals(
-            '"' . PHPBU_TEST_BIN . '/mysqldump" --set-gtid-purged=\'AUTO\' --all-databases > /tmp/foo',
+            '"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables=\'false\' --set-gtid-purged=\'AUTO\' --all-databases > /tmp/foo',
             $executable->getCommand()
         );
     }
@@ -162,7 +162,7 @@ class MysqldumpTest extends TestCase
         $executable = $mysqldump->getExecutable($target);
 
         $this->assertEquals(
-            '"' . PHPBU_TEST_BIN . '/mysqldump" --ssl-ca=\'/var/www/html/BaltimoreCyberTrustRoot.crt.pem\' --all-databases > /tmp/foo',
+            '"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables=\'false\' --ssl-ca=\'/var/www/html/BaltimoreCyberTrustRoot.crt.pem\' --all-databases > /tmp/foo',
             $executable->getCommand()
         );
     }
@@ -178,7 +178,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --hex-blob --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables=\'false\' --hex-blob --all-databases', $executable->getCommand());
     }
 
     /**
@@ -192,7 +192,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --skip-extended-insert --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables=\'false\' --skip-extended-insert --all-databases', $executable->getCommand());
     }
 
     /**
@@ -206,7 +206,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --skip-triggers --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables=\'false\' --skip-triggers --all-databases', $executable->getCommand());
     }
 
     /**
@@ -220,7 +220,7 @@ class MysqldumpTest extends TestCase
 
         $executable = $mysqldump->getExecutable($target);
 
-        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --events --all-databases', $executable->getCommand());
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/mysqldump" --lock-tables=\'false\' --events --all-databases', $executable->getCommand());
     }
 
     /**
@@ -338,7 +338,7 @@ class MysqldumpTest extends TestCase
         try {
             $mysqldump->backup($target, $appResult);
         } catch (Exception $e) {
-            $this->assertFileDoesNotExist($file);
+            $this->assertFileNotExists($file);
             throw $e;
         }
     }
