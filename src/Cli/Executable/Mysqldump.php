@@ -287,7 +287,7 @@ class Mysqldump extends Abstraction implements Executable
     /**
      * Use '--lock-tables' option 'true', 'false' or ''
      *
-     * @param  string $bool
+     * @param  string $value
      * @return Mysqldump
      */
     public function lockTables(string $value) : Mysqldump
