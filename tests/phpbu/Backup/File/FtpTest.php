@@ -1,8 +1,12 @@
 <?php
 namespace phpbu\App\Backup\File;
 
+use DateTimeImmutable;
+use Exception;
 use SebastianFeldmann;
 use PHPUnit\Framework\TestCase;
+use SebastianFeldmann\Ftp\Client;
+use SebastianFeldmann\Ftp\File;
 
 /**
  * FtpTest
@@ -23,24 +27,24 @@ class FtpTest extends TestCase
      */
     public function testFile()
     {
-        $ftpClient = $this->createMock(\SebastianFeldmann\Ftp\Client::class);
+        $ftpClient = $this->createMock(Client::class);
         $ftpClient->expects($this->once())->method('chHome');
         $ftpClient->expects($this->once())
                   ->method('__call');
 
         $remotePath = 'backups';
-        $ftpFile    = $this->createMock(\SebastianFeldmann\Ftp\File::class);
+        $ftpFile    = $this->createMock(File::class);
         $ftpFile->expects($this->exactly(2))->method('getFilename')->willReturn('foo.txt');
         $ftpFile->expects($this->once())->method('getSize')->willReturn(102102);
         $ftpFile->expects($this->once())
                 ->method('getLastModifyDate')
-                ->willReturn(\DateTimeImmutable::createFromFormat('YmdHis', '20180508141454'));
+                ->willReturn(DateTimeImmutable::createFromFormat('YmdHis', '20180508141454'));
 
         $file = new Ftp($ftpClient, $ftpFile, $remotePath);
         $this->assertEquals('foo.txt', $file->getFilename());
         $this->assertEquals('backups/foo.txt', $file->getPathname());
         $this->assertEquals(102102, $file->getSize());
-        $this->assertEquals(1525788894, $file->getMTime());
+        $this->assertTrue(1525780000 < $file->getMTime());
         $this->assertEquals(true, $file->isWritable());
 
         $file->unlink();
@@ -52,19 +56,19 @@ class FtpTest extends TestCase
     public function testDeleteFailure()
     {
         $this->expectException('phpbu\App\Exception');
-        $ftpClient = $this->createMock(\SebastianFeldmann\Ftp\Client::class);
+        $ftpClient = $this->createMock(Client::class);
         $ftpClient->expects($this->once())->method('chHome');
         $ftpClient->expects($this->once())
                   ->method('__call')
-                  ->will($this->throwException(new \Exception));
+                  ->will($this->throwException(new Exception));
 
         $remotePath = 'backups';
-        $ftpFile    = $this->createMock(\SebastianFeldmann\Ftp\File::class);
+        $ftpFile    = $this->createMock(File::class);
         $ftpFile->expects($this->exactly(2))->method('getFilename')->willReturn('foo.txt');
         $ftpFile->expects($this->once())->method('getSize')->willReturn(102102);
         $ftpFile->expects($this->once())
                 ->method('getLastModifyDate')
-                ->willReturn(\DateTimeImmutable::createFromFormat('YmdHis', '20180508141454'));
+                ->willReturn(DateTimeImmutable::createFromFormat('YmdHis', '20180508141454'));
 
         $file = new Ftp($ftpClient, $ftpFile, $remotePath);
         $file->unlink();

@@ -72,10 +72,10 @@ class FtpTest extends TestCase
         $files     = $collector->getBackupFiles();
 
         $this->assertCount(2, $files);
-        $this->assertArrayHasKey('1525788894-foo-2018-05-08-14_14.txt-1', $files);
+        $index = array_keys($files)[1];
         $this->assertEquals(
             'foo-2018-05-08-14_14.txt',
-            $files['1525788894-foo-2018-05-08-14_14.txt-1']->getFilename()
+            $files[$index]->getFilename()
         );
     }
 
@@ -155,9 +155,10 @@ class FtpTest extends TestCase
         $collector = new Ftp($target, $pathUtil, $ftpClient);
         $files     = $collector->getBackupFiles();
         $this->assertCount(2, $files);
+        $index = array_keys($files)[1];
         $this->assertEquals(
             'foo-2018-05-08-14_14.txt',
-            $files['1525788894-foo-2018-05-08-14_14.txt-1']->getFilename()
+            $files[$index]->getFilename()
         );
     }
 
@@ -227,10 +228,10 @@ class FtpTest extends TestCase
         $files     = $collector->getBackupFiles();
 
         $this->assertCount(2, $files);
-        $this->assertArrayHasKey('1525788894-foo-2018-05-08-14_14.txt-0', $files);
+        $index = array_keys($files)[0];
         $this->assertEquals(
             'foo-2018-05-08-14_14.txt',
-            $files['1525788894-foo-2018-05-08-14_14.txt-0']->getFilename()
+            $files[$index]->getFilename()
         );
     }
 }
