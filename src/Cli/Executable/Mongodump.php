@@ -266,7 +266,17 @@ class Mongodump extends Abstraction implements Executable
             }
         }
 
-        $cmd->addOptionIfNotEmpty('--excludeCollection', $this->excludeCollections);
+        if (count($this->excludeCollections)) {
+            foreach ($this->excludeCollections as $col) {
+                $cmd->addOption('--excludeCollection', $col, ' ');
+            }
+        }
+
+        if (count($this->excludeCollectionsWithPrefix)) {
+            foreach ($this->excludeCollectionsWithPrefix as $col) {
+                $cmd->addOption('--excludeCollectionWithPrefix', $col, ' ');
+            }
+        }
         $cmd->addOptionIfNotEmpty('--excludeCollectionWithPrefix', $this->excludeCollectionsWithPrefix);
 
         return $process;
