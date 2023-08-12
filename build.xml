@@ -377,6 +377,20 @@
         <include name="**/*.php"/>
       </fileset>
     </copy>
+    <copy file="${basedir}/vendor/psr/http-client/LICENSE"
+            tofile="${basedir}/build/phar/lib/psr/http-client/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/psr/http-client">
+      <fileset dir="${basedir}/vendor/psr/http-client/src">
+            <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/psr/http-factory/LICENSE"
+            tofile="${basedir}/build/phar/lib/psr/http-factory/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/psr/http-factory">
+      <fileset dir="${basedir}/vendor/psr/http-factory/src">
+            <include name="**/*.php"/>
+      </fileset>
+    </copy>
     <copy file="${basedir}/vendor/mtdowling/jmespath.php/LICENSE"
           tofile="${basedir}/build/phar/lib/mtdowling/jmespath.php/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/mtdowling/jmespath.php">
