@@ -56,6 +56,7 @@ class Factory
             'rsync'       => '\\phpbu\\App\\Backup\\Source\\Rsync',
             'tar'         => '\\phpbu\\App\\Backup\\Source\\Tar',
             'xtrabackup'  => '\\phpbu\\App\\Backup\\Source\\XtraBackup',
+            'xtrabackup8' => '\\phpbu\\App\\Backup\\Source\\XtraBackup8',
         ],
         'check'   => [
             'sizemin'                 => '\\phpbu\\App\\Backup\\Check\\SizeMin',
