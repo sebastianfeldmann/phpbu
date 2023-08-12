@@ -123,7 +123,7 @@ class Mongodump extends Abstraction implements Executable
      * Set path to dump to.
      *
      * @param  string $path
-     * @return \phpbu\App\Cli\Executable\Mongodump
+     * @return Mongodump
      */
     public function dumpToDirectory(string $path) : Mongodump
     {
@@ -135,7 +135,7 @@ class Mongodump extends Abstraction implements Executable
      * Use ipv6 to connect.
      *
      * @param  boolean $bool
-     * @return \phpbu\App\Cli\Executable\Mongodump
+     * @return Mongodump
      */
     public function useIpv6(bool $bool) : Mongodump
     {
@@ -147,7 +147,7 @@ class Mongodump extends Abstraction implements Executable
      * Set uri to dump from
      *
      * @param string $uri
-     * @return \phpbu\App\Cli\Executable\Mongodump
+     * @return Mongodump
      */
     public function useUri(string $uri) : Mongodump
     {
@@ -159,7 +159,7 @@ class Mongodump extends Abstraction implements Executable
      * Set host to dump from.
      *
      * @param  string $host
-     * @return \phpbu\App\Cli\Executable\Mongodump
+     * @return Mongodump
      */
     public function useHost(string $host) : Mongodump
     {
@@ -173,7 +173,7 @@ class Mongodump extends Abstraction implements Executable
      * @param  string $user
      * @param  string $password
      * @param  string $authDatabase
-     * @return \phpbu\App\Cli\Executable\Mongodump
+     * @return Mongodump
      */
     public function credentials(string $user = '', string $password = '', string $authDatabase = '') : Mongodump
     {
@@ -187,7 +187,7 @@ class Mongodump extends Abstraction implements Executable
      * Dump only given databases.
      *
      * @param  array $databases
-     * @return \phpbu\App\Cli\Executable\Mongodump
+     * @return Mongodump
      */
     public function dumpDatabases(array $databases) : Mongodump
     {
@@ -199,7 +199,7 @@ class Mongodump extends Abstraction implements Executable
      * Dump only given collections.
      *
      * @param  array $collections
-     * @return \phpbu\App\Cli\Executable\Mongodump
+     * @return Mongodump
      */
     public function dumpCollections(array $collections) : Mongodump
     {
@@ -211,7 +211,7 @@ class Mongodump extends Abstraction implements Executable
      * Exclude collections.
      *
      * @param  array $collections
-     * @return \phpbu\App\Cli\Executable\Mongodump
+     * @return Mongodump
      */
     public function excludeCollections(array $collections) : Mongodump
     {
@@ -223,7 +223,7 @@ class Mongodump extends Abstraction implements Executable
      * Exclude collections with given prefixes.
      *
      * @param  array $prefixes
-     * @return \phpbu\App\Cli\Executable\Mongodump
+     * @return Mongodump
      */
     public function excludeCollectionsWithPrefix(array $prefixes) : Mongodump
     {
@@ -234,8 +234,8 @@ class Mongodump extends Abstraction implements Executable
     /**
      * Mongodump CommandLine generator.
      *
-     * @return \SebastianFeldmann\Cli\CommandLine
-     * @throws \phpbu\App\Exception
+     * @return CommandLine
+     * @throws Exception
      */
     protected function createCommandLine() : CommandLine
     {
@@ -246,38 +246,26 @@ class Mongodump extends Abstraction implements Executable
         $cmd     = new Cmd($this->binary);
         $process->addCommand($cmd);
 
-        $cmd->addOption('--out', $this->dumpDir, ' ');
+        $cmd->addOption('--out', $this->dumpDir);
         $cmd->addOptionIfNotEmpty('--ipv6', $this->useIPv6, false);
-        $cmd->addOptionIfNotEmpty('--uri', $this->uri, true, ' ');
-        $cmd->addOptionIfNotEmpty('--host', $this->host, true, ' ');
-        $cmd->addOptionIfNotEmpty('--username', $this->user, true, ' ');
-        $cmd->addOptionIfNotEmpty('--password', $this->password, true, ' ');
-        $cmd->addOptionIfNotEmpty('--authenticationDatabase', $this->authenticationDatabase, true, ' ');
+        $cmd->addOptionIfNotEmpty('--uri', $this->uri);
+        $cmd->addOptionIfNotEmpty('--host', $this->host);
+        $cmd->addOptionIfNotEmpty('--username', $this->user);
+        $cmd->addOptionIfNotEmpty('--password', $this->password);
+        $cmd->addOptionIfNotEmpty('--authenticationDatabase', $this->authenticationDatabase);
 
-        if (count($this->databases)) {
-            foreach ($this->databases as $db) {
-                $cmd->addOption('--db', $db, ' ');
-            }
+        foreach ($this->databases as $db) {
+            $cmd->addOption('--db', $db);
         }
-
-        if (count($this->collections)) {
-            foreach ($this->collections as $col) {
-                $cmd->addOption('--collection', $col, ' ');
-            }
+        foreach ($this->collections as $col) {
+            $cmd->addOption('--collection', $col);
         }
-
-        if (count($this->excludeCollections)) {
-            foreach ($this->excludeCollections as $col) {
-                $cmd->addOption('--excludeCollection', $col, ' ');
-            }
+        foreach ($this->excludeCollections as $col) {
+            $cmd->addOption('--excludeCollection', $col);
         }
-
-        if (count($this->excludeCollectionsWithPrefix)) {
-            foreach ($this->excludeCollectionsWithPrefix as $col) {
-                $cmd->addOption('--excludeCollectionWithPrefix', $col, ' ');
-            }
+        foreach ($this->excludeCollectionsWithPrefix as $col) {
+            $cmd->addOption('--excludeCollectionWithPrefix', $col);
         }
-        $cmd->addOptionIfNotEmpty('--excludeCollectionWithPrefix', $this->excludeCollectionsWithPrefix);
 
         return $process;
     }
