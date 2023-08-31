@@ -35,6 +35,8 @@ use Phar;
 use phpbu\App\Cmd\Args;
 use phpbu\App\Configuration\Bootstrapper;
 use phpbu\App\Util\Arr;
+use RuntimeException;
+
 use function fgets;
 use function file_put_contents;
 use function getcwd;
@@ -189,9 +191,9 @@ final class Cmd
      * Create a application configuration
      *
      * @param  string             $configurationFile
-     * @param  \phpbu\App\Factory $factory
-     * @return \phpbu\App\Configuration
-     * @throws \phpbu\App\Exception
+     * @param Factory $factory
+     * @return Configuration
+     * @throws Exception
      */
     protected function createConfiguration(string $configurationFile, Factory $factory) : Configuration
     {
@@ -235,7 +237,7 @@ final class Cmd
     /**
      * Override configuration settings with command line arguments
      *
-     * @param \phpbu\App\Configuration $configuration
+     * @param Configuration $configuration
      */
     protected function overrideConfigWithArguments(Configuration $configuration) : void
     {
@@ -269,16 +271,7 @@ final class Cmd
 
         echo 'Updating the phpbu PHAR to version ' . $latestVersion . ' ... ';
 
-        $old  = error_reporting(0);
-        $phar = file_get_contents($remoteFilename);
-        error_reporting($old);
-        if (!$phar) {
-            echo ' failed' . PHP_EOL . 'Could not reach phpbu update site' . PHP_EOL;
-            exit(self::EXIT_EXCEPTION);
-        }
-        file_put_contents($tempFilename, $phar);
-
-        chmod($tempFilename, 0777 & ~umask());
+        $this->overwriteOriginalBinaryWithTempBinary($tempFilename, $this->downloadLatestPHAR($remoteFilename));
 
         // check downloaded phar
         try {
@@ -355,7 +348,7 @@ final class Cmd
      * Returns latest released phpbu version
      *
      * @return string
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function getLatestVersion() : string
     {
@@ -427,7 +420,7 @@ EOT;
      * @param string $message
      * @param bool   $hint
      */
-    private function printError($message, $hint = false) : void
+    private function printError($message, $hint = false): void
     {
         $help = $hint ? ', use "phpbu -h" for help' : '';
         $this->printVersionString();
@@ -442,5 +435,43 @@ EOT;
     {
         $app = new static();
         $app->run($_SERVER['argv']);
+    }
+
+    /**
+     * Will download the PHAR and return the content
+     *
+     * @param  string $remoteFilename
+     * @return string
+     */
+    private function downloadLatestPHAR(string $remoteFilename): string
+    {
+        $old  = error_reporting(0);
+        $phar = file_get_contents($remoteFilename);
+        error_reporting($old);
+        if (!$phar) {
+            echo ' failed' . PHP_EOL . 'Could not reach phpbu update site' . PHP_EOL;
+            exit(self::EXIT_EXCEPTION);
+        }
+
+        return $phar;
+    }
+
+    /**
+     * Will copy the downloaded PHAR data to the original phpbu binary
+     *
+     * @param  string $tempFilename
+     * @param  string $phar
+     * @return void
+     */
+    private function overwriteOriginalBinaryWithTempBinary(string $tempFilename, string $phar): void
+    {
+        $old     = error_reporting(0);
+        $success = file_put_contents($tempFilename, $phar);
+        error_reporting($old);
+        if (!$success) {
+            echo ' permission denied' . PHP_EOL . 'Could not update phpbu binary file' . PHP_EOL;
+            exit(self::EXIT_EXCEPTION);
+        }
+        chmod($tempFilename, 0777 & ~umask());
     }
 }
