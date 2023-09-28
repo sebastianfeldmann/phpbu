@@ -144,7 +144,33 @@ To show a guide how to restore your backup use the *--restore* option.
 
 ## Configuration Example
 
-Simple configuration example:
+Simple configuration example in JSON:
+
+```json
+{
+   "verbose":true,
+   "backups":[
+      {
+         "name":"myAppDB",
+         "source":{
+            "type":"mysqldump",
+            "options":{
+               "databases":"mydbname",
+               "user":"user.name",
+               "password":"topsecret"
+            }
+         },
+         "target":{
+            "dirname":"backup",
+            "filename":"mysql-%Y%m%d-%H%i.sql",
+            "compress":"bzip2"
+         }
+      }
+   ]
+}
+```
+
+Simple configuration example in XML:
 
 ```xml
   <?xml version="1.0" encoding="UTF-8"?>
