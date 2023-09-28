@@ -144,6 +144,30 @@ To show a guide how to restore your backup use the *--restore* option.
 
 ## Configuration Example
 
+Simple configuration example in XML:
+
+```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/6.0/phpbu.xsd"
+         verbose="true">
+    <backups>
+      <backup name="myAppDB">
+        <!-- source -->
+        <source type="mysqldump">
+          <option name="databases" value="mydbname"/>
+          <option name="user" value="user.name"/>
+          <option name="password" value="topsecret"/>
+        </source>
+        <!-- where should the backup be stored -->
+        <target dirname="backup/mysql"
+                filename="mysqldump-%Y%m%d-%H%i.sql"
+                compress="bzip2"/>
+      </backup>
+    </backups>
+  </phpbu>
+```
+
 Simple configuration example in JSON:
 
 ```json
@@ -168,28 +192,4 @@ Simple configuration example in JSON:
       }
    ]
 }
-```
-
-Simple configuration example in XML:
-
-```xml
-  <?xml version="1.0" encoding="UTF-8"?>
-  <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/6.0/phpbu.xsd"
-         verbose="true">
-    <backups>
-      <backup name="myAppDB">
-        <!-- source -->
-        <source type="mysqldump">
-          <option name="databases" value="mydbname"/>
-          <option name="user" value="user.name"/>
-          <option name="password" value="topsecret"/>
-        </source>
-        <!-- where should the backup be stored -->
-        <target dirname="backup/mysql"
-                filename="mysqldump-%Y%m%d-%H%i.sql"
-                compress="bzip2"/>
-      </backup>
-    </backups>
-  </phpbu>
 ```
