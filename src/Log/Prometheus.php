@@ -101,7 +101,10 @@ class Prometheus extends File implements Listener, Logger
         $this->write('# HELP phpbu_backup_duration The total time the backup took to execute' . PHP_EOL);
         $this->write('# TYPE phpbu_backup_duration gauge' . PHP_EOL);
         foreach ($this->backupStats as $backupName => $backupStats) {
-            $duration = abs($this->backupStats[$backupName]['timeEnd'] - $this->backupStats[$backupName]['timeStart']);
+            $duration = $this->backupStats[$backupName]['timeEnd'] - $this->backupStats[$backupName]['timeStart'];
+            if ($duration < 0) {
+                $duration = 0;
+            }
             $this->write('phpbu_backup_duration{name="' . $backupName . '"} ' . $duration . PHP_EOL);
         }
 
