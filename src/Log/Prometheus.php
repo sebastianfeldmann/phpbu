@@ -124,7 +124,7 @@ class Prometheus extends File implements Listener, Logger
         foreach ($this->backupStats as $backupName => $backupStats) {
             $this->write(
                 'phpbu_backup_size{name="' . $backupName . '"} ' .
-                $this->backupStats[$backupName]['size'] ?? "0" .
+                0 .
                 PHP_EOL
             );
         }
