@@ -76,7 +76,7 @@ class Prometheus extends File implements Listener, Logger
     {
         $this->backupStats[$event->getConfiguration()->getName()]['timeEnd'] = microtime(true);
         $this->backupStats[$event->getConfiguration()->getName()]['lastRun'] = microtime(true);
-        $this->backupStats[$event->getConfiguration()->getName()]['size'] = empty(trim($event->getTarget()->getSize())) ? "0" : $event->getTarget()->getSize();
+        $this->backupStats[$event->getConfiguration()->getName()]['size'] = $event->getTarget()->getSize();
     }
 
     /**
@@ -124,7 +124,7 @@ class Prometheus extends File implements Listener, Logger
         foreach ($this->backupStats as $backupName => $backupStats) {
             $this->write(
                 'phpbu_backup_size{name="' . $backupName . '"} ' .
-                $this->backupStats[$backupName]['size'] .
+                $this->backupStats[$backupName]['size'] ?? "0" .
                 PHP_EOL
             );
         }
