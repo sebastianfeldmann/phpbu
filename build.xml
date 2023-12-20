@@ -92,57 +92,16 @@
     <!-- Copy .xsd for config validation -->
     <copy file="${basedir}/phpbu.xsd" tofile="${basedir}/build/phar/phpbu.xsd"/>
 
-    <!-- SF/CLI -->
-    <copy file="${basedir}/vendor/sebastianfeldmann/cli/LICENSE" tofile="${basedir}/build/phar/lib/sf-cli/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/sf-cli">
-      <fileset dir="${basedir}/vendor/sebastianfeldmann/cli/src">
-        <include name="**/*.php"/>
+    <!-- YANDEX -->
+    <copy file="${basedir}/vendor/arhitector/yandex/LICENSE.md"
+          tofile="${basedir}/build/phar/lib/arhitector/yandex/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/arhitector/yandex">
+      <fileset dir="${basedir}/vendor/arhitector/yandex/src">
+          <include name="**/*.php"/>
       </fileset>
     </copy>
 
-    <!-- SF/FTP -->
-    <copy file="${basedir}/vendor/sebastianfeldmann/ftp/LICENSE" tofile="${basedir}/build/phar/lib/sf-cli/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/sf-ftp">
-      <fileset dir="${basedir}/vendor/sebastianfeldmann/ftp/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
-    <!-- DOTENV -->
-    <copy file="${basedir}/vendor/vlucas/phpdotenv/LICENSE" tofile="${basedir}/build/phar/lib/phpdotenv/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/phpdotenv">
-      <fileset dir="${basedir}/vendor/vlucas/phpdotenv/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-    <copy file="${basedir}/vendor/phpoption/phpoption/LICENSE" tofile="${basedir}/build/phar/lib/phpoption/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/phpoption">
-      <fileset dir="${basedir}/vendor/phpoption/phpoption/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
-    <!-- DROPBOX SDK -->
-    <copy file="${basedir}/vendor/kunalvarma05/dropbox-php-sdk/LICENSE" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/dropbox">
-      <fileset dir="${basedir}/vendor/kunalvarma05/dropbox-php-sdk/src/Dropbox">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-    <copy todir="${basedir}/build/phar/lib/tightenco">
-      <fileset dir="${basedir}/vendor/tightenco/collect/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
-    <!-- SYMFONY -->
-    <copy todir="${basedir}/build/phar/lib/symfony/">
-      <fileset dir="${basedir}/vendor/symfony/">
-         <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
-      <!-- AMAZON AWS -->
+    <!-- aws -->
     <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE" tofile="${basedir}/build/phar/lib/aws-sdk/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/aws-sdk">
       <fileset dir="${basedir}/vendor/aws/aws-sdk-php/src">
@@ -332,23 +291,36 @@
       </fileset>
     </copy>
 
-    <!-- AZURE -->
-    <copy file="${basedir}/vendor/microsoft/azure-storage-blob/LICENSE"
-          tofile="${basedir}/build/phar/lib/microsoft/azure-storage-blob/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/microsoft/azure-storage-blob">
-      <fileset dir="${basedir}/vendor/microsoft/azure-storage-blob/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-    <copy file="${basedir}/vendor/microsoft/azure-storage-common/LICENSE"
-          tofile="${basedir}/build/phar/lib/microsoft/azure-storage-common/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/microsoft/azure-storage-common">
-      <fileset dir="${basedir}/vendor/microsoft/azure-storage-common/src">
+    <!-- clue -->
+    <copy file="${basedir}/vendor/clue/stream-filter/LICENSE" tofile="${basedir}/build/phar/lib/stream-filter/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/stream-filter">
+      <fileset dir="${basedir}/vendor/clue/stream-filter/src">
         <include name="**/*.php"/>
       </fileset>
     </copy>
 
-    <!-- GUZZLE (TELEGRAM / AWS / OPENSTACK / AZURE) -->
+    <!-- google -->
+    <copy file="${basedir}/vendor/google/apiclient/LICENSE" tofile="${basedir}/build/phar/lib/google-client/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/google-client">
+      <fileset dir="${basedir}/vendor/google/apiclient/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/google/apiclient-services/LICENSE" tofile="${basedir}/build/phar/lib/google-services/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/google-services">
+      <fileset dir="${basedir}/vendor/google/apiclient-services/src">
+        <include name="**/Drive.php"/>
+        <include name="**/Drive/**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/google/auth/LICENSE" tofile="${basedir}/build/phar/lib/google-auth/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/google-auth">
+      <fileset dir="${basedir}/vendor/google/auth/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- guzzle -->
     <copy file="${basedir}/vendor/guzzlehttp/guzzle/LICENSE"
           tofile="${basedir}/build/phar/lib/guzzlehttp/guzzle/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/guzzlehttp/guzzle">
@@ -370,10 +342,197 @@
         <include name="**/*.php"/>
       </fileset>
     </copy>
-    <copy file="${basedir}/vendor/psr/http-message/LICENSE"
-          tofile="${basedir}/build/phar/lib/psr/http-message/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/psr/http-message">
-      <fileset dir="${basedir}/vendor/psr/http-message/src">
+
+    <!-- illuminate -->
+    <copy file="${basedir}/vendor/illuminate/collections/LICENSE.md"
+          tofile="${basedir}/build/phar/lib/illuminate/collections/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/illuminate/collections">
+      <fileset dir="${basedir}/vendor/illuminate/collections">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/illuminate/conditionable/LICENSE.md"
+          tofile="${basedir}/build/phar/lib/illuminate/conditionable/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/illuminate/conditionable">
+      <fileset dir="${basedir}/vendor/illuminate/conditionable">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/illuminate/contracts/LICENSE.md"
+          tofile="${basedir}/build/phar/lib/illuminate/contracts/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/illuminate/contracts">
+      <fileset dir="${basedir}/vendor/illuminate/contracts">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/illuminate/macroable/LICENSE.md"
+          tofile="${basedir}/build/phar/lib/illuminate/macroable/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/illuminate/macroable">
+      <fileset dir="${basedir}/vendor/illuminate/macroable">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- justin-rainbow -->
+    <copy file="${basedir}/vendor/justinrainbow/json-schema/LICENSE"
+          tofile="${basedir}/build/phar/lib/justinrainbow/json-schema/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/justinrainbow/json-schema">
+      <fileset dir="${basedir}/vendor/justinrainbow/json-schema/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- kunalvarma05 - DROPBOX SDK -->
+    <copy file="${basedir}/vendor/kunalvarma05/dropbox-php-sdk/LICENSE" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/dropbox">
+      <fileset dir="${basedir}/vendor/kunalvarma05/dropbox-php-sdk/src/Dropbox">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- laminas -->
+    <copy file="${basedir}/vendor/laminas/laminas-diactoros/LICENSE.md" tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/laminas/laminas-diactoros">
+      <fileset dir="${basedir}/vendor/laminas/laminas-diactoros/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- league -->
+    <copy file="${basedir}/vendor/league/event/LICENSE"
+          tofile="${basedir}/build/phar/lib/league/event/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/league/event">
+      <fileset dir="${basedir}/vendor/league/event/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- microsoft -->
+    <copy file="${basedir}/vendor/microsoft/azure-storage-blob/LICENSE"
+          tofile="${basedir}/build/phar/lib/microsoft/azure-storage-blob/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/microsoft/azure-storage-blob">
+      <fileset dir="${basedir}/vendor/microsoft/azure-storage-blob/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/microsoft/azure-storage-common/LICENSE"
+          tofile="${basedir}/build/phar/lib/microsoft/azure-storage-common/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/microsoft/azure-storage-common">
+      <fileset dir="${basedir}/vendor/microsoft/azure-storage-common/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- monolog -->
+    <copy file="${basedir}/vendor/monolog/monolog/LICENSE" tofile="${basedir}/build/phar/lib/monolog/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/monolog">
+      <fileset dir="${basedir}/vendor/monolog/monolog/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- mtdowling -->
+    <copy file="${basedir}/vendor/mtdowling/jmespath.php/LICENSE"
+          tofile="${basedir}/build/phar/lib/mtdowling/jmespath.php/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/mtdowling/jmespath.php">
+      <fileset dir="${basedir}/vendor/mtdowling/jmespath.php/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- PHP-HTTP -->
+    <copy file="${basedir}/vendor/php-http/client-common/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-http/client-common/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-http/client-common">
+      <fileset dir="${basedir}/vendor/php-http/client-common/src">
+          <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/php-http/curl-client/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-http/curl-client/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-http/curl-client">
+      <fileset dir="${basedir}/vendor/php-http/curl-client/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/php-http/discovery/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-http/discovery/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-http/discovery">
+      <fileset dir="${basedir}/vendor/php-http/discovery/src">
+          <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/php-http/httplug/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-http/httplug/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-http/httplug">
+      <fileset dir="${basedir}/vendor/php-http/httplug/src">
+          <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/php-http/message/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-http/message/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-http/message">
+      <fileset dir="${basedir}/vendor/php-http/message/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/php-http/promise/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-http/promise/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-http/promise">
+      <fileset dir="${basedir}/vendor/php-http/promise/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- php-opencloud -->
+    <copy file="${basedir}/vendor/php-opencloud/openstack/LICENSE"
+          tofile="${basedir}/build/phar/lib/php-opencloud/openstack/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/php-opencloud/openstack">
+      <fileset dir="${basedir}/vendor/php-opencloud/openstack/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- phpmailer -->
+    <copy file="${basedir}/vendor/phpmailer/phpmailer/LICENSE"
+          tofile="${basedir}/build/phar/lib/phpmailer/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/phpmailer">
+      <fileset dir="${basedir}/vendor/phpmailer/phpmailer/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- phpoption -->
+    <copy file="${basedir}/vendor/phpoption/phpoption/LICENSE"
+          tofile="${basedir}/build/phar/lib/phpoption/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/phpoption">
+      <fileset dir="${basedir}/vendor/phpoption/phpoption/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- phpseclib -->
+    <copy file="${basedir}/vendor/phpseclib/phpseclib/LICENSE" tofile="${basedir}/build/phar/lib/phpseclib/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/phpseclib">
+      <fileset dir="${basedir}/vendor/phpseclib/phpseclib/phpseclib">
+        <include name="**/*.php"/>
+        <include name="**/*.cnf"/>
+        <exclude name="**/autoload.php"/>
+      </fileset>
+    </copy>
+
+    <!-- psr -->
+    <copy file="${basedir}/vendor/psr/cache/LICENSE.txt"
+          tofile="${basedir}/build/phar/lib/psr/cache/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/psr/cache">
+      <fileset dir="${basedir}/vendor/psr/cache/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/psr/container/LICENSE"
+          tofile="${basedir}/build/phar/lib/psr/container/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/psr/container">
+      <fileset dir="${basedir}/vendor/psr/container/src">
         <include name="**/*.php"/>
       </fileset>
     </copy>
@@ -391,60 +550,38 @@
             <include name="**/*.php"/>
       </fileset>
     </copy>
-    <copy file="${basedir}/vendor/mtdowling/jmespath.php/LICENSE"
-          tofile="${basedir}/build/phar/lib/mtdowling/jmespath.php/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/mtdowling/jmespath.php">
-      <fileset dir="${basedir}/vendor/mtdowling/jmespath.php/src">
+    <copy file="${basedir}/vendor/psr/http-message/LICENSE"
+          tofile="${basedir}/build/phar/lib/psr/http-message/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/psr/http-message">
+      <fileset dir="${basedir}/vendor/psr/http-message/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/psr/log/LICENSE"
+          tofile="${basedir}/build/phar/lib/psr/log/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/psr/log">
+      <fileset dir="${basedir}/vendor/psr/log/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/psr/simple-cache/LICENSE.md"
+          tofile="${basedir}/build/phar/lib/psr/simple-cache/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/psr/simple-cache">
+      <fileset dir="${basedir}/vendor/psr/simple-cache/src">
         <include name="**/*.php"/>
       </fileset>
     </copy>
 
-    <!-- GOOGLE API -->
-    <copy file="${basedir}/vendor/google/apiclient/LICENSE" tofile="${basedir}/build/phar/lib/google-client/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/google-client">
-      <fileset dir="${basedir}/vendor/google/apiclient/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-    <copy file="${basedir}/vendor/google/auth/LICENSE" tofile="${basedir}/build/phar/lib/google-auth/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/google-auth">
-      <fileset dir="${basedir}/vendor/google/auth/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-    <copy file="${basedir}/vendor/google/apiclient-services/LICENSE" tofile="${basedir}/build/phar/lib/google-services/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/google-services">
-      <fileset dir="${basedir}/vendor/google/apiclient-services/src">
-        <include name="**/Drive.php"/>
-        <include name="**/Drive/**/*.php"/>
-      </fileset>
-    </copy>
-    <copy file="${basedir}/vendor/psr/cache/LICENSE.txt"
-          tofile="${basedir}/build/phar/lib/psr/cache/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/psr/cache">
-      <fileset dir="${basedir}/vendor/psr/cache/src">
+    <!-- ralouphie -->
+    <copy file="${basedir}/vendor/ralouphie/getallheaders/LICENSE"
+          tofile="${basedir}/build/phar/lib/ralouphie/getallheaders/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/ralouphie/getallheaders">
+      <fileset dir="${basedir}/vendor/ralouphie/getallheaders/src">
         <include name="**/*.php"/>
       </fileset>
     </copy>
 
-    <!-- MONOLOG FOR GOOGLE -->
-    <copy file="${basedir}/vendor/monolog/monolog/LICENSE" tofile="${basedir}/build/phar/lib/monolog/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/monolog">
-      <fileset dir="${basedir}/vendor/monolog/monolog/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
-    <!-- PHPSECLIB -->
-    <copy file="${basedir}/vendor/phpseclib/phpseclib/LICENSE" tofile="${basedir}/build/phar/lib/phpseclib/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/phpseclib">
-      <fileset dir="${basedir}/vendor/phpseclib/phpseclib/phpseclib">
-        <include name="**/*.php"/>
-        <include name="**/*.cnf"/>
-        <exclude name="**/autoload.php"/>
-      </fileset>
-    </copy>
-
+    <!-- sebastian -->
     <copy file="${basedir}/vendor/sebastian/environment/LICENSE"
           tofile="${basedir}/build/phar/lib/sebastian-environment/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/sebastian-environment">
@@ -453,7 +590,21 @@
       </fileset>
     </copy>
 
-    <!-- SOFTLAYER -->
+    <!-- sebastianfeldmann -->
+    <copy file="${basedir}/vendor/sebastianfeldmann/cli/LICENSE" tofile="${basedir}/build/phar/lib/sf-cli/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/sf-cli">
+      <fileset dir="${basedir}/vendor/sebastianfeldmann/cli/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+    <copy file="${basedir}/vendor/sebastianfeldmann/ftp/LICENSE" tofile="${basedir}/build/phar/lib/sf-cli/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/sf-ftp">
+      <fileset dir="${basedir}/vendor/sebastianfeldmann/ftp/src">
+        <include name="**/*.php"/>
+      </fileset>
+    </copy>
+
+    <!-- softlayer -->
     <copy file="${basedir}/vendor/softlayer/objectstorage/COPYING"
           tofile="${basedir}/build/phar/lib/softlayer-os/LICENSE"/>
     <copy todir="${basedir}/build/phar/lib/softlayer-os">
@@ -462,83 +613,28 @@
       </fileset>
     </copy>
 
-    <!-- PHPMAILER -->
-    <copy file="${basedir}/vendor/phpmailer/phpmailer/LICENSE"
-          tofile="${basedir}/build/phar/lib/phpmailer/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/phpmailer">
-      <fileset dir="${basedir}/vendor/phpmailer/phpmailer/src">
-        <include name="**/*.php"/>
+    <!-- symfony -->
+    <copy todir="${basedir}/build/phar/lib/symfony/">
+      <fileset dir="${basedir}/vendor/symfony/">
+         <include name="**/*.php"/>
       </fileset>
     </copy>
 
-    <!-- PHP-HTTP -->
-    <copy file="${basedir}/vendor/php-http/httplug/LICENSE"
-          tofile="${basedir}/build/phar/lib/php-http/httplug/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/php-http/httplug">
-      <fileset dir="${basedir}/vendor/php-http/httplug/src">
+    <!-- vlucas -->
+    <copy file="${basedir}/vendor/vlucas/phpdotenv/LICENSE" tofile="${basedir}/build/phar/lib/phpdotenv/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/phpdotenv">
+      <fileset dir="${basedir}/vendor/vlucas/phpdotenv/src">
         <include name="**/*.php"/>
       </fileset>
     </copy>
-
-    <copy file="${basedir}/vendor/php-http/curl-client/LICENSE"
-          tofile="${basedir}/build/phar/lib/php-http/curl-client/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/php-http/curl-client">
-      <fileset dir="${basedir}/vendor/php-http/curl-client/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
-    <copy file="${basedir}/vendor/php-http/message-factory/LICENSE"
-          tofile="${basedir}/build/phar/lib/php-http/message-factory/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/php-http/message-factory">
-      <fileset dir="${basedir}/vendor/php-http/message-factory/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
-    <copy file="${basedir}/vendor/php-http/message/LICENSE"
-          tofile="${basedir}/build/phar/lib/php-http/message/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/php-http/message">
-      <fileset dir="${basedir}/vendor/php-http/message/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
-    <copy file="${basedir}/vendor/php-http/client-common/LICENSE"
-          tofile="${basedir}/build/phar/lib/php-http/client-common/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/php-http/client-common">
-      <fileset dir="${basedir}/vendor/php-http/client-common/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
-    <copy file="${basedir}/vendor/php-http/promise/LICENSE"
-          tofile="${basedir}/build/phar/lib/php-http/promise/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/php-http/promise">
-      <fileset dir="${basedir}/vendor/php-http/promise/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
-    <!-- YANDEX -->
-    <copy file="${basedir}/vendor/arhitector/yandex/LICENSE.md"
-          tofile="${basedir}/build/phar/lib/arhitector/yandex/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/arhitector/yandex">
-      <fileset dir="${basedir}/vendor/arhitector/yandex/src">
-        <include name="**/*.php"/>
-      </fileset>
-    </copy>
-
-    <copy file="${basedir}/vendor/league/event/LICENSE"
-          tofile="${basedir}/build/phar/lib/league/event/LICENSE"/>
-    <copy todir="${basedir}/build/phar/lib/league/event">
-      <fileset dir="${basedir}/vendor/league/event/src">
+    <copy file="${basedir}/vendor/phpoption/phpoption/LICENSE" tofile="${basedir}/build/phar/lib/phpoption/LICENSE"/>
+    <copy todir="${basedir}/build/phar/lib/phpoption">
+      <fileset dir="${basedir}/vendor/phpoption/phpoption/src">
         <include name="**/*.php"/>
       </fileset>
     </copy>
 
   </target>
-
 
   <target name="phar-build">
     <copy todir="${basedir}/build/phar">
