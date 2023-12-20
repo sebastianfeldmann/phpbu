@@ -44,24 +44,24 @@
     }
   },
   "require": {
-    "php": ">=7.2.0",
+    "php": ">=8.0",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-spl": "*",
     "sebastian/environment": "^3.0|^4.0|^5.0|^6.0",
     "sebastianfeldmann/cli": "^3.4",
-    "symfony/process": "^3.0|^4.0|^5.0|^6.0"
+    "symfony/process": "^3.0|^4.0|^5.0|^6.0|^7.0"
   },
   "require-dev": {
     "sebastianfeldmann/git": "^3.2",
     "sebastianfeldmann/ftp": "^0.9",
     "guzzlehttp/guzzle": "^5.3.4|^6.5.8|^7.5.0",
     "aws/aws-sdk-php": "^3.10",
-    "kunalvarma05/dropbox-php-sdk": "^0.2",
+    "kunalvarma05/dropbox-php-sdk": "^0.4",
     "phpseclib/phpseclib": "^2.0",
     "softlayer/objectstorage": "dev-master",
     "vlucas/phpdotenv": "^4.0",
-    "google/apiclient":"2.7.*",
+    "google/apiclient":"^2.7",
     "php-opencloud/openstack": "^3.0",
     "arhitector/yandex": "^2.0",
     "microsoft/azure-storage-blob": "^1.4",
@@ -95,5 +95,10 @@
     "test": "tools/phpunit",
     "analyse": "tools/phpstan analyse",
     "style": "tools/phpcs --standard=psr2 src"
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
   }
 }
