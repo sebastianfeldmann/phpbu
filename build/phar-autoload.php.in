@@ -43,11 +43,6 @@ if ($execute) {
     require __PHPBU_PHAR_ROOT__ . '/lib/aws-sdk/functions.php';
     // guzzle functions
     require __PHPBU_PHAR_ROOT__ . '/lib/guzzlehttp/guzzle/functions_include.php';
-    require __PHPBU_PHAR_ROOT__ . '/lib/guzzlehttp/psr7/functions_include.php';
-    require __PHPBU_PHAR_ROOT__ . '/lib/guzzlehttp/promises/functions_include.php';
-    // dropbox collection helper
-    require __PHPBU_PHAR_ROOT__ . '/lib/tightenco/Collect/Support/helpers.php';
-    //require __PHPBU_PHAR_ROOT__ . '/lib/tightenco/Collect/Support/alias.php';
     // load the symfony polyfills
     require __PHPBU_PHAR_ROOT__ . '/lib/symfony/polyfill-ctype/bootstrap.php';
     require __PHPBU_PHAR_ROOT__ . '/lib/symfony/polyfill-mbstring/bootstrap.php';
