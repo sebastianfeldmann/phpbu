@@ -8,7 +8,7 @@ and assists you monitor your backup creation.
 Get an in depth look into all the features and a short 'getting started' tutorial at the [PHPBU Website](https://phpbu.de).
 
 [![Latest Stable Version](https://poser.pugx.org/phpbu/phpbu/v/stable.svg)](https://packagist.org/packages/phpbu/phpbu)
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg)](https://php.net/)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.0-8892BF.svg)](https://php.net/)
 [![Downloads](https://img.shields.io/packagist/dt/phpbu/phpbu.svg?v1)](https://packagist.org/packages/phpbu/phpbu)
 [![License](https://poser.pugx.org/phpbu/phpbu/license.svg)](https://packagist.org/packages/phpbu/phpbu)
 [![Build Status](https://github.com/sebastianfeldmann/phpbu/workflows/Integration/badge.svg)](https://github.com/sebastianfeldmann/phpbu/actions)
@@ -16,6 +16,7 @@ Get an in depth look into all the features and a short 'getting started' tutoria
 [![Code Coverage](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/?branch=master)
 [![PHP Website](https://img.shields.io/website-up-down-green-red/https/phpbu.de.svg)](https://phpbu.de)
 
+If you are not using php 7.4 or greater already you can still use phpbu version [6.0.20](https://phar.phpbu.de/phpbu-5.2.10.phar) \
 If you are not using php 7.2 or greater already you can still use phpbu version [5.2.10](https://phar.phpbu.de/phpbu-5.2.10.phar) \
 If you are behind php 7.0 you can still use phpbu version [4.0.10](https://phar.phpbu.de/phpbu-4.0.10.phar)
 
