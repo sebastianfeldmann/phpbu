@@ -120,7 +120,7 @@ class YandexDisk implements Sync\Simulator
     {
         $folderPath = '';
         $folderPaths = explode('/', $this->path->getPath());
-        if (!empty($folderPaths)) {
+        if (count($folderPaths)) {
             foreach ($folderPaths as $folderPathPart) {
                 if (!empty($folderPathPart)) {
                     $folderPath .= "/$folderPathPart";
