@@ -76,7 +76,7 @@ class Prometheus extends File implements Listener, Logger
     {
         $this->backupStats[$event->getConfiguration()->getName()]['timeEnd'] = microtime(true);
         $this->backupStats[$event->getConfiguration()->getName()]['lastRun'] = microtime(true);
-        $this->backupStats[$event->getConfiguration()->getName()]['size'] = $event->getTarget()->getSize();
+        $this->backupStats[$event->getConfiguration()->getName()]['size'] = $event->getTarget()->getSize() ?? 0;
     }
 
     /**
