@@ -208,7 +208,7 @@ class Path
     }
 
     /**
-     * Return path when casted to string.
+     * Return path when cast to string.
      *
      * @return string
      */

@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use phpbu\App\Backup\Path;
 use phpseclib;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
@@ -45,7 +46,7 @@ abstract class Xtp implements Simulator
     /**
      * Remote path where to put the backup
      *
-     * @var string
+     * @var Path
      */
     protected $remotePath;
 
@@ -83,7 +84,7 @@ abstract class Xtp implements Simulator
         $this->host       = $config['host'];
         $this->user       = $config['user'];
         $this->password   = Util\Arr::getValue($config, 'password', '');
-        $this->remotePath = Util\Path::withoutTrailingSlash(Util\Path::replaceDatePlaceholders($path));
+        $this->remotePath = new Path(Util\Path::withoutTrailingSlash(Util\Path::replaceDatePlaceholders($path)));
     }
 
     /**
@@ -99,7 +100,7 @@ abstract class Xtp implements Simulator
             . '  host:     ' . $this->host . PHP_EOL
             . '  user:     ' . $this->user . PHP_EOL
             . '  password:  ********' . PHP_EOL
-            . '  path:     ' . $this->remotePath . PHP_EOL
+            . '  path:     ' . $this->remotePath->getPath() . PHP_EOL
         );
 
         $this->simulateRemoteCleanup($target, $result);
