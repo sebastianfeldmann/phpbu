@@ -28,9 +28,9 @@ class Str
         if (is_bool($value)) {
             return $value;
         }
-        if (strtolower($value) == 'false') {
+        if (strtolower((string)$value) == 'false') {
             return false;
-        } elseif (strtolower($value) == 'true') {
+        } elseif (strtolower((string)$value) == 'true') {
             return true;
         }
         return $default;

@@ -124,7 +124,7 @@ class Dropbox implements Simulator
             // run remote cleanup
             $this->cleanup($target, $result);
         } catch (\Exception $e) {
-            throw new Exception($e->getMessage(), null, $e);
+            throw new Exception($e->getMessage(), 0, $e);
         }
     }
 

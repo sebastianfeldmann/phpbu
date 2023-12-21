@@ -112,7 +112,7 @@ class YandexDisk implements Sync\Simulator
             }
             $this->cleanup($target, $result);
         } catch (\Exception $e) {
-            throw new Exception($e->getMessage(), null, $e);
+            throw new Exception($e->getMessage(), 0, $e);
         }
     }
 
