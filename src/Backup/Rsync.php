@@ -110,7 +110,7 @@ trait Rsync
             $this->passwordFile = Util\Arr::getValue($conf, 'passwordFile', '');
             $this->excludes     = Util\Str::toList(Util\Arr::getValue($conf, 'exclude', ''), ':');
             $this->delete       = Util\Str::toBoolean(Util\Arr::getValue($conf, 'delete', ''), false);
-            $this->isDirSync    = Util\Str::toBoolean(Util\Arr::getValue($conf, 'dirsync', ''), false);
+            $this->isDirSync    = Util\Str::toBoolean(Util\Arr::getValue($conf, 'isDirSync', ''), false);
         }
     }
 
