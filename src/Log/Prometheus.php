@@ -102,6 +102,9 @@ class Prometheus extends File implements Listener, Logger
         $this->write('# TYPE phpbu_backup_duration gauge' . PHP_EOL);
         foreach ($this->backupStats as $backupName => $backupStats) {
             $duration = $this->backupStats[$backupName]['timeEnd'] - $this->backupStats[$backupName]['timeStart'];
+            if ($duration < 0) {
+                $duration = 0;
+            }
             $this->write('phpbu_backup_duration{name="' . $backupName . '"} ' . $duration . PHP_EOL);
         }
 
@@ -124,7 +127,7 @@ class Prometheus extends File implements Listener, Logger
         foreach ($this->backupStats as $backupName => $backupStats) {
             $this->write(
                 'phpbu_backup_size{name="' . $backupName . '"} ' .
-                $this->backupStats[$backupName]['size'] .
+                ($this->backupStats[$backupName]['size']  ?? "0") .
                 PHP_EOL
             );
         }
