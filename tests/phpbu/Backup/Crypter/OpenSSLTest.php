@@ -64,7 +64,7 @@ class OpenSSLTest extends TestCase
         $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'password' => 'fooBarBaz', 'algorithm' => 'aes-256-cbc']);
 
         $executable = $openSSL->getExecutable($target);
-        $expected   = '("' . PHPBU_TEST_BIN . '/openssl" enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' '
+        $expected   = '("' . PHPBU_TEST_BIN . '/openssl" enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' -pbkdf2 '
                     . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
                     . '&& "rm" \'/foo/bar.txt\')';
 

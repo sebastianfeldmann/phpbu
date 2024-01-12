@@ -36,7 +36,7 @@ class OpenSLLTest extends TestCase
      */
     public function testPasswordBase64Encode()
     {
-        $expected = 'openssl" enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' '
+        $expected = 'openssl" enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' -pbkdf2 '
             . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
             . '&& "rm" \'/foo/bar.txt\'';
         $openSSL = new OpenSSL(PHPBU_TEST_BIN);
@@ -53,7 +53,7 @@ class OpenSLLTest extends TestCase
      */
     public function testPassword()
     {
-        $expected = 'openssl" enc -e -aes-256-cbc -pass \'pass:fooBarBaz\' '
+        $expected = 'openssl" enc -e -aes-256-cbc -pass \'pass:fooBarBaz\' -pbkdf2 '
                   . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
                   . '&& "rm" \'/foo/bar.txt\'';
         $openSSL  = new OpenSSL(PHPBU_TEST_BIN);
@@ -69,7 +69,7 @@ class OpenSLLTest extends TestCase
      */
     public function testDecrypt()
     {
-        $expected = 'openssl" enc -d -aes-256-cbc -pass \'pass:fooBarBaz\' '
+        $expected = 'openssl" enc -d -aes-256-cbc -pass \'pass:fooBarBaz\' -pbkdf2 '
                     . '-in \'/foo/bar.txt.enc\' -out \'/foo/bar.txt\'';
         $openSSL  = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->decryptFile('/foo/bar.txt')
@@ -85,7 +85,7 @@ class OpenSLLTest extends TestCase
      */
     public function testDoNotDeleteUncrypted()
     {
-        $expected = 'openssl" enc -e -aes-256-cbc -pass \'pass:fooBarBaz\' '
+        $expected = 'openssl" enc -e -aes-256-cbc -pass \'pass:fooBarBaz\' -pbkdf2 '
                   . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\'';
         $openSSL  = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->encryptFile('/foo/bar.txt')
