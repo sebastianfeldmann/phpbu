@@ -49,6 +49,13 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
     private $password;
 
     /**
+     * Use password-based key derivation
+     *
+     * @var bool
+     */
+    private bool $keyDerivation;
+
+    /**
      * Keep the not encrypted file
      *
      * @var boolean
@@ -157,6 +164,7 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
         $this->certFile      = $this->toAbsolutePath(Util\Arr::getValue($options, 'certFile', ''));
         $this->algorithm     = Util\Arr::getValue($options, 'algorithm', '');
         $this->password      = Util\Arr::getValue($options, 'password', '');
+        $this->keyDerivation = Util\Str::toBoolean(Util\Arr::getValue($options, 'keyDerivation', ''), false);
     }
 
     /**
@@ -242,6 +250,7 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
             $executable->useSSLCert($this->certFile);
         } else {
             $executable->usePassword($this->password)
+                       ->usePasswordBasedKeyDerivation($this->keyDerivation)
                        ->encodeBase64(true);
         }
         $executable->useAlgorithm($this->algorithm);

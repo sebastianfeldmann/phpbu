@@ -36,7 +36,7 @@ class OpenSLLTest extends TestCase
      */
     public function testPasswordBase64Encode()
     {
-        $expected = 'openssl" enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' -pbkdf2 '
+        $expected = 'openssl" enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' '
             . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
             . '&& "rm" \'/foo/bar.txt\'';
         $openSSL = new OpenSSL(PHPBU_TEST_BIN);
@@ -53,7 +53,7 @@ class OpenSLLTest extends TestCase
      */
     public function testPassword()
     {
-        $expected = 'openssl" enc -e -aes-256-cbc -pass \'pass:fooBarBaz\' -pbkdf2 '
+        $expected = 'openssl" enc -e -aes-256-cbc -pass \'pass:fooBarBaz\' '
                   . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
                   . '&& "rm" \'/foo/bar.txt\'';
         $openSSL  = new OpenSSL(PHPBU_TEST_BIN);
@@ -74,6 +74,7 @@ class OpenSLLTest extends TestCase
         $openSSL  = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->decryptFile('/foo/bar.txt')
             ->usePassword('fooBarBaz')
+            ->usePasswordBasedKeyDerivation(true)
             ->useAlgorithm('aes-256-cbc')
             ->deleteSource(false);
 
@@ -90,6 +91,7 @@ class OpenSLLTest extends TestCase
         $openSSL  = new OpenSSL(PHPBU_TEST_BIN);
         $openSSL->encryptFile('/foo/bar.txt')
                 ->usePassword('fooBarBaz')
+                ->usePasswordBasedKeyDerivation(true)
                 ->useAlgorithm('aes-256-cbc')
                 ->deleteSource(false);
 
