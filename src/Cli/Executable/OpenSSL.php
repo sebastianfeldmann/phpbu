@@ -359,6 +359,7 @@ class OpenSSL extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('-a', $this->base64, false);
         $cmd->addOption('-' . $this->algorithm);
         $cmd->addOption('-pass', $password, ' ');
+        $cmd->addOption('-pbkdf2');
         $cmd->addOption('-in', $this->sourceFile, ' ');
         $cmd->addOption('-out', $this->targetFile, ' ');
     }
