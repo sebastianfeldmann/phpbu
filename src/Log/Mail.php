@@ -164,7 +164,7 @@ class Mail implements Listener, Logger
         $this->sendSimulating  = Str::toBoolean(Arr::getValue($options, 'sendOnSimulation'), true);
         $this->subject         = Arr::getValue($options, 'subject', 'PHPBU backup report from ' . $server);
         $this->senderMail      = Arr::getValue($options, 'sender.mail', 'phpbu@' . $server);
-        $this->senderName      = Arr::getValue($options, 'sender.name');
+        $this->senderName      = Arr::getValue($options, 'sender.name', '');
         $this->transportType   = Arr::getValue($options, 'transport', 'mail');
         $this->recipients      = array_map('trim', explode(';', $mails));
         $this->isSimulation    = Arr::getValue($options, '__simulate__', false);

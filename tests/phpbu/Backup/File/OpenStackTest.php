@@ -1,6 +1,12 @@
 <?php
 namespace phpbu\App\Backup\File;
 
+use DateTimeImmutable;
+use Exception;
+use GuzzleHttp\ClientInterface;
+use OpenStack\Common\Api\ApiInterface;
+use OpenStack\ObjectStore\v1\Models\Container;
+use OpenStack\ObjectStore\v1\Models\StorageObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -19,16 +25,16 @@ class OpenStackTest extends TestCase
 {
     public function testCreateFileWithCorrectProperties()
     {
-        $storageObjectLastModified    = new \DateTimeImmutable('2018-05-08 14:14:54.0 +00:00');
-        $storageObject                = $this->createMock(\OpenStack\ObjectStore\v1\Models\StorageObject::class);
+        $storageObjectLastModified    = new DateTimeImmutable('2018-05-08 14:14:54.0 +00:00');
+        $storageObject                = $this->createMock(StorageObject::class);
+
         $storageObject->name          = 'path/dump.tar.gz';
-        $storageObject->filename      = 'dump.tar.gz';
         $storageObject->contentLength = 102102;
         $storageObject->lastModified  = $storageObjectLastModified;
         $storageObject->expects($this->once())
                       ->method('delete');
 
-        $container = $this->createMock(\OpenStack\ObjectStore\v1\Models\Container::class);
+        $container = $this->createMock(Container::class);
         $container->expects($this->once())
                   ->method('getObject')
                   ->with('path/dump.tar.gz')
@@ -49,17 +55,16 @@ class OpenStackTest extends TestCase
     public function testOpenStackDeleteFailure()
     {
         $this->expectException('phpbu\App\Exception');
-        $storageObjectLastModified    = new \DateTimeImmutable('2018-05-08 14:14:54.0 +00:00');
-        $storageObject                = $this->createMock(\OpenStack\ObjectStore\v1\Models\StorageObject::class);
+        $storageObjectLastModified    = new DateTimeImmutable('2018-05-08 14:14:54.0 +00:00');
+        $storageObject                = $this->createMock(StorageObject::class);
         $storageObject->name          = 'path/dump.tar.gz';
-        $storageObject->filename      = 'dump.tar.gz';
         $storageObject->contentLength = 102102;
         $storageObject->lastModified  = $storageObjectLastModified;
         $storageObject->expects($this->once())
                       ->method('delete')
-                      ->will($this->throwException(new \Exception()));
+                      ->will($this->throwException(new Exception()));
 
-        $container = $this->createMock(\OpenStack\ObjectStore\v1\Models\Container::class);
+        $container = $this->createMock(Container::class);
         $container->expects($this->once())
                   ->method('getObject')
                   ->with('path/dump.tar.gz')

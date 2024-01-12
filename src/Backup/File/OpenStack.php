@@ -33,7 +33,7 @@ class OpenStack extends Remote
     public function __construct($container, $object)
     {
         $this->container    = $container;
-        $this->filename     = basename($object->name);
+        $this->filename     = empty($object->name) ? '' : basename($object->name);
         $this->pathname     = $object->name;
         $this->size         = (int) $object->contentLength;
         $this->lastModified = $object->lastModified->getTimestamp();
