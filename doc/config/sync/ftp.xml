@@ -14,4 +14,7 @@
 
   <!-- optional, default=false -->
   <option name="passive" value="true" />
+
+  <!-- optional, default=false -->
+  <option name="secure" value="true" />
 </sync>
