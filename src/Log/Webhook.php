@@ -1,11 +1,13 @@
 <?php
 namespace phpbu\App\Log;
 
+use phpbu\App\Configuration;
 use phpbu\App\Exception;
 use phpbu\App\Event;
 use phpbu\App\Listener;
 use phpbu\App\Result;
 use phpbu\App\Util\Arr;
+use phpbu\App\Util\Path;
 use Throwable;
 
 /**
@@ -185,7 +187,10 @@ class Webhook implements Listener, Logger
     private function getBodyFormatter() : ResultFormatter
     {
         if (!empty($this->template)) {
-            return new ResultFormatter\Template($this->template);
+            $tpl = Path::isAbsolutePath($this->template)
+                 ? $this->template
+                 : Path::withTrailingSlash(Configuration::getWorkingDirectory()) . $this->template;
+            return new ResultFormatter\Template($tpl);
         }
 
         if (!isset($this->availableFormatter[$this->contentType])) {
