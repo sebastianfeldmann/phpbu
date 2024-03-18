@@ -175,7 +175,7 @@ class Xtrabackup8 extends Abstraction implements Executable
             $cmdDump->addOption('--databases', implode(' ', $this->databases));
         }
 
-        $cmdDump->addArgument($this->dumpDir);
+        $cmdDump->addOption('--target-dir', $this->dumpDir);
 
         return $process;
     }
