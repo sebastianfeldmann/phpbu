@@ -33,7 +33,7 @@ class XtraBackup8Test extends TestCase
         $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN]);
 
         $executable    = $xtrabackup->getExecutable($target);
-        $expectedDump  = 'xtrabackup" --backup \'./dump\'';
+        $expectedDump  = 'xtrabackup" --backup --target-dir=\'./dump\'';
         $expected      = '"' . PHPBU_TEST_BIN . '/' . $expectedDump;
 
         $this->assertEquals($expected, $executable->getCommand());
@@ -50,7 +50,7 @@ class XtraBackup8Test extends TestCase
         $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN, 'dataDir' => '/x/mysql']);
 
         $executable    = $xtrabackup->getExecutable($target);
-        $expectedDump  = 'xtrabackup" --backup --datadir=\'/x/mysql\' \'./dump\'';
+        $expectedDump  = 'xtrabackup" --backup --datadir=\'/x/mysql\' --target-dir=\'./dump\'';
         $expected      = '"' . PHPBU_TEST_BIN . '/' . $expectedDump;
 
         $this->assertEquals($expected, $executable->getCommand());
@@ -67,7 +67,7 @@ class XtraBackup8Test extends TestCase
         $xtrabackup->setup(['pathToXtraBackup' => PHPBU_TEST_BIN, 'databases' => 'db1,db2,db3.table1']);
 
         $executable    = $xtrabackup->getExecutable($target);
-        $expectedDump  = 'xtrabackup" --backup --databases=\'db1 db2 db3.table1\' \'./dump\'';
+        $expectedDump  = 'xtrabackup" --backup --databases=\'db1 db2 db3.table1\' --target-dir=\'./dump\'';
         $expected      = '"' . PHPBU_TEST_BIN . '/' . $expectedDump;
 
         $this->assertEquals($expected, $executable->getCommand());

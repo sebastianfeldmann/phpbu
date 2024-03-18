@@ -21,7 +21,7 @@ class Xtrabackup8Test extends TestCase
      */
     public function testDefault()
     {
-        $expectedDump  = 'xtrabackup" --backup \'./dump\'';
+        $expectedDump  = 'xtrabackup" --backup --target-dir=\'./dump\'';
         $expected      = '"' . PHPBU_TEST_BIN . '/' . $expectedDump;
         $xtra          = new Xtrabackup8(PHPBU_TEST_BIN);
         $xtra->dumpTo('./dump');
@@ -34,7 +34,7 @@ class Xtrabackup8Test extends TestCase
      */
     public function testDataDir()
     {
-        $expectedDump  = 'xtrabackup" --backup --datadir=\'/foo/bar\' \'./dump\'';
+        $expectedDump  = 'xtrabackup" --backup --datadir=\'/foo/bar\' --target-dir=\'./dump\'';
         $expected      = '"' . PHPBU_TEST_BIN . '/' . $expectedDump;
         $xtra          = new Xtrabackup8(PHPBU_TEST_BIN);
         $xtra->dumpFrom('/foo/bar')->dumpTo('./dump');
@@ -57,7 +57,7 @@ class Xtrabackup8Test extends TestCase
      */
     public function testUser()
     {
-        $expectedDump  = 'xtrabackup" --backup --user=\'root\' \'./dump\'';
+        $expectedDump  = 'xtrabackup" --backup --user=\'root\' --target-dir=\'./dump\'';
         $expected      = '"' . PHPBU_TEST_BIN . '/' . $expectedDump;
         $xtra          = new Xtrabackup8(PHPBU_TEST_BIN);
         $xtra->credentials('root')->dumpTo('./dump');
@@ -70,7 +70,7 @@ class Xtrabackup8Test extends TestCase
      */
     public function testPassword()
     {
-        $expectedDump  = 'xtrabackup" --backup --password=\'secret\' \'./dump\'';
+        $expectedDump  = 'xtrabackup" --backup --password=\'secret\' --target-dir=\'./dump\'';
         $expected      = '"' . PHPBU_TEST_BIN . '/' . $expectedDump;
         $xtra          = new Xtrabackup8(PHPBU_TEST_BIN);
         $xtra->credentials('', 'secret')->dumpTo('./dump');
@@ -83,7 +83,7 @@ class Xtrabackup8Test extends TestCase
      */
     public function testHost()
     {
-        $expectedDump  = '"' . PHPBU_TEST_BIN . '/xtrabackup" --backup --host=\'example.com\' \'./dump\'';
+        $expectedDump  = '"' . PHPBU_TEST_BIN . '/xtrabackup" --backup --host=\'example.com\' --target-dir=\'./dump\'';
         $expected      = $expectedDump;
         $xtra          = new Xtrabackup8(PHPBU_TEST_BIN);
         $xtra->useHost('example.com')->dumpTo('./dump');
@@ -96,7 +96,8 @@ class Xtrabackup8Test extends TestCase
      */
     public function testDatabases()
     {
-        $expectedDump  = '"' . PHPBU_TEST_BIN . '/xtrabackup" --backup --databases=\'db1 db2 db3.table1\' \'./dump\'';
+        $expectedDump  = '"' . PHPBU_TEST_BIN . '/xtrabackup" --backup '
+                       . '--databases=\'db1 db2 db3.table1\' --target-dir=\'./dump\'';
         $expected      = $expectedDump;
         $xtra          = new Xtrabackup8(PHPBU_TEST_BIN);
         $xtra->dumpDatabases(['db1', 'db2', 'db3.table1'])->dumpTo('./dump');
