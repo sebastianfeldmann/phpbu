@@ -139,10 +139,24 @@ class Gpg extends Abstraction implements Executable
         $cmd     = new Cmd($this->binary);
 
         $process->addCommand($cmd);
+        $this->setOptions($cmd);
 
         $this->addDeleteCommand($process);
 
         return $process;
+    }
+
+    /**
+     * Set the gpg command line options
+     *
+     * @param \SebastianFeldmann\Cli\Command\Executable $cmd
+     */
+    protected function setOptions(Cmd $cmd): void
+    {
+        $cmd->addOption('--' . ($this->action === 'e' ? 'encrypt' : 'decrypt'));
+        $cmd->addOption('-r', $this->user, ' ');
+        $cmd->addOption('-o', $this->targetFile, ' ');
+        $cmd->addArgument($this->sourceFile);
     }
 
     /**
