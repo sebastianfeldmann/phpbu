@@ -55,7 +55,7 @@ class Gpg extends Abstraction implements Simulator, Restorable
 
         $this->pathToGpg     = Util\Arr::getValue($options, 'pathToOpenSSL', '');
         $this->keepUncrypted = Util\Str::toBoolean(Util\Arr::getValue($options, 'keepUncrypted', ''), false);
-        $this->user          = $this->toAbsolutePath(Util\Arr::getValue($options, 'user', ''));
+        $this->user          = Util\Arr::getValue($options, 'user', '');
     }
 
     /**
