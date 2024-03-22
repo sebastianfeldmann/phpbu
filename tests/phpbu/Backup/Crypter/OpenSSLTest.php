@@ -61,10 +61,15 @@ class OpenSSLTest extends TestCase
     {
         $target  = $this->createTargetMock('/foo/bar.txt');
         $openSSL = new OpenSSL();
-        $openSSL->setup(['pathToOpenSSL' => PHPBU_TEST_BIN, 'password' => 'fooBarBaz', 'algorithm' => 'aes-256-cbc']);
+        $openSSL->setup([
+            'pathToOpenSSL' => PHPBU_TEST_BIN,
+            'password'      => 'fooBarBaz',
+            'keyDerivation' => true,
+            'algorithm'     => 'aes-256-cbc'
+        ]);
 
         $executable = $openSSL->getExecutable($target);
-        $expected   = '("' . PHPBU_TEST_BIN . '/openssl" enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' '
+        $expected   = '("' . PHPBU_TEST_BIN . '/openssl" enc -e -a -aes-256-cbc -pass \'pass:fooBarBaz\' -pbkdf2 '
                     . '-in \'/foo/bar.txt\' -out \'/foo/bar.txt.enc\' '
                     . '&& "rm" \'/foo/bar.txt\')';
 

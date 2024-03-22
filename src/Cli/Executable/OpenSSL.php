@@ -69,6 +69,13 @@ class OpenSSL extends Abstraction implements Executable
     private $password;
 
     /**
+     * Use password-based key derivation
+     *
+     * @var bool
+     */
+    private $passwordBasedKeyDerivation;
+
+    /**
      * Algorithm to use
      *
      * @var string
@@ -237,6 +244,12 @@ class OpenSSL extends Abstraction implements Executable
         return $this;
     }
 
+    public function usePasswordBasedKeyDerivation(bool $bool): OpenSSL
+    {
+        $this->passwordBasedKeyDerivation = $bool;
+        return $this;
+    }
+
     /**
      * Set algorithm to use
      *
@@ -359,6 +372,7 @@ class OpenSSL extends Abstraction implements Executable
         $cmd->addOptionIfNotEmpty('-a', $this->base64, false);
         $cmd->addOption('-' . $this->algorithm);
         $cmd->addOption('-pass', $password, ' ');
+        $cmd->addOptionIfNotEmpty('-pbkdf2', $this->passwordBasedKeyDerivation, false);
         $cmd->addOption('-in', $this->sourceFile, ' ');
         $cmd->addOption('-out', $this->targetFile, ' ');
     }

@@ -38,6 +38,13 @@ class Ftp extends Xtp
     protected $passive;
 
     /**
+     * If set to `true` connection is made via FTPS (explicit SSL).
+     *
+     * @var bool
+     */
+    protected $secure;
+
+    /**
      * Setup the Ftp sync
      *
      * @param  array $config
@@ -56,6 +63,7 @@ class Ftp extends Xtp
         parent::setup($config);
 
         $this->passive = Util\Str::toBoolean(Util\Arr::getValue($config, 'passive', ''), false);
+        $this->secure = Util\Str::toBoolean(Util\Arr::getValue($config, 'secure', ''), false);
         $this->setUpCleanable($config);
     }
 
@@ -113,7 +121,7 @@ class Ftp extends Xtp
     {
         if (!$this->ftpClient) {
             $login           = $this->user . ($this->password ? ':' . $this->password : '');
-            $this->ftpClient = new Client('ftp://' . $login . '@' . $this->host, $this->passive);
+            $this->ftpClient = new Client('ftp://' . $login . '@' . $this->host, $this->passive, $this->secure);
         }
         return $this->ftpClient;
     }

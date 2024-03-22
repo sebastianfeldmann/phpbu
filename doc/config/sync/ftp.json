@@ -5,7 +5,8 @@
     "user": "user.name",
     "password": "mySecret",
     "path": "someDir/someSubDir",
-    "passive": "false"
+    "passive": "false",
+    "secure": "false"
   }
 }
 
