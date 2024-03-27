@@ -53,7 +53,7 @@ class Gpg extends Abstraction implements Simulator, Restorable
             throw new Exception('gpg expects \'user\'');
         }
 
-        $this->pathToGpg     = Util\Arr::getValue($options, 'pathToOpenSSL', '');
+        $this->pathToGpg     = Util\Arr::getValue($options, 'pathToGPG', '');
         $this->keepUncrypted = Util\Str::toBoolean(Util\Arr::getValue($options, 'keepUncrypted', ''), false);
         $this->user          = Util\Arr::getValue($options, 'user', '');
     }
