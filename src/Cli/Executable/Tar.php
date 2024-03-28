@@ -93,9 +93,9 @@ class Tar extends Abstraction implements Executable
      * @var array
      */
     private static $availableCompressions = [
-        'bzip2' => 'j',
-        'gzip'  => 'z',
-        'xz'    => 'J'
+        'bzip2',
+        'gzip',
+        'xz',
     ];
 
     /**
@@ -142,7 +142,7 @@ class Tar extends Abstraction implements Executable
      */
     protected function getCompressionOption(string $compressor) : string
     {
-        return $this->isCompressionValid($compressor) ? self::$availableCompressions[$compressor] : '';
+        return $this->isCompressionValid($compressor) ? $compressor : '';
     }
 
     /**
@@ -323,7 +323,11 @@ class Tar extends Abstraction implements Executable
         $tar->addOptionIfNotEmpty('-h', $this->dereference, false);
         $tar->addOptionIfNotEmpty('--force-local', $this->local, false);
         $tar->addOptionIfNotEmpty('--use-compress-program', $this->compressProgram);
-        $tar->addOption('-' . (empty($this->compressProgram) ? $this->compression : '') . $create);
+        if ($this->compression && empty($this->compressProgram)) {
+            $tar->addOption('--' . $this->compression);
+        }
+        $tar->addOption('-' . $create);
+
 
         if ($this->isThrottled()) {
             $pv = new Cmd('pv');
@@ -452,7 +456,7 @@ class Tar extends Abstraction implements Executable
      */
     public static function isCompressionValid(string  $compression) : bool
     {
-        return isset(self::$availableCompressions[$compression]);
+        return in_array($compression, self::$availableCompressions);
     }
 
     /**
