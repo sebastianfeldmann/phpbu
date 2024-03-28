@@ -96,6 +96,7 @@ class Tar extends Abstraction implements Executable
         'bzip2',
         'gzip',
         'xz',
+        'zstd'
     ];
 
     /**
