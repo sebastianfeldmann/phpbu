@@ -179,7 +179,7 @@ class TarTest extends TestCase
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar.gz')->useCompression('gzip');
 
         $this->assertEquals(
-            '"' . PHPBU_TEST_BIN . '/tar" -zcf \'/tmp/foo.tar.gz\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            '"' . PHPBU_TEST_BIN . '/tar" --gzip -cf \'/tmp/foo.tar.gz\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommand()
         );
     }
@@ -196,7 +196,7 @@ class TarTest extends TestCase
         $tar->archiveDirectory($dir)->archiveTo('/tmp/foo.tar.bzip2')->useCompression('bzip2');
 
         $this->assertEquals(
-            '"' . PHPBU_TEST_BIN . '/tar" -jcf \'/tmp/foo.tar.bzip2\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
+            '"' . PHPBU_TEST_BIN . '/tar" --bzip2 -cf \'/tmp/foo.tar.bzip2\' -C \'' . $tarC .  '\' \'' . $tarD . '\'',
             $tar->getCommand()
         );
     }
@@ -216,7 +216,7 @@ class TarTest extends TestCase
             ->throttle('1m');
 
         $this->assertEquals(
-            '"' . PHPBU_TEST_BIN . '/tar" -jc -C \'' . $tarC .  '\' \'' . $tarD . '\''
+            '"' . PHPBU_TEST_BIN . '/tar" --bzip2 -c -C \'' . $tarC .  '\' \'' . $tarD . '\''
             . ' | "pv" -qL \'1m\' > /tmp/foo.tar.bzip2',
             $tar->getCommand()
         );
@@ -238,7 +238,7 @@ class TarTest extends TestCase
             ->throttle('1m');
 
         $this->assertEquals(
-            '("' . PHPBU_TEST_BIN . '/tar" -jc -C \'' . $tarC .  '\' \'' . $tarD . '\''
+            '("' . PHPBU_TEST_BIN . '/tar" --bzip2 -c -C \'' . $tarC .  '\' \'' . $tarD . '\''
             . ' && "rm" -rf \'' . $dir . '\')'
             . ' | "pv" -qL \'1m\' > /tmp/foo.tar.bzip2',
             $tar->getCommand()
