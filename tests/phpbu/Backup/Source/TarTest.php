@@ -361,7 +361,7 @@ class TarTest extends TestCase
         $exec = $tar->getExecutable($target);
 
         $this->assertEquals(
-            '"' . PHPBU_TEST_BIN . '/tar" -zcf \'/tmp/backup.tar.gz\' -C \''
+            '"' . PHPBU_TEST_BIN . '/tar" --gzip -cf \'/tmp/backup.tar.gz\' -C \''
             . dirname(__DIR__) . '\' \''
             . basename(__DIR__) . '\'',
             $exec->getCommand()
