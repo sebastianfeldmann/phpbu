@@ -107,7 +107,7 @@ class OpenSSL extends Abstraction implements Simulator, Restorable
 
             $result->warn($name . ': The ' . $this->algorithm . ' algorithm is considered weak');
         }
-        if ($target->getSize() > 1610612736) {
+        if (!empty($this->certFile) && $target->getSize() > 1610612736) {
             throw new Exception('Backup to big to encrypt: OpenSSL SMIME can only encrypt files smaller 1.5GB.');
         }
         parent::crypt($target, $result);
