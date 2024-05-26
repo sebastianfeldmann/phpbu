@@ -16,7 +16,7 @@ Get an in depth look into all the features and a short 'getting started' tutoria
 [![Code Coverage](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/?branch=master)
 [![PHP Website](https://img.shields.io/website-up-down-green-red/https/phpbu.de.svg)](https://phpbu.de)
 
-If you are not using php 8.0 or greater already you can still use phpbu version [6.0.20](https://phar.phpbu.de/phpbu-5.2.10.phar) \
+If you are not using php 8.0 or greater already you can still use phpbu version [6.0.20](https://phar.phpbu.de/phpbu-6.0.20.phar) \
 If you are not using php 7.2 or greater already you can still use phpbu version [5.2.10](https://phar.phpbu.de/phpbu-5.2.10.phar) \
 If you are behind php 7.0 you can still use phpbu version [4.0.10](https://phar.phpbu.de/phpbu-4.0.10.phar)
 
