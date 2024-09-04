@@ -77,6 +77,7 @@ class Factory
             'dropbox'     => '\\phpbu\\App\\Backup\\Sync\\Dropbox',
             'ftp'         => '\\phpbu\\App\\Backup\\Sync\\Ftp',
             'googledrive' => '\\phpbu\\App\\Backup\\Sync\\GoogleDrive',
+            'googlecloud' => '\\phpbu\\App\\Backup\\Sync\\GoogleCloudStorage',
             'rsync'       => '\\phpbu\\App\\Backup\\Sync\\Rsync',
             'sftp'        => '\\phpbu\\App\\Backup\\Sync\\Sftp',
             'softlayer'   => '\\phpbu\\App\\Backup\\Sync\\SoftLayer',
