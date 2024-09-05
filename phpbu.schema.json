@@ -278,6 +278,7 @@
                                         "Dropbox",
                                         "Ftp",
                                         "GoogleDrive",
+                                        "GoogleCloudStorage",
                                         "RSync",
                                         "Sftp",
                                         "Softlayer",
