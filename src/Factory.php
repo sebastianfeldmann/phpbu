@@ -1,4 +1,5 @@
 <?php
+
 namespace phpbu\App;
 
 use phpbu\App\Backup\Check;
@@ -30,7 +31,7 @@ class Factory
     private static $classMap = [
         // type
         //   alias => fqcn
-        'adapter'  => [
+        'adapter' => [
             'array'     => '\\phpbu\\App\\Adapter\\PHPArray',
             'constant'  => '\\phpbu\\App\\Adapter\\PHPConstant',
             'dotenv'    => '\\phpbu\\App\\Adapter\\Dotenv',
@@ -38,10 +39,10 @@ class Factory
             'wordpress' => '\\phpbu\\App\\Adapter\\WordPress',
         ],
         'logger'  => [
-            'json'     => '\\phpbu\\App\\Log\\Json',
-            'mail'     => '\\phpbu\\App\\Log\\Mail',
-            'webhook'  => '\\phpbu\\App\\Log\\Webhook',
-            'telegram' => '\\phpbu\\App\\Log\\Telegram',
+            'json'       => '\\phpbu\\App\\Log\\Json',
+            'mail'       => '\\phpbu\\App\\Log\\Mail',
+            'webhook'    => '\\phpbu\\App\\Log\\Webhook',
+            'telegram'   => '\\phpbu\\App\\Log\\Telegram',
             'prometheus' => '\\phpbu\\App\\Log\\Prometheus',
         ],
         'source'  => [
@@ -63,32 +64,32 @@ class Factory
             'sizediffpreviouspercent' => '\\phpbu\\App\\Backup\\Check\\SizeDiffPreviousPercent',
             'sizediffavgpercent'      => '\\phpbu\\App\\Backup\\Check\\SizeDiffAvgPercent',
         ],
-        'crypter'   => [
+        'crypter' => [
             'gpg'     => '\\phpbu\\App\\Backup\\Crypter\\Gpg',
             'mcrypt'  => '\\phpbu\\App\\Backup\\Crypter\\Mcrypt',
             'openssl' => '\\phpbu\\App\\Backup\\Crypter\\OpenSSL',
         ],
         'sync'    => [
-            'amazons3'    => '\\phpbu\\App\\Backup\\Sync\\AmazonS3v3',
-            'amazons3-v3' => '\\phpbu\\App\\Backup\\Sync\\AmazonS3v3',
-            'amazons3-v2' => '\\phpbu\\App\\Backup\\Sync\\AmazonS3v2',
-            'backblazes3' => '\\phpbu\\App\\Backup\\Sync\\BackblazeS3',
-            'azureblob'   => '\\phpbu\\App\\Backup\\Sync\\AzureBlob',
-            'dropbox'     => '\\phpbu\\App\\Backup\\Sync\\Dropbox',
-            'ftp'         => '\\phpbu\\App\\Backup\\Sync\\Ftp',
-            'googledrive' => '\\phpbu\\App\\Backup\\Sync\\GoogleDrive',
-            'googlecloud' => '\\phpbu\\App\\Backup\\Sync\\GoogleCloudStorage',
-            'rsync'       => '\\phpbu\\App\\Backup\\Sync\\Rsync',
-            'sftp'        => '\\phpbu\\App\\Backup\\Sync\\Sftp',
-            'softlayer'   => '\\phpbu\\App\\Backup\\Sync\\SoftLayer',
-            'openstack'   => '\\phpbu\\App\\Backup\\Sync\\OpenStack',
-            'yandex-disk' => '\\phpbu\\App\\Backup\\Sync\\YandexDisk',
+            'amazons3'           => '\\phpbu\\App\\Backup\\Sync\\AmazonS3v3',
+            'amazons3-v3'        => '\\phpbu\\App\\Backup\\Sync\\AmazonS3v3',
+            'amazons3-v2'        => '\\phpbu\\App\\Backup\\Sync\\AmazonS3v2',
+            'backblazes3'        => '\\phpbu\\App\\Backup\\Sync\\BackblazeS3',
+            'azureblob'          => '\\phpbu\\App\\Backup\\Sync\\AzureBlob',
+            'dropbox'            => '\\phpbu\\App\\Backup\\Sync\\Dropbox',
+            'ftp'                => '\\phpbu\\App\\Backup\\Sync\\Ftp',
+            'googledrive'        => '\\phpbu\\App\\Backup\\Sync\\GoogleDrive',
+            'googlecloudstorage' => '\\phpbu\\App\\Backup\\Sync\\GoogleCloudStorage',
+            'rsync'              => '\\phpbu\\App\\Backup\\Sync\\Rsync',
+            'sftp'               => '\\phpbu\\App\\Backup\\Sync\\Sftp',
+            'softlayer'          => '\\phpbu\\App\\Backup\\Sync\\SoftLayer',
+            'openstack'          => '\\phpbu\\App\\Backup\\Sync\\OpenStack',
+            'yandex-disk'        => '\\phpbu\\App\\Backup\\Sync\\YandexDisk',
         ],
         'cleaner' => [
-            'capacity'  => '\\phpbu\\App\\Backup\\Cleaner\\Capacity',
-            'outdated'  => '\\phpbu\\App\\Backup\\Cleaner\\Outdated',
-            'stepwise'  => '\\phpbu\\App\\Backup\\Cleaner\\Stepwise',
-            'quantity'  => '\\phpbu\\App\\Backup\\Cleaner\\Quantity',
+            'capacity' => '\\phpbu\\App\\Backup\\Cleaner\\Capacity',
+            'outdated' => '\\phpbu\\App\\Backup\\Cleaner\\Outdated',
+            'stepwise' => '\\phpbu\\App\\Backup\\Cleaner\\Stepwise',
+            'quantity' => '\\phpbu\\App\\Backup\\Cleaner\\Quantity',
         ],
     ];
 
@@ -96,10 +97,10 @@ class Factory
      * Backup Factory
      * Creates 'Source', 'Check', 'Crypter', 'Sync' and 'Cleaner' Objects.
      *
-     * @param  string $type
-     * @param  string $alias
+     * @param string $type
+     * @param string $alias
      * @return mixed
-     *@throws Exception
+     * @throws Exception
      */
     protected function create($type, $alias)
     {
@@ -110,18 +111,19 @@ class Factory
             throw new Exception(sprintf('unknown %s: %s', $type, $alias));
         }
         $class = self::$classMap[$type][$alias];
+
         return new $class();
     }
 
     /**
      * Adapter Factory
      *
-     * @param  string $alias
-     * @param  array  $conf
+     * @param string $alias
+     * @param array $conf
      * @return Adapter
-     *@throws Exception
+     * @throws Exception
      */
-    public function createAdapter($alias, $conf = []) : Adapter
+    public function createAdapter($alias, $conf = []): Adapter
     {
         /** @var Adapter $adapter */
         $adapter = $this->create('adapter', $alias);
@@ -129,18 +131,19 @@ class Factory
             throw new Exception(sprintf('adapter \'%s\' has to implement the \'Adapter\' interfaces', $alias));
         }
         $adapter->setup($conf);
+
         return $adapter;
     }
 
     /**
      * Logger Factory
      *
-     * @param  string $alias
-     * @param  array  $conf
+     * @param string $alias
+     * @param array $conf
      * @return Logger
-     *@throws Exception
+     * @throws Exception
      */
-    public function createLogger($alias, $conf = []) : Logger
+    public function createLogger($alias, $conf = []): Logger
     {
         /** @var Logger $logger */
         $logger = $this->create('logger', $alias);
@@ -151,6 +154,7 @@ class Factory
             throw new Exception(sprintf('logger \'%s\' has to implement the \'Listener\' interface', $alias));
         }
         $logger->setup($conf);
+
         return $logger;
     }
 
@@ -161,7 +165,7 @@ class Factory
      * @return Target
      * @throws Exception
      */
-    public function createTarget(Configuration\Backup\Target $conf) : Target
+    public function createTarget(Configuration\Backup\Target $conf): Target
     {
         $target = new Target($conf->dirname, $conf->filename);
         $target->setupPath();
@@ -170,18 +174,19 @@ class Factory
             $compression = Target\Compression\Factory::create($conf->compression);
             $target->setCompression($compression);
         }
+
         return $target;
     }
 
     /**
      * Source Factory
      *
-     * @param  string $alias
-     * @param  array  $conf
+     * @param string $alias
+     * @param array $conf
      * @return Source
-     *@throws Exception
+     * @throws Exception
      */
-    public function createSource($alias, $conf = []) : Source
+    public function createSource($alias, $conf = []): Source
     {
         /** @var Source $source */
         $source = $this->create('source', $alias);
@@ -189,35 +194,37 @@ class Factory
             throw new Exception(sprintf('source \'%s\' has to implement the \'Source\' interface', $alias));
         }
         $source->setup($conf);
+
         return $source;
     }
 
     /**
      * Check Factory
      *
-     * @param  string $alias
+     * @param string $alias
      * @return Check
-     *@throws Exception
+     * @throws Exception
      */
-    public function createCheck($alias) : Check
+    public function createCheck($alias): Check
     {
         /** @var Check $check */
         $check = $this->create('check', $alias);
         if (!($check instanceof Check)) {
             throw new Exception(sprintf('Check \'%s\' has to implement the \'Check\' interface', $alias));
         }
+
         return $check;
     }
 
     /**
      * Crypter Factory
      *
-     * @param  string $alias
-     * @param  array  $conf
+     * @param string $alias
+     * @param array $conf
      * @return Crypter
-     *@throws Exception
+     * @throws Exception
      */
-    public function createCrypter($alias, $conf = []) : Crypter
+    public function createCrypter($alias, $conf = []): Crypter
     {
         /** @var Crypter $crypter */
         $crypter = $this->create('crypter', $alias);
@@ -225,18 +232,19 @@ class Factory
             throw new Exception(sprintf('Crypter \'%s\' has to implement the \'Crypter\' interface', $alias));
         }
         $crypter->setup($conf);
+
         return $crypter;
     }
 
     /**
      * Sync Factory
      *
-     * @param  string $alias
-     * @param  array  $conf
+     * @param string $alias
+     * @param array $conf
      * @return Sync
-     *@throws Exception
+     * @throws Exception
      */
-    public function createSync($alias, $conf = []) : Sync
+    public function createSync($alias, $conf = []): Sync
     {
         /** @var Sync $sync */
         $sync = $this->create('sync', $alias);
@@ -244,18 +252,19 @@ class Factory
             throw new Exception(sprintf('sync \'%s\' has to implement the \'Sync\' interface', $alias));
         }
         $sync->setup($conf);
+
         return $sync;
     }
 
     /**
      * Cleaner Factory
      *
-     * @param  string $alias
-     * @param  array  $conf
+     * @param string $alias
+     * @param array $conf
      * @return Cleaner
-     *@throws Exception
+     * @throws Exception
      */
-    public function createCleaner($alias, $conf = []) : Cleaner
+    public function createCleaner($alias, $conf = []): Cleaner
     {
         /** @var Cleaner $cleaner */
         $cleaner = $this->create('cleaner', $alias);
@@ -263,16 +272,17 @@ class Factory
             throw new Exception(sprintf('cleaner \'%s\' has to implement the \'Cleaner\' interface', $alias));
         }
         $cleaner->setup($conf);
+
         return $cleaner;
     }
 
     /**
      * Extend the backup factory
      *
-     * @param  string  $type        Type to create 'adapter', 'source', 'check', 'sync' or 'cleaner'
-     * @param  string  $alias       Name the class is registered at
-     * @param  string  $fqcn        Full Qualified Class Name
-     * @param  boolean $force       Overwrite already registered class
+     * @param string $type Type to create 'adapter', 'source', 'check', 'sync' or 'cleaner'
+     * @param string $alias Name the class is registered at
+     * @param string $fqcn Full Qualified Class Name
+     * @param boolean $force Overwrite already registered class
      * @throws Exception
      */
     public static function register($type, $alias, $fqcn, $force = false)
@@ -289,14 +299,14 @@ class Factory
     /**
      * Throws an exception if type is invalid
      *
-     * @param  string $type
+     * @param string $type
      * @throws Exception
      */
     private static function checkType($type)
     {
         if (!isset(self::$classMap[$type])) {
             throw new Exception(
-                'invalid type, please use only \'' . implode('\', \'', array_keys(self::$classMap)) . '\''
+                'invalid type, please use only \'' . implode('\', \'', array_keys(self::$classMap)) . '\'',
             );
         }
     }
