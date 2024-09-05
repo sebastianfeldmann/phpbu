@@ -6,7 +6,7 @@
   <!-- bucket name to upload to -->
   <option name="bucket" value="backup/google/client_secret.json"/>
 
-  <!-- the remote path to upload to int the bucket -->
+  <!-- the remote path to upload to into the bucket -->
   <option name="path" value="remote/path"/>
 
   <!-- optional cleanup configuration -->
