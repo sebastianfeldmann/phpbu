@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sync type="googlecloudstorage">
+  <!-- google secret file -->
+  <option name="secret" value="backup/google/client_secret.json"/>
+
+  <!-- bucket name to upload to -->
+  <option name="bucket" value="backup/google/client_secret.json"/>
+
+  <!-- the remote path to upload to int the bucket -->
+  <option name="path" value="remote/path"/>
+
+  <!-- optional cleanup configuration -->
+  <option name="cleanup.type" value="quantity"/>
+  <option name="cleanup.amount" value="10"/>
+</sync>
