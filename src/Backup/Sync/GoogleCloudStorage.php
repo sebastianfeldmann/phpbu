@@ -55,7 +55,7 @@ class GoogleCloudStorage implements Simulator
     /**
      * (non-PHPDoc)
      *
-     * @param array $config
+     * @param array $options
      * @throws \phpbu\App\Exception
      * @see    \phpbu\App\Backup\Sync::setup()
      */
