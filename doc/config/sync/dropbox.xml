@@ -2,6 +2,8 @@
 <sync type="dropbox">
   <!-- mandatory -->
   <option name="token" value="mycrazylongapitokenthatigotfromdropbox" />
+  <option name="appKey" value="myAppKey" />
+  <option name="appSecret" value="myAppSecret" />
 
   <!-- mandatory -->
   <option name="path" value="/some/dir" />

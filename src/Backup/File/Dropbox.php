@@ -1,8 +1,8 @@
 <?php
 namespace phpbu\App\Backup\File;
 
-use Kunnu\Dropbox\Dropbox as DropboxApi;
-use Kunnu\Dropbox\Models\FileMetadata;
+use Kunnu\Dropbox as DropboxApi;
+use phpbu\App\Exception;
 
 /**
  * Dropbox class.
@@ -31,7 +31,7 @@ class Dropbox extends Remote
      * @param \Kunnu\Dropbox\Dropbox             $client
      * @param \Kunnu\Dropbox\Models\FileMetadata $dropboxFile
      */
-    public function __construct(DropboxApi $client, FileMetadata $dropboxFile)
+    public function __construct(DropboxApi\Dropbox $client, DropboxApi\Models\FileMetadata $dropboxFile)
     {
         $this->client       = $client;
         $this->filename     = $dropboxFile->getName();
@@ -50,7 +50,7 @@ class Dropbox extends Remote
         try {
             $this->client->delete($this->pathname);
         } catch (\Exception $e) {
-            throw new \phpbu\App\Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
 }
