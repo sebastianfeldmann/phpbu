@@ -1,0 +1,8 @@
+{
+  "type": "googlecloudstorage",
+  "options": {
+    "secret": "backup/google/client_secret.json",
+    "bucket": "my-bucket",
+    "path": "remote/path"
+  }
+}
