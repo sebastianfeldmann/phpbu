@@ -2,7 +2,11 @@
 <sync type="dropbox">
   <!-- mandatory -->
   <option name="token" value="mycrazylongapitokenthatigotfromdropbox" />
+
+  <!-- mandatory -->
   <option name="appKey" value="myAppKey" />
+
+  <!-- mandatory -->
   <option name="appSecret" value="myAppSecret" />
 
   <!-- mandatory -->
