@@ -2,6 +2,8 @@
   "type": "webhook",
   "options": {
     "uri": "https://example.com/webhook",
+    "sendOnlyOnError": false,
+    "sendOnSimulation": false,
     "username": "misterX",
     "password": "secret",
     "method": "POST",

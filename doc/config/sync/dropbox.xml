@@ -4,5 +4,11 @@
   <option name="token" value="mycrazylongapitokenthatigotfromdropbox" />
 
   <!-- mandatory -->
+  <option name="appKey" value="myAppKey" />
+
+  <!-- mandatory -->
+  <option name="appSecret" value="myAppSecret" />
+
+  <!-- mandatory -->
   <option name="path" value="/some/dir" />
 </sync>

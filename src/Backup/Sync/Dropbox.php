@@ -1,9 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use Kunnu\Dropbox\DropboxApp as DropboxConfig;
-use Kunnu\Dropbox\Dropbox as DropboxApi;
-use Kunnu\Dropbox\DropboxFile;
+use Kunnu\Dropbox as DropboxApi;
+use Kunnu\Dropbox\Exceptions\DropboxClientException;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Path;
 use phpbu\App\Result;
@@ -62,6 +61,16 @@ class Dropbox implements Simulator
     protected $time;
 
     /**
+     * @var string
+     */
+    private mixed $appKey;
+
+    /**
+     * @var string
+     */
+    private mixed $appSecret;
+
+    /**
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::setup()
@@ -76,10 +85,12 @@ class Dropbox implements Simulator
         }
 
         // check for mandatory options
-        $this->validateConfig($config, ['token', 'path']);
+        $this->validateConfig($config, ['token', 'path', 'appKey', 'appSecret']);
 
-        $this->time  = time();
-        $this->token = $config['token'];
+        $this->time      = time();
+        $this->token     = $config['token'];
+        $this->appKey    = $config['appKey'];
+        $this->appSecret = $config['appSecret'];
         // make sure the path contains a leading slash
         $this->path  = new Path(Util\Path::withLeadingSlash($config['path']), $this->time);
 
@@ -117,7 +128,7 @@ class Dropbox implements Simulator
         $client      = $this->createClient();
 
         try {
-            $file = new DropboxFile($sourcePath);
+            $file = new DropboxApi\DropboxFile($sourcePath);
             $meta = $client->upload($file, $dropboxPath, ['autorename' => true]);
             $result->debug('upload: done  (' . $meta->getSize() . ')');
 
@@ -163,12 +174,13 @@ class Dropbox implements Simulator
      * Create a dropbox api client.
      *
      * @return \Kunnu\Dropbox\Dropbox
+     * @throws DropboxClientException
      */
-    protected function createClient() : DropboxApi
+    protected function createClient() : DropboxApi\Dropbox
     {
         if (!$this->client) {
-            $config       = new DropboxConfig("id", "secret", $this->token);
-            $this->client = new DropboxApi($config);
+            $app          = new DropboxApi\DropboxApp($this->appKey, $this->appSecret, $this->token);
+            $this->client = new DropboxApi\Dropbox($app);
         }
         return $this->client;
     }

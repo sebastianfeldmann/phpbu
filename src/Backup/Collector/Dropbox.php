@@ -1,8 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
-use Kunnu\Dropbox\Dropbox as DropboxApi;
-use Kunnu\Dropbox\Models\FolderMetadata;
+use Kunnu\Dropbox as DropboxApi;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\File;
 use phpbu\App\Backup\Path;
@@ -35,7 +34,7 @@ class Dropbox extends Remote implements Collector
      * @param \phpbu\App\Backup\Path   $path
      * @param \Kunnu\Dropbox\Dropbox   $client
      */
-    public function __construct(Target $target, Path $path, DropboxApi $client)
+    public function __construct(Target $target, Path $path, DropboxApi\Dropbox $client)
     {
         $this->setUp($target, $path);
         $this->client = $client;
@@ -55,7 +54,7 @@ class Dropbox extends Remote implements Collector
         /** @var \Kunnu\Dropbox\Models\FileMetadata $item */
         foreach ($items->getItems() as $item) {
             // skip directories
-            if ($item instanceof FolderMetadata) {
+            if ($item instanceof DropboxApi\Models\FolderMetadata) {
                 continue;
             }
             if ($this->isFileMatch($item->getPathDisplay())) {
