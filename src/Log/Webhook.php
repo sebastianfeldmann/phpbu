@@ -8,6 +8,7 @@ use phpbu\App\Listener;
 use phpbu\App\Result;
 use phpbu\App\Util\Arr;
 use phpbu\App\Util\Path;
+use phpbu\App\Util\Str;
 use Throwable;
 
 /**
@@ -92,6 +93,20 @@ class Webhook implements Listener, Logger
     ];
 
     /**
+     * Call webhook only if errors occur
+     *
+     * @var bool
+     */
+    private bool $sendOnlyOnError = false;
+
+    /**
+     * Call the webhook while simulating
+     *
+     * @var bool
+     */
+    private bool $sendSimulating = false;
+
+    /**
      * Constructor will only set the start time to be able to log duration
      */
     public function __construct()
@@ -140,6 +155,8 @@ class Webhook implements Listener, Logger
             throw new Exception('webhook URI is invalid');
         }
 
+        $this->sendOnlyOnError = Str::toBoolean(Arr::getValue($options, 'sendOnlyOnError'), false);
+        $this->sendSimulating  = Str::toBoolean(Arr::getValue($options, 'sendOnSimulation'), true);
         $this->uri             = $options['uri'];
         $this->method          = Arr::getValue($options, 'method', 'GET');
         $this->username        = Arr::getValue($options, 'username', '');
@@ -156,7 +173,10 @@ class Webhook implements Listener, Logger
      */
     public function onPhpbuEnd(Event\App\End $event)
     {
-        $result    = $event->getResult();
+        $result = $event->getResult();
+        if ($this->shouldWebhookBeCalled($result) === false) {
+            return;
+        }
         $data      = $this->getQueryStringData($result);
         $uri       = $this->method === 'GET' ? $this->buildGetUri($data) : $this->uri;
         $formatter = $this->getBodyFormatter();
@@ -258,5 +278,16 @@ class Webhook implements Listener, Logger
         } catch (Throwable $t) {
             throw new Exception('could not reach webhook: ' . $this->uri);
         }
+    }
+
+    /**
+     * Should a webhook be called
+     *
+     * @param  \phpbu\App\Result $result
+     * @return bool
+     */
+    protected function shouldWebhookBeCalled(Result $result) : bool
+    {
+        return (!$this->sendOnlyOnError || !$result->allOk()) && ($this->sendSimulating || !$this->isSimulation);
     }
 }

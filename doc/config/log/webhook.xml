@@ -4,6 +4,12 @@
   <option name="uri" value="https://some.host.com/webhook" />
 
   <!-- optional default=false -->
+  <option name="sendOnlyOnError" value="true" />
+
+  <!-- optional default=true -->
+  <option name="sendOnSimulation" value="false" />
+
+  <!-- optional default=false -->
   <option name="username" value="misterX" />
 
   <!-- optional default=false -->
