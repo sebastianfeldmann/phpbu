@@ -23,7 +23,7 @@ use phpbu\App\Util;
 class Dropbox extends Remote implements Collector
 {
     /**
-     * @var DropboxApi
+     * @var DropboxApi\Dropbox
      */
     protected $client;
 

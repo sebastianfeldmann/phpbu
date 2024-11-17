@@ -107,6 +107,11 @@ class Webhook implements Listener, Logger
     private bool $sendSimulating = false;
 
     /**
+     * @var bool
+     */
+    private bool $isSimulation = false;
+
+    /**
      * Constructor will only set the start time to be able to log duration
      */
     public function __construct()
@@ -164,6 +169,7 @@ class Webhook implements Listener, Logger
         $this->template        = Arr::getValue($options, 'template', '');
         $this->contentType     = Arr::getValue($options, 'contentType', 'multipart/form-data');
         $this->timeout         = Arr::getValue($options, 'timeout', '');
+        $this->isSimulation    = Arr::getValue($options, '__simulate__', false);
     }
 
     /**
