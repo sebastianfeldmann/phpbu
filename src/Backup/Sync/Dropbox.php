@@ -49,7 +49,7 @@ class Dropbox implements Simulator
     /**
      * Dropbox api client
      *
-     * @var DropboxApi
+     * @var DropboxApi\Dropbox
      */
     protected $client;
 
@@ -63,12 +63,12 @@ class Dropbox implements Simulator
     /**
      * @var string
      */
-    private mixed $appKey;
+    private $appKey;
 
     /**
      * @var string
      */
-    private mixed $appSecret;
+    private $appSecret;
 
     /**
      * (non-PHPDoc)
