@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sync type="dropbox">
   <!-- mandatory -->
-  <option name="token" value="mycrazylongapitokenthatigotfromdropbox" />
+  <option name="refreshToken" value="mycrazylongrefreshtokenthatigotfromdropbox" />
 
   <!-- mandatory -->
   <option name="appKey" value="myAppKey" />
