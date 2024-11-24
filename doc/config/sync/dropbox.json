@@ -1,7 +1,7 @@
 {
   "type": "dropbox",
   "options": {
-    "token": "myCrazyLongApiTokenThatIGotFromDropbox",
+    "refreshToken": "myCrazyLongRefreshTokenThatIGotFromDropbox",
     "appKey": "myAppKey",
     "appSecret": "myAppSecret",
     "path": "/some/dir"

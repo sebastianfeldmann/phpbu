@@ -37,7 +37,17 @@ class Dropbox implements Simulator
      *
      * @var  string
      */
-    protected $token;
+    private $appKey;
+
+    /**
+     * @var string
+     */
+    private $appSecret;
+
+    /**
+     * @var string
+     */
+    protected $refreshToken;
 
     /**
      * Remote path
@@ -61,16 +71,6 @@ class Dropbox implements Simulator
     protected $time;
 
     /**
-     * @var string
-     */
-    private $appKey;
-
-    /**
-     * @var string
-     */
-    private $appSecret;
-
-    /**
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::setup()
@@ -85,12 +85,12 @@ class Dropbox implements Simulator
         }
 
         // check for mandatory options
-        $this->validateConfig($config, ['token', 'path', 'appKey', 'appSecret']);
+        $this->validateConfig($config, ['refreshToken', 'path', 'appKey', 'appSecret']);
 
-        $this->time      = time();
-        $this->token     = $config['token'];
-        $this->appKey    = $config['appKey'];
-        $this->appSecret = $config['appSecret'];
+        $this->time         = time();
+        $this->refreshToken = $config['refreshToken'];
+        $this->appKey       = $config['appKey'];
+        $this->appSecret    = $config['appSecret'];
         // make sure the path contains a leading slash
         $this->path  = new Path(Util\Path::withLeadingSlash($config['path']), $this->time);
 
@@ -179,7 +179,14 @@ class Dropbox implements Simulator
     protected function createClient() : DropboxApi\Dropbox
     {
         if (!$this->client) {
-            $app          = new DropboxApi\DropboxApp($this->appKey, $this->appSecret, $this->token);
+            $app        = new DropboxApi\DropboxApp($this->appKey, $this->appSecret);
+            $client     = new DropboxApi\Dropbox($app);
+            $authHelper = $client->getAuthHelper();
+            $token      = $authHelper->getRefreshedAccessToken(
+                new DropboxApi\Models\AccessToken(['refresh_token' => $this->refreshToken])
+            );
+
+            $app          = new DropboxApi\DropboxApp($this->appKey, $this->appSecret, $token->getToken());
             $this->client = new DropboxApi\Dropbox($app);
         }
         return $this->client;
