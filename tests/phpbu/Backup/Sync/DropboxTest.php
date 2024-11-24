@@ -30,10 +30,10 @@ class DropboxTest extends TestCase
     {
         $dropbox = new Dropbox();
         $dropbox->setup([
-            'token' => 'this-is-no-token',
-            'appKey' => 'this-is-no-key',
-            'appSecret' => 'this-is-no-secret',
-            'path'  => '/'
+            'refreshToken' => 'this-is-no-token',
+            'appKey'       => 'this-is-no-key',
+            'appSecret'    => 'this-is-no-secret',
+            'path'         => '/'
         ]);
 
         $this->assertTrue(true, 'no exception should occur');
@@ -50,10 +50,10 @@ class DropboxTest extends TestCase
 
         $dropbox = new Dropbox();
         $dropbox->setup([
-            'token'     => 'this-is-no-token',
-            'appKey'    => 'this-is-no-key',
-            'appSecret' => 'this-is-no-secret',
-            'path'      => 'foo'
+            'refreshToken' => 'this-is-no-token',
+            'appKey'       => 'this-is-no-key',
+            'appSecret'    => 'this-is-no-secret',
+            'path'         => 'foo'
         ]);
 
         $resultStub = $this->createMock(Result::class);
@@ -85,10 +85,10 @@ class DropboxTest extends TestCase
         $dropbox->method('createClient')->willReturn($clientMock);
 
         $dropbox->setup([
-            'token'     => 'this-is-no-token',
-            'appKey'    => 'this-is-no-key',
-            'appSecret' => 'this-is-no-secret',
-            'path'      => '/'
+            'refreshToken' => 'this-is-no-token',
+            'appKey'       => 'this-is-no-key',
+            'appSecret'    => 'this-is-no-secret',
+            'path'         => '/'
         ]);
 
         $dropbox->sync($target, $result);
@@ -117,7 +117,7 @@ class DropboxTest extends TestCase
         $dropbox->method('createClient')->willReturn($clientMock);
 
         $dropbox->setup([
-            'token'          => 'this-is-no-token',
+            'refreshToken'   => 'this-is-no-token',
             'appKey'         => 'this-is-no-key',
             'appSecret'      => 'this-is-no-secret',
             'path'           => '/',
@@ -144,10 +144,10 @@ class DropboxTest extends TestCase
         $dropbox->method('createClient')->willReturn($clientMock);
 
         $dropbox->setup([
-            'token'     => 'this-is-no-token',
-            'appKey'    => 'this-is-no-key',
-            'appSecret' => 'this-is-no-secret',
-            'path'      => '/'
+            'refreshToken' => 'this-is-no-token',
+            'appKey'       => 'this-is-no-key',
+            'appSecret'    => 'this-is-no-secret',
+            'path'         => '/'
         ]);
 
         $dropbox->sync($target, $result);
@@ -160,10 +160,10 @@ class DropboxTest extends TestCase
     {
         $dropbox = new Dropbox();
         $dropbox->setup([
-            'token'     => 'this-is-no-token',
-            'appKey'    => 'this-is-no-key',
-            'appSecret' => 'this-is-no-secret',
-            'path'      => '/'
+            'refreshToken' => 'this-is-no-token',
+            'appKey'       => 'this-is-no-key',
+            'appSecret'    => 'this-is-no-secret',
+            'path'         => '/'
         ]);
 
         $resultStub = $this->createMock(Result::class);
@@ -194,9 +194,9 @@ class DropboxTest extends TestCase
         $dropbox = new Dropbox();
         $dropbox->setup(
             [
-                'token'     => 'this-is-no-token',
-                'appKey'    => 'this-is-no-key',
-                'appSecret' => 'this-is-no-secret'
+                'refreshToken' => 'this-is-no-token',
+                'appKey'       => 'this-is-no-key',
+                'appSecret'    => 'this-is-no-secret'
             ]
         );
     }
