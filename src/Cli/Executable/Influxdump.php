@@ -2,7 +2,6 @@
 
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Executable;
 use SebastianFeldmann\Cli\CommandLine;
 use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
@@ -18,7 +17,7 @@ use SebastianFeldmann\Cli\Command\Executable as Cmd;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.12
  */
-class Influxdump extends Abstraction implements Executable
+class Influxdump extends Abstraction
 {
     use OptionMasker;
 

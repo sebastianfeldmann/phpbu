@@ -40,7 +40,7 @@ abstract class Factory
      * @param  \phpbu\App\Configuration\Bootstrapper $bootstrapper
      * @return \phpbu\App\Configuration\Loader
      */
-    public static function createLoader(string $filename, Bootstrapper $bootstrapper = null)
+    public static function createLoader(string $filename, ?Bootstrapper $bootstrapper = null)
     {
         $bs    = $bootstrapper ?? new Bootstrapper();
         $ext   = pathinfo($filename, PATHINFO_EXTENSION);
