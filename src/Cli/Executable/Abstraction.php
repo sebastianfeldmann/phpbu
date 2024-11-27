@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
+use phpbu\App\Cli\Executable;
 use phpbu\App\Util\Cli;
 use SebastianFeldmann\Cli\CommandLine;
 
@@ -15,7 +16,7 @@ use SebastianFeldmann\Cli\CommandLine;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-abstract class Abstraction
+abstract class Abstraction implements Executable
 {
     /**
      * Command name.
@@ -103,6 +104,14 @@ abstract class Abstraction
      * @return string
      */
     public function getCommandPrintable() : string
+    {
+        return $this->getCommand();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString() : string
     {
         return $this->getCommand();
     }

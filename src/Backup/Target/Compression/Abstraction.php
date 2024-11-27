@@ -120,4 +120,12 @@ abstract class Abstraction implements Compression
     {
         return $this->mimeType;
     }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        return $this->cmd;
+    }
 }

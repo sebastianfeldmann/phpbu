@@ -3,7 +3,6 @@
 namespace phpbu\App\Cli\Executable;
 
 use phpbu\App\Backup\Target\Compression;
-use phpbu\App\Cli\Executable;
 use phpbu\App\Util\Cli;
 use SebastianFeldmann\Cli\CommandLine;
 use SebastianFeldmann\Cli\Command\Executable as Cmd;
@@ -20,7 +19,7 @@ use SebastianFeldmann\Cli\Command\Executable as Cmd;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.12
  */
-class Ldapdump extends Abstraction implements Executable
+class Ldapdump extends Abstraction
 {
     use OptionMasker;
 

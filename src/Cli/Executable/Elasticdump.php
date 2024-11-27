@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
 use phpbu\App\Util;
 use SebastianFeldmann\Cli\CommandLine;
@@ -19,7 +18,7 @@ use SebastianFeldmann\Cli\Command\Executable as Cmd;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.0
  */
-class Elasticdump extends Abstraction implements Executable
+class Elasticdump extends Abstraction
 {
     use OptionMasker;
 

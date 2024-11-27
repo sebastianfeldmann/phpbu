@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
 use SebastianFeldmann\Cli\CommandLine;
 use SebastianFeldmann\Cli\Command\Executable as Cmd;
@@ -17,7 +16,7 @@ use SebastianFeldmann\Cli\Command\Executable as Cmd;
  * @link       http://phpbu.de/
  * @since      Class available since Release 6.0.10
  */
-class Xtrabackup8 extends Abstraction implements Executable
+class Xtrabackup8 extends Abstraction
 {
     use OptionMasker;
 

@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
 use SebastianFeldmann\Cli\CommandLine;
 use SebastianFeldmann\Cli\Command\Executable as Cmd;
@@ -17,7 +16,7 @@ use SebastianFeldmann\Cli\Command\Executable as Cmd;
  * @link       https://phpbu.de/
  * @since      Class available since Release 6.0.1
  */
-class Gpg extends Abstraction implements Executable
+class Gpg extends Abstraction
 {
     use OptionMasker;
 

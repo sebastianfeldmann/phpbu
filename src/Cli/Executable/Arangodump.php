@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
 use SebastianFeldmann\Cli\CommandLine;
 use SebastianFeldmann\Cli\Command\Executable as Cmd;
@@ -18,7 +17,7 @@ use SebastianFeldmann\Cli\Command\Executable as Cmd;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.0.0
  */
-class Arangodump extends Abstraction implements Executable
+class Arangodump extends Abstraction
 {
     use OptionMasker;
 

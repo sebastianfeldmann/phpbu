@@ -2,10 +2,8 @@
 namespace phpbu\App\Cli\Executable;
 
 use phpbu\App\Backup\Target\Compression;
-use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
 use phpbu\App\Util\Cli;
-use phpbu\App\Util\Str;
 use SebastianFeldmann\Cli\CommandLine;
 use SebastianFeldmann\Cli\Command\Executable as Cmd;
 
@@ -20,7 +18,7 @@ use SebastianFeldmann\Cli\Command\Executable as Cmd;
  * @link       http://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
-class Mysqldump extends Abstraction implements Executable
+class Mysqldump extends Abstraction
 {
     use OptionMasker;
 

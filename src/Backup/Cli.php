@@ -46,9 +46,9 @@ abstract class Cli
      * Cli constructor.
      *
      * @param \SebastianFeldmann\Cli\Command\Runner $runner
-     * @param int                                   $time
+     * @param int|null                              $time
      */
-    public function __construct(Runner $runner = null, $time = null)
+    public function __construct(Runner $runner = null, ?int $time = null)
     {
         $this->runner = $runner ? : new Runner\Simple(new Symfony());
         $this->time   = $time   ? : time();

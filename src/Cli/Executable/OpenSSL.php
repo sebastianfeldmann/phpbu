@@ -1,7 +1,6 @@
 <?php
 namespace phpbu\App\Cli\Executable;
 
-use phpbu\App\Cli\Executable;
 use phpbu\App\Exception;
 use SebastianFeldmann\Cli\CommandLine;
 use SebastianFeldmann\Cli\Command\Executable as Cmd;
@@ -17,7 +16,7 @@ use SebastianFeldmann\Cli\Command\Executable as Cmd;
  * @link       http://phpbu.de/
  * @since      Class available since Release 2.1.6
  */
-class OpenSSL extends Abstraction implements Executable
+class OpenSSL extends Abstraction
 {
     use OptionMasker;
 
