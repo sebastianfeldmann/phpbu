@@ -48,7 +48,7 @@
     "ext-dom": "*",
     "ext-json": "*",
     "ext-spl": "*",
-    "sebastian/environment": "^3.0|^4.0|^5.0|^6.0",
+    "sebastian/environment": "^3.0|^4.0|^5.0|^6.0|^7.0|^8.0",
     "sebastianfeldmann/cli": "^3.4",
     "symfony/process": "^3.0|^4.0|^5.0|^6.0|^7.0"
   },
