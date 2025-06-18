@@ -26,7 +26,7 @@ class Factory
         'bzip2' => 'Bzip2',
         'xz'    => 'Xz',
         'zip'   => 'Zip',
-        'zstd'   => 'Zstd'
+        'zstd'  => 'Zstd'
     ];
 
     /**
