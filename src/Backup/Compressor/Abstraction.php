@@ -42,7 +42,7 @@ abstract class Abstraction extends Cli implements Compressible
      * @param  \SebastianFeldmann\Cli\Command\Runner $runner
      * @throws \phpbu\App\Exception
      */
-    public function __construct($path, $pathToCommand = '', Runner $runner = null)
+    public function __construct($path, $pathToCommand = '', ?Runner $runner = null)
     {
         if (empty($path)) {
             throw new Exception('no path to compress set');
