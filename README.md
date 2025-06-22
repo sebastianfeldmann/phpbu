@@ -151,7 +151,7 @@ Simple configuration example in XML:
 ```xml
   <?xml version="1.0" encoding="UTF-8"?>
   <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/6.0/phpbu.xsd"
+         xsi:noNamespaceSchemaLocation="https://www.phpbu.de/schema/6.0/phpbu.xsd"
          verbose="true">
     <backups>
       <backup name="myAppDB">

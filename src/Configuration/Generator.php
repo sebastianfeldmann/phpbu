@@ -2,6 +2,8 @@
 
 namespace phpbu\App\Configuration;
 
+use function str_replace;
+
 final class Generator
 {
     /**
@@ -10,20 +12,20 @@ final class Generator
     const TEMPLATE_XML = <<<EOT
 <?xml version="1.0" encoding="UTF-8"?>
 <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpbu.de/{phpbu_version}/phpbu.xsd"
+         xsi:noNamespaceSchemaLocation="https://www.phpbu.de/schema/{phpbu_version}/phpbu.xsd"
          bootstrap="{bootstrap_script}"
          verbose="true">
-    
+
     <!-- uncomment if you want to use an adapter
     <adapters>
     </adapters>
     -->
-    
+
     <!-- uncomment if you want to use logging
     <logging>
     </logging>
     -->
-    
+
     <backups>
         <backup name="__FIXME__">
             <source type="__FIXME__">
@@ -76,7 +78,7 @@ EOT;
      */
     public function generateConfigurationSkeleton(string $version, string $format, string $bootstrapScript) : string
     {
-        return \str_replace(
+        return str_replace(
             [
                 '{phpbu_version}',
                 '{bootstrap_script}'

@@ -25,7 +25,7 @@ class GeneratorTest extends TestCase
         $config    = $generator->generateConfigurationSkeleton('X.Y', 'xml', 'boot.php');
 
         $this->assertStringContainsString('bootstrap="boot.php"', $config);
-        $this->assertStringContainsString('xsi:noNamespaceSchemaLocation="https://schema.phpbu.de/X.Y/phpbu.xsd"', $config);
+        $this->assertStringContainsString('xsi:noNamespaceSchemaLocation="https://www.phpbu.de/schema/X.Y/phpbu.xsd"', $config);
     }
 
     /**
