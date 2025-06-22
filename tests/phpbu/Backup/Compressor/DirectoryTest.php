@@ -1,8 +1,11 @@
 <?php
 namespace phpbu\App\Backup\Compressor;
 
+use phpbu\App\Backup\Target;
 use phpbu\App\Backup\Target\Compression;
+use phpbu\App\Result;
 use SebastianFeldmann\Cli\Command\Result as CommandResult;
+use SebastianFeldmann\Cli\Command\Runner;
 use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
 use PHPUnit\Framework\TestCase;
 
@@ -14,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class DirectoryTest extends TestCase
@@ -45,7 +48,7 @@ class DirectoryTest extends TestCase
     public function testCanCompressUncompressedTarget()
     {
         $this->expectException('phpbu\App\Exception');
-        $target = $this->createMock(\phpbu\App\Backup\Target::class);
+        $target = $this->createMock(Target::class);
 
         $target->method('shouldBeCompressed')
                ->willReturn(false);
@@ -60,7 +63,7 @@ class DirectoryTest extends TestCase
     public function testGetArchiveFile()
     {
         $cmp    = Compression\Factory::create('bzip2');
-        $target = $this->createMock(\phpbu\App\Backup\Target::class);
+        $target = $this->createMock(Target::class);
 
         $target->method('shouldBeCompressed')
                ->willReturn(true);
@@ -84,13 +87,13 @@ class DirectoryTest extends TestCase
         $commandResult = new CommandResult('foo', 0);
         $runnerResult  = new RunnerResult($commandResult);
 
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
 
-        $runner = $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
+        $runner = $this->createMock(Runner::class);
         $runner->method('run')->willReturn($runnerResult);
 
 
-        $target = $this->createMock(\phpbu\App\Backup\Target::class);
+        $target = $this->createMock(Target::class);
 
         $target->method('shouldBeCompressed')
                ->willReturn(true);
@@ -116,12 +119,12 @@ class DirectoryTest extends TestCase
         $commandResult = new CommandResult('foo', 1);
         $runnerResult  = new RunnerResult($commandResult);
 
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
 
-        $runner = $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
+        $runner = $this->createMock(Runner::class);
         $runner->method('run')->willReturn($runnerResult);
 
-        $target = $this->createMock(\phpbu\App\Backup\Target::class);
+        $target = $this->createMock(Target::class);
 
         $target->method('shouldBeCompressed')
                ->willReturn(true);
@@ -146,12 +149,12 @@ class DirectoryTest extends TestCase
         $commandResult = new CommandResult('foo', 1);
         $runnerResult  = new RunnerResult($commandResult);
 
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
 
-        $runner = $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
+        $runner = $this->createMock(Runner::class);
         $runner->method('run')->willReturn($runnerResult);
 
-        $target = $this->createMock(\phpbu\App\Backup\Target::class);
+        $target = $this->createMock(Target::class);
 
         $target->method('shouldBeCompressed')
                ->willReturn(true);

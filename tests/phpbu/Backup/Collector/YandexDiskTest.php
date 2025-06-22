@@ -20,7 +20,7 @@ use ReflectionException;
  * @author     Alexander Palchikov AxelPAL <axelpal@gmail.com>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  */
 class YandexDiskTest extends TestCase
 {

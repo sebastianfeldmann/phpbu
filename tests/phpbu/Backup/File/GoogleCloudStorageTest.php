@@ -2,6 +2,7 @@
 
 namespace phpbu\App\Backup\File;
 
+use Exception;
 use Google\Cloud\Storage\StorageObject;
 use PHPUnit\Framework\TestCase;
 
@@ -13,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @author     David Dattée <david.dattee@meetwashing.fr>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  */
 class GoogleCloudStorageTest extends TestCase
 {
@@ -27,7 +28,7 @@ class GoogleCloudStorageTest extends TestCase
         $file->expects($this->exactly(2))->method('info')->willReturn([
             'size'    => '102102',
             'updated' => '2024-09-05T10:22:24.539Z',
-        ]);;
+        ]);
         $file->expects($this->once())->method('delete');
 
         $file = new GoogleCloudStorage($file);
@@ -50,11 +51,11 @@ class GoogleCloudStorageTest extends TestCase
         $file->expects($this->exactly(2))->method('info')->willReturn([
             'size'    => '102102',
             'updated' => '2024-09-05T10:22:24.539Z',
-        ]);;
+        ]);
         $file
             ->expects($this->once())
             ->method('delete')
-            ->willThrowException(new \Exception());
+            ->willThrowException(new Exception());
 
         $file = new GoogleCloudStorage($file);
         $file->unlink();

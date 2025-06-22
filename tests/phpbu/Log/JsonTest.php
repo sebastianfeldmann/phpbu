@@ -1,7 +1,13 @@
 <?php
 namespace phpbu\App\Log;
 
+use Exception;
+use phpbu\App\Event\App\End;
+use phpbu\App\Event\Debug;
+use phpbu\App\Result;
+use phpbu\App\Result\Backup;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * Json Test
@@ -11,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
 class JsonTest extends TestCase
@@ -44,11 +50,11 @@ class JsonTest extends TestCase
         $result = $this->getResultMock();
 
         // debug event mock
-        $debugEvent = $this->createMock(\phpbu\App\Event\Debug::class);
+        $debugEvent = $this->createMock(Debug::class);
         $debugEvent->method('getMessage')->willReturn('debug');
 
         // phpbu end event mock
-        $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
+        $phpbuEndEvent = $this->createMock(End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
         $json = new Json();
@@ -63,7 +69,7 @@ class JsonTest extends TestCase
         $outputPHP  = json_decode($outputJson);
 
 
-        $this->assertInstanceOf(\stdClass::class, $outputPHP);
+        $this->assertInstanceOf(stdClass::class, $outputPHP);
     }
 
     /**
@@ -89,10 +95,10 @@ class JsonTest extends TestCase
      */
     protected function getResultMock()
     {
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->method('started')->willReturn(microtime(true));
         $result->method('allOk')->willReturn(true);
-        $result->method('getErrors')->willReturn([new \Exception('foo bar')]);
+        $result->method('getErrors')->willReturn([new Exception('foo bar')]);
         $result->method('getBackups')->willReturn([$this->getBackupResultMock()]);
         $result->method('backupsFailedCount')->willReturn(0);
         $result->method('errorCount')->willReturn(1);
@@ -107,7 +113,7 @@ class JsonTest extends TestCase
      */
     protected function getBackupResultMock()
     {
-        $backup = $this->createMock(\phpbu\App\Result\Backup::class);
+        $backup = $this->createMock(Backup::class);
         $backup->method('getName')->willReturn('foo');
         $backup->method('wasSuccessful')->willReturn(true);
         $backup->method('checkCount')->willReturn(0);

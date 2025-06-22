@@ -16,7 +16,7 @@ use SebastianFeldmann\Cli\Command\Executable as Cmd;
  * @author     Julian Marié <julian.marie@free.fr>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 2.1.12
  */
 class Ldapdump extends Abstraction

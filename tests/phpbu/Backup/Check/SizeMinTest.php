@@ -1,6 +1,9 @@
 <?php
 namespace phpbu\App\Backup\Check;
 
+use phpbu\App\Backup\Collector\Local;
+use phpbu\App\Backup\Target;
+use phpbu\App\Result;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class SizeMinTest extends TestCase
@@ -21,9 +24,9 @@ class SizeMinTest extends TestCase
      */
     public function testPass()
     {
-        $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
+        $resultStub    = $this->createMock(Result::class);
+        $collectorStub = $this->createMock(Local::class);
+        $targetStub    = $this->createMock(Target::class);
         $targetStub->method('getSize')->willReturn(1030);
 
         $check = new SizeMin();
@@ -47,10 +50,10 @@ class SizeMinTest extends TestCase
      */
     public function testSimulate()
     {
-        $resultStub    = $this->createMock(\phpbu\App\Result::class);
+        $resultStub    = $this->createMock(Result::class);
         $resultStub->expects($this->once())->method('debug');
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
+        $collectorStub = $this->createMock(Local::class);
+        $targetStub    = $this->createMock(Target::class);
 
         $check = new SizeMin();
         $check->simulate($targetStub, '5000', $collectorStub, $resultStub);

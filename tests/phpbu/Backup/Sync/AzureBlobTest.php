@@ -4,7 +4,9 @@ namespace phpbu\App\Backup\Sync;
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Blob\Models\ListBlobsResult;
 use MicrosoftAzure\Storage\Blob\Models\ListContainersResult;
+use phpbu\App\Backup\Target;
 use phpbu\App\BaseMockery;
+use phpbu\App\Result;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Jonathan Bouzekri <jonathan.bouzekri@gmail.com>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.2.7
  */
 class AzureBlobTest extends TestCase
@@ -50,7 +52,7 @@ class AzureBlobTest extends TestCase
             'path'              => '/'
         ]);
 
-        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+        $targetStub = $this->createMock(Target::class);
         $targetStub->expects($this->once())->method('getFilename')->willReturn('foo.zip');
 
         $this->assertEquals('foo.zip', $azureBlob->getUploadPath($targetStub));
@@ -68,7 +70,7 @@ class AzureBlobTest extends TestCase
             'path'              => 'fiz'
         ]);
 
-        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+        $targetStub = $this->createMock(Target::class);
         $targetStub->expects($this->once())->method('getFilename')->willReturn('foo.zip');
 
         $this->assertEquals('fiz/foo.zip', $azureBlob->getUploadPath($targetStub));
@@ -81,7 +83,7 @@ class AzureBlobTest extends TestCase
     {
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
 
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->expects($this->exactly(2))->method('debug');
 
         $listContainers = ListContainersResult::create([
@@ -117,7 +119,7 @@ class AzureBlobTest extends TestCase
     {
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
 
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->expects($this->exactly(3))->method('debug');
 
         $listContainers = ListContainersResult::create([
@@ -172,7 +174,7 @@ class AzureBlobTest extends TestCase
         $this->expectException('phpbu\App\Exception');
 
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
 
         $listContainers = ListContainersResult::create([
             "@attributes" => [
@@ -213,11 +215,11 @@ class AzureBlobTest extends TestCase
             'path' => '/'
         ]);
 
-        $resultStub = $this->createMock(\phpbu\App\Result::class);
+        $resultStub = $this->createMock(Result::class);
         $resultStub->expects($this->once())
                    ->method('debug');
 
-        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+        $targetStub = $this->createMock(Target::class);
 
         $azureBlob->simulate($targetStub, $resultStub);
     }

@@ -2,6 +2,8 @@
 namespace phpbu\App\Runner;
 
 use phpbu\App\Configuration;
+use phpbu\App\Exception;
+use phpbu\App\Factory;
 
 /**
  * Runner Mockery
@@ -11,7 +13,7 @@ use phpbu\App\Configuration;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       https://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
 trait Mockery
@@ -33,7 +35,7 @@ trait Mockery
         $crypt    = $this->createCryptMock();
         $sync     = $this->createSyncMock();
         $cleanup  = $this->createCleanerMock();
-        $factory  = $this->createMock(\phpbu\App\Factory::class);
+        $factory  = $this->createMock(Factory::class);
 
         $factory->expects($this->exactly($backups))->method('createTarget')->willReturn($target);
         $factory->expects($this->exactly($backups))->method('createSource')->willReturn($source);
@@ -53,9 +55,9 @@ trait Mockery
     protected function createFactoryMockCheckCrash()
     {
         $source  = $this->createSourceMock($this->createStatusMock());
-        $factory = $this->createMock(\phpbu\App\Factory::class);
+        $factory = $this->createMock(Factory::class);
         $check   = $this->createCheckMock();
-        $check->method('pass')->will($this->throwException(new \phpbu\App\Exception));
+        $check->method('pass')->will($this->throwException(new Exception));
 
         $factory->expects($this->once())
                 ->method('createTarget')
@@ -76,7 +78,7 @@ trait Mockery
         $source  = $this->createSourceMock($this->createStatusMock());
         $check   = $this->createCheckMock();
         $crypt   = $this->createCryptMock(false);
-        $factory = $this->createMock(\phpbu\App\Factory::class);
+        $factory = $this->createMock(Factory::class);
 
         $factory->expects($this->once())
                 ->method('createTarget')
@@ -99,7 +101,7 @@ trait Mockery
         $check   = $this->createCheckMock();
         $crypt   = $this->createCryptMock();
         $sync    = $this->createSyncMock(false);
-        $factory = $this->createMock(\phpbu\App\Factory::class);
+        $factory = $this->createMock(Factory::class);
 
         $factory->expects($this->once())
                 ->method('createTarget')
@@ -124,7 +126,7 @@ trait Mockery
         $crypt   = $this->createCryptMock();
         $sync    = $this->createSyncMock();
         $cleanup = $this->createCleanerMock(false);
-        $factory = $this->createMock(\phpbu\App\Factory::class);
+        $factory = $this->createMock(Factory::class);
 
         $factory->method('createTarget')
                 ->willReturn($this->createTargetMock('/tmp/foo', '/tmp/foo.gz'));
@@ -144,11 +146,11 @@ trait Mockery
      */
     protected function createFactoryMockStopOnFailure()
     {
-        $factory = $this->createMock(\phpbu\App\Factory::class);
+        $factory = $this->createMock(Factory::class);
         $source  = $this->createSourceMock($this->createStatusMock());
         $source->expects($this->once())
                ->method('backup')
-               ->will($this->throwException(new \phpbu\App\Exception()));
+               ->will($this->throwException(new Exception()));
 
         $factory->expects($this->once())
                 ->method('createTarget')
@@ -170,7 +172,7 @@ trait Mockery
         $crypt         = new Configuration\Backup\Crypt('openssl', true, []);
         $sync          = new Configuration\Backup\Sync('rsync', true, []);
         $clean         = new Configuration\Backup\Cleanup('outdated', true, []);
-        $configuration = $this->createMock(\phpbu\App\Configuration::class);
+        $configuration = $this->createMock(Configuration::class);
 
         $backups = [];
         for ($i = 0; $i < $amountOfBackups; $i++) {

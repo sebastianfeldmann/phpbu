@@ -2,6 +2,8 @@
 namespace phpbu\App\Result;
 
 use phpbu\App\Configuration;
+use phpbu\App\Exception;
+use phpbu\App\Result;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.1.6
  */
 class PrinterCliTest extends TestCase
@@ -47,14 +49,14 @@ class PrinterCliTest extends TestCase
     public function testPhpbuStart()
     {
         $printer = new PrinterCli(false, false, false);
-        $result  = $this->createMock(\phpbu\App\Result::class);
+        $result  = $this->createMock(Result::class);
         $result->expects($this->once())
                ->method('getErrors')
                ->willReturn([]);
         $result->method('getBackups')
                ->willReturn([]);
 
-        $configuration = $this->createMock(\phpbu\App\Configuration::class);
+        $configuration = $this->createMock(Configuration::class);
         $configuration->method('getFilename')
                       ->willReturn('/tmp/TestConfig.xml');
 
@@ -70,9 +72,9 @@ class PrinterCliTest extends TestCase
     public function testPhpbuStarVerbose()
     {
         $printer = new PrinterCli(true, false, false);
-        $result  = $this->createMock(\phpbu\App\Result::class);
+        $result  = $this->createMock(Result::class);
 
-        $configuration = $this->createMock(\phpbu\App\Configuration::class);
+        $configuration = $this->createMock(Configuration::class);
         $configuration->method('getFilename')->willReturn('/tmp/TestConfig.xml');
 
         ob_start();
@@ -381,8 +383,8 @@ class PrinterCliTest extends TestCase
     public function testPrintResultAllOk()
     {
         $printer = new PrinterCli(true, false, false);
-        $result  = $this->createMock(\phpbu\App\Result::class);
-        $backup  = $this->createMock(\phpbu\App\Result\Backup::class);
+        $result  = $this->createMock(Result::class);
+        $backup  = $this->createMock(Backup::class);
         $result->method('getBackups')->willReturn([$backup]);
         $result->method('getErrors')->willReturn([]);
         $result->method('allOk')->willReturn(true);
@@ -409,7 +411,7 @@ class PrinterCliTest extends TestCase
     public function testPrintResultNoBackup()
     {
         $printer = new PrinterCli(false, true, false);
-        $result  = $this->createMock(\phpbu\App\Result::class);
+        $result  = $this->createMock(Result::class);
 
         $result->method('getBackups')->willReturn([]);
         $result->method('getErrors')->willReturn([]);
@@ -426,9 +428,9 @@ class PrinterCliTest extends TestCase
     public function testPrintResultSkipped()
     {
         $printer = new PrinterCli(true, false, false);
-        $result  = $this->createMock(\phpbu\App\Result::class);
+        $result  = $this->createMock(Result::class);
 
-        $backup  = $this->createMock(\phpbu\App\Result\Backup::class);
+        $backup  = $this->createMock(Backup::class);
 
         $backup->method('allOk')->willReturn(false);
         $backup->method('wasSuccessful')->willReturn(true);
@@ -460,9 +462,9 @@ class PrinterCliTest extends TestCase
     public function testPrintResultFailure()
     {
         $printer = new PrinterCli(true, false, false);
-        $result  = $this->createMock(\phpbu\App\Result::class);
-        $e       = new \phpbu\App\Exception('foo');
-        $backup  = $this->createMock(\phpbu\App\Result\Backup::class);
+        $result  = $this->createMock(Result::class);
+        $e       = new Exception('foo');
+        $backup  = $this->createMock(Backup::class);
 
         $backup->method('allOk')->willReturn(false);
         $backup->method('wasSuccessful')->willReturn(false);

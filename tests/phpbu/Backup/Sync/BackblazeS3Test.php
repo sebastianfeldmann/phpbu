@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Vladimir Konchakovsaky <vk@etradeua.com>
  * @copyright  Vladimir Konchakovsaky <vk@etradeua.com>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  */
 class BackblazeS3Test extends TestCase
 {

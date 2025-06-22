@@ -1,7 +1,9 @@
 <?php
 namespace phpbu\App\Backup;
 
+use phpbu\App\Result;
 use SebastianFeldmann\Cli\Command\Result as CommandResult;
+use SebastianFeldmann\Cli\Command\Runner;
 use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
 
 /**
@@ -12,7 +14,7 @@ use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       https://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
 trait CliMockery
@@ -24,7 +26,7 @@ trait CliMockery
      */
     protected function getAppResultMock()
     {
-        return $this->createMock(\phpbu\App\Result::class);
+        return $this->createMock(Result::class);
     }
 
     /**
@@ -34,7 +36,7 @@ trait CliMockery
      */
     protected function getRunnerMock()
     {
-        return $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
+        return $this->createMock(Runner::class);
     }
 
     /**
@@ -72,7 +74,7 @@ trait CliMockery
      */
     protected function getCliResultMock($code, $cmd, $output = '')
     {
-        $cliResult = $this->createMock(\SebastianFeldmann\Cli\Command\Result::class);
+        $cliResult = $this->createMock(CommandResult::class);
 
         $cliResult->method('getCode')->willReturn($code);
         $cliResult->method('getCmd')->willReturn($cmd);

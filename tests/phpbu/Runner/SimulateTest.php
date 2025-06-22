@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       https://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 3.1.0
  */
 class SimulateTest extends TestCase

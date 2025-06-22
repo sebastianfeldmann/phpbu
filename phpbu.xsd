@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:annotation>
-    <xs:documentation source="http://www.phpbu.de/">
+    <xs:documentation source="https://www.phpbu.de/">
     This schema file defines the rules by which the XML configuration file of phpbu 6.0 may be structured.
     </xs:documentation>
   </xs:annotation>

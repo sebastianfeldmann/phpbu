@@ -16,7 +16,7 @@ use Aws\S3\S3Client;
  * @author     Angel Fernandez <@angelfplaza>
  * @copyright  Ángel Fernández - WPHercules <@wphercules>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  */
 class WasabiS3 extends AmazonS3v3
 {

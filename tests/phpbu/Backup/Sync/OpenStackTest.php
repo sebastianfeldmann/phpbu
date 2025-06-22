@@ -3,6 +3,8 @@ namespace phpbu\Backup\Sync;
 
 use phpbu\App\Backup\Sync\Exception;
 use phpbu\App\Backup\Sync\OpenStack;
+use phpbu\App\Backup\Target;
+use phpbu\App\Result;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.1
  */
 class OpenStackTest extends TestCase
@@ -50,11 +52,11 @@ class OpenStackTest extends TestCase
             'container_name' => 'container',
         ]);
 
-        $resultStub = $this->createMock(\phpbu\App\Result::class);
+        $resultStub = $this->createMock(Result::class);
         $resultStub->expects($this->once())
                    ->method('debug');
 
-        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+        $targetStub = $this->createMock(Target::class);
 
         $openStack->simulate($targetStub, $resultStub);
     }
@@ -154,7 +156,7 @@ class OpenStackTest extends TestCase
             'path'           => '/dir',
         ]);
 
-        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+        $targetStub = $this->createMock(Target::class);
         $targetStub->expects($this->once())->method('getFilename')->willReturn('foo.zip');
 
         $this->assertEquals('dir/foo.zip', $openStack->getUploadPath($targetStub));
@@ -174,7 +176,7 @@ class OpenStackTest extends TestCase
             'container_name' => 'container',
         ]);
 
-        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+        $targetStub = $this->createMock(Target::class);
         $targetStub->expects($this->once())->method('getFilename')->willReturn('foo.zip');
 
         $this->assertEquals('foo.zip', $openStack->getUploadPath($targetStub));

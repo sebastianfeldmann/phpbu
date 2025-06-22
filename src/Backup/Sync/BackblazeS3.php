@@ -15,7 +15,7 @@ use Aws\S3\S3Client;
  * @author     Vladimir Konchakovsky <vk@etradeua.com>
  * @copyright  Vladimir Konchakovsky <vk@etradeua.com>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  */
 class BackblazeS3 extends AmazonS3v3
 {

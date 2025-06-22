@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Event\App;
 
+use phpbu\App\Result;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 2.0.0
  */
 class EndTest extends TestCase
@@ -21,7 +22,7 @@ class EndTest extends TestCase
      */
     public function testGetResult()
     {
-        $r = $this->createMock(\phpbu\App\Result::class);
+        $r = $this->createMock(Result::class);
 
         $end = new End($r);
 

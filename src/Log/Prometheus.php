@@ -14,7 +14,7 @@ use phpbu\App\Listener;
  * @subpackage Log
  * @author     MoeBrowne
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 6.0.0
  */
 class Prometheus extends File implements Listener, Logger

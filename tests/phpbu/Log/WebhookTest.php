@@ -1,6 +1,10 @@
 <?php
 namespace phpbu\App\Log;
 
+use Exception;
+use phpbu\App\Event\App\End;
+use phpbu\App\Result;
+use phpbu\App\Result\Backup;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.0.0
  */
 class WebhookTest extends TestCase
@@ -55,7 +59,7 @@ class WebhookTest extends TestCase
         $result = $this->getResultMock();
 
         // phpbu end event mock
-        $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
+        $phpbuEndEvent = $this->createMock(End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
         $uri  = 'https://webhook.fail.uri/hook';
@@ -75,7 +79,7 @@ class WebhookTest extends TestCase
         $result = $this->getResultMock();
 
         // phpbu end event mock
-        $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
+        $phpbuEndEvent = $this->createMock(End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
         $uri  = 'https://webhook.fail.uri/hook';
@@ -94,7 +98,7 @@ class WebhookTest extends TestCase
         $result = $this->getResultMock();
 
         // phpbu end event mock
-        $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
+        $phpbuEndEvent = $this->createMock(End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
         $uri  = 'file://' . PHPBU_TEST_FILES . '/misc/webhook.fake.uri';
@@ -115,7 +119,7 @@ class WebhookTest extends TestCase
         $result = $this->getResultMock();
 
         // phpbu end event mock
-        $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
+        $phpbuEndEvent = $this->createMock(End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
         $uri  = 'https://webhook.fail.uri/hook';
@@ -136,7 +140,7 @@ class WebhookTest extends TestCase
         $result = $this->getResultMock();
 
         // phpbu end event mock
-        $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
+        $phpbuEndEvent = $this->createMock(End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
         $uri  = 'https://webhook.fail.uri/hook';
@@ -160,7 +164,7 @@ class WebhookTest extends TestCase
         $result = $this->getResultMock(false);
 
         // phpbu end event mock
-        $phpbuEndEvent = $this->createMock(\phpbu\App\Event\App\End::class);
+        $phpbuEndEvent = $this->createMock(End::class);
         $phpbuEndEvent->method('getResult')->willReturn($result);
 
         $uri  = 'https://webhook.fail.uri/hook';
@@ -179,7 +183,7 @@ class WebhookTest extends TestCase
      */
     protected function getResultMock($expectCalls = true)
     {
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         if ($expectCalls) {
             $result->expects($this->once())->method('started')->willReturn(microtime(true));
             $result->expects($this->once())->method('started')->willReturn(microtime(true));
@@ -189,7 +193,7 @@ class WebhookTest extends TestCase
             $result->method('started')->willReturn(microtime(true));
             $result->method('allOk')->willReturn(true);
         }
-        $result->method('getErrors')->willReturn([new \Exception('foo bar')]);
+        $result->method('getErrors')->willReturn([new Exception('foo bar')]);
         $result->method('getBackups')->willReturn([$this->getBackupResultMock()]);
         $result->method('backupsFailedCount')->willReturn(0);
         $result->method('errorCount')->willReturn(1);
@@ -204,7 +208,7 @@ class WebhookTest extends TestCase
      */
     protected function getBackupResultMock()
     {
-        $backup = $this->createMock(\phpbu\App\Result\Backup::class);
+        $backup = $this->createMock(Backup::class);
         $backup->method('getName')->willReturn('foo');
         $backup->method('wasSuccessful')->willReturn(true);
         $backup->method('checkCount')->willReturn(0);

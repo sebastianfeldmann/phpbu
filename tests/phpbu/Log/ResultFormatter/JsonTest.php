@@ -1,6 +1,9 @@
 <?php
 namespace phpbu\App\Log\ResultFormatter;
 
+use Exception;
+use phpbu\App\Result;
+use phpbu\App\Result\Backup;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.0.0
  */
 class JsonTest extends TestCase
@@ -42,12 +45,12 @@ class JsonTest extends TestCase
      */
     protected function getResultMock()
     {
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->expects($this->once())->method('started')->willReturn(microtime(true));
         $result->expects($this->once())->method('allOk')->willReturn(true);
         $result->expects($this->once())->method('backupsFailedCount')->willReturn(0);
         $result->expects($this->once())->method('errorCount')->willReturn(1);
-        $result->expects($this->once())->method('getErrors')->willReturn([new \Exception('foo bar')]);
+        $result->expects($this->once())->method('getErrors')->willReturn([new Exception('foo bar')]);
         $result->expects($this->exactly(2))->method('getBackups')->willReturn([$this->getBackupResultMock()]);
 
         return $result;
@@ -60,7 +63,7 @@ class JsonTest extends TestCase
      */
     protected function getBackupResultMock()
     {
-        $backup = $this->createMock(\phpbu\App\Result\Backup::class);
+        $backup = $this->createMock(Backup::class);
         $backup->expects($this->once())->method('getName')->willReturn('foo');
         $backup->expects($this->once())->method('allOk')->willReturn(true);
         $backup->expects($this->once())->method('checkCount')->willReturn(0);

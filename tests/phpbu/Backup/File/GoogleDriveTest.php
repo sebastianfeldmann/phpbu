@@ -1,6 +1,10 @@
 <?php
 namespace phpbu\App\Backup\File;
 
+use Exception;
+use Google_Service_Drive;
+use Google_Service_Drive_DriveFile;
+use Google_Service_Drive_Resource_Files;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
 class GoogleDriveTest extends TestCase
@@ -21,17 +25,17 @@ class GoogleDriveTest extends TestCase
      */
     public function testUnlink()
     {
-        $file = $this->createMock(\Google_Service_Drive_DriveFile::class);
+        $file = $this->createMock(Google_Service_Drive_DriveFile::class);
         $file->expects($this->once())->method('getName')->willReturn('dump.tar.gz');
         $file->expects($this->exactly(2))->method('getId')->willReturn('A12345');
         $file->expects($this->once())->method('getSize')->willReturn(102102);
         $file->expects($this->once())->method('getCreatedTime')->willReturn('2018-05-08 14:14:54.0 +00:00');
 
-        $resource = $this->createMock(\Google_Service_Drive_Resource_Files::class);
+        $resource = $this->createMock(Google_Service_Drive_Resource_Files::class);
         $resource->expects($this->once())
                  ->method('delete');
 
-        $service        = $this->createMock(\Google_Service_Drive::class);
+        $service        = $this->createMock(Google_Service_Drive::class);
         $service->files = $resource;
 
         $file = new GoogleDrive($service, $file);
@@ -49,18 +53,18 @@ class GoogleDriveTest extends TestCase
     public function testUnlinkFailure()
     {
         $this->expectException('phpbu\App\Exception');
-        $file = $this->createMock(\Google_Service_Drive_DriveFile::class);
+        $file = $this->createMock(Google_Service_Drive_DriveFile::class);
         $file->method('getName')->willReturn('dump.tar.gz');
         $file->method('getId')->willReturn('A12345');
         $file->method('getSize')->willReturn(102102);
         $file->method('getCreatedTime')->willReturn('2018-05-08 14:14:54.0 +00:00');
 
-        $resource = $this->createMock(\Google_Service_Drive_Resource_Files::class);
+        $resource = $this->createMock(Google_Service_Drive_Resource_Files::class);
         $resource->expects($this->once())
                  ->method('delete')
-                 ->will($this->throwException(new \Exception));
+                 ->will($this->throwException(new Exception));
 
-        $service        = $this->createMock(\Google_Service_Drive::class);
+        $service        = $this->createMock(Google_Service_Drive::class);
         $service->files = $resource;
 
         $file = new GoogleDrive($service, $file);

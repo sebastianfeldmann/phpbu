@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Configuration;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.0.0
  */
 class FinderTest extends TestCase
@@ -48,7 +49,7 @@ class FinderTest extends TestCase
         try {
             $finder = new Finder();
             $finder->findConfiguration('');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             chdir($old);
             throw $e;
         }
@@ -66,7 +67,7 @@ class FinderTest extends TestCase
         try {
             $finder = new Finder();
             $config = $finder->findConfiguration('');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             chdir($old);
             throw $e;
         }

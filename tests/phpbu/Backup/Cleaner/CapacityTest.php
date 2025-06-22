@@ -1,6 +1,10 @@
 <?php
 namespace phpbu\App\Backup\Cleaner;
 
+use phpbu\App\Backup\Collector\Local;
+use phpbu\App\Backup\Target;
+use phpbu\App\Result;
+
 /**
  * CapacityTest
  *
@@ -9,7 +13,7 @@ namespace phpbu\App\Backup\Cleaner;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class CapacityTest extends TestCase
@@ -47,9 +51,9 @@ class CapacityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
+        $resultStub    = $this->createMock(Result::class);
+        $targetStub    = $this->createMock(Target::class);
+        $collectorStub = $this->createMock(Local::class);
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
 
         $cleaner = new Capacity();
@@ -71,13 +75,13 @@ class CapacityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub = $this->createMock(\phpbu\App\Result::class);
+        $resultStub = $this->createMock(Result::class);
         $resultStub->expects($this->once())
                    ->method('debug');
 
 
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
+        $targetStub    = $this->createMock(Target::class);
+        $collectorStub = $this->createMock(Local::class);
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
 
         $cleaner = new Capacity();
@@ -99,9 +103,9 @@ class CapacityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
+        $resultStub    = $this->createMock(Result::class);
+        $targetStub    = $this->createMock(Target::class);
+        $collectorStub = $this->createMock(Local::class);
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
 
         $cleaner = new Capacity();
@@ -124,9 +128,9 @@ class CapacityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
+        $resultStub    = $this->createMock(Result::class);
+        $targetStub    = $this->createMock(Target::class);
+        $collectorStub = $this->createMock(Local::class);
         $collectorStub->expects($this->once())->method('getBackupFiles')->willReturn($fileList);
 
         $cleaner = new Capacity();
@@ -148,9 +152,9 @@ class CapacityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => true],
             ]
         );
-        $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
+        $resultStub    = $this->createMock(Result::class);
+        $targetStub    = $this->createMock(Target::class);
+        $collectorStub = $this->createMock(Local::class);
         $collectorStub->method('getBackupFiles')
                       ->willReturn($fileList);
 
@@ -174,12 +178,12 @@ class CapacityTest extends TestCase
             ]
         );
         // instead of the unlink call a debug call should be emitted.
-        $resultStub = $this->createMock(\phpbu\App\Result::class);
+        $resultStub = $this->createMock(Result::class);
         $resultStub->expects($this->exactly(4))
                    ->method('debug');
 
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
+        $targetStub    = $this->createMock(Target::class);
+        $collectorStub = $this->createMock(Local::class);
         $collectorStub->method('getBackupFiles')->willReturn($fileList);
 
         $cleaner = new Capacity();
