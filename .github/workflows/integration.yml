@@ -36,7 +36,7 @@ jobs:
       run: composer validate
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest ${{ matrix.composeroptions }}
+      run: composer install --prefer-dist ${{ matrix.composeroptions }}
 
     - name: Execute unit tests
       run: tools/phpunit --configuration=phpunit.xml
