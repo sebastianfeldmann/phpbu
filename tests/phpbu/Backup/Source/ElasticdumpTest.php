@@ -53,6 +53,21 @@ class ElasticdumpTest extends TestCase
     }
 
     /**
+     * Tests Elasticdump::getExecutable
+     */
+    public function testLimit()
+    {
+        $target      = $this->createTargetMock('backup.json');
+        $elasticdump = new Elasticdump();
+        $elasticdump->setup(['pathToElasticdump' => PHPBU_TEST_BIN, 'limit' => '100']);
+
+        $executable = $elasticdump->getExecutable($target);
+        $expected   = 'elasticdump" --input=\'http://localhost:9200/\' --limit=\'100\' --output=\'backup.json\'';
+
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $executable->getCommand());
+    }
+
+    /**
      * Tests Elasticdump::backup
      */
     public function testBackupOk()
