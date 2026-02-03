@@ -29,6 +29,9 @@ class YandexDiskTest extends TestCase
      */
     public function testCreateFileWithCorrectProperties()
     {
+        if (!class_exists('\Arhitector\Yandex\Disk')) {
+            $this->markTestSkipped('Arhitector\Yandex\Disk not installed');
+        }
         $file = new YandexDisk($this->prepareDiskStub(), $this->prepareClosedStub());
         $this->assertEquals('dump.tar.gz', $file->getFilename());
         $this->assertEquals('backups/dump.tar.gz', $file->getPathname());
@@ -43,6 +46,9 @@ class YandexDiskTest extends TestCase
      */
     public function testYandexDiskDeleteFile()
     {
+        if (!class_exists('\Arhitector\Yandex\Disk')) {
+            $this->markTestSkipped('Arhitector\Yandex\Disk not installed');
+        }
         $yandexDiskFileStub = $this->prepareClosedStub();
         $yandexDiskFileStub->expects($this->once())
             ->method('delete')
@@ -65,6 +71,9 @@ class YandexDiskTest extends TestCase
      */
     public function testYandexDiskDeleteFailure()
     {
+        if (!class_exists('\Arhitector\Yandex\Disk')) {
+            $this->markTestSkipped('Arhitector\Yandex\Disk not installed');
+        }
         $this->expectException(Exception::class);
 
         $yandexDiskFileStub = $this->prepareClosedStub();

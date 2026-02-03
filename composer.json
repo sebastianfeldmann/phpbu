@@ -63,7 +63,6 @@
     "vlucas/phpdotenv": "^4.0",
     "google/apiclient":"^2.7",
     "php-opencloud/openstack": "^3.0",
-    "arhitector/yandex": "^2.0",
     "microsoft/azure-storage-blob": "^1.4",
     "phpmailer/phpmailer": "^6.0",
     "google/cloud-storage": "^1.42"

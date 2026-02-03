@@ -30,6 +30,9 @@ class YandexDiskTest extends TestCase
      */
     public function testCollector()
     {
+        if (!class_exists('\Arhitector\Yandex\Disk')) {
+            $this->markTestSkipped('Arhitector\Yandex\Disk not installed');
+        }
         $path = '/collector/static-dir/';
         $filename = 'foo-%Y-%m-%d-%H_%i.txt';
         $target = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
@@ -91,6 +94,9 @@ class YandexDiskTest extends TestCase
      */
     private function createClosedStubByData(array $data)
     {
+        if (!class_exists('\Arhitector\Yandex\Disk')) {
+            $this->markTestSkipped('Arhitector\Yandex\Disk not installed');
+        }
         $yandexDiskFileStub = $this->createMock(Closed::class);
 
         $valueMap = [

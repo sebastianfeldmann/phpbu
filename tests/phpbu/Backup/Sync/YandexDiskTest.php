@@ -33,6 +33,9 @@ class YandexDiskTest extends TestCase
      */
     public function testSetUpOk()
     {
+        if (!class_exists('\Arhitector\Yandex\Disk')) {
+            $this->markTestSkipped('Arhitector\Yandex\Disk not installed');
+        }
         $yandexDisk = new YandexDisk();
         $yandexDisk->setup([
             'token' => 'this-is-no-token',
@@ -50,6 +53,9 @@ class YandexDiskTest extends TestCase
      */
     public function testSlasherizePath()
     {
+        if (!class_exists('\Arhitector\Yandex\Disk')) {
+            $this->markTestSkipped('Arhitector\Yandex\Disk not installed');
+        }
         $msg = "sync backup to yandex disk\n";
 
         $yandexDisk = new YandexDisk();
@@ -76,6 +82,9 @@ class YandexDiskTest extends TestCase
      */
     public function testSync()
     {
+        if (!class_exists('\Arhitector\Yandex\Disk')) {
+            $this->markTestSkipped('Arhitector\Yandex\Disk not installed');
+        }
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
         $result = $this->createResultStub();
         $result->expects($this->once())->method('debug');
@@ -100,6 +109,9 @@ class YandexDiskTest extends TestCase
      */
     public function testSyncWithCleanup()
     {
+        if (!class_exists('\Arhitector\Yandex\Disk')) {
+            $this->markTestSkipped('Arhitector\Yandex\Disk not installed');
+        }
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
         $result = $this->createResultStub();
         $result->expects($this->exactly(2))->method('debug');
@@ -127,6 +139,9 @@ class YandexDiskTest extends TestCase
      */
     public function testSyncFail()
     {
+        if (!class_exists('\Arhitector\Yandex\Disk')) {
+            $this->markTestSkipped('Arhitector\Yandex\Disk not installed');
+        }
         $this->expectException(\phpbu\App\Exception::class);
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
         $result = $this->createResultStub();
@@ -152,6 +167,9 @@ class YandexDiskTest extends TestCase
      */
     public function testSimulate()
     {
+        if (!class_exists('\Arhitector\Yandex\Disk')) {
+            $this->markTestSkipped('Arhitector\Yandex\Disk not installed');
+        }
         $yandexDisk = new YandexDisk();
         $yandexDisk->setup([
             'token' => 'this-is-no-token',
@@ -174,6 +192,9 @@ class YandexDiskTest extends TestCase
      */
     public function testSetUpNoToken()
     {
+        if (!class_exists('\Arhitector\Yandex\Disk')) {
+            $this->markTestSkipped('Arhitector\Yandex\Disk not installed');
+        }
         $this->expectException(Exception::class);
         $yandexDisk = new YandexDisk();
         $yandexDisk->setup(['path' => '/']);
@@ -186,6 +207,9 @@ class YandexDiskTest extends TestCase
      */
     public function testSetUpNoPath()
     {
+        if (!class_exists('\Arhitector\Yandex\Disk')) {
+            $this->markTestSkipped('Arhitector\Yandex\Disk not installed');
+        }
         $this->expectException(Exception::class);
         $yandexDisk = new YandexDisk();
         $yandexDisk->setup(['token' => 'this-is-no-token']);
