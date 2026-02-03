@@ -65,6 +65,14 @@ class Elasticdump extends SimulatorExecutable implements Simulator
     private $type;
 
     /**
+     * Number of documents to dump.
+     * --limit
+     *
+     * @var string
+     */
+    private $limit;
+
+    /**
      * Setup
      *
      * @see    \phpbu\App\Backup\Source
@@ -89,6 +97,7 @@ class Elasticdump extends SimulatorExecutable implements Simulator
     {
         $this->index = Util\Arr::getValue($conf, 'index', '');
         $this->type  = Util\Arr::getValue($conf, 'type', '');
+        $this->limit = Util\Arr::getValue($conf, 'limit', '');
     }
 
     /**
@@ -126,6 +135,7 @@ class Elasticdump extends SimulatorExecutable implements Simulator
                    ->credentials($this->user, $this->password)
                    ->dumpIndex($this->index)
                    ->dumpType($this->type)
+                   ->limit($this->limit)
                    ->dumpTo($target->getPathnamePlain());
         return $executable;
     }

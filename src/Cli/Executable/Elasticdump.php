@@ -66,6 +66,14 @@ class Elasticdump extends Abstraction
     private $dumpPathname;
 
     /**
+     * Number of documents to dump.
+     * --limit
+     *
+     * @var string
+     */
+    private $limit;
+
+    /**
      * Constructor.
      *
      * @param string $path
@@ -125,6 +133,18 @@ class Elasticdump extends Abstraction
     }
 
     /**
+     * Set limit of documents to dump.
+     *
+     * @param  string $limit
+     * @return \phpbu\App\Cli\Executable\Elasticdump
+     */
+    public function limit($limit)
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    /**
      * Set elastic credentials.
      *
      * @param  string $user
@@ -159,6 +179,7 @@ class Elasticdump extends Abstraction
 
         $cmd->addOption('--input', $this->generateNodeUrl($this->host, $this->user, $this->password, $this->index));
         $cmd->addOptionIfNotEmpty('--type', $this->type);
+        $cmd->addOptionIfNotEmpty('--limit', $this->limit);
         $cmd->addOption('--output', $this->dumpPathname);
 
         return $process;
