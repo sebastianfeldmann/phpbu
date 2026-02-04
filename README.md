@@ -56,7 +56,6 @@ If you are behind php 7.0 you can still use phpbu version [4.0.10](https://phar.
     + rsync
     + SFTP
     + Softlayer
-    + Yandex Disk
 * Cleanup your local backup
     + Delete backups older x
     + Store only x MB of backups
