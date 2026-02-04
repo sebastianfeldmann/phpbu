@@ -92,14 +92,6 @@
         <!-- Copy .xsd for config validation -->
         <copy file="${basedir}/phpbu.xsd" tofile="${basedir}/build/phar/phpbu.xsd"/>
 
-        <!-- YANDEX -->
-        <copy file="${basedir}/vendor/arhitector/yandex/LICENSE.md"
-              tofile="${basedir}/build/phar/lib/arhitector/yandex/LICENSE"/>
-        <copy todir="${basedir}/build/phar/lib/arhitector/yandex">
-            <fileset dir="${basedir}/vendor/arhitector/yandex/src">
-                <include name="**/*.php"/>
-            </fileset>
-        </copy>
 
         <!-- aws -->
         <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE" tofile="${basedir}/build/phar/lib/aws-sdk/LICENSE"/>
@@ -291,15 +283,6 @@
             </fileset>
         </copy>
 
-        <!-- clue -->
-        <copy file="${basedir}/vendor/clue/stream-filter/LICENSE"
-              tofile="${basedir}/build/phar/lib/stream-filter/LICENSE"/>
-        <copy todir="${basedir}/build/phar/lib/stream-filter">
-            <fileset dir="${basedir}/vendor/clue/stream-filter/src">
-                <include name="**/*.php"/>
-            </fileset>
-        </copy>
-
         <!-- google -->
         <copy file="${basedir}/vendor/google/apiclient/LICENSE"
               tofile="${basedir}/build/phar/lib/google/apiclient/LICENSE"/>
@@ -444,24 +427,6 @@
             </fileset>
         </copy>
 
-        <!-- laminas -->
-        <copy file="${basedir}/vendor/laminas/laminas-diactoros/LICENSE.md"
-              tofile="${basedir}/build/phar/lib/dropbox/LICENSE"/>
-        <copy todir="${basedir}/build/phar/lib/laminas/laminas-diactoros">
-            <fileset dir="${basedir}/vendor/laminas/laminas-diactoros/src">
-                <include name="**/*.php"/>
-            </fileset>
-        </copy>
-
-        <!-- league -->
-        <copy file="${basedir}/vendor/league/event/LICENSE"
-              tofile="${basedir}/build/phar/lib/league/event/LICENSE"/>
-        <copy todir="${basedir}/build/phar/lib/league/event">
-            <fileset dir="${basedir}/vendor/league/event/src">
-                <include name="**/*.php"/>
-            </fileset>
-        </copy>
-
         <!-- ramsey -->
         <copy file="${basedir}/vendor/ramsey/collection/LICENSE"
               tofile="${basedir}/build/phar/lib/ramsey/collection/LICENSE"/>
@@ -533,50 +498,6 @@
               tofile="${basedir}/build/phar/lib/mtdowling/jmespath.php/LICENSE"/>
         <copy todir="${basedir}/build/phar/lib/mtdowling/jmespath.php">
             <fileset dir="${basedir}/vendor/mtdowling/jmespath.php/src">
-                <include name="**/*.php"/>
-            </fileset>
-        </copy>
-
-        <!-- PHP-HTTP -->
-        <copy file="${basedir}/vendor/php-http/client-common/LICENSE"
-              tofile="${basedir}/build/phar/lib/php-http/client-common/LICENSE"/>
-        <copy todir="${basedir}/build/phar/lib/php-http/client-common">
-            <fileset dir="${basedir}/vendor/php-http/client-common/src">
-                <include name="**/*.php"/>
-            </fileset>
-        </copy>
-        <copy file="${basedir}/vendor/php-http/curl-client/LICENSE"
-              tofile="${basedir}/build/phar/lib/php-http/curl-client/LICENSE"/>
-        <copy todir="${basedir}/build/phar/lib/php-http/curl-client">
-            <fileset dir="${basedir}/vendor/php-http/curl-client/src">
-                <include name="**/*.php"/>
-            </fileset>
-        </copy>
-        <copy file="${basedir}/vendor/php-http/discovery/LICENSE"
-              tofile="${basedir}/build/phar/lib/php-http/discovery/LICENSE"/>
-        <copy todir="${basedir}/build/phar/lib/php-http/discovery">
-            <fileset dir="${basedir}/vendor/php-http/discovery/src">
-                <include name="**/*.php"/>
-            </fileset>
-        </copy>
-        <copy file="${basedir}/vendor/php-http/httplug/LICENSE"
-              tofile="${basedir}/build/phar/lib/php-http/httplug/LICENSE"/>
-        <copy todir="${basedir}/build/phar/lib/php-http/httplug">
-            <fileset dir="${basedir}/vendor/php-http/httplug/src">
-                <include name="**/*.php"/>
-            </fileset>
-        </copy>
-        <copy file="${basedir}/vendor/php-http/message/LICENSE"
-              tofile="${basedir}/build/phar/lib/php-http/message/LICENSE"/>
-        <copy todir="${basedir}/build/phar/lib/php-http/message">
-            <fileset dir="${basedir}/vendor/php-http/message/src">
-                <include name="**/*.php"/>
-            </fileset>
-        </copy>
-        <copy file="${basedir}/vendor/php-http/promise/LICENSE"
-              tofile="${basedir}/build/phar/lib/php-http/promise/LICENSE"/>
-        <copy todir="${basedir}/build/phar/lib/php-http/promise">
-            <fileset dir="${basedir}/vendor/php-http/promise/src">
                 <include name="**/*.php"/>
             </fileset>
         </copy>
@@ -712,8 +633,40 @@
         </copy>
 
         <!-- symfony -->
-        <copy todir="${basedir}/build/phar/lib/symfony/">
-            <fileset dir="${basedir}/vendor/symfony/">
+        <copy todir="${basedir}/build/phar/lib/symfony/deprecation-contracts">
+            <fileset dir="${basedir}/vendor/symfony/deprecation-contracts">
+                <include name="**/*.php"/>
+            </fileset>
+        </copy>
+        <copy todir="${basedir}/build/phar/lib/symfony/filesystem">
+            <fileset dir="${basedir}/vendor/symfony/filesystem">
+                <include name="**/*.php"/>
+            </fileset>
+        </copy>
+        <copy todir="${basedir}/build/phar/lib/symfony/polyfill-ctype">
+            <fileset dir="${basedir}/vendor/symfony/polyfill-ctype">
+                <include name="**/*.php"/>
+            </fileset>
+        </copy>
+        <copy todir="${basedir}/build/phar/lib/symfony/polyfill-mbstring">
+            <fileset dir="${basedir}/vendor/symfony/polyfill-mbstring">
+                <include name="**/*.php"/>
+            </fileset>
+        </copy>
+        <copy todir="${basedir}/build/phar/lib/symfony/polyfill-php80">
+            <fileset dir="${basedir}/vendor/symfony/polyfill-php80">
+                <include name="**/*.php"/>
+            </fileset>
+        </copy>
+        <copy todir="${basedir}/build/phar/lib/symfony/process">
+            <fileset dir="${basedir}/vendor/symfony/process">
+                <include name="**/*.php"/>
+            </fileset>
+        </copy>
+
+        <!-- enum -->
+        <copy todir="${basedir}/build/phar/lib/marc-mabe/">
+            <fileset dir="${basedir}/vendor/marc-mabe/">
                 <include name="**/*.php"/>
             </fileset>
         </copy>
