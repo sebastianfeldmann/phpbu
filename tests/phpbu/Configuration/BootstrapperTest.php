@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Configuration;
 
+use phpbu\App\Configuration;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
 class BootstrapperTest extends TestCase
@@ -21,7 +22,7 @@ class BootstrapperTest extends TestCase
      */
     public function testBootstrapOk()
     {
-        $configuration = $this->createMock(\phpbu\App\Configuration::class);
+        $configuration = $this->createMock(Configuration::class);
         $configuration->expects($this->once())
                       ->method('getBootstrap')
                       ->willReturn(PHPBU_TEST_FILES . '/misc/bootstrap.php');
@@ -37,7 +38,7 @@ class BootstrapperTest extends TestCase
      */
     public function testBootstrapWithOption()
     {
-        $configuration = $this->createMock(\phpbu\App\Configuration::class);
+        $configuration = $this->createMock(Configuration::class);
         $configuration->method('getBootstrap')
                       ->willReturn(PHPBU_TEST_FILES . '/misc/bootstrap_FAIL.php');
 
@@ -53,7 +54,7 @@ class BootstrapperTest extends TestCase
     public function testBootstrapNoFile()
     {
         $this->expectException('phpbu\App\Exception');
-        $configuration = $this->createMock(\phpbu\App\Configuration::class);
+        $configuration = $this->createMock(Configuration::class);
         $configuration->expects($this->once())
                       ->method('getBootstrap')
                       ->willReturn(PHPBU_TEST_FILES . '/misc/bootstrap_FAIL.php');

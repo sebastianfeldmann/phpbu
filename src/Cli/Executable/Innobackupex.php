@@ -14,7 +14,7 @@ use SebastianFeldmann\Cli\Command\Executable as Cmd;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 2.1.0
  */
 class Innobackupex extends Abstraction

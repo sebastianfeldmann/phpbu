@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Util;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.2
  */
 class TimeTest extends TestCase
@@ -28,7 +29,7 @@ class TimeTest extends TestCase
 
         try {
             $time = Time::timeSinceExecutionStart();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $_SERVER = $SERVER;
             throw $e;
         }

@@ -83,7 +83,6 @@ class Factory
             'sftp'               => '\\phpbu\\App\\Backup\\Sync\\Sftp',
             'softlayer'          => '\\phpbu\\App\\Backup\\Sync\\SoftLayer',
             'openstack'          => '\\phpbu\\App\\Backup\\Sync\\OpenStack',
-            'yandex-disk'        => '\\phpbu\\App\\Backup\\Sync\\YandexDisk',
         ],
         'cleaner' => [
             'capacity' => '\\phpbu\\App\\Backup\\Cleaner\\Capacity',

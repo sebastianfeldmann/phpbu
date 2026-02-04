@@ -7,6 +7,7 @@ use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
 use SebastianFeldmann\Ftp\Client;
+use function preg_match;
 
 /**
  * Ftp class.
@@ -17,7 +18,7 @@ use SebastianFeldmann\Ftp\Client;
  * @author     Vitaly Baev <hello@vitalybaev.ru>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
 class Ftp extends Remote implements Collector
@@ -87,7 +88,7 @@ class Ftp extends Remote implements Collector
         foreach ($this->ftpClient->lsDirs($remotePath) as $ftpDir) {
             $element  = $this->path->getPathElementAtIndex($depth);
             $expected = '#' . Util\Path::datePlaceholdersToRegex($element) . '#i';
-            if (\preg_match($expected, $ftpDir->getFilename())) {
+            if (preg_match($expected, $ftpDir->getFilename())) {
                 // look for files in a "deeper"  directory
                 $this->collect($remotePath . '/' . $ftpDir->getFilename(), $depth + 1);
             }

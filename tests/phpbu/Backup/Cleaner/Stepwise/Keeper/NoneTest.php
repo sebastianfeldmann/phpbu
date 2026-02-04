@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Cleaner\Stepwise\Keeper;
 
+use phpbu\App\Backup\File\Local;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.0.0
  */
 class NoneTest extends TestCase
@@ -21,7 +22,7 @@ class NoneTest extends TestCase
      */
     public function testKeep()
     {
-        $file = $this->createMock(\phpbu\App\Backup\File\Local::class);
+        $file = $this->createMock(Local::class);
 
         $keeper = new None();
         $this->assertFalse($keeper->keep($file));

@@ -15,7 +15,7 @@ use SebastianFeldmann\Cli\Command\Executable as Cmd;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 2.1.0
  */
 class Elasticdump extends Abstraction
@@ -64,6 +64,14 @@ class Elasticdump extends Abstraction
      * @var string
      */
     private $dumpPathname;
+
+    /**
+     * Number of documents to dump.
+     * --limit
+     *
+     * @var string
+     */
+    private $limit;
 
     /**
      * Constructor.
@@ -125,6 +133,18 @@ class Elasticdump extends Abstraction
     }
 
     /**
+     * Set limit of documents to dump.
+     *
+     * @param  string $limit
+     * @return \phpbu\App\Cli\Executable\Elasticdump
+     */
+    public function limit($limit)
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    /**
      * Set elastic credentials.
      *
      * @param  string $user
@@ -159,6 +179,7 @@ class Elasticdump extends Abstraction
 
         $cmd->addOption('--input', $this->generateNodeUrl($this->host, $this->user, $this->password, $this->index));
         $cmd->addOptionIfNotEmpty('--type', $this->type);
+        $cmd->addOptionIfNotEmpty('--limit', $this->limit);
         $cmd->addOption('--output', $this->dumpPathname);
 
         return $process;

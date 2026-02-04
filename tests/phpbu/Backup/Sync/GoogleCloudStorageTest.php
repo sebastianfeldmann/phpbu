@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  * @author     David Dattée <david.dattee@meetwashing.fr>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  */
 class GoogleCloudStorageTest extends TestCase
 {

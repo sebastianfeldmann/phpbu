@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Log;
 
+use phpbu\App\Exception;
 use phpbu\App\Result;
 use PHPUnit\Framework\TestCase;
 
@@ -13,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Anatoly Skornyakov <anatoly@skornyakov.net>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.1.5
  */
 class TelegramTest extends TestCase
@@ -34,7 +35,7 @@ class TelegramTest extends TestCase
 
     public function testSetUpWithoutBotId()
     {
-        $this->expectException(\phpbu\App\Exception::class);
+        $this->expectException(Exception::class);
 
         $telegramLog = new Telegram();
         $telegramLog->setup(
@@ -47,7 +48,7 @@ class TelegramTest extends TestCase
 
     public function testSetUpWithoutBotToken()
     {
-        $this->expectException(\phpbu\App\Exception::class);
+        $this->expectException(Exception::class);
 
         $telegramLog = new Telegram();
         $telegramLog->setup(
@@ -60,7 +61,7 @@ class TelegramTest extends TestCase
 
     public function testSetUpWithoutChatId()
     {
-        $this->expectException(\phpbu\App\Exception::class);
+        $this->expectException(Exception::class);
 
         $telegramLog = new Telegram();
         $telegramLog->setup(
@@ -73,7 +74,7 @@ class TelegramTest extends TestCase
 
     public function testSetUpDail()
     {
-        $this->expectException(\phpbu\App\Exception::class);
+        $this->expectException(Exception::class);
 
         $telegramLog = new Telegram();
         $telegramLog->setup([]);

@@ -18,7 +18,7 @@ use phpbu\App\Result;
  * @author     Anatoly Skornyakov <anatoly@skornyakov.net>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  */
 class Telegram implements Listener, Logger
 {

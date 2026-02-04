@@ -14,7 +14,7 @@ use phpbu\App\Exception;
  * @author     Vitaly Baev <hello@vitalybaev.ru>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class Local implements File

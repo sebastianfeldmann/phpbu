@@ -8,7 +8,7 @@ namespace phpbu\App\Event;
  * @subpackage Event
  * @author     MoeBrowne <moebrowne@users.noreply.github.com>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 6.0.0
  */
 class Warning

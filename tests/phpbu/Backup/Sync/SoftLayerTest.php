@@ -1,6 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use phpbu\App\Backup\Target;
+use phpbu\App\Result;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Petr Cervenka <petr@nanosolutions.io>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.1.6
  */
 class SoftLayerTest extends TestCase
@@ -47,11 +49,11 @@ class SoftLayerTest extends TestCase
             'path'      => '/'
         ]);
 
-        $resultStub = $this->createMock(\phpbu\App\Result::class);
+        $resultStub = $this->createMock(Result::class);
         $resultStub->expects($this->once())
                    ->method('debug');
 
-        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+        $targetStub = $this->createMock(Target::class);
 
         $softLayer->simulate($targetStub, $resultStub);
     }

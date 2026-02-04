@@ -1,12 +1,19 @@
 <?php
 namespace phpbu\App\Configuration\Loader;
 
+use DOMDocument;
 use DOMElement;
 use DOMXPath;
 use phpbu\App\Configuration;
 use phpbu\App\Configuration\Loader;
 use phpbu\App\Exception;
 use phpbu\App\Util\Str;
+
+use function defined;
+use function libxml_clear_errors;
+use function libxml_get_errors;
+use function libxml_use_internal_errors;
+use function trim;
 
 /**
  * Loader for a phpbu XML configuration file.
@@ -15,7 +22,7 @@ use phpbu\App\Util\Str;
  * <code>
  * <?xml version="1.0" encoding="UTF-8" ?>
  * <phpbu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- *        xsi:noNamespaceSchemaLocation="http://schema.phpbu.de/1.1/phpbu.xsd"
+ *        xsi:noNamespaceSchemaLocation="https://www.phpbu.de/schema/1.1/phpbu.xsd"
  *        bootstrap="backup/bootstrap.php"
  *        verbose="true">
  *
@@ -61,7 +68,7 @@ use phpbu\App\Util\Str;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 2.0.0
  */
 class Xml extends File implements Loader
@@ -375,7 +382,7 @@ class Xml extends File implements Loader
     private function loadXmlFile($filename)
     {
         $contents  = $this->loadFile($filename);
-        $document  = new \DOMDocument;
+        $document  = new DOMDocument;
         $message   = '';
         $internal  = libxml_use_internal_errors(true);
         $reporting = error_reporting(0);
@@ -409,19 +416,19 @@ class Xml extends File implements Loader
      */
     private function validateConfigurationAgainstSchema()
     {
-        $original    = \libxml_use_internal_errors(true);
+        $original    = libxml_use_internal_errors(true);
         $xsdFilename = __DIR__ . '/../../../phpbu.xsd';
-        if (\defined('__PHPBU_PHAR_ROOT__')) {
+        if (defined('__PHPBU_PHAR_ROOT__')) {
             $xsdFilename = __PHPBU_PHAR_ROOT__ . '/phpbu.xsd';
         }
         $this->document->schemaValidate($xsdFilename);
-        foreach (\libxml_get_errors() as $error) {
+        foreach (libxml_get_errors() as $error) {
             if (!isset($this->errors[$error->line])) {
                 $this->errors[$error->line] = [];
             }
-            $this->errors[$error->line][] = \trim($error->message);
+            $this->errors[$error->line][] = trim($error->message);
         }
-        \libxml_clear_errors();
-        \libxml_use_internal_errors($original);
+        libxml_clear_errors();
+        libxml_use_internal_errors($original);
     }
 }

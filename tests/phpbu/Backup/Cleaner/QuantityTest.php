@@ -1,6 +1,10 @@
 <?php
 namespace phpbu\App\Backup\Cleaner;
 
+use phpbu\App\Backup\Collector\Local;
+use phpbu\App\Backup\Target;
+use phpbu\App\Result;
+
 /**
  * Quantity Test
  *
@@ -9,7 +13,7 @@ namespace phpbu\App\Backup\Cleaner;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class QuantityTest extends TestCase
@@ -57,9 +61,9 @@ class QuantityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
+        $resultStub    = $this->createMock(Result::class);
+        $collectorStub = $this->createMock(Local::class);
+        $targetStub    = $this->createMock(Target::class);
 
         $collectorStub->expects($this->once())
                       ->method('getBackupFiles')
@@ -85,9 +89,9 @@ class QuantityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
+        $resultStub    = $this->createMock(Result::class);
+        $collectorStub = $this->createMock(Local::class);
+        $targetStub    = $this->createMock(Target::class);
 
         $collectorStub->expects($this->once())
                       ->method('getBackupFiles')
@@ -113,9 +117,9 @@ class QuantityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
+        $resultStub    = $this->createMock(Result::class);
+        $collectorStub = $this->createMock(Local::class);
+        $targetStub    = $this->createMock(Target::class);
 
         $collectorStub->expects($this->once())
                       ->method('getBackupFiles')
@@ -137,9 +141,9 @@ class QuantityTest extends TestCase
                 ['size' => 100, 'shouldBeDeleted' => false],
             ]
         );
-        $resultStub    = $this->createMock(\phpbu\App\Result::class);
-        $collectorStub = $this->createMock(\phpbu\App\Backup\Collector\Local::class);
-        $targetStub    = $this->createMock(\phpbu\App\Backup\Target::class);
+        $resultStub    = $this->createMock(Result::class);
+        $collectorStub = $this->createMock(Local::class);
+        $targetStub    = $this->createMock(Target::class);
 
         $collectorStub->expects($this->once())
                       ->method('getBackupFiles')

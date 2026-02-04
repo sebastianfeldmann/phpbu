@@ -44,7 +44,7 @@
     }
   },
   "require": {
-    "php": ">=8.0",
+    "php": ">=8.1",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-spl": "*",
@@ -63,7 +63,6 @@
     "vlucas/phpdotenv": "^4.0",
     "google/apiclient":"^2.7",
     "php-opencloud/openstack": "^3.0",
-    "arhitector/yandex": "^2.0",
     "microsoft/azure-storage-blob": "^1.4",
     "phpmailer/phpmailer": "^6.0",
     "google/cloud-storage": "^1.42"
@@ -78,7 +77,6 @@
     "php-opencloud/openstack": "Require ^3.0 to sync to OpenStack",
     "vlucas/phpdotenv": "Require ^3.0 or ^4.0 or ^5.0 to use the Dotenv adapter",
     "google/apiclient":"Require ^2.0 to sync to Google Drive",
-    "arhitector/yandex":"Require ^2.0 to sync to Yandex Disk",
     "microsoft/azure-storage-blob": "Require ^1.4 to sync to Azure Blob Storage",
     "phpmailer/phpmailer": "Require ^6.0 to receive logs via email",
     "google/cloud-storage": "Require ^1.42 to sync to Google Cloud Storage"
@@ -95,7 +93,7 @@
     "post-autoload-dump": "tools/captainhook install -f -s",
     "setup": "phive install",
     "test": "tools/phpunit",
-    "analyse": "tools/phpstan analyse",
+    "static": "tools/phpstan analyse",
     "style": "tools/phpcs --standard=psr2 src"
   },
   "config": {

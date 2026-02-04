@@ -13,7 +13,7 @@ use phpbu\App\Exception;
  * @author     David Dattee <david.dattee@meetwashing.fr>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  */
 class GoogleCloudStorage extends Remote
 {

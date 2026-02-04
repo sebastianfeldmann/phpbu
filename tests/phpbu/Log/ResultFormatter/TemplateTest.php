@@ -2,6 +2,8 @@
 namespace phpbu\App\Log\ResultFormatter;
 
 use phpbu\App\Exception;
+use phpbu\App\Result;
+use phpbu\App\Result\Backup;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.0.0
  */
 class TemplateTestTest extends TestCase
@@ -50,7 +52,7 @@ class TemplateTestTest extends TestCase
      */
     protected function getResultMock()
     {
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->expects($this->once())->method('started')->willReturn(microtime(true));
         $result->expects($this->once())->method('allOk')->willReturn(true);
         $result->expects($this->once())->method('backupsFailedCount')->willReturn(0);
@@ -68,7 +70,7 @@ class TemplateTestTest extends TestCase
      */
     protected function getBackupResultMock()
     {
-        $backup = $this->createMock(\phpbu\App\Result\Backup::class);
+        $backup = $this->createMock(Backup::class);
         $backup->method('getName')->willReturn('foo');
         $backup->method('allOk')->willReturn(true);
         $backup->method('checkCount')->willReturn(0);

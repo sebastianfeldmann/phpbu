@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Cleaner\Stepwise\Keeper;
 
+use phpbu\App\Backup\File\Local;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.0.0
  */
 class OnePerGroupTest extends TestCase
@@ -21,13 +22,13 @@ class OnePerGroupTest extends TestCase
      */
     public function testKeep()
     {
-        $file1 = $this->createMock(\phpbu\App\Backup\File\Local::class);
+        $file1 = $this->createMock(Local::class);
 
-        $file2 = $this->createMock(\phpbu\App\Backup\File\Local::class);
+        $file2 = $this->createMock(Local::class);
 
-        $file3 = $this->createMock(\phpbu\App\Backup\File\Local::class);
+        $file3 = $this->createMock(Local::class);
 
-        $file4 = $this->createMock(\phpbu\App\Backup\File\Local::class);
+        $file4 = $this->createMock(Local::class);
 
         $file1->method('getMTime')->willReturn(mktime(4, 10, 0, 3, 12, 2017));
         $file2->method('getMTime')->willReturn(mktime(5, 10, 0, 3, 12, 2017));

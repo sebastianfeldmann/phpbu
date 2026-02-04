@@ -4,7 +4,9 @@ namespace phpbu\App\Backup\Crypter;
 use phpbu\App\Backup\CliMockery;
 use phpbu\App\BaseMockery;
 use phpbu\App\Configuration;
+use phpbu\App\Result;
 use SebastianFeldmann\Cli\Command\Result as CommandResult;
+use SebastianFeldmann\Cli\Command\Runner;
 use SebastianFeldmann\Cli\Command\Runner\Result as RunnerResult;
 use PHPUnit\Framework\TestCase;
 
@@ -16,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       https://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.1.5
  */
 class McryptTest extends TestCase
@@ -100,7 +102,7 @@ class McryptTest extends TestCase
         $commandResult = new CommandResult('foo', 0);
         $runnerResult  = new RunnerResult($commandResult);
 
-        $runner = $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
+        $runner = $this->createMock(Runner::class);
         $runner->method('run')->willReturn($runnerResult);
 
         $target    = $this->createTargetMock(__FILE__);
@@ -122,11 +124,11 @@ class McryptTest extends TestCase
         $commandResult = new CommandResult('foo', 1);
         $runnerResult  = new RunnerResult($commandResult);
 
-        $runner = $this->createMock(\SebastianFeldmann\Cli\Command\Runner::class);
+        $runner = $this->createMock(Runner::class);
         $runner->method('run')->willReturn($runnerResult);
 
         $target    = $this->createTargetMock(__FILE__);
-        $appResult = $this->createMock(\phpbu\App\Result::class);
+        $appResult = $this->createMock(Result::class);
 
         $appResult->expects($this->once())->method('debug');
 

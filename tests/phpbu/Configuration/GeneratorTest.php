@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 6.0.0
  */
 class GeneratorTest extends TestCase
@@ -25,7 +25,7 @@ class GeneratorTest extends TestCase
         $config    = $generator->generateConfigurationSkeleton('X.Y', 'xml', 'boot.php');
 
         $this->assertStringContainsString('bootstrap="boot.php"', $config);
-        $this->assertStringContainsString('xsi:noNamespaceSchemaLocation="https://schema.phpbu.de/X.Y/phpbu.xsd"', $config);
+        $this->assertStringContainsString('xsi:noNamespaceSchemaLocation="https://www.phpbu.de/schema/X.Y/phpbu.xsd"', $config);
     }
 
     /**

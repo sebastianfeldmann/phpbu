@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Cleaner\Stepwise;
 
+use phpbu\App\Backup\File\Local;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.0.0
  */
 class RangeTest extends TestCase
@@ -39,7 +40,7 @@ class RangeTest extends TestCase
      */
     public function testKeep()
     {
-        $fileMock = $this->createMock(\phpbu\App\Backup\File\Local::class);
+        $fileMock = $this->createMock(Local::class);
         $range    = new Range(10, 5, new Keeper\All());
         $this->assertTrue($range->keep($fileMock));
     }

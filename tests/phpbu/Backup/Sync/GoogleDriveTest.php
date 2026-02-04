@@ -1,8 +1,17 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use Google_Client;
+use Google_Http_MediaFileUpload;
+use Google_Service_Drive;
+use Google_Service_Drive_DriveFile;
+use Google_Service_Drive_FileList;
+use Google_Service_Drive_Resource_Files;
+use phpbu\App\Backup\Target;
 use phpbu\App\BaseMockery;
+use phpbu\App\Result;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * Google Drive sync test.
@@ -12,7 +21,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
 class GoogleDriveTest extends TestCase
@@ -46,11 +55,11 @@ class GoogleDriveTest extends TestCase
             'parentId' => 'A12345'
         ]);
 
-        $resultStub = $this->createMock(\phpbu\App\Result::class);
+        $resultStub = $this->createMock(Result::class);
         $resultStub->expects($this->once())
                    ->method('debug');
 
-        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+        $targetStub = $this->createMock(Target::class);
 
         $sync->simulate($targetStub, $resultStub);
     }
@@ -61,25 +70,25 @@ class GoogleDriveTest extends TestCase
     public function testSync()
     {
         $target = $this->createTargetMock(PHPBU_TEST_FILES . '/misc/backup.txt');
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->expects($this->once())->method('debug');
 
-        $client  = $this->createMock(\Google_Client::class);
-        $request = $this->createMock(\Psr\Http\Message\RequestInterface::class);
+        $client  = $this->createMock(Google_Client::class);
+        $request = $this->createMock(RequestInterface::class);
 
-        $resource = $this->createMock(\Google_Service_Drive_Resource_Files::class);
+        $resource = $this->createMock(Google_Service_Drive_Resource_Files::class);
         $resource->expects($this->once())
                  ->method('create')
                  ->willReturn($request);
 
-        $service        = $this->createMock(\Google_Service_Drive::class);
+        $service        = $this->createMock(Google_Service_Drive::class);
         $service->files = $resource;
         $service->method('getClient')->willReturn($client);
 
-        $status = $this->createMock(\Google_Service_Drive_DriveFile::class);
+        $status = $this->createMock(Google_Service_Drive_DriveFile::class);
         $status->expects($this->once())->method('getId')->willReturn('A12345');
 
-        $stream = $this->createMock(\Google_Http_MediaFileUpload::class);
+        $stream = $this->createMock(Google_Http_MediaFileUpload::class);
         $stream->expects($this->once())->method('nextChunk')->willReturn($status);
 
         $sync = $this->createPartialMock(GoogleDrive::class, ['createDriveService', 'createUploadStream']);
@@ -101,18 +110,18 @@ class GoogleDriveTest extends TestCase
     public function testSyncWithCleanup()
     {
         $target = $this->createTargetMock(PHPBU_TEST_FILES . '/misc/backup.txt');
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->expects($this->exactly(2))->method('debug');
 
-        $client  = $this->createMock(\Google_Client::class);
-        $request = $this->createMock(\Psr\Http\Message\RequestInterface::class);
+        $client  = $this->createMock(Google_Client::class);
+        $request = $this->createMock(RequestInterface::class);
 
-        $fileList = $this->createMock(\Google_Service_Drive_FileList::class);
+        $fileList = $this->createMock(Google_Service_Drive_FileList::class);
         $fileList->expects($this->once())
                  ->method('getFiles')
                  ->willReturn([]);
 
-        $resource = $this->createMock(\Google_Service_Drive_Resource_Files::class);
+        $resource = $this->createMock(Google_Service_Drive_Resource_Files::class);
         $resource->expects($this->once())
                  ->method('create')
                  ->willReturn($request);
@@ -120,14 +129,14 @@ class GoogleDriveTest extends TestCase
                  ->method('listFiles')
                  ->willReturn($fileList);
 
-        $service        = $this->createMock(\Google_Service_Drive::class);
+        $service        = $this->createMock(Google_Service_Drive::class);
         $service->files = $resource;
         $service->method('getClient')->willReturn($client);
 
-        $status = $this->createMock(\Google_Service_Drive_DriveFile::class);
+        $status = $this->createMock(Google_Service_Drive_DriveFile::class);
         $status->expects($this->once())->method('getId')->willReturn('A12345');
 
-        $stream = $this->createMock(\Google_Http_MediaFileUpload::class);
+        $stream = $this->createMock(Google_Http_MediaFileUpload::class);
         $stream->expects($this->once())->method('nextChunk')->willReturn($status);
 
         $sync = $this->createPartialMock(GoogleDrive::class, ['createDriveService', 'createUploadStream']);
@@ -152,8 +161,8 @@ class GoogleDriveTest extends TestCase
     {
         $this->expectException('phpbu\App\Exception');
         $target  = $this->createTargetMock(PHPBU_TEST_FILES . '/misc/backup.txt');
-        $result  = $this->createMock(\phpbu\App\Result::class);
-        $service = $this->createMock(\Google_Service_Drive::class);
+        $result  = $this->createMock(Result::class);
+        $service = $this->createMock(Google_Service_Drive::class);
         $service->expects($this->once())->method('getClient')->will($this->throwException(new \Exception));
 
         $sync = $this->createPartialMock(GoogleDrive::class, ['createDriveService', 'createUploadStream']);

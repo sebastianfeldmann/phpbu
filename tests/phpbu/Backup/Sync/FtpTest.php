@@ -1,8 +1,11 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use phpbu\App\Backup\Target;
 use phpbu\App\BaseMockery;
+use phpbu\App\Result;
 use PHPUnit\Framework\TestCase;
+use SebastianFeldmann\Ftp\Client;
 
 /**
  * FtpTest
@@ -12,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Chris Hawes <me@chrishawes.net>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  */
 class FtpTest extends TestCase
 {
@@ -40,10 +43,10 @@ class FtpTest extends TestCase
     public function testSync()
     {
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->expects($this->once())->method('debug');
 
-        $clientMock = $this->createMock(\SebastianFeldmann\Ftp\Client::class);
+        $clientMock = $this->createMock(Client::class);
         $clientMock->expects($this->once())->method('uploadFile');
 
         $ftp = $this->createPartialMock(Ftp::class, ['createClient']);
@@ -65,10 +68,10 @@ class FtpTest extends TestCase
     public function testSyncWithCleanup()
     {
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
         $result->expects($this->exactly(2))->method('debug');
 
-        $clientMock = $this->createMock(\SebastianFeldmann\Ftp\Client::class);
+        $clientMock = $this->createMock(Client::class);
         $clientMock->expects($this->once())->method('uploadFile');
         $clientMock->expects($this->once())->method('chHome');
         $clientMock->expects($this->once())->method('lsFiles')->willReturn([]);
@@ -95,9 +98,9 @@ class FtpTest extends TestCase
     {
         $this->expectException('phpbu\App\Exception');
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
-        $result = $this->createMock(\phpbu\App\Result::class);
+        $result = $this->createMock(Result::class);
 
-        $clientMock = $this->createMock(\SebastianFeldmann\Ftp\Client::class);
+        $clientMock = $this->createMock(Client::class);
         $clientMock->expects($this->once())->method('uploadFile')->will($this->throwException(new \Exception));
 
         $ftp = $this->createPartialMock(Ftp::class, ['createClient']);
@@ -126,11 +129,11 @@ class FtpTest extends TestCase
             'path'     => 'foo'
         ]);
 
-        $resultStub = $this->createMock(\phpbu\App\Result::class);
+        $resultStub = $this->createMock(Result::class);
         $resultStub->expects($this->once())
                    ->method('debug');
 
-        $targetStub = $this->createMock(\phpbu\App\Backup\Target::class);
+        $targetStub = $this->createMock(Target::class);
 
         $ftp->simulate($targetStub, $resultStub);
     }

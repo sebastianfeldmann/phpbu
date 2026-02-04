@@ -16,7 +16,7 @@ use phpbu\App\Util;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 3.2.0
  */
 class Rsync extends SimulatorExecutable implements Simulator

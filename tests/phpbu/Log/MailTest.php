@@ -1,6 +1,9 @@
 <?php
 namespace phpbu\App\Log;
 
+use Exception;
+use phpbu\App\Result;
+use phpbu\App\Result\Backup;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -11,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.1.5
  */
 class MailTest extends TestCase
@@ -244,7 +247,7 @@ class MailTest extends TestCase
      */
     public function getAppResultMock()
     {
-        $appResult = $this->createMock(\phpbu\App\Result::class);
+        $appResult = $this->createMock(Result::class);
         return $appResult;
     }
 
@@ -255,7 +258,7 @@ class MailTest extends TestCase
      */
     public function getBackupResultMock()
     {
-        $backup = $this->createMock(\phpbu\App\Result\Backup::class);
+        $backup = $this->createMock(Backup::class);
         return $backup;
     }
 
@@ -268,7 +271,7 @@ class MailTest extends TestCase
      */
     public function getExceptionMock($msg, $code)
     {
-        return new \Exception($msg, $code);
+        return new Exception($msg, $code);
     }
 
     /**

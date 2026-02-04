@@ -3,6 +3,7 @@ namespace phpbu\App\Backup;
 
 use phpbu\App\Backup\File\Local;
 use PHPUnit\Framework\TestCase;
+use SplFileInfo;
 
 /**
  * File test
@@ -13,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Vitaly Baev <hello@vitalybaev.ru>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.1.5
  */
 class FileTest extends TestCase
@@ -142,7 +143,7 @@ class FileTest extends TestCase
      */
     protected function getFileInfo()
     {
-        $spl  = new \SplFileInfo(__FILE__);
+        $spl  = new SplFileInfo(__FILE__);
         return $spl;
     }
 
@@ -154,7 +155,7 @@ class FileTest extends TestCase
     protected function getDeletableFileInfo()
     {
         $file = tempnam('.', '');
-        $spl  = new \SplFileInfo($file);
+        $spl  = new SplFileInfo($file);
         return $spl;
     }
 }

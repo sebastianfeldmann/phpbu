@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       https://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 2.0.0
  */
 class ElasticdumpTest extends TestCase
@@ -48,6 +48,21 @@ class ElasticdumpTest extends TestCase
 
         $executable = $elasticdump->getExecutable($target);
         $expected   = 'elasticdump" --input=\'http://root@localhost:9200/\' --output=\'backup.json\'';
+
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $executable->getCommand());
+    }
+
+    /**
+     * Tests Elasticdump::getExecutable
+     */
+    public function testLimit()
+    {
+        $target      = $this->createTargetMock('backup.json');
+        $elasticdump = new Elasticdump();
+        $elasticdump->setup(['pathToElasticdump' => PHPBU_TEST_BIN, 'limit' => '100']);
+
+        $executable = $elasticdump->getExecutable($target);
+        $expected   = 'elasticdump" --input=\'http://localhost:9200/\' --limit=\'100\' --output=\'backup.json\'';
 
         $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $executable->getCommand());
     }

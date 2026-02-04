@@ -1,6 +1,15 @@
 <?php
 namespace phpbu\App;
 
+use phpbu\App\Backup\Check\SizeMin;
+use phpbu\App\Backup\Cleaner\Outdated;
+use phpbu\App\Backup\Crypter\OpenSSL;
+use phpbu\App\Backup\Path;
+use phpbu\App\Backup\Source\Status;
+use phpbu\App\Backup\Source\Tar;
+use phpbu\App\Backup\Sync\Rsync;
+use phpbu\App\Backup\Target;
+use phpbu\App\Backup\Target\Compression;
 use phpbu\App\Log\NullLogger;
 
 /**
@@ -11,7 +20,7 @@ use phpbu\App\Log\NullLogger;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       https://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 5.1.0
  */
 trait BaseMockery
@@ -34,9 +43,9 @@ trait BaseMockery
         }
         $compress = !empty($fileCompressed);
         $pathName = $compress ? $fileCompressed : $file;
-        $path     = $this->createMock(\phpbu\App\Backup\Path::class);
+        $path     = $this->createMock(Path::class);
         $path->method('getPath')->willreturn(dirname($pathName));
-        $target   = $this->createMock(\phpbu\App\Backup\Target::class);
+        $target   = $this->createMock(Target::class);
         $target->method('getSize')->willReturn(1000000000);
         $target->method('getFilename')->willReturn(basename($pathName));
         $target->method('getPathnamePlain')->willReturn($file);
@@ -58,7 +67,7 @@ trait BaseMockery
      */
     protected function createCompressionMock($cmd, $suffix)
     {
-        $compression = $this->createMock(\phpbu\App\Backup\Target\Compression::class);
+        $compression = $this->createMock(Compression::class);
         $compression->method('isPipeable')->willReturn(in_array($cmd, ['gzip', 'bzip2']));
         $compression->method('getCommand')->willReturn($cmd);
         $compression->method('getSuffix')->willReturn($suffix);
@@ -87,7 +96,7 @@ trait BaseMockery
     protected function createStatusMock($dataPath = '', $isDir = false)
     {
         $handledCompression = empty($dataPath);
-        $status = $this->createMock(\phpbu\App\Backup\Source\Status::class);
+        $status = $this->createMock(Status::class);
         $status->method('handledCompression')->willReturn($handledCompression);
         $status->method('getDataPath')->willReturn($dataPath);
         $status->method('isDirectory')->willReturn($isDir);
@@ -103,7 +112,7 @@ trait BaseMockery
      */
     protected function createSourceMock($status)
     {
-        $source = $this->createMock(\phpbu\App\Backup\Source\Tar::class);
+        $source = $this->createMock(Tar::class);
         $source->method('backup')->willReturn($status);
         $source->method('simulate')->willReturn($status);
 
@@ -118,7 +127,7 @@ trait BaseMockery
      */
     protected function createCheckMock($pass = true)
     {
-        $check = $this->createMock(\phpbu\App\Backup\Check\SizeMin::class);
+        $check = $this->createMock(SizeMin::class);
         $check->method('pass')->willReturn($pass);
         $check->method('simulate')->willReturn(true);
         return $check;
@@ -132,7 +141,7 @@ trait BaseMockery
      */
     protected function createCryptMock($success = true)
     {
-        $crypter = $this->createMock(\phpbu\App\Backup\Crypter\OpenSSL::class);
+        $crypter = $this->createMock(OpenSSL::class);
         if (!$success) {
             $crypter->method('crypt')->will($this->throwException(new \phpbu\App\Backup\Crypter\Exception()));
         }
@@ -147,7 +156,7 @@ trait BaseMockery
      */
     protected function createSyncMock($success = true)
     {
-        $sync = $this->createMock(\phpbu\App\Backup\Sync\Rsync::class);
+        $sync = $this->createMock(Rsync::class);
         if (!$success) {
             $sync->method('sync')->will($this->throwException(new \phpbu\App\Backup\Sync\Exception()));
         }
@@ -162,7 +171,7 @@ trait BaseMockery
      */
     protected function createCleanerMock($success = true)
     {
-        $cleaner = $this->createMock(\phpbu\App\Backup\Cleaner\Outdated::class);
+        $cleaner = $this->createMock(Outdated::class);
         if (!$success) {
             $cleaner->method('cleanup')->will($this->throwException(new \phpbu\App\Backup\Cleaner\Exception()));
         }

@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 2.1.0
  */
 class ElasticdumpTest extends TestCase
@@ -73,6 +73,18 @@ class ElasticdumpTest extends TestCase
         $expected = 'elasticdump" --input=\'http://localhost:9200/\' --type=\'mapping\' --output=\'./foo.json\'';
         $elastic  = new Elasticdump(PHPBU_TEST_BIN);
         $elastic->useHost('localhost:9200')->dumpType('mapping')->dumpTo('./foo.json');
+
+        $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
+    }
+
+    /**
+     * Tests Elasticdump::createCommand
+     */
+    public function testLimit()
+    {
+        $expected = 'elasticdump" --input=\'http://localhost:9200/\' --limit=\'500\' --output=\'./foo.json\'';
+        $elastic  = new Elasticdump(PHPBU_TEST_BIN);
+        $elastic->useHost('localhost:9200')->limit('500')->dumpTo('./foo.json');
 
         $this->assertEquals('"' . PHPBU_TEST_BIN . '/' . $expected, $elastic->getCommand());
     }

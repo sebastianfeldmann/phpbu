@@ -2,6 +2,7 @@
 namespace phpbu\App\Backup\Collector;
 
 use phpbu\App\Backup\Target;
+use phpbu\App\Backup\Target\Compression;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://www.phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 1.0.0
  */
 class LocalTest extends TestCase
@@ -146,7 +147,7 @@ class LocalTest extends TestCase
      */
     protected function getCompressionMockForCmd($cmd, $suffix)
     {
-        $compressorStub = $this->createMock(\phpbu\App\Backup\Target\Compression::class);
+        $compressorStub = $this->createMock(Compression::class);
         $compressorStub->method('getCommand')->willReturn($cmd);
         $compressorStub->method('getSuffix')->willReturn($suffix);
 

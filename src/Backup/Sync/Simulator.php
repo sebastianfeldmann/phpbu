@@ -1,6 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
+use phpbu\App\Backup\Sync;
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
 
@@ -12,10 +13,10 @@ use phpbu\App\Result;
  * @author     Sebastian Feldmann <sebastian@phpbu.de>
  * @copyright  Sebastian Feldmann <sebastian@phpbu.de>
  * @license    https://opensource.org/licenses/MIT The MIT License (MIT)
- * @link       http://phpbu.de/
+ * @link       https://phpbu.de/
  * @since      Class available since Release 3.0.0
  */
-interface Simulator extends \phpbu\App\Backup\Sync
+interface Simulator extends Sync
 {
     /**
      * Simulate the sync execution.
