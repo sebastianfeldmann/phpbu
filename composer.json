@@ -65,7 +65,8 @@
     "php-opencloud/openstack": "^3.0",
     "microsoft/azure-storage-blob": "^1.4",
     "phpmailer/phpmailer": "^6.0",
-    "google/cloud-storage": "^1.42"
+    "google/cloud-storage": "^1.42",
+    "arhitector/yandex": "^2.2"
   },
   "suggest": {
     "sebastianfeldmann/ftp": "Require ^0.9.2 to sync to an FTP server",
@@ -94,7 +95,7 @@
     "post-autoload-dump": "tools/captainhook install -f -s",
     "setup": "phive install",
     "test": "tools/phpunit",
-    "analyse": "tools/phpstan analyse",
+    "static": "tools/phpstan analyse",
     "style": "tools/phpcs --standard=psr2 src"
   },
   "config": {
