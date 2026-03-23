@@ -108,6 +108,14 @@ class Mongodump extends Abstraction
     private $excludeCollectionsWithPrefix = [];
 
     /**
+     * Read preference
+     * --readPreference <string>
+     *
+     * @var string
+     */
+    private $readPreference;
+
+    /**
      * Constructor.
      *
      * @param string $path
@@ -231,6 +239,18 @@ class Mongodump extends Abstraction
     }
 
     /**
+     * Set read preference.
+     *
+     * @param  string $readPreference
+     * @return Mongodump
+     */
+    public function useReadPreference(string $readPreference) : Mongodump
+    {
+        $this->readPreference = $readPreference;
+        return $this;
+    }
+
+    /**
      * Mongodump CommandLine generator.
      *
      * @return CommandLine
@@ -252,6 +272,7 @@ class Mongodump extends Abstraction
         $cmd->addOptionIfNotEmpty('--username', $this->user);
         $cmd->addOptionIfNotEmpty('--password', $this->password);
         $cmd->addOptionIfNotEmpty('--authenticationDatabase', $this->authenticationDatabase);
+        $cmd->addOptionIfNotEmpty('--readPreference', $this->readPreference);
 
         foreach ($this->databases as $db) {
             $cmd->addOption('--db', $db);
