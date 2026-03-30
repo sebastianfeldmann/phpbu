@@ -203,6 +203,39 @@ class AmazonS3v3Test extends TestCase
     }
 
     /**
+     * Tests AmazonS3V3::sync with multiPartUploadPartSize
+     */
+    public function testSyncWithMultiPartUploadPartSize()
+    {
+        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+
+        $result = $this->createMock(Result::class);
+        $result->expects($this->once())->method('debug');
+
+        $clientMock = $this->createAWSS3Mock();
+        $clientMock->expects($this->once())->method('doesBucketExist')->willReturn(true);
+
+        $uploaderMock = $this->createAWSS3UploaderMock();
+        $uploaderMock->expects($this->once())->method('upload');
+
+        $aws = $this->createPartialMock(AmazonS3v3::class, ['createClient', 'createUploader']);
+        $aws->method('createClient')->willReturn($clientMock);
+        $aws->method('createUploader')->willReturn($uploaderMock);
+
+        $aws->setup([
+            'key'                      => 'some-key',
+            'secret'                   => 'some-secret',
+            'bucket'                   => 'backup',
+            'region'                   => 'frankfurt',
+            'path'                     => 'backup',
+            'useMultiPartUpload'       => 'true',
+            'multiPartUploadPartSize'  => '104857600'
+        ]);
+
+        $aws->sync($target, $result);
+    }
+
+    /**
      * Tests AmazonS3::setUp
      */
     public function testSetUpNoKey()
