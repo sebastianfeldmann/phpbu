@@ -24,7 +24,7 @@ class AzureBlob extends Remote
      *
      * @var BlobContainerClient
      */
-    private $client;
+    protected $client;
 
     /**
      * AzureBlob constructor.
@@ -49,7 +49,7 @@ class AzureBlob extends Remote
     public function unlink()
     {
         try {
-            $this->deleteBlob();
+            $this->deleteBlob($this->pathname);
         } catch (\Exception $exception) {
             throw new Exception($exception->getMessage());
         }
@@ -57,9 +57,11 @@ class AzureBlob extends Remote
 
     /**
      * Delete the blob from the container.
+     *
+     * @param string $path
      */
-    protected function deleteBlob(): void
+    protected function deleteBlob(string $path): void
     {
-        $this->client->getBlobClient($this->pathname)->delete();
+        $this->client->getBlobClient($path)->delete();
     }
 }

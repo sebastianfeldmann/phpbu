@@ -9,31 +9,6 @@ use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test double exposing a controllable blob deletion seam so the real
- * AzureBlob logic runs without hitting the (final) Azure SDK client.
- */
-class TestableAzureBlobFile extends AzureBlob
-{
-    /** @var bool */
-    public $deleted = false;
-
-    /** @var bool */
-    public $deleteThrows = false;
-
-    /** @var string|null */
-    public $deletedPathname = null;
-
-    protected function deleteBlob(): void
-    {
-        if ($this->deleteThrows) {
-            throw new \Exception('delete failed');
-        }
-        $this->deleted         = true;
-        $this->deletedPathname = $this->pathname;
-    }
-}
-
-/**
  * AzureBlobTest
  *
  * @package    phpbu
@@ -52,17 +27,22 @@ class AzureBlobTest extends TestCase
      */
     public function testCreateFileWithCorrectProperties()
     {
-        $blob = $this->createBlob('dump.tar.gz', '2018-05-08 14:14:54.0 +00:00', 102102);
-        $file = new TestableAzureBlobFile($this->createContainerClient(), $blob);
+        $blob = $this->createBlob('collector/static-dir/dump.tar.gz', '2018-05-08 14:14:54.0 +00:00', 102102);
+
+        $file = $this->getMockBuilder(AzureBlob::class)
+            ->setConstructorArgs([$this->createContainerClient(), $blob])
+            ->onlyMethods(['deleteBlob'])
+            ->getMock();
+        $file->expects($this->once())
+             ->method('deleteBlob')
+             ->with($this->equalTo('collector/static-dir/dump.tar.gz'));
 
         $this->assertEquals('dump.tar.gz', $file->getFilename());
-        $this->assertEquals('dump.tar.gz', $file->getPathname());
+        $this->assertEquals('collector/static-dir/dump.tar.gz', $file->getPathname());
         $this->assertEquals(102102, $file->getSize());
         $this->assertEquals(1525788894, $file->getMTime());
 
         $file->unlink();
-        $this->assertTrue($file->deleted, 'blob should be deleted');
-        $this->assertEquals('dump.tar.gz', $file->deletedPathname, 'the correct blob must be targeted for deletion');
     }
 
     /**
@@ -72,9 +52,13 @@ class AzureBlobTest extends TestCase
     {
         $this->expectException('phpbu\App\Exception');
 
-        $blob = $this->createBlob('dump.tar.gz', '2018-05-08 14:14:54.0 +00:00', 102102);
-        $file = new TestableAzureBlobFile($this->createContainerClient(), $blob);
-        $file->deleteThrows = true;
+        $blob = $this->createBlob('collector/static-dir/dump.tar.gz', '2018-05-08 14:14:54.0 +00:00', 102102);
+
+        $file = $this->getMockBuilder(AzureBlob::class)
+            ->setConstructorArgs([$this->createContainerClient(), $blob])
+            ->onlyMethods(['deleteBlob'])
+            ->getMock();
+        $file->method('deleteBlob')->will($this->throwException(new \Exception()));
 
         $file->unlink();
     }

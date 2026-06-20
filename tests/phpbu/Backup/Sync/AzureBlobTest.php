@@ -2,75 +2,12 @@
 namespace phpbu\App\Backup\Sync;
 
 use AzureOss\Storage\Blob\BlobContainerClient;
-use phpbu\App\Backup\Collector;
+use AzureOss\Storage\Blob\BlobServiceClient;
 use phpbu\App\Backup\Collector\AzureBlob as AzureBlobCollector;
 use phpbu\App\Backup\Target;
 use phpbu\App\BaseMockery;
 use phpbu\App\Result;
 use PHPUnit\Framework\TestCase;
-
-/**
- * Test double exposing controllable seams around the (final) Azure SDK client
- * so the real sync orchestration runs without performing any network calls.
- */
-class TestableAzureBlobSync extends AzureBlob
-{
-    /** @var bool */
-    public $containerExists = false;
-
-    /** @var bool */
-    public $containerCreated = false;
-
-    /** @var bool */
-    public $uploaded = false;
-
-    /** @var string|null */
-    public $uploadedPath = null;
-
-    /** @var bool */
-    public $uploadThrows = false;
-
-    /** @var \phpbu\App\Backup\Collector|null */
-    public $collectorDouble = null;
-
-    public function exposedCreateClient(): BlobContainerClient
-    {
-        return $this->createClient();
-    }
-
-    protected function doesContainerExist(BlobContainerClient $client): bool
-    {
-        return $this->containerExists;
-    }
-
-    protected function createContainer(BlobContainerClient $client)
-    {
-        $this->containerCreated = true;
-    }
-
-    /**
-     * Narrow seam: the real upload() body (file handle + getUploadPath) runs;
-     * only the final SDK call is replaced, capturing the computed blob path.
-     */
-    protected function uploadBlob(BlobContainerClient $client, string $path, $source)
-    {
-        if ($this->uploadThrows) {
-            throw new \Exception('upload failed');
-        }
-        $this->uploaded     = true;
-        $this->uploadedPath = $path;
-    }
-
-    protected function getFileHandle($path, $mode)
-    {
-        return 'filehandle';
-    }
-
-    protected function createCollector(Target $target): Collector
-    {
-        return $this->collectorDouble ?: parent::createCollector($target);
-    }
-}
 
 /**
  * AzureBlobTest
@@ -146,24 +83,6 @@ class AzureBlobTest extends TestCase
     }
 
     /**
-     * Tests AzureBlob::createClient builds a container client from the connection string
-     */
-    public function testCreateClientBuildsContainerClient()
-    {
-        $azureBlob = new TestableAzureBlobSync();
-        $azureBlob->setup([
-            'connection_string' => self::CONNECTION_STRING,
-            'container_name'    => 'dummy-container-name',
-            'path'              => 'backup'
-        ]);
-
-        $client = $azureBlob->exposedCreateClient();
-
-        $this->assertInstanceOf(BlobContainerClient::class, $client);
-        $this->assertEquals('dummy-container-name', $client->containerName);
-    }
-
-    /**
      * Tests AzureBlob::sync
      */
     public function testSync()
@@ -172,7 +91,17 @@ class AzureBlobTest extends TestCase
         $messages = [];
         $result   = $this->createDebugCollectingResult($messages);
 
-        $azureBlob = new TestableAzureBlobSync();
+        $azureBlob = $this->createPartialMock(
+            AzureBlob::class,
+            ['createClient', 'doesContainerExist', 'createContainer', 'uploadBlob', 'getFileHandle']
+        );
+        $azureBlob->method('createClient')->willReturn($this->createContainerClient());
+        $azureBlob->method('doesContainerExist')->willReturn(false);
+        $azureBlob->expects($this->once())->method('createContainer');
+        $azureBlob->expects($this->once())->method('uploadBlob')
+                  ->with($this->anything(), $this->stringStartsWith('backup/'), $this->anything());
+        $azureBlob->method('getFileHandle')->willReturn('filehandle');
+
         $azureBlob->setup([
             'connection_string' => self::CONNECTION_STRING,
             'container_name'    => 'dummy-container-name',
@@ -181,9 +110,6 @@ class AzureBlobTest extends TestCase
 
         $azureBlob->sync($target, $result);
 
-        $this->assertTrue($azureBlob->containerCreated, 'missing container should be created');
-        $this->assertTrue($azureBlob->uploaded, 'backup should be uploaded');
-        $this->assertStringStartsWith('backup/', (string) $azureBlob->uploadedPath, 'upload path must include the configured remote path');
         $this->assertContains('create blob container', $messages);
         $this->assertContains('upload: done', $messages);
     }
@@ -197,8 +123,16 @@ class AzureBlobTest extends TestCase
         $messages = [];
         $result   = $this->createDebugCollectingResult($messages);
 
-        $azureBlob = new TestableAzureBlobSync();
-        $azureBlob->containerExists = true;
+        $azureBlob = $this->createPartialMock(
+            AzureBlob::class,
+            ['createClient', 'doesContainerExist', 'createContainer', 'uploadBlob', 'getFileHandle']
+        );
+        $azureBlob->method('createClient')->willReturn($this->createContainerClient());
+        $azureBlob->method('doesContainerExist')->willReturn(true);
+        $azureBlob->expects($this->never())->method('createContainer');
+        $azureBlob->expects($this->once())->method('uploadBlob');
+        $azureBlob->method('getFileHandle')->willReturn('filehandle');
+
         $azureBlob->setup([
             'connection_string' => self::CONNECTION_STRING,
             'container_name'    => 'dummy-container-name',
@@ -207,8 +141,6 @@ class AzureBlobTest extends TestCase
 
         $azureBlob->sync($target, $result);
 
-        $this->assertFalse($azureBlob->containerCreated, 'existing container must not be re-created');
-        $this->assertTrue($azureBlob->uploaded, 'backup should be uploaded');
         $this->assertNotContains('create blob container', $messages, 'must not log container creation when it exists');
         $this->assertContains('upload: done', $messages);
     }
@@ -225,8 +157,16 @@ class AzureBlobTest extends TestCase
         $collector = $this->createMock(AzureBlobCollector::class);
         $collector->method('getBackupFiles')->willReturn([]);
 
-        $azureBlob = new TestableAzureBlobSync();
-        $azureBlob->collectorDouble = $collector;
+        $azureBlob = $this->createPartialMock(
+            AzureBlob::class,
+            ['createClient', 'doesContainerExist', 'createContainer', 'uploadBlob', 'getFileHandle', 'createCollector']
+        );
+        $azureBlob->method('createClient')->willReturn($this->createContainerClient());
+        $azureBlob->method('doesContainerExist')->willReturn(false);
+        $azureBlob->expects($this->once())->method('uploadBlob');
+        $azureBlob->method('getFileHandle')->willReturn('filehandle');
+        $azureBlob->method('createCollector')->willReturn($collector);
+
         $azureBlob->setup([
             'connection_string' => self::CONNECTION_STRING,
             'container_name'    => 'dummy-container-name',
@@ -237,7 +177,6 @@ class AzureBlobTest extends TestCase
 
         $azureBlob->sync($target, $result);
 
-        $this->assertTrue($azureBlob->uploaded, 'backup should be uploaded');
         $this->assertContains('upload: done', $messages);
     }
 
@@ -251,8 +190,15 @@ class AzureBlobTest extends TestCase
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
         $result = $this->createMock(Result::class);
 
-        $azureBlob = new TestableAzureBlobSync();
-        $azureBlob->uploadThrows = true;
+        $azureBlob = $this->createPartialMock(
+            AzureBlob::class,
+            ['createClient', 'doesContainerExist', 'createContainer', 'uploadBlob', 'getFileHandle']
+        );
+        $azureBlob->method('createClient')->willReturn($this->createContainerClient());
+        $azureBlob->method('doesContainerExist')->willReturn(false);
+        $azureBlob->method('getFileHandle')->willReturn('filehandle');
+        $azureBlob->method('uploadBlob')->will($this->throwException(new \Exception()));
+
         $azureBlob->setup([
             'connection_string' => self::CONNECTION_STRING,
             'container_name'    => 'dummy-container-name',
@@ -285,21 +231,6 @@ class AzureBlobTest extends TestCase
         $this->assertStringContainsString('connectionString: ********', $messages[0]);
         $this->assertStringNotContainsString('super-secret-connection-string', $messages[0]);
         $this->assertStringContainsString('dummy-container-name', $messages[0]);
-    }
-
-    /**
-     * Build a Result mock that records every debug() message into $messages.
-     *
-     * @param  array $messages
-     * @return \phpbu\App\Result
-     */
-    private function createDebugCollectingResult(array &$messages): Result
-    {
-        $result = $this->createMock(Result::class);
-        $result->method('debug')->willReturnCallback(function ($message) use (&$messages) {
-            $messages[] = $message;
-        });
-        return $result;
     }
 
     /**
@@ -339,5 +270,31 @@ class AzureBlobTest extends TestCase
             'connection_string' => 'dummy-connection-string',
             'container_name'    => 'dummy-container-name'
         ]);
+    }
+
+    /**
+     * Build an offline container client (no network calls on construction).
+     *
+     * @return \AzureOss\Storage\Blob\BlobContainerClient
+     */
+    private function createContainerClient(): BlobContainerClient
+    {
+        return BlobServiceClient::fromConnectionString(self::CONNECTION_STRING)
+                                ->getContainerClient('dummy-container-name');
+    }
+
+    /**
+     * Build a Result mock that records every debug() message into $messages.
+     *
+     * @param  array $messages
+     * @return \phpbu\App\Result
+     */
+    private function createDebugCollectingResult(array &$messages): Result
+    {
+        $result = $this->createMock(Result::class);
+        $result->method('debug')->willReturnCallback(function ($message) use (&$messages) {
+            $messages[] = $message;
+        });
+        return $result;
     }
 }

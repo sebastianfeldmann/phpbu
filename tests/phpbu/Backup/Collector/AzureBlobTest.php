@@ -11,25 +11,6 @@ use phpbu\App\Backup\Target;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test double exposing a controllable blob listing seam so the real
- * AzureBlob collector logic runs without hitting the (final) Azure SDK client.
- */
-class TestableAzureBlobCollector extends AzureBlob
-{
-    /** @var \AzureOss\Storage\Blob\Models\Blob[] */
-    public $blobs = [];
-
-    /** @var string|null */
-    public $capturedPrefix = null;
-
-    protected function listBlobs(string $prefix): iterable
-    {
-        $this->capturedPrefix = $prefix;
-        return $this->blobs;
-    }
-}
-
-/**
  * AzureBlob Collector test
  *
  * @package    phpbu
@@ -54,16 +35,23 @@ class AzureBlobTest extends TestCase
         $target   = new Target($pathName, $filename, strtotime('2014-12-07 04:30:57'));
         $path     = new Path($pathName, $time, false);
 
-        $collector = new TestableAzureBlobCollector($target, $path, $this->createContainerClient());
-        $collector->blobs = [
+        $blobs = [
             $this->createBlob('collector/static-dir/not-matching-2000-12-01-12_00.txt', '2000-12-01 12:00:00 +00:00'),
             $this->createBlob('collector/static-dir/foo-2000-12-01-12_00.txt', '2000-12-01 12:00:00 +00:00'),
             $this->createBlob($target->getPathname(), '2018-05-08 14:14:54 +00:00'),
         ];
 
+        $collector = $this->getMockBuilder(AzureBlob::class)
+            ->setConstructorArgs([$target, $path, $this->createContainerClient()])
+            ->onlyMethods(['listBlobs'])
+            ->getMock();
+        $collector->expects($this->once())
+                  ->method('listBlobs')
+                  ->with($this->equalTo('collector/static-dir/'))
+                  ->willReturn($blobs);
+
         $files = $collector->getBackupFiles();
 
-        $this->assertEquals('collector/static-dir/', $collector->capturedPrefix, 'blobs must be listed with the static path prefix');
         $this->assertCount(2, $files);
         $this->assertArrayHasKey('975672000-foo-2000-12-01-12_00.txt-0', $files);
         $this->assertEquals(
@@ -83,8 +71,13 @@ class AzureBlobTest extends TestCase
         $target   = new Target($pathName, $filename, strtotime('2014-12-07 04:30:57'));
         $path     = new Path('', $time, false);
 
-        $collector = new TestableAzureBlobCollector($target, $path, $this->createContainerClient());
-        $collector->blobs = [];
+        $collector = $this->getMockBuilder(AzureBlob::class)
+            ->setConstructorArgs([$target, $path, $this->createContainerClient()])
+            ->onlyMethods(['listBlobs'])
+            ->getMock();
+        $collector->expects($this->once())
+                  ->method('listBlobs')
+                  ->willReturn([]);
 
         $this->assertEquals([], $collector->getBackupFiles());
     }

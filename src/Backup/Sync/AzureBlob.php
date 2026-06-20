@@ -30,8 +30,7 @@ class AzureBlob implements Simulator
      *
      * @var BlobContainerClient
      */
-    private $client;
-
+    protected $client;
 
     /**
      * Azure Blob Connection String
