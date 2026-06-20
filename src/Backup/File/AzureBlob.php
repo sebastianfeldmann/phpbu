@@ -1,8 +1,8 @@
 <?php
 namespace phpbu\App\Backup\File;
 
-use MicrosoftAzure\Storage\Blob\BlobRestProxy;
-use MicrosoftAzure\Storage\Blob\Models\Blob;
+use AzureOss\Storage\Blob\BlobContainerClient;
+use AzureOss\Storage\Blob\Models\Blob;
 use phpbu\App\Exception;
 
 /**
@@ -20,33 +20,25 @@ use phpbu\App\Exception;
 class AzureBlob extends Remote
 {
     /**
-     * Azure Blob client.
+     * Azure Blob container client.
      *
-     * @var BlobRestProxy
+     * @var BlobContainerClient
      */
     private $client;
 
     /**
-     * @var string
-     */
-    protected $containerName;
-
-    /**
      * AzureBlob constructor.
      *
-     * @param BlobRestProxy $client
-     * @param string        $containerName
-     * @param Blob          $blob
+     * @param BlobContainerClient $client
+     * @param Blob                $blob
      */
-    public function __construct(BlobRestProxy $client, string $containerName, Blob $blob)
+    public function __construct(BlobContainerClient $client, Blob $blob)
     {
-        $this->client        = $client;
-        $this->containerName = $containerName;
-        $this->filename      = basename($blob->getName());
-        $this->pathname      = $blob->getName();
-        $props               = $blob->getProperties();
-        $this->size          = $props->getContentLength();
-        $this->lastModified  = $props->getLastModified()->getTimestamp();
+        $this->client       = $client;
+        $this->filename     = basename($blob->name);
+        $this->pathname     = $blob->name;
+        $this->size         = $blob->properties->contentLength;
+        $this->lastModified = $blob->properties->lastModified->getTimestamp();
     }
 
     /**
@@ -57,9 +49,17 @@ class AzureBlob extends Remote
     public function unlink()
     {
         try {
-            $this->client->deleteBlob($this->containerName, $this->pathname);
+            $this->deleteBlob();
         } catch (\Exception $exception) {
             throw new Exception($exception->getMessage());
         }
+    }
+
+    /**
+     * Delete the blob from the container.
+     */
+    protected function deleteBlob(): void
+    {
+        $this->client->getBlobClient($this->pathname)->delete();
     }
 }
