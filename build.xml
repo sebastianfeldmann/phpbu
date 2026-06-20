@@ -695,8 +695,8 @@
         </copy>
 
         <!-- enum -->
-        <copy todir="${basedir}/build/phar/lib/marc-mabe/">
-            <fileset dir="${basedir}/vendor/marc-mabe/">
+        <copy todir="${basedir}/build/phar/lib/marc-mabe/php-enum/src">
+            <fileset dir="${basedir}/vendor/marc-mabe/php-enum/src">
                 <include name="**/*.php"/>
             </fileset>
         </copy>
