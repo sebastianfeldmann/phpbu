@@ -20,12 +20,16 @@ class TestableAzureBlobFile extends AzureBlob
     /** @var bool */
     public $deleteThrows = false;
 
+    /** @var string|null */
+    public $deletedPathname = null;
+
     protected function deleteBlob(): void
     {
         if ($this->deleteThrows) {
             throw new \Exception('delete failed');
         }
-        $this->deleted = true;
+        $this->deleted         = true;
+        $this->deletedPathname = $this->pathname;
     }
 }
 
@@ -58,6 +62,7 @@ class AzureBlobTest extends TestCase
 
         $file->unlink();
         $this->assertTrue($file->deleted, 'blob should be deleted');
+        $this->assertEquals('dump.tar.gz', $file->deletedPathname, 'the correct blob must be targeted for deletion');
     }
 
     /**

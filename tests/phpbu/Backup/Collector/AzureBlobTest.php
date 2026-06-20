@@ -19,8 +19,12 @@ class TestableAzureBlobCollector extends AzureBlob
     /** @var \AzureOss\Storage\Blob\Models\Blob[] */
     public $blobs = [];
 
+    /** @var string|null */
+    public $capturedPrefix = null;
+
     protected function listBlobs(string $prefix): iterable
     {
+        $this->capturedPrefix = $prefix;
         return $this->blobs;
     }
 }
@@ -59,6 +63,7 @@ class AzureBlobTest extends TestCase
 
         $files = $collector->getBackupFiles();
 
+        $this->assertEquals('collector/static-dir/', $collector->capturedPrefix, 'blobs must be listed with the static path prefix');
         $this->assertCount(2, $files);
         $this->assertArrayHasKey('975672000-foo-2000-12-01-12_00.txt-0', $files);
         $this->assertEquals(

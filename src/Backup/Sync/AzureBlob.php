@@ -211,7 +211,19 @@ class AzureBlob implements Simulator
     protected function upload(Target $target, BlobContainerClient $client)
     {
         $source = $this->getFileHandle($target->getPathname(), 'r');
-        $client->getBlobClient($this->getUploadPath($target))->upload($source);
+        $this->uploadBlob($client, $this->getUploadPath($target), $source);
+    }
+
+    /**
+     * Upload a single blob to the container.
+     *
+     * @param  \AzureOss\Storage\Blob\BlobContainerClient $client
+     * @param  string                                     $path
+     * @param  resource                                   $source
+     */
+    protected function uploadBlob(BlobContainerClient $client, string $path, $source)
+    {
+        $client->getBlobClient($path)->upload($source);
     }
 
     /**
