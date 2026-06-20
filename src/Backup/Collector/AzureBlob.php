@@ -1,8 +1,7 @@
 <?php
 namespace phpbu\App\Backup\Collector;
 
-use MicrosoftAzure\Storage\Blob\BlobRestProxy;
-use MicrosoftAzure\Storage\Blob\Models\ListBlobsOptions;
+use AzureOss\Storage\Blob\BlobContainerClient;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\File\AzureBlob as BlobFile;
 use phpbu\App\Backup\Path;
@@ -24,30 +23,21 @@ use phpbu\App\Util;
 class AzureBlob extends Remote implements Collector
 {
     /**
-     * @var \MicrosoftAzure\Storage\Blob\BlobRestProxy
+     * @var \AzureOss\Storage\Blob\BlobContainerClient
      */
     protected $client;
 
     /**
-     * Azure Blob Storage Container name
-     *
-     * @var string
-     */
-    protected $containerName;
-
-    /**
-     * Amazon S3 constructor.
+     * AzureBlob constructor.
      *
      * @param \phpbu\App\Backup\Target                   $target
      * @param \phpbu\App\Backup\Path                     $path
-     * @param \MicrosoftAzure\Storage\Blob\BlobRestProxy $client
-     * @param string                                     $containerName
+     * @param \AzureOss\Storage\Blob\BlobContainerClient $client
      */
-    public function __construct(Target $target, Path $path, BlobRestProxy $client, string $containerName)
+    public function __construct(Target $target, Path $path, BlobContainerClient $client)
     {
         $this->setUp($target, $path);
         $this->client = $client;
-        $this->containerName = $containerName;
     }
 
     /**
@@ -55,21 +45,28 @@ class AzureBlob extends Remote implements Collector
      */
     protected function collectBackups()
     {
-        $listBlobsOptions = new ListBlobsOptions();
-        $listBlobsOptions->setPrefix($this->getPrefix($this->path->getPathThatIsNotChanging()));
-        $listBlobsOptions->setMaxResults(10);
+        $prefix = $this->getPrefix($this->path->getPathThatIsNotChanging());
 
-        do {
-            $blobList = $this->client->listBlobs($this->containerName, $listBlobsOptions);
-            foreach ($blobList->getBlobs() as $blob) {
-                if ($this->isFileMatch($blob->getName())) {
-                    $file                = new BlobFile($this->client, $this->containerName, $blob);
-                    $index               = $this->getFileIndex($file);
-                    $this->files[$index] = $file;
-                }
+        foreach ($this->listBlobs($prefix) as $blob) {
+            if ($this->isFileMatch($blob->name)) {
+                $file                = new BlobFile($this->client, $blob);
+                $index               = $this->getFileIndex($file);
+                $this->files[$index] = $file;
             }
-            $listBlobsOptions->setContinuationToken($blobList->getContinuationToken());
-        } while ($blobList->getContinuationToken());
+        }
+    }
+
+    /**
+     * List all blobs in the container matching the given prefix.
+     *
+     * Pagination is handled transparently by the Azure Blob SDK.
+     *
+     * @param  string $prefix
+     * @return iterable<\AzureOss\Storage\Blob\Models\Blob>
+     */
+    protected function listBlobs(string $prefix): iterable
+    {
+        return $this->client->getBlobs($prefix);
     }
 
     /**

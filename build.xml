@@ -469,18 +469,48 @@
             </fileset>
         </copy>
 
-        <!-- microsoft -->
-        <copy file="${basedir}/vendor/microsoft/azure-storage-blob/LICENSE"
-              tofile="${basedir}/build/phar/lib/microsoft/azure-storage-blob/LICENSE"/>
-        <copy todir="${basedir}/build/phar/lib/microsoft/azure-storage-blob">
-            <fileset dir="${basedir}/vendor/microsoft/azure-storage-blob/src">
+        <!-- azure-oss (Azure Blob Storage SDK) -->
+        <copy todir="${basedir}/build/phar/lib/azure-oss/storage">
+            <fileset dir="${basedir}/vendor/azure-oss/storage">
                 <include name="**/*.php"/>
             </fileset>
         </copy>
-        <copy file="${basedir}/vendor/microsoft/azure-storage-common/LICENSE"
-              tofile="${basedir}/build/phar/lib/microsoft/azure-storage-common/LICENSE"/>
-        <copy todir="${basedir}/build/phar/lib/microsoft/azure-storage-common">
-            <fileset dir="${basedir}/vendor/microsoft/azure-storage-common/src">
+        <copy todir="${basedir}/build/phar/lib/azure-oss/storage-common">
+            <fileset dir="${basedir}/vendor/azure-oss/storage-common">
+                <include name="**/*.php"/>
+            </fileset>
+        </copy>
+        <copy file="${basedir}/vendor/azure-oss/identity/LICENSE"
+              tofile="${basedir}/build/phar/lib/azure-oss/identity/LICENSE"/>
+        <copy todir="${basedir}/build/phar/lib/azure-oss/identity">
+            <fileset dir="${basedir}/vendor/azure-oss/identity/src">
+                <include name="**/*.php"/>
+            </fileset>
+        </copy>
+
+        <!-- caseyamcl/guzzle_retry_middleware (azure-oss dependency) -->
+        <copy file="${basedir}/vendor/caseyamcl/guzzle_retry_middleware/LICENSE.md"
+              tofile="${basedir}/build/phar/lib/caseyamcl/guzzle_retry_middleware/LICENSE.md"/>
+        <copy todir="${basedir}/build/phar/lib/caseyamcl/guzzle_retry_middleware">
+            <fileset dir="${basedir}/vendor/caseyamcl/guzzle_retry_middleware/src">
+                <include name="**/*.php"/>
+            </fileset>
+        </copy>
+
+        <!-- symfony/deprecation-contracts (azure-oss dependency) -->
+        <copy file="${basedir}/vendor/symfony/deprecation-contracts/LICENSE"
+              tofile="${basedir}/build/phar/lib/symfony/deprecation-contracts/LICENSE"/>
+        <copy todir="${basedir}/build/phar/lib/symfony/deprecation-contracts">
+            <fileset dir="${basedir}/vendor/symfony/deprecation-contracts">
+                <include name="**/*.php"/>
+            </fileset>
+        </copy>
+
+        <!-- symfony/polyfill-php80 (azure-oss dependency) -->
+        <copy file="${basedir}/vendor/symfony/polyfill-php80/LICENSE"
+              tofile="${basedir}/build/phar/lib/symfony/polyfill-php80/LICENSE"/>
+        <copy todir="${basedir}/build/phar/lib/symfony/polyfill-php80">
+            <fileset dir="${basedir}/vendor/symfony/polyfill-php80">
                 <include name="**/*.php"/>
             </fileset>
         </copy>

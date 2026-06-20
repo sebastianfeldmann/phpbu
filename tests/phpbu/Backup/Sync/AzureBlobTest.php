@@ -1,9 +1,9 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use MicrosoftAzure\Storage\Blob\BlobRestProxy;
-use MicrosoftAzure\Storage\Blob\Models\ListBlobsResult;
-use MicrosoftAzure\Storage\Blob\Models\ListContainersResult;
+use AzureOss\Storage\Blob\BlobContainerClient;
+use AzureOss\Storage\Blob\BlobServiceClient;
+use phpbu\App\Backup\Collector\AzureBlob as AzureBlobCollector;
 use phpbu\App\Backup\Target;
 use phpbu\App\BaseMockery;
 use phpbu\App\Result;
@@ -26,6 +26,12 @@ class AzureBlobTest extends TestCase
     use BaseMockery;
 
     /**
+     * A realistic, well-formed connection string the SDK can parse offline.
+     */
+    const CONNECTION_STRING = 'DefaultEndpointsProtocol=https;AccountName=accountname;AccountKey=accountkey;' .
+                              'EndpointSuffix=core.windows.net';
+
+    /**
      * Tests AzureBlob::setUp
      */
     public function testSetUpOk()
@@ -41,7 +47,7 @@ class AzureBlobTest extends TestCase
     }
 
     /**
-     * Tests AzureBlob::setUp
+     * Tests AzureBlob::getUploadPath
      */
     public function testGetUploadPath()
     {
@@ -59,7 +65,7 @@ class AzureBlobTest extends TestCase
     }
 
     /**
-     * Tests AzureBlob::setUp
+     * Tests AzureBlob::getUploadPath
      */
     public function testGetUploadPathAddingMissingSlashes()
     {
@@ -81,82 +87,88 @@ class AzureBlobTest extends TestCase
      */
     public function testSync()
     {
-        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $target   = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $messages = [];
+        $result   = $this->createDebugCollectingResult($messages);
 
-        $result = $this->createMock(Result::class);
-        $result->expects($this->exactly(2))->method('debug');
-
-        $listContainers = ListContainersResult::create([
-            "@attributes" => [
-                "ServiceEndpoint" => "https://accountname.blob.core.windows.net/"
-            ],
-            "Containers" => [],
-            "NextMarker" => null
-        ]);
-
-        $clientMock = $this->createAzureBlobMock();
-        $clientMock->expects($this->once())->method('listContainers')->willReturn($listContainers);
-        $clientMock->expects($this->once())->method('createContainer');
-
-        $azureBlob = $this->createPartialMock(AzureBlob::class, ['createClient', 'getFileHandle']);
-        $azureBlob->method('createClient')->willReturn($clientMock);
+        $azureBlob = $this->createPartialMock(
+            AzureBlob::class,
+            ['createClient', 'doesContainerExist', 'createContainer', 'uploadBlob', 'getFileHandle']
+        );
+        $azureBlob->method('createClient')->willReturn($this->createContainerClient());
+        $azureBlob->method('doesContainerExist')->willReturn(false);
+        $azureBlob->expects($this->once())->method('createContainer');
+        $azureBlob->expects($this->once())->method('uploadBlob')
+                  ->with($this->anything(), $this->stringStartsWith('backup/'), $this->anything());
         $azureBlob->method('getFileHandle')->willReturn('filehandle');
 
         $azureBlob->setup([
-            'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=accountname;AccountKey=accountkey;' .
-                                    'EndpointSuffix=core.windows.net',
+            'connection_string' => self::CONNECTION_STRING,
             'container_name'    => 'dummy-container-name',
             'path'              => 'backup'
         ]);
 
         $azureBlob->sync($target, $result);
+
+        $this->assertContains('create blob container', $messages);
+        $this->assertContains('upload: done', $messages);
     }
 
     /**
-     * Tests AzureBlob::sync
+     * Tests AzureBlob::sync does not create an already existing container
      */
-    public function testSyncWithRemoteCleanup()
+    public function testSyncContainerAlreadyExists()
     {
-        $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $target   = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $messages = [];
+        $result   = $this->createDebugCollectingResult($messages);
 
-        $result = $this->createMock(Result::class);
-        $result->expects($this->exactly(3))->method('debug');
-
-        $listContainers = ListContainersResult::create([
-            "@attributes" => [
-                "ServiceEndpoint" => "https://accountname.blob.core.windows.net/"
-            ],
-            "Containers" => [],
-            "NextMarker" => null
-        ]);
-
-        $azureBlobContents = ListBlobsResult::create(
-            [
-                "@attributes" => [
-                    "ServiceEndpoint" => "https://accountname.blob.core.windows.net/",
-                    "ContainerName" => "mycontainer"
-                ],
-                "Prefix" => '/',
-                "MaxResults" => 10,
-                "Blobs" => [
-                    "Blob" => []
-                ],
-                "NextMarker" => null
-            ]
+        $azureBlob = $this->createPartialMock(
+            AzureBlob::class,
+            ['createClient', 'doesContainerExist', 'createContainer', 'uploadBlob', 'getFileHandle']
         );
-
-        $clientMock = $this->createAzureBlobMock();
-        $clientMock->expects($this->once())->method('listContainers')->willReturn($listContainers);
-        $clientMock->expects($this->once())->method('createContainer');
-        $clientMock->expects($this->once())->method('listBlobs')->willReturn($azureBlobContents);
-
-        $azureBlob = $this->createPartialMock(AzureBlob::class, ['createClient', 'getFileHandle']);
-        $azureBlob->method('createClient')->willReturn($clientMock);
+        $azureBlob->method('createClient')->willReturn($this->createContainerClient());
+        $azureBlob->method('doesContainerExist')->willReturn(true);
+        $azureBlob->expects($this->never())->method('createContainer');
+        $azureBlob->expects($this->once())->method('uploadBlob');
         $azureBlob->method('getFileHandle')->willReturn('filehandle');
 
         $azureBlob->setup([
-            'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=accountname;AccountKey=accountkey;' .
-                                   'EndpointSuffix=core.windows.net',
+            'connection_string' => self::CONNECTION_STRING,
+            'container_name'    => 'dummy-container-name',
+            'path'              => 'backup'
+        ]);
+
+        $azureBlob->sync($target, $result);
+
+        $this->assertNotContains('create blob container', $messages, 'must not log container creation when it exists');
+        $this->assertContains('upload: done', $messages);
+    }
+
+    /**
+     * Tests AzureBlob::sync with remote cleanup
+     */
+    public function testSyncWithRemoteCleanup()
+    {
+        $target   = $this->createTargetMock('foo.txt', 'foo.txt.gz');
+        $messages = [];
+        $result   = $this->createDebugCollectingResult($messages);
+
+        $collector = $this->createMock(AzureBlobCollector::class);
+        $collector->method('getBackupFiles')->willReturn([]);
+
+        $azureBlob = $this->createPartialMock(
+            AzureBlob::class,
+            ['createClient', 'doesContainerExist', 'createContainer', 'uploadBlob', 'getFileHandle', 'createCollector']
+        );
+        $azureBlob->method('createClient')->willReturn($this->createContainerClient());
+        $azureBlob->method('doesContainerExist')->willReturn(false);
+        $azureBlob->expects($this->once())->method('uploadBlob');
+        $azureBlob->method('getFileHandle')->willReturn('filehandle');
+        $azureBlob->method('createCollector')->willReturn($collector);
+
+        $azureBlob->setup([
+            'connection_string' => self::CONNECTION_STRING,
             'container_name'    => 'dummy-container-name',
             'path'              => 'backup',
             'cleanup.type'      => 'quantity',
@@ -164,10 +176,12 @@ class AzureBlobTest extends TestCase
         ]);
 
         $azureBlob->sync($target, $result);
+
+        $this->assertContains('upload: done', $messages);
     }
 
     /**
-     * Tests AmazonS3V3::sync
+     * Tests AzureBlob::sync failure
      */
     public function testSyncFail()
     {
@@ -176,26 +190,17 @@ class AzureBlobTest extends TestCase
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
         $result = $this->createMock(Result::class);
 
-        $listContainers = ListContainersResult::create([
-            "@attributes" => [
-                "ServiceEndpoint" => "https://accountname.blob.core.windows.net/"
-            ],
-            "Containers" => [],
-            "NextMarker" => null
-        ]);
-
-        $clientMock = $this->createAzureBlobMock();
-        $clientMock->expects($this->once())->method('listContainers')->willReturn($listContainers);
-        $clientMock->expects($this->once())->method('createContainer');
-        $clientMock->expects($this->once())->method('createBlockBlob')->will($this->throwException(new \Exception));
-
-        $azureBlob = $this->createPartialMock(AzureBlob::class, ['createClient', 'getFileHandle']);
-        $azureBlob->method('createClient')->willReturn($clientMock);
+        $azureBlob = $this->createPartialMock(
+            AzureBlob::class,
+            ['createClient', 'doesContainerExist', 'createContainer', 'uploadBlob', 'getFileHandle']
+        );
+        $azureBlob->method('createClient')->willReturn($this->createContainerClient());
+        $azureBlob->method('doesContainerExist')->willReturn(false);
         $azureBlob->method('getFileHandle')->willReturn('filehandle');
+        $azureBlob->method('uploadBlob')->will($this->throwException(new \Exception()));
 
         $azureBlob->setup([
-            'connection_string' => 'DefaultEndpointsProtocol=https;AccountName=accountname;AccountKey=accountkey;' .
-                                   'EndpointSuffix=core.windows.net',
+            'connection_string' => self::CONNECTION_STRING,
             'container_name'    => 'dummy-container-name',
             'path'              => 'backup'
         ]);
@@ -210,18 +215,22 @@ class AzureBlobTest extends TestCase
     {
         $azureBlob = new AzureBlob();
         $azureBlob->setup([
-            'connection_string' => 'dummy-connection-string',
+            'connection_string' => 'super-secret-connection-string',
             'container_name'    => 'dummy-container-name',
             'path' => '/'
         ]);
 
-        $resultStub = $this->createMock(Result::class);
-        $resultStub->expects($this->once())
-                   ->method('debug');
-
+        $messages   = [];
+        $resultStub = $this->createDebugCollectingResult($messages);
         $targetStub = $this->createMock(Target::class);
 
         $azureBlob->simulate($targetStub, $resultStub);
+
+        $this->assertCount(1, $messages);
+        // the credential carrying connection string must never be logged
+        $this->assertStringContainsString('connectionString: ********', $messages[0]);
+        $this->assertStringNotContainsString('super-secret-connection-string', $messages[0]);
+        $this->assertStringContainsString('dummy-container-name', $messages[0]);
     }
 
     /**
@@ -264,13 +273,28 @@ class AzureBlobTest extends TestCase
     }
 
     /**
-     * Create an azure blob client mock
-     * @return \MicrosoftAzure\Storage\Blob\BlobRestProxy
+     * Build an offline container client (no network calls on construction).
+     *
+     * @return \AzureOss\Storage\Blob\BlobContainerClient
      */
-    private function createAzureBlobMock()
+    private function createContainerClient(): BlobContainerClient
     {
-        /** @var $azureBlobMock \MicrosoftAzure\Storage\Blob\BlobRestProxy */
-        $azureBlobMock = $this->createMock(BlobRestProxy::class);
-        return $azureBlobMock;
+        return BlobServiceClient::fromConnectionString(self::CONNECTION_STRING)
+                                ->getContainerClient('dummy-container-name');
+    }
+
+    /**
+     * Build a Result mock that records every debug() message into $messages.
+     *
+     * @param  array $messages
+     * @return \phpbu\App\Result
+     */
+    private function createDebugCollectingResult(array &$messages): Result
+    {
+        $result = $this->createMock(Result::class);
+        $result->method('debug')->willReturnCallback(function ($message) use (&$messages) {
+            $messages[] = $message;
+        });
+        return $result;
     }
 }

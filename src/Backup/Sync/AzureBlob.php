@@ -1,7 +1,8 @@
 <?php
 namespace phpbu\App\Backup\Sync;
 
-use MicrosoftAzure\Storage\Blob\BlobRestProxy;
+use AzureOss\Storage\Blob\BlobContainerClient;
+use AzureOss\Storage\Blob\BlobServiceClient;
 use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
@@ -25,12 +26,11 @@ class AzureBlob implements Simulator
     use Cleanable;
 
     /**
-     * Azure Blob client.
+     * Azure Blob container client.
      *
-     * @var BlobRestProxy;
+     * @var BlobContainerClient
      */
-    private $client;
-
+    protected $client;
 
     /**
      * Azure Blob Connection String
@@ -77,9 +77,9 @@ class AzureBlob implements Simulator
      */
     public function setup(array $config)
     {
-        if (!class_exists('\\MicrosoftAzure\\Storage\\Blob\\BlobRestProxy')) {
-            throw new Exception('Azure Bob Storage SDK not loaded: use composer to install ' .
-                                         '"microsoft/azure-storage-blob"');
+        if (!class_exists('\\AzureOss\\Storage\\Blob\\BlobServiceClient')) {
+            throw new Exception('Azure Blob Storage SDK not loaded: use composer to install ' .
+                                         '"azure-oss/storage"');
         }
 
         // check for mandatory options
@@ -122,7 +122,7 @@ class AzureBlob implements Simulator
     {
         $this->client = $this->createClient();
 
-        if (!$this->doesContainerExist($this->client, $this->containerName)) {
+        if (!$this->doesContainerExist($this->client)) {
             $result->debug('create blob container');
             $this->createContainer($this->client);
         }
@@ -139,13 +139,14 @@ class AzureBlob implements Simulator
     }
 
     /**
-     * Create the Azure Blob client.
+     * Create the Azure Blob container client.
      *
-     * @return \MicrosoftAzure\Storage\Blob\BlobRestProxy
+     * @return \AzureOss\Storage\Blob\BlobContainerClient
      */
-    protected function createClient() : BlobRestProxy
+    protected function createClient() : BlobContainerClient
     {
-        return BlobRestProxy::createBlobService($this->connectionString);
+        return BlobServiceClient::fromConnectionString($this->connectionString)
+                                ->getContainerClient($this->containerName);
     }
 
     /**
@@ -157,7 +158,7 @@ class AzureBlob implements Simulator
     protected function createCollector(Target $target) : Collector
     {
         $path = new Path($this->pathRaw, $this->time);
-        return new Collector\AzureBlob($target, $path, $this->client, $this->containerName);
+        return new Collector\AzureBlob($target, $path, $this->client);
     }
 
     /**
@@ -180,47 +181,48 @@ class AzureBlob implements Simulator
     /**
      * Check if an Azure Blob Storage Container exists
      *
-     * @param \MicrosoftAzure\Storage\Blob\BlobRestProxy $blobRestProxy
-     * @param string                                     $containerName
+     * @param \AzureOss\Storage\Blob\BlobContainerClient $client
      * @return bool
      */
-    private function doesContainerExist(BlobRestProxy $blobRestProxy, string $containerName): bool
+    protected function doesContainerExist(BlobContainerClient $client): bool
     {
-        $containers = $blobRestProxy->listContainers()->getContainers();
-        foreach ($containers as $container) {
-            if ($container->getName() === $containerName) {
-                return true;
-            }
-        }
-        return false;
+        return $client->exists();
     }
 
     /**
      * Create an Azure Storage Container
      *
-     * @param \MicrosoftAzure\Storage\Blob\BlobRestProxy $blobRestProxy
+     * @param \AzureOss\Storage\Blob\BlobContainerClient $client
      */
-    private function createContainer(BlobRestProxy $blobRestProxy)
+    protected function createContainer(BlobContainerClient $client)
     {
-        $blobRestProxy->createContainer($this->containerName);
+        $client->create();
     }
 
     /**
      * Upload backup to Azure Blob Storage
      *
-     * @param  \phpbu\App\Backup\Target                    $target
-     * @param  \MicrosoftAzure\Storage\Blob\BlobRestProxy $blobRestProxy
+     * @param  \phpbu\App\Backup\Target                   $target
+     * @param  \AzureOss\Storage\Blob\BlobContainerClient $client
      * @throws \phpbu\App\Backup\Sync\Exception
      * @throws \phpbu\App\Exception
      */
-    private function upload(Target $target, BlobRestProxy $blobRestProxy)
+    protected function upload(Target $target, BlobContainerClient $client)
     {
         $source = $this->getFileHandle($target->getPathname(), 'r');
-        $blobRestProxy->createBlockBlob(
-            $this->containerName,
-            $this->getUploadPath($target),
-            $source
-        );
+        $this->uploadBlob($client, $this->getUploadPath($target), $source);
+    }
+
+    /**
+     * Upload a single blob to the container.
+     *
+     * @param  \AzureOss\Storage\Blob\BlobContainerClient $client
+     * @param  string                                     $path
+     * @param  resource                                   $source
+     */
+    protected function uploadBlob(BlobContainerClient $client, string $path, $source)
+    {
+        $client->getBlobClient($path)->upload($source);
     }
 
     /**
