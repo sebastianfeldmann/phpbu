@@ -257,36 +257,7 @@ final class Cmd
     protected function handleSelfUpdate() : void
     {
         $this->printVersionString();
-
-        // check if upgrade is necessary
-        $latestVersion = $this->getLatestVersion();
-        if (!$this->isPharOutdated($latestVersion)) {
-            echo 'You already have the latest version of phpbu installed.' . PHP_EOL;
-            exit(self::EXIT_SUCCESS);
-        }
-
-        $remoteFilename = 'http://phar.phpbu.de/phpbu.phar';
-        $localFilename  = realpath($_SERVER['argv'][0]);
-        $tempFilename   = basename($localFilename, '.phar') . '-temp.phar';
-
-        echo 'Updating the phpbu PHAR to version ' . $latestVersion . ' ... ';
-
-        $this->overwriteOriginalBinaryWithTempBinary($tempFilename, $this->downloadLatestPHAR($remoteFilename));
-
-        // check downloaded phar
-        try {
-            $phar = new Phar($tempFilename);
-            unset($phar);
-            // replace current phar with the new one
-            rename($tempFilename, $localFilename);
-        } catch (\Exception $e) {
-            // cleanup crappy phar
-            unlink($tempFilename);
-            echo 'failed' . PHP_EOL . $e->getMessage() . PHP_EOL;
-            exit(self::EXIT_EXCEPTION);
-        }
-
-        echo 'done' . PHP_EOL;
+        $this->printSelfUpdateRemoved();
     }
 
     /**
@@ -295,14 +266,16 @@ final class Cmd
     protected function handleVersionCheck() : void
     {
         $this->printVersionString();
+        $this->printSelfUpdateRemoved();
+    }
 
-        $latestVersion = $this->getLatestVersion();
-        if ($this->isPharOutdated($latestVersion)) {
-            print 'You are not using the latest version of phpbu.' . PHP_EOL
-                . 'Use "phpbu --self-update" to install phpbu ' . $latestVersion . PHP_EOL;
-        } else {
-            print 'You are using the latest version of phpbu.' . PHP_EOL;
-        }
+    protected function printSelfUpdateRemoved() : void
+    {
+        // check if upgrade is necessary
+        echo 'The self update feature got removed.' . PHP_EOL
+            . 'It is recommended to use phive to install and update the phpbu PHAR file.' . PHP_EOL
+            . PHP_EOL
+            . 'Go to https://phar.io to get the latest version if phive.' . PHP_EOL;
     }
 
     /**
