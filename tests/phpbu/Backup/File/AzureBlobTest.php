@@ -1,11 +1,11 @@
 <?php
 namespace phpbu\App\Backup\File;
 
-use DateTime;
-use Exception;
-use MicrosoftAzure\Storage\Blob\BlobRestProxy;
-use MicrosoftAzure\Storage\Blob\Models\Blob;
-use MicrosoftAzure\Storage\Blob\Models\BlobProperties;
+use AzureOss\Storage\Blob\BlobContainerClient;
+use AzureOss\Storage\Blob\BlobServiceClient;
+use AzureOss\Storage\Blob\Models\Blob;
+use AzureOss\Storage\Blob\Models\BlobProperties;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,58 +27,73 @@ class AzureBlobTest extends TestCase
      */
     public function testCreateFileWithCorrectProperties()
     {
-        $azureBlob = $this->getMockBuilder(BlobRestProxy::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['deleteBlob'])
+        $blob = $this->createBlob('collector/static-dir/dump.tar.gz', '2018-05-08 14:14:54.0 +00:00', 102102);
+
+        $file = $this->getMockBuilder(AzureBlob::class)
+            ->setConstructorArgs([$this->createContainerClient(), $blob])
+            ->onlyMethods(['deleteBlob'])
             ->getMock();
+        $file->expects($this->once())
+             ->method('deleteBlob')
+             ->with($this->equalTo('collector/static-dir/dump.tar.gz'));
 
-        $azureBlob->expects($this->once())
-                 ->method('deleteBlob')
-                 ->with('mycontainer', 'dump.tar.gz');
-
-        $blobProps = new BlobProperties();
-        $blobProps->setLastModified(new DateTime('2018-05-08 14:14:54.0 +00:00'));
-        $blobProps->setContentLength(102102);
-
-        $blob = new Blob();
-        $blob->setProperties($blobProps);
-        $blob->setName('dump.tar.gz');
-
-        $file = new AzureBlob($azureBlob, 'mycontainer', $blob);
         $this->assertEquals('dump.tar.gz', $file->getFilename());
-        $this->assertEquals('dump.tar.gz', $file->getPathname());
+        $this->assertEquals('collector/static-dir/dump.tar.gz', $file->getPathname());
         $this->assertEquals(102102, $file->getSize());
         $this->assertEquals(1525788894, $file->getMTime());
 
         $file->unlink();
-        $this->assertTrue(true, 'no exception should occur');
     }
 
     /**
-     * Tests AmazonS3V3::unlink
+     * Tests AzureBlob::unlink failure
      */
     public function testAzureBlobDeleteFailure()
     {
         $this->expectException('phpbu\App\Exception');
-        $azureBlob = $this->getMockBuilder(BlobRestProxy::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['deleteBlob'])
+
+        $blob = $this->createBlob('collector/static-dir/dump.tar.gz', '2018-05-08 14:14:54.0 +00:00', 102102);
+
+        $file = $this->getMockBuilder(AzureBlob::class)
+            ->setConstructorArgs([$this->createContainerClient(), $blob])
+            ->onlyMethods(['deleteBlob'])
             ->getMock();
+        $file->method('deleteBlob')->will($this->throwException(new \Exception()));
 
-        $azureBlob->expects($this->once())
-                 ->method('deleteBlob')
-                 ->with('mycontainer', 'dump.tar.gz')
-                 ->will($this->throwException(new Exception));
-
-        $blobProps = new BlobProperties();
-        $blobProps->setLastModified(new DateTime('2018-05-08 14:14:54.0 +00:00'));
-        $blobProps->setContentLength(102102);
-
-        $blob = new Blob();
-        $blob->setProperties($blobProps);
-        $blob->setName('dump.tar.gz');
-
-        $file = new AzureBlob($azureBlob, 'mycontainer', $blob);
         $file->unlink();
+    }
+
+    /**
+     * Build an offline container client (no network calls on construction).
+     *
+     * @return \AzureOss\Storage\Blob\BlobContainerClient
+     */
+    private function createContainerClient(): BlobContainerClient
+    {
+        return BlobServiceClient::fromConnectionString(
+            'DefaultEndpointsProtocol=https;AccountName=accountname;AccountKey=accountkey;' .
+            'EndpointSuffix=core.windows.net'
+        )->getContainerClient('mycontainer');
+    }
+
+    /**
+     * Build a blob model as returned by the Azure Blob SDK.
+     *
+     * @param  string $name
+     * @param  string $lastModified
+     * @param  int    $contentLength
+     * @return \AzureOss\Storage\Blob\Models\Blob
+     */
+    private function createBlob(string $name, string $lastModified, int $contentLength): Blob
+    {
+        $properties = new BlobProperties(
+            new DateTimeImmutable($lastModified),
+            $contentLength,
+            'application/octet-stream',
+            null,
+            []
+        );
+
+        return new Blob($name, $properties);
     }
 }
