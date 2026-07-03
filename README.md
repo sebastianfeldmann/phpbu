@@ -14,7 +14,7 @@ Get an in depth look into all the features and a short 'getting started' tutoria
 [![Build Status](https://github.com/sebastianfeldmann/phpbu/workflows/Integration/badge.svg)](https://github.com/sebastianfeldmann/phpbu/actions)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/?branch=master)
-[![PHP Website](https://img.shields.io/website-up-down-green-red/https/phpbu.de.svg)](https://www.phpbu.de)
+[![PHP Website](https://img.shields.io/website-up-down-green-red/https/www.phpbu.de.svg)](https://www.phpbu.de)
 
 If you are not using php 8.1 or greater already you can still use phpbu version [6.0.30](https://phar.phpbu.de/phpbu-6.0.20.phar) \
 If you are not using php 8.0 or greater already you can still use phpbu version [6.0.20](https://phar.phpbu.de/phpbu-6.0.20.phar) \
