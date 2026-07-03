@@ -82,7 +82,7 @@ If you are behind php 7.0 you can still use phpbu version [4.0.10](https://githu
 
 ## Installation
 
-You can [download](https://phar.phpbu.de/phpbu.phar) a PHP Archive [(PHAR)](http://php.net/phar) that bundles everything you need to run *PHPBU* in a single file.
+You can [download](https://github.com/sebastianfeldmann/phpbu/releases/latest) a PHP Archive [(PHAR)](http://php.net/phar) that bundles everything you need to run *PHPBU* in a single file.
 
     wget https://phar.phpbu.de/phpbu.phar
     chmod +x phpbu.phar
