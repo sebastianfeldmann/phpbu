@@ -5,6 +5,7 @@ use phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
+use phpseclib4\Exception\FileSystemException;
 
 /**
  * Sftp class.
@@ -21,7 +22,7 @@ use phpbu\App\Util;
 class Sftp extends Remote implements Collector
 {
     /**
-     * @var \phpseclib\Net\SFTP
+     * @var \phpseclib4\Net\SFTP
      */
     protected $sftp;
 
@@ -30,9 +31,9 @@ class Sftp extends Remote implements Collector
      *
      * @param \phpbu\App\Backup\Target $target
      * @param \phpbu\App\Backup\Path   $path
-     * @param \phpseclib\Net\SFTP      $sftp
+     * @param \phpseclib4\Net\SFTP      $sftp
      */
-    public function __construct(Target $target, Path $path, \phpseclib\Net\SFTP $sftp)
+    public function __construct(Target $target, Path $path, \phpseclib4\Net\SFTP $sftp)
     {
         $this->setUp($target, $path);
         $this->sftp = $sftp;
@@ -58,7 +59,12 @@ class Sftp extends Remote implements Collector
     {
         // collect all matching sub directories and get all the backup files
         $depth = Util\Path::getPathDepth($path);
-        $list  = $this->sftp->_list($path);
+        try {
+            $list = $this->sftp->rawlist($path);
+        } catch (FileSystemException $e) {
+            // directory does not exist or is not readable
+            return;
+        }
         if (!$list) {
             return;
         }

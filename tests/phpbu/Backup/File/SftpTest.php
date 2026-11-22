@@ -22,10 +22,10 @@ class SftpTest extends TestCase
      */
     public function testCreateFileWithCorrectProperties()
     {
-        $phpSecLibStub = $this->createMock(\phpseclib\Net\SFTP::class);
+        $phpSecLibStub = $this->createMock(\phpseclib4\Net\SFTP::class);
         $phpSecLibStub->expects($this->once())
                       ->method('delete')
-                      ->with('/backups/dump.tar.gz');
+                      ->with('/backups/dump.tar.gz', false);
 
         $remotePath = '/backups';
         $fileInfo   = [

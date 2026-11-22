@@ -7,7 +7,10 @@ use phpbu\App\Backup\Target;
 use phpbu\App\Configuration;
 use phpbu\App\Result;
 use phpbu\App\Util;
-use phpseclib;
+use phpseclib4;
+use phpseclib4\Crypt\Common\PrivateKey;
+use phpseclib4\Crypt\PublicKeyLoader;
+use phpseclib4\Exception\BaseException;
 
 /**
  * Sftp sync
@@ -23,7 +26,7 @@ use phpseclib;
 class Sftp extends Xtp
 {
     /**
-     * @var phpseclib\Net\SFTP
+     * @var phpseclib4\Net\SFTP
      */
     protected $sftp;
 
@@ -107,8 +110,8 @@ class Sftp extends Xtp
      */
     protected function checkRequirements()
     {
-        if (!class_exists('\\phpseclib\\Net\\SFTP')) {
-            throw new Exception('phpseclib not installed - use composer to install "phpseclib/phpseclib" version 2.x');
+        if (!class_exists('\\phpseclib4\\Net\\SFTP')) {
+            throw new Exception('phpseclib not installed - use composer to install "phpseclib/phpseclib" version 4.x');
         }
     }
 
@@ -136,35 +139,44 @@ class Sftp extends Xtp
         $remoteFilename = $target->getFilename();
         $localFile      = $target->getPathname();
 
-        $this->validateRemotePath();
+        try {
+            $this->validateRemotePath();
 
-        foreach ($this->getRemoteDirectoryList() as $dir) {
-            if (!$sftp->is_dir($dir)) {
-                $result->debug(sprintf('creating remote dir \'%s\'', $dir));
-                $sftp->mkdir($dir);
+            foreach ($this->getRemoteDirectoryList() as $dir) {
+                if (!$sftp->is_dir($dir)) {
+                    $result->debug(sprintf('creating remote dir \'%s\'', $dir));
+                    $sftp->mkdir($dir);
+                }
+                $result->debug(sprintf('change to remote dir \'%s\'', $dir));
+                $sftp->chdir($dir);
             }
-            $result->debug(sprintf('change to remote dir \'%s\'', $dir));
-            $sftp->chdir($dir);
+        } catch (BaseException $e) {
+            throw new Exception(sprintf('error preparing remote directory: %s', $e->getMessage()), 0, $e);
         }
 
         $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
-        $result->debug(sprintf('last error \'%s\'', $sftp->getLastSFTPError()));
 
-        if (!$sftp->put($remoteFilename, $localFile, phpseclib\Net\SFTP::SOURCE_LOCAL_FILE)) {
-            throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $sftp->getLastSFTPError()));
+        try {
+            $sftp->put($remoteFilename, $localFile, phpseclib4\Net\SFTP::SOURCE_LOCAL_FILE);
+        } catch (BaseException $e) {
+            throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $e->getMessage()), 0, $e);
         }
 
         // run remote cleanup
-        $this->cleanup($target, $result);
+        try {
+            $this->cleanup($target, $result);
+        } catch (BaseException $e) {
+            throw new Exception(sprintf('error cleaning up remote files: %s', $e->getMessage()), 0, $e);
+        }
     }
 
     /**
      * Create a sftp handle.
      *
-     * @return \phpseclib\Net\SFTP
+     * @return \phpseclib4\Net\SFTP
      * @throws \phpbu\App\Backup\Sync\Exception
      */
-    protected function createClient() : phpseclib\Net\SFTP
+    protected function createClient() : phpseclib4\Net\SFTP
     {
         if (!$this->sftp) {
             // silence phpseclib errors
@@ -184,6 +196,9 @@ class Sftp extends Xtp
                         )
                     );
                 }
+            } catch (BaseException $e) {
+                // phpseclib 4 reports connection and protocol errors as exceptions
+                throw new Exception(sprintf('connection to %s failed: %s', $this->host, $e->getMessage()), 0, $e);
             } finally {
                 // restore old error reporting
                 error_reporting($old);
@@ -197,11 +212,11 @@ class Sftp extends Xtp
     /**
      * Create the phpseclib client, not connected yet.
      *
-     * @return \phpseclib\Net\SFTP
+     * @return \phpseclib4\Net\SFTP
      */
-    protected function createSftp() : phpseclib\Net\SFTP
+    protected function createSftp() : phpseclib4\Net\SFTP
     {
-        return new phpseclib\Net\SFTP($this->host, $this->port);
+        return new phpseclib4\Net\SFTP($this->host, (int) $this->port);
     }
 
     /**
@@ -210,10 +225,10 @@ class Sftp extends Xtp
      * getServerPublicHostKey() connects and checks that the server holds the private key of the
      * host key it presents; the fingerprint check then ties that key to the configured server.
      *
-     * @param  \phpseclib\Net\SFTP $sftp
+     * @param  \phpseclib4\Net\SFTP $sftp
      * @throws \phpbu\App\Backup\Sync\Exception
      */
-    protected function verifyHostKey(phpseclib\Net\SFTP $sftp)
+    protected function verifyHostKey(phpseclib4\Net\SFTP $sftp)
     {
         $hostKey = $sftp->getServerPublicHostKey();
         if (!is_string($hostKey) || strpos($hostKey, ' ') === false) {
@@ -284,17 +299,24 @@ class Sftp extends Xtp
     /**
      * Return a phpseclib authentication thingy.
      *
-     * @return \phpseclib\Crypt\RSA|string
+     * @return \phpseclib4\Crypt\Common\PrivateKey|string
+     * @throws \phpbu\App\Backup\Sync\Exception
      */
     private function getAuth()
     {
-        $auth = $this->password;
+        $auth = (string) $this->password;
         // if private key should be used
         if ($this->privateKey) {
-            $auth = new phpseclib\Crypt\RSA();
-            $auth->loadKey(file_get_contents($this->privateKey));
-            if ($this->password) {
-                $auth->setPassword($this->password);
+            try {
+                $auth = PublicKeyLoader::load(
+                    (string) file_get_contents($this->privateKey),
+                    empty($this->password) ? null : $this->password
+                );
+            } catch (BaseException $e) {
+                throw new Exception(sprintf('could not load private key: %s', $e->getMessage()), 0, $e);
+            }
+            if (!$auth instanceof PrivateKey) {
+                throw new Exception('the configured key is not a private key');
             }
         }
         return $auth;

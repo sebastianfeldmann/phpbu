@@ -3,9 +3,10 @@ namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Backup\Target;
 use phpbu\App\Result;
-use phpseclib;
 use phpbu\App\BaseMockery;
+use phpseclib4\Exception\FileSystemException;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 
 /**
  * SftpTest
@@ -30,7 +31,7 @@ class SftpTest extends TestCase
     private const HOST_KEY_FINGERPRINT = 'SHA256:G2ZoezdfQkfH8IZer6P9thNTDfYDuFdsL11nFepiSkw';
 
     /**
-     * RSA test key as phpseclib 2 returns it (signature algorithm first) and its fingerprint
+     * RSA test key as phpseclib returns it (signature algorithm first) and its fingerprint
      */
     private const RSA_HOST_KEY             = 'rsa-sha2-256 '
                                            . 'AAAAB3NzaC1yc2EAAAADAQABAAABAQCcoZ5rOMZYxterWosmkoZgXcx3xLAwiPzq'
@@ -64,13 +65,13 @@ class SftpTest extends TestCase
     {
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
         $result = $this->createMock(Result::class);
-        $result->expects($this->exactly(6))->method('debug');
+        $result->expects($this->exactly(5))->method('debug');
 
-        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock = $this->createMock(\phpseclib4\Net\SFTP::class);
         $clientMock->expects($this->once())->method('realpath')->willReturn('/backup');
         $clientMock->expects($this->once())->method('mkdir')->with('foo');
         $clientMock->expects($this->exactly(3))->method('chdir');
-        $clientMock->expects($this->once())->method('put')->willReturn(true);
+        $clientMock->expects($this->once())->method('put');
         $clientMock->expects($this->exactly(3))
                    ->method('is_dir')
                    ->will($this->onConsecutiveCalls(true, true, false));
@@ -95,13 +96,13 @@ class SftpTest extends TestCase
     {
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
         $result = $this->createMock(Result::class);
-        $result->expects($this->exactly(5))->method('debug');
+        $result->expects($this->exactly(4))->method('debug');
 
-        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock = $this->createMock(\phpseclib4\Net\SFTP::class);
         $clientMock->expects($this->exactly(2))->method('is_dir')->will($this->onConsecutiveCalls(true, true));
         $clientMock->expects($this->exactly(2))->method('chdir');
-        $clientMock->expects($this->once())->method('put')->willReturn(true);
-        $clientMock->expects($this->once())->method('_list')->willReturn([]);
+        $clientMock->expects($this->once())->method('put');
+        $clientMock->expects($this->once())->method('rawlist')->willReturn([]);
 
         $sftp = $this->createPartialMock(Sftp::class, ['createClient']);
         $sftp->method('createClient')->willReturn($clientMock);
@@ -123,15 +124,18 @@ class SftpTest extends TestCase
      */
     public function testSyncFail()
     {
-        $this->expectException('phpbu\App\Exception');
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
+        $this->expectExceptionMessage('error uploading file: foo.txt.gz - permission denied');
         $target = $this->createTargetMock('foo.txt', 'foo.txt.gz');
         $result = $this->createMock(Result::class);
-        $result->expects($this->exactly(4))->method('debug');
+        $result->expects($this->exactly(3))->method('debug');
 
-        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock = $this->createMock(\phpseclib4\Net\SFTP::class);
         $clientMock->expects($this->exactly(2))->method('is_dir')->will($this->onConsecutiveCalls(true, true));
         $clientMock->expects($this->exactly(2))->method('chdir');
-        $clientMock->expects($this->once())->method('put')->willReturn(false);
+        $clientMock->expects($this->once())
+                   ->method('put')
+                   ->willThrowException(new FileSystemException('permission denied'));
 
         $sftp = $this->createPartialMock(Sftp::class, ['createClient']);
         $sftp->method('createClient')->willReturn($clientMock);
@@ -272,7 +276,7 @@ class SftpTest extends TestCase
     }
 
     /**
-     * Tests Sftp::fingerprint and Sftp::keyType for an RSA key as phpseclib 2 returns it
+     * Tests Sftp::fingerprint and Sftp::keyType for an RSA key as phpseclib returns it
      */
     public function testFingerprintAndTypeOfRsaKey()
     {
@@ -314,7 +318,7 @@ class SftpTest extends TestCase
     public function testCreateClientVerifiesHostKeyBeforeLogin()
     {
         $calls      = [];
-        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock = $this->createMock(\phpseclib4\Net\SFTP::class);
         $clientMock->expects($this->once())
                    ->method('getServerPublicHostKey')
                    ->willReturnCallback(function () use (&$calls) {
@@ -340,7 +344,7 @@ class SftpTest extends TestCase
      */
     public function testCreateClientHostKeyMismatch()
     {
-        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock = $this->createMock(\phpseclib4\Net\SFTP::class);
         $clientMock->method('getServerPublicHostKey')->willReturn(self::RSA_HOST_KEY);
         $clientMock->expects($this->never())->method('login');
 
@@ -367,8 +371,8 @@ class SftpTest extends TestCase
      */
     public function testCreateClientHostKeyUnreadable()
     {
-        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
-        $clientMock->method('getServerPublicHostKey')->willReturn(false);
+        $clientMock = $this->createMock(\phpseclib4\Net\SFTP::class);
+        $clientMock->method('getServerPublicHostKey')->willReturn(null);
         $clientMock->expects($this->never())->method('login');
 
         $sftp = $this->createSftpWithClient($clientMock, self::HOST_KEY_FINGERPRINT);
@@ -383,7 +387,7 @@ class SftpTest extends TestCase
      */
     public function testCreateClientWithoutFingerprint()
     {
-        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock = $this->createMock(\phpseclib4\Net\SFTP::class);
         $clientMock->expects($this->never())->method('getServerPublicHostKey');
         $clientMock->expects($this->once())->method('login')->willReturn(true);
 
@@ -397,7 +401,7 @@ class SftpTest extends TestCase
      */
     public function testCreateClientFailedCheckIsNotCached()
     {
-        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock = $this->createMock(\phpseclib4\Net\SFTP::class);
         $clientMock->method('getServerPublicHostKey')->willReturn(self::HOST_KEY);
         $clientMock->expects($this->never())->method('login');
 
@@ -418,7 +422,7 @@ class SftpTest extends TestCase
      */
     public function testCreateClientFailedLoginIsNotCached()
     {
-        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock = $this->createMock(\phpseclib4\Net\SFTP::class);
         $clientMock->expects($this->exactly(2))->method('login')->willReturn(false);
 
         $sftp  = $this->createSftpWithClient($clientMock, '');
@@ -441,7 +445,7 @@ class SftpTest extends TestCase
     /**
      * Create a Sftp sync whose phpseclib client is the given mock
      *
-     * @param  \phpseclib\Net\SFTP $clientMock
+     * @param  \phpseclib4\Net\SFTP $clientMock
      * @param  string               $fingerprint
      * @return \phpbu\App\Backup\Sync\Sftp
      */
@@ -464,11 +468,11 @@ class SftpTest extends TestCase
      * Call the protected Sftp::createClient
      *
      * @param  \phpbu\App\Backup\Sync\Sftp $sftp
-     * @return \phpseclib\Net\SFTP
+     * @return \phpseclib4\Net\SFTP
      */
     private function invokeCreateClient(Sftp $sftp)
     {
-        $method = new \ReflectionMethod(Sftp::class, 'createClient');
+        $method = new ReflectionMethod(Sftp::class, 'createClient');
 
         return $method->invoke($sftp);
     }
@@ -480,7 +484,7 @@ class SftpTest extends TestCase
     {
         $secLibMock = $this->createPHPSecLibSftpMock();
         $target     = $this->createTargetMock('foo.txt', 'foo.txt.gz');
-        $result     = $this->getResultMock(5);
+        $result     = $this->getResultMock(4);
 
         $sftp = $this->createPartialMock(Sftp::class, ['createClient']);
         $sftp->method('createClient')->willReturn($secLibMock);
@@ -498,19 +502,19 @@ class SftpTest extends TestCase
     /**
      * Create a app result mock
      *
-     * @return \phpseclib\Net\SFTP
+     * @return \phpseclib4\Net\SFTP
      */
     private function createPHPSecLibSftpMock()
     {
-        $secLib = $this->createMock(phpseclib\Net\SFTP::class);
+        $secLib = $this->createMock(\phpseclib4\Net\SFTP::class);
 
         $secLib->expects($this->exactly(2))
                ->method('is_dir')
                ->withConsecutive(['/'], ['foo'])
                ->will($this->onConsecutiveCalls(true, false));
-        $secLib->method('chdir')->willReturn(true);
-        $secLib->expects($this->once())->method('mkdir')->with('foo')->willReturn(true);
-        $secLib->method('put')->willReturn(true);
+        $secLib->expects($this->exactly(2))->method('chdir');
+        $secLib->expects($this->once())->method('mkdir')->with('foo');
+        $secLib->expects($this->once())->method('put');
 
         return $secLib;
     }

@@ -16,18 +16,18 @@ namespace phpbu\App\Backup\File;
 class Sftp extends Remote
 {
     /**
-     * @var \phpseclib\Net\SFTP
+     * @var \phpseclib4\Net\SFTP
      */
     protected $sftp;
 
     /**
      * Sftp constructor.
      *
-     * @param \phpseclib\Net\SFTP $sftp
+     * @param \phpseclib4\Net\SFTP $sftp
      * @param array               $fileInfo
      * @param string              $remotePath
      */
-    public function __construct(\phpseclib\Net\SFTP $sftp, array $fileInfo, string $remotePath)
+    public function __construct(\phpseclib4\Net\SFTP $sftp, array $fileInfo, string $remotePath)
     {
         $this->sftp         = $sftp;
         $this->filename     = $fileInfo['filename'];
@@ -41,6 +41,6 @@ class Sftp extends Remote
      */
     public function unlink()
     {
-        $this->sftp->delete($this->pathname);
+        $this->sftp->delete($this->pathname, false);
     }
 }
