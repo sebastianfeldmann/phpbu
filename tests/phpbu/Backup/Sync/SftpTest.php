@@ -25,7 +25,8 @@ class SftpTest extends TestCase
     /**
      * Test host key and its fingerprint as printed by ssh-keygen -l
      */
-    private const HOST_KEY             = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICkL/q8oDfs71KsiB+PR/Rikw3PAHp0wFu47RcQ/DBaO';
+    private const HOST_KEY             = 'ssh-ed25519 '
+                                       . 'AAAAC3NzaC1lZDI1NTE5AAAAICkL/q8oDfs71KsiB+PR/Rikw3PAHp0wFu47RcQ/DBaO';
     private const HOST_KEY_FINGERPRINT = 'SHA256:G2ZoezdfQkfH8IZer6P9thNTDfYDuFdsL11nFepiSkw';
 
     /**
@@ -243,6 +244,23 @@ class SftpTest extends TestCase
     }
 
     /**
+     * Tests Sftp::setUp with a fingerprint that uses every base64 character class
+     */
+    public function testSetUpValidHostKeyFingerprint()
+    {
+        $sftp = new Sftp();
+        $sftp->setup([
+            'host'               => 'example.com',
+            'user'               => 'user.name',
+            'password'           => 'secret',
+            'path'               => 'foo',
+            'hostKeyFingerprint' => 'SHA256:Ab0+/' . str_repeat('x', 38)
+        ]);
+
+        $this->assertTrue(true, 'no exception should occur');
+    }
+
+    /**
      * Tests Sftp::fingerprint against the output of ssh-keygen -l for the same key
      */
     public function testFingerprintMatchesOpenSsh()
@@ -288,9 +306,20 @@ class SftpTest extends TestCase
 
         $sftp = $this->createSftpWithClient($clientMock, 'SHA256:' . str_repeat('A', 43));
 
-        $this->expectException('phpbu\App\Backup\Sync\Exception');
-        $this->expectExceptionMessage('host key mismatch for example.com');
-        $this->invokeCreateClient($sftp);
+        $level = error_reporting(E_ALL);
+        try {
+            $this->invokeCreateClient($sftp);
+            $this->fail('host key mismatch expected');
+        } catch (Exception $e) {
+            $this->assertStringContainsString(
+                'host key mismatch for example.com: expected SHA256:' . str_repeat('A', 43)
+                . ', got ' . self::HOST_KEY_FINGERPRINT . ' (ssh-ed25519 key)',
+                $e->getMessage()
+            );
+            $this->assertSame(E_ALL, error_reporting(), 'error reporting must be restored');
+        } finally {
+            error_reporting($level);
+        }
     }
 
     /**
@@ -345,6 +374,31 @@ class SftpTest extends TestCase
     }
 
     /**
+     * Tests that a failed login is not cached and restores error reporting
+     */
+    public function testCreateClientFailedLoginIsNotCached()
+    {
+        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock->expects($this->exactly(2))->method('login')->willReturn(false);
+
+        $sftp  = $this->createSftpWithClient($clientMock, '');
+        $level = error_reporting(E_ALL);
+        try {
+            for ($i = 0; $i < 2; $i++) {
+                try {
+                    $this->invokeCreateClient($sftp);
+                    $this->fail('authentication failure expected');
+                } catch (Exception $e) {
+                    $this->assertStringContainsString('authentication failed', $e->getMessage());
+                    $this->assertSame(E_ALL, error_reporting(), 'error reporting must be restored');
+                }
+            }
+        } finally {
+            error_reporting($level);
+        }
+    }
+
+    /**
      * Create a Sftp sync whose phpseclib client is the given mock
      *
      * @param  \phpseclib\Net\SFTP $clientMock
@@ -375,7 +429,6 @@ class SftpTest extends TestCase
     private function invokeCreateClient(Sftp $sftp)
     {
         $method = new \ReflectionMethod(Sftp::class, 'createClient');
-        $method->setAccessible(true);
 
         return $method->invoke($sftp);
     }

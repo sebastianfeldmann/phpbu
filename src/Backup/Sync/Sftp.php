@@ -168,9 +168,9 @@ class Sftp extends Xtp
     {
         if (!$this->sftp) {
             // silence phpseclib errors
-            $old  = error_reporting(0);
-            $sftp = $this->createSftp();
+            $old = error_reporting(0);
             try {
+                $sftp = $this->createSftp();
                 if (!empty($this->hostKeyFingerprint)) {
                     $this->verifyHostKey($sftp);
                 }
@@ -223,10 +223,11 @@ class Sftp extends Xtp
         if (!hash_equals($this->hostKeyFingerprint, $actual)) {
             throw new Exception(
                 sprintf(
-                    'host key mismatch for %s: expected %s, got %s',
+                    'host key mismatch for %s: expected %s, got %s (%s key)',
                     $this->host,
                     $this->hostKeyFingerprint,
-                    $actual
+                    $actual,
+                    strtok($hostKey, ' ')
                 )
             );
         }
