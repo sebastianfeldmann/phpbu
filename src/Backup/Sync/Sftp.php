@@ -263,7 +263,9 @@ class Sftp extends Xtp
             return 'unknown';
         }
         $length = unpack('N', substr($blob, 0, 4))[1];
-        return substr($blob, 4, $length);
+        $type   = substr($blob, 4, min($length, 64));
+        // the server sends this value, so it reaches the message only if it looks like a key type
+        return preg_match('#^[a-z0-9@.\-]{1,64}$#D', $type) ? $type : 'unknown';
     }
 
     /**

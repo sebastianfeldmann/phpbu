@@ -280,6 +280,7 @@ class SftpTest extends TestCase
         $this->assertEquals('ssh-rsa', Sftp::keyType(self::RSA_HOST_KEY));
         $this->assertEquals('ssh-ed25519', Sftp::keyType(self::HOST_KEY));
         $this->assertEquals('unknown', Sftp::keyType('ssh-rsa'));
+        $this->assertEquals('unknown', Sftp::keyType('x ' . base64_encode(pack('N', 9) . '<b>x</b>')));
     }
 
     /**
