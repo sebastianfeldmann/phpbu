@@ -99,6 +99,11 @@
   "config": {
     "allow-plugins": {
       "php-http/discovery": true
+    },
+    "audit": {
+      "ignore": {
+        "CVE-2026-84308": "GHSA-q97c-8qh3-fpc6 lists every phpseclib version below 3.0.57, but the defect is in the pure-PHP X25519 code of 3.x (Math/PrimeField, Crypt/EC). 2.x has neither; its SSH2 key exchange calls ext-sodium."
+      }
     }
   }
 }
