@@ -23,6 +23,12 @@ class SftpTest extends TestCase
     use BaseMockery;
 
     /**
+     * Test host key and its fingerprint as printed by ssh-keygen -l
+     */
+    private const HOST_KEY             = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICkL/q8oDfs71KsiB+PR/Rikw3PAHp0wFu47RcQ/DBaO';
+    private const HOST_KEY_FINGERPRINT = 'SHA256:G2ZoezdfQkfH8IZer6P9thNTDfYDuFdsL11nFepiSkw';
+
+    /**
      * Tests Sftp::setUp
      */
     public function testSetUpOk()
@@ -218,6 +224,160 @@ class SftpTest extends TestCase
             'password' => '12345',
             'path'     => '/foo'
         ]);
+    }
+
+    /**
+     * Tests Sftp::setUp
+     */
+    public function testSetUpInvalidHostKeyFingerprint()
+    {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
+        $sftp = new Sftp();
+        $sftp->setup([
+            'host'               => 'example.com',
+            'user'               => 'user.name',
+            'password'           => 'secret',
+            'path'               => 'foo',
+            'hostKeyFingerprint' => 'aa:bb:cc'
+        ]);
+    }
+
+    /**
+     * Tests Sftp::fingerprint against the output of ssh-keygen -l for the same key
+     */
+    public function testFingerprintMatchesOpenSsh()
+    {
+        $this->assertEquals(self::HOST_KEY_FINGERPRINT, Sftp::fingerprint(self::HOST_KEY));
+    }
+
+    /**
+     * Tests that a matching host key is checked before the login
+     */
+    public function testCreateClientVerifiesHostKeyBeforeLogin()
+    {
+        $calls      = [];
+        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock->expects($this->once())
+                   ->method('getServerPublicHostKey')
+                   ->willReturnCallback(function () use (&$calls) {
+                       $calls[] = 'hostkey';
+                       return self::HOST_KEY;
+                   });
+        $clientMock->expects($this->once())
+                   ->method('login')
+                   ->with('user.name', 'secret')
+                   ->willReturnCallback(function () use (&$calls) {
+                       $calls[] = 'login';
+                       return true;
+                   });
+
+        $sftp = $this->createSftpWithClient($clientMock, self::HOST_KEY_FINGERPRINT);
+
+        $this->assertSame($clientMock, $this->invokeCreateClient($sftp));
+        $this->assertEquals(['hostkey', 'login'], $calls);
+    }
+
+    /**
+     * Tests that a different host key stops the connection before any credential is sent
+     */
+    public function testCreateClientHostKeyMismatch()
+    {
+        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock->method('getServerPublicHostKey')->willReturn(self::HOST_KEY);
+        $clientMock->expects($this->never())->method('login');
+
+        $sftp = $this->createSftpWithClient($clientMock, 'SHA256:' . str_repeat('A', 43));
+
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
+        $this->expectExceptionMessage('host key mismatch for example.com');
+        $this->invokeCreateClient($sftp);
+    }
+
+    /**
+     * Tests that an unreadable host key stops the connection before any credential is sent
+     */
+    public function testCreateClientHostKeyUnreadable()
+    {
+        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock->method('getServerPublicHostKey')->willReturn(false);
+        $clientMock->expects($this->never())->method('login');
+
+        $sftp = $this->createSftpWithClient($clientMock, self::HOST_KEY_FINGERPRINT);
+
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
+        $this->expectExceptionMessage('could not read the host key of example.com');
+        $this->invokeCreateClient($sftp);
+    }
+
+    /**
+     * Tests that without a configured fingerprint the host key is not requested
+     */
+    public function testCreateClientWithoutFingerprint()
+    {
+        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock->expects($this->never())->method('getServerPublicHostKey');
+        $clientMock->expects($this->once())->method('login')->willReturn(true);
+
+        $sftp = $this->createSftpWithClient($clientMock, '');
+
+        $this->assertSame($clientMock, $this->invokeCreateClient($sftp));
+    }
+
+    /**
+     * Tests that a failed check leaves no client behind for a later call
+     */
+    public function testCreateClientFailedCheckIsNotCached()
+    {
+        $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
+        $clientMock->method('getServerPublicHostKey')->willReturn(self::HOST_KEY);
+        $clientMock->expects($this->never())->method('login');
+
+        $sftp = $this->createSftpWithClient($clientMock, 'SHA256:' . str_repeat('A', 43));
+
+        for ($i = 0; $i < 2; $i++) {
+            try {
+                $this->invokeCreateClient($sftp);
+                $this->fail('host key mismatch expected');
+            } catch (Exception $e) {
+                $this->assertStringContainsString('host key mismatch', $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Create a Sftp sync whose phpseclib client is the given mock
+     *
+     * @param  \phpseclib\Net\SFTP $clientMock
+     * @param  string               $fingerprint
+     * @return \phpbu\App\Backup\Sync\Sftp
+     */
+    private function createSftpWithClient($clientMock, string $fingerprint)
+    {
+        $sftp = $this->createPartialMock(Sftp::class, ['createSftp']);
+        $sftp->method('createSftp')->willReturn($clientMock);
+        $sftp->setup([
+            'host'               => 'example.com',
+            'user'               => 'user.name',
+            'password'           => 'secret',
+            'path'               => 'foo',
+            'hostKeyFingerprint' => $fingerprint
+        ]);
+
+        return $sftp;
+    }
+
+    /**
+     * Call the protected Sftp::createClient
+     *
+     * @param  \phpbu\App\Backup\Sync\Sftp $sftp
+     * @return \phpseclib\Net\SFTP
+     */
+    private function invokeCreateClient(Sftp $sftp)
+    {
+        $method = new \ReflectionMethod(Sftp::class, 'createClient');
+        $method->setAccessible(true);
+
+        return $method->invoke($sftp);
     }
 
     /**
