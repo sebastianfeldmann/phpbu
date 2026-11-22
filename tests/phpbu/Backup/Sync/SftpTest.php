@@ -30,6 +30,18 @@ class SftpTest extends TestCase
     private const HOST_KEY_FINGERPRINT = 'SHA256:G2ZoezdfQkfH8IZer6P9thNTDfYDuFdsL11nFepiSkw';
 
     /**
+     * RSA test key as phpseclib 2 returns it (signature algorithm first) and its fingerprint
+     */
+    private const RSA_HOST_KEY             = 'rsa-sha2-256 '
+                                           . 'AAAAB3NzaC1yc2EAAAADAQABAAABAQCcoZ5rOMZYxterWosmkoZgXcx3xLAwiPzq'
+                                           . 'eiHngcCfhfZLaWPbVlGB9D0bpzCYCMatC+rwC6+SpPfTMUQIj8t0uPIR002Dak2f'
+                                           . '0QkIOUC9TnPBjTIs5zOtExMzD4IyavyfBLR1mgDDaPmZrQNs1yd8/6p4UQ40AVek'
+                                           . '0AKpIICmorJMP3JSop/mDylw5NVHzLdFxf+iFhdrT9yJz0Iw/jXJWeShyFQbG9o9'
+                                           . 'CXEwWf/MXB+2bkgXH5/U9xGVfNKSlSFmUYs/1/9kLsmNUTAR4l9k+2gQwLF2tTdD'
+                                           . '7WpGaXLUpk1Q0tPISNgrWmxnJUNrI92eWBu8w94O+9FdVVvnUgs3';
+    private const RSA_HOST_KEY_FINGERPRINT = 'SHA256:18tUEn0/OSV5RhTK5I9mnwpjhF85KUBvFUHjPWPTMb4';
+
+    /**
      * Tests Sftp::setUp
      */
     public function testSetUpOk()
@@ -244,6 +256,33 @@ class SftpTest extends TestCase
     }
 
     /**
+     * Tests Sftp::setUp rejects a fingerprint with a trailing newline
+     */
+    public function testSetUpHostKeyFingerprintTrailingNewline()
+    {
+        $this->expectException('phpbu\App\Backup\Sync\Exception');
+        $sftp = new Sftp();
+        $sftp->setup([
+            'host'               => 'example.com',
+            'user'               => 'user.name',
+            'password'           => 'secret',
+            'path'               => 'foo',
+            'hostKeyFingerprint' => self::HOST_KEY_FINGERPRINT . "\n"
+        ]);
+    }
+
+    /**
+     * Tests Sftp::fingerprint and Sftp::keyType for an RSA key as phpseclib 2 returns it
+     */
+    public function testFingerprintAndTypeOfRsaKey()
+    {
+        $this->assertEquals(self::RSA_HOST_KEY_FINGERPRINT, Sftp::fingerprint(self::RSA_HOST_KEY));
+        $this->assertEquals('ssh-rsa', Sftp::keyType(self::RSA_HOST_KEY));
+        $this->assertEquals('ssh-ed25519', Sftp::keyType(self::HOST_KEY));
+        $this->assertEquals('unknown', Sftp::keyType('ssh-rsa'));
+    }
+
+    /**
      * Tests Sftp::setUp with a fingerprint that uses every base64 character class
      */
     public function testSetUpValidHostKeyFingerprint()
@@ -301,7 +340,7 @@ class SftpTest extends TestCase
     public function testCreateClientHostKeyMismatch()
     {
         $clientMock = $this->createMock(\phpseclib\Net\SFTP::class);
-        $clientMock->method('getServerPublicHostKey')->willReturn(self::HOST_KEY);
+        $clientMock->method('getServerPublicHostKey')->willReturn(self::RSA_HOST_KEY);
         $clientMock->expects($this->never())->method('login');
 
         $sftp = $this->createSftpWithClient($clientMock, 'SHA256:' . str_repeat('A', 43));
@@ -313,7 +352,7 @@ class SftpTest extends TestCase
         } catch (Exception $e) {
             $this->assertStringContainsString(
                 'host key mismatch for example.com: expected SHA256:' . str_repeat('A', 43)
-                . ', got ' . self::HOST_KEY_FINGERPRINT . ' (ssh-ed25519 key)',
+                . ', got ' . self::RSA_HOST_KEY_FINGERPRINT . ' (ssh-rsa key)',
                 $e->getMessage()
             );
             $this->assertSame(E_ALL, error_reporting(), 'error reporting must be restored');

@@ -87,7 +87,7 @@ class Sftp extends Xtp
         $this->privateKey = $privateKey;
 
         $fingerprint = Util\Arr::getValue($config, 'hostKeyFingerprint', '');
-        if (!empty($fingerprint) && !preg_match('#^SHA256:[A-Za-z0-9+/]{43}$#', $fingerprint)) {
+        if (!empty($fingerprint) && !preg_match('#^SHA256:[A-Za-z0-9+/]{43}$#D', $fingerprint)) {
             throw new Exception(
                 '\'hostKeyFingerprint\' must be a SHA256 fingerprint like \'SHA256:...\', see ssh-keygen -l'
             );
@@ -227,7 +227,7 @@ class Sftp extends Xtp
                     $this->host,
                     $this->hostKeyFingerprint,
                     $actual,
-                    strtok($hostKey, ' ')
+                    self::keyType($hostKey)
                 )
             );
         }
@@ -244,6 +244,26 @@ class Sftp extends Xtp
         $parts = explode(' ', trim($publicKey));
         $blob  = base64_decode($parts[1] ?? '', true);
         return 'SHA256:' . rtrim(base64_encode(hash('sha256', (string) $blob, true)), '=');
+    }
+
+    /**
+     * Return the key type stored in a public key blob, e.g. "ssh-rsa".
+     *
+     * phpseclib prefixes the key with the signature algorithm (rsa-sha2-256), which
+     * ssh-keyscan and ssh-keygen do not show, so the type is read from the blob itself.
+     *
+     * @param  string $publicKey
+     * @return string
+     */
+    public static function keyType(string $publicKey) : string
+    {
+        $parts = explode(' ', trim($publicKey));
+        $blob  = (string) base64_decode($parts[1] ?? '', true);
+        if (strlen($blob) < 4) {
+            return 'unknown';
+        }
+        $length = unpack('N', substr($blob, 0, 4))[1];
+        return substr($blob, 4, $length);
     }
 
     /**
