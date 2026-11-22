@@ -7,7 +7,10 @@ use phpbu\App\Backup\Target;
 use phpbu\App\Configuration;
 use phpbu\App\Result;
 use phpbu\App\Util;
-use phpseclib;
+use phpseclib4;
+use phpseclib4\Crypt\Common\PrivateKey;
+use phpseclib4\Crypt\PublicKeyLoader;
+use phpseclib4\Exception\BaseException;
 
 /**
  * Sftp sync
@@ -23,7 +26,7 @@ use phpseclib;
 class Sftp extends Xtp
 {
     /**
-     * @var phpseclib\Net\SFTP
+     * @var phpseclib4\Net\SFTP
      */
     protected $sftp;
 
@@ -52,6 +55,13 @@ class Sftp extends Xtp
     protected $privateKey;
 
     /**
+     * SHA256 fingerprint of the server's host key, as printed by ssh-keygen -l
+     *
+     * @var string
+     */
+    protected $hostKeyFingerprint;
+
+    /**
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::setup()
@@ -78,6 +88,15 @@ class Sftp extends Xtp
             }
         }
         $this->privateKey = $privateKey;
+
+        $fingerprint = Util\Arr::getValue($config, 'hostKeyFingerprint', '');
+        if (!empty($fingerprint) && !preg_match('#^SHA256:[A-Za-z0-9+/]{43}$#D', $fingerprint)) {
+            throw new Exception(
+                '\'hostKeyFingerprint\' must be a SHA256 fingerprint like \'SHA256:...\', see ssh-keygen -l'
+            );
+        }
+        $this->hostKeyFingerprint = $fingerprint;
+
         $this->remotePath = new Path($config['path'], $this->time);
         $this->port       = Util\Arr::getValue($config, 'port', '22');
 
@@ -91,8 +110,8 @@ class Sftp extends Xtp
      */
     protected function checkRequirements()
     {
-        if (!class_exists('\\phpseclib\\Net\\SFTP')) {
-            throw new Exception('phpseclib not installed - use composer to install "phpseclib/phpseclib" version 2.x');
+        if (!class_exists('\\phpseclib4\\Net\\SFTP')) {
+            throw new Exception('phpseclib not installed - use composer to install "phpseclib/phpseclib" version 4.x');
         }
     }
 
@@ -120,58 +139,148 @@ class Sftp extends Xtp
         $remoteFilename = $target->getFilename();
         $localFile      = $target->getPathname();
 
-        $this->validateRemotePath();
+        try {
+            $this->validateRemotePath();
 
-        foreach ($this->getRemoteDirectoryList() as $dir) {
-            if (!$sftp->is_dir($dir)) {
-                $result->debug(sprintf('creating remote dir \'%s\'', $dir));
-                $sftp->mkdir($dir);
+            foreach ($this->getRemoteDirectoryList() as $dir) {
+                if (!$sftp->is_dir($dir)) {
+                    $result->debug(sprintf('creating remote dir \'%s\'', $dir));
+                    $sftp->mkdir($dir);
+                }
+                $result->debug(sprintf('change to remote dir \'%s\'', $dir));
+                $sftp->chdir($dir);
             }
-            $result->debug(sprintf('change to remote dir \'%s\'', $dir));
-            $sftp->chdir($dir);
+        } catch (BaseException $e) {
+            throw new Exception(sprintf('error preparing remote directory: %s', $e->getMessage()), 0, $e);
         }
 
         $result->debug(sprintf('store file \'%s\' as \'%s\'', $localFile, $remoteFilename));
-        $result->debug(sprintf('last error \'%s\'', $sftp->getLastSFTPError()));
 
-        if (!$sftp->put($remoteFilename, $localFile, phpseclib\Net\SFTP::SOURCE_LOCAL_FILE)) {
-            throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $sftp->getLastSFTPError()));
+        try {
+            $sftp->put($remoteFilename, $localFile, phpseclib4\Net\SFTP::SOURCE_LOCAL_FILE);
+        } catch (BaseException $e) {
+            throw new Exception(sprintf('error uploading file: %s - %s', $localFile, $e->getMessage()), 0, $e);
         }
 
         // run remote cleanup
-        $this->cleanup($target, $result);
+        try {
+            $this->cleanup($target, $result);
+        } catch (BaseException $e) {
+            throw new Exception(sprintf('error cleaning up remote files: %s', $e->getMessage()), 0, $e);
+        }
     }
 
     /**
      * Create a sftp handle.
      *
-     * @return \phpseclib\Net\SFTP
+     * @return \phpseclib4\Net\SFTP
      * @throws \phpbu\App\Backup\Sync\Exception
      */
-    protected function createClient() : phpseclib\Net\SFTP
+    protected function createClient() : phpseclib4\Net\SFTP
     {
         if (!$this->sftp) {
             // silence phpseclib errors
-            $old  = error_reporting(0);
-            $this->sftp = new phpseclib\Net\SFTP($this->host, $this->port);
-            $auth = $this->getAuth();
-
-            if (!$this->sftp->login($this->user, $auth)) {
+            $old = error_reporting(0);
+            try {
+                $sftp = $this->createSftp();
+                if (!empty($this->hostKeyFingerprint)) {
+                    $this->verifyHostKey($sftp);
+                }
+                if (!$sftp->login($this->user, $this->getAuth())) {
+                    throw new Exception(
+                        sprintf(
+                            'authentication failed for %s@%s%s',
+                            $this->user,
+                            $this->host,
+                            empty($this->password) ? '' : ' with password ****'
+                        )
+                    );
+                }
+            } catch (BaseException $e) {
+                // phpseclib 4 reports connection and protocol errors as exceptions
+                throw new Exception(sprintf('connection to %s failed: %s', $this->host, $e->getMessage()), 0, $e);
+            } finally {
+                // restore old error reporting
                 error_reporting($old);
-                throw new Exception(
-                    sprintf(
-                        'authentication failed for %s@%s%s',
-                        $this->user,
-                        $this->host,
-                        empty($this->password) ? '' : ' with password ****'
-                    )
-                );
             }
-            // restore old error reporting
-            error_reporting($old);
+            $this->sftp = $sftp;
         }
 
         return $this->sftp;
+    }
+
+    /**
+     * Create the phpseclib client, not connected yet.
+     *
+     * @return \phpseclib4\Net\SFTP
+     */
+    protected function createSftp() : phpseclib4\Net\SFTP
+    {
+        return new phpseclib4\Net\SFTP($this->host, (int) $this->port);
+    }
+
+    /**
+     * Compare the server's host key with the configured fingerprint before any credential is sent.
+     *
+     * getServerPublicHostKey() connects and checks that the server holds the private key of the
+     * host key it presents; the fingerprint check then ties that key to the configured server.
+     *
+     * @param  \phpseclib4\Net\SFTP $sftp
+     * @throws \phpbu\App\Backup\Sync\Exception
+     */
+    protected function verifyHostKey(phpseclib4\Net\SFTP $sftp)
+    {
+        $hostKey = $sftp->getServerPublicHostKey();
+        if (!is_string($hostKey) || strpos($hostKey, ' ') === false) {
+            throw new Exception(sprintf('could not read the host key of %s', $this->host));
+        }
+        $actual = self::fingerprint($hostKey);
+        if (!hash_equals($this->hostKeyFingerprint, $actual)) {
+            throw new Exception(
+                sprintf(
+                    'host key mismatch for %s: expected %s, got %s (%s key)',
+                    $this->host,
+                    $this->hostKeyFingerprint,
+                    $actual,
+                    self::keyType($hostKey)
+                )
+            );
+        }
+    }
+
+    /**
+     * Return the OpenSSH SHA256 fingerprint of a public key in "<type> <base64>" form.
+     *
+     * @param  string $publicKey
+     * @return string
+     */
+    public static function fingerprint(string $publicKey) : string
+    {
+        $parts = explode(' ', trim($publicKey));
+        $blob  = base64_decode($parts[1] ?? '', true);
+        return 'SHA256:' . rtrim(base64_encode(hash('sha256', (string) $blob, true)), '=');
+    }
+
+    /**
+     * Return the key type stored in a public key blob, e.g. "ssh-rsa".
+     *
+     * phpseclib prefixes the key with the signature algorithm (rsa-sha2-256), which
+     * ssh-keyscan and ssh-keygen do not show, so the type is read from the blob itself.
+     *
+     * @param  string $publicKey
+     * @return string
+     */
+    public static function keyType(string $publicKey) : string
+    {
+        $parts = explode(' ', trim($publicKey));
+        $blob  = (string) base64_decode($parts[1] ?? '', true);
+        if (strlen($blob) < 4) {
+            return 'unknown';
+        }
+        $length = unpack('N', substr($blob, 0, 4))[1];
+        $type   = substr($blob, 4, min($length, 64));
+        // the server sends this value, so it reaches the message only if it looks like a key type
+        return preg_match('#^[a-z0-9@.\-]{1,64}$#D', $type) ? $type : 'unknown';
     }
 
     /**
@@ -190,17 +299,24 @@ class Sftp extends Xtp
     /**
      * Return a phpseclib authentication thingy.
      *
-     * @return \phpseclib\Crypt\RSA|string
+     * @return \phpseclib4\Crypt\Common\PrivateKey|string
+     * @throws \phpbu\App\Backup\Sync\Exception
      */
     private function getAuth()
     {
-        $auth = $this->password;
+        $auth = (string) $this->password;
         // if private key should be used
         if ($this->privateKey) {
-            $auth = new phpseclib\Crypt\RSA();
-            $auth->loadKey(file_get_contents($this->privateKey));
-            if ($this->password) {
-                $auth->setPassword($this->password);
+            try {
+                $auth = PublicKeyLoader::load(
+                    (string) file_get_contents($this->privateKey),
+                    empty($this->password) ? null : $this->password
+                );
+            } catch (BaseException $e) {
+                throw new Exception(sprintf('could not load private key: %s', $e->getMessage()), 0, $e);
+            }
+            if (!$auth instanceof PrivateKey) {
+                throw new Exception('the configured key is not a private key');
             }
         }
         return $auth;

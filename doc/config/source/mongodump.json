@@ -10,6 +10,7 @@
     "excludeCollections": "myCollectionToExclude1,myCollectionToExclude2",
     "excludeCollectionsWithPrefix": "myExcludePrefix1,myExcludePrefix2",
     "ipv6": true,
-    "pathToMongodump": "/path/to/custom/bin"
+    "pathToMongodump": "/path/to/custom/bin",
+    "readPreference": "secondary"
   }
 }

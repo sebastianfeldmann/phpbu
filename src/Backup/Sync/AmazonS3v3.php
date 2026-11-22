@@ -108,10 +108,14 @@ class AmazonS3v3 extends AmazonS3
      */
     protected function createUploader(Target $target, S3Client $s3) : MultipartUploader
     {
-        return new MultipartUploader($s3, $target->getPathname(), [
+        $options = [
             'bucket' => $this->bucket,
             'key'    => $this->getUploadPath($target),
-        ]);
+        ];
+        if ($this->multiPartUploadSize) {
+            $options['part_size'] = (int) $this->multiPartUploadSize;
+        }
+        return new MultipartUploader($s3, $target->getPathname(), $options);
     }
 
     /**

@@ -2,7 +2,6 @@
 namespace phpbu\App\Backup\Sync;
 
 use phpbu\App\Backup\Path;
-use phpseclib;
 use phpbu\App\Result;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;

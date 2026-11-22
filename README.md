@@ -14,12 +14,12 @@ Get an in depth look into all the features and a short 'getting started' tutoria
 [![Build Status](https://github.com/sebastianfeldmann/phpbu/workflows/Integration/badge.svg)](https://github.com/sebastianfeldmann/phpbu/actions)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/sebastianfeldmann/phpbu/?branch=master)
-[![PHP Website](https://img.shields.io/website-up-down-green-red/https/phpbu.de.svg)](https://www.phpbu.de)
+[![PHP Website](https://img.shields.io/website-up-down-green-red/https/www.phpbu.de.svg)](https://www.phpbu.de)
 
-If you are not using php 8.1 or greater already you can still use phpbu version [6.0.30](https://phar.phpbu.de/phpbu-6.0.20.phar) \
-If you are not using php 8.0 or greater already you can still use phpbu version [6.0.20](https://phar.phpbu.de/phpbu-6.0.20.phar) \
-If you are not using php 7.2 or greater already you can still use phpbu version [5.2.10](https://phar.phpbu.de/phpbu-5.2.10.phar) \
-If you are behind php 7.0 you can still use phpbu version [4.0.10](https://phar.phpbu.de/phpbu-4.0.10.phar)
+If you are not using php 8.1 or greater already you can still use phpbu version [6.0.30](https://github.com/sebastianfeldmann/phpbu/releases/tag/6.0.30) \
+If you are not using php 8.0 or greater already you can still use phpbu version [6.0.20](https://github.com/sebastianfeldmann/phpbu/releases/tag/6.0.20) \
+If you are not using php 7.2 or greater already you can still use phpbu version [5.2.10](https://github.com/sebastianfeldmann/phpbu/releases/tag/5.2.10) \
+If you are behind php 7.0 you can still use phpbu version [4.0.10](https://github.com/sebastianfeldmann/phpbu/releases/tag/4.0.10)
 
 ## Features
 
@@ -82,7 +82,7 @@ If you are behind php 7.0 you can still use phpbu version [4.0.10](https://phar.
 
 ## Installation
 
-You can [download](https://phar.phpbu.de/phpbu.phar) a PHP Archive [(PHAR)](http://php.net/phar) that bundles everything you need to run *PHPBU* in a single file.
+You can [download](https://github.com/sebastianfeldmann/phpbu/releases/latest) a PHP Archive [(PHAR)](http://php.net/phar) that bundles everything you need to run *PHPBU* in a single file.
 
     wget https://phar.phpbu.de/phpbu.phar
     chmod +x phpbu.phar

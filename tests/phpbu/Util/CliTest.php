@@ -82,6 +82,20 @@ class CliTest extends TestCase
     }
 
     /**
+     * Test detectCmdLocationWithWhich passes the command to 'which' as one argument
+     */
+    public function testDetectCmdLocationWithWhichQuotesCommand()
+    {
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            // can't be tested on windows system
+            $this->assertTrue(true);
+        } else {
+            $this->assertStringEndsWith('/ls', Cli::detectCmdLocationWithWhich('ls'));
+            $this->assertSame('', Cli::detectCmdLocationWithWhich('ls;true'));
+        }
+    }
+
+    /**
      * Test detectCmdLocation
      */
     public function testDetectCmdLocationWithProvidedPath()

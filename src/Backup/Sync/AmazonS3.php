@@ -111,6 +111,13 @@ abstract class AmazonS3 implements Simulator
     protected $signatureVersion;
 
     /**
+     * Multi part upload part size in bytes
+     *
+     * @var int|null
+     */
+    protected $multiPartUploadSize;
+
+    /**
      * Min multi part upload size
      *
      * @var int
@@ -151,8 +158,9 @@ abstract class AmazonS3 implements Simulator
         $this->path             = Util\Path::replaceDatePlaceholders($pathCleaned, $this->time);
         $this->pathRaw          = $pathCleaned;
         $this->acl              = Util\Arr::getValue($config, 'acl', 'private');
-        $this->multiPartUpload  = Util\Str::toBoolean(Util\Arr::getValue($config, 'useMultiPartUpload'), false);
-        $this->usePathStyle     = Util\Str::toBoolean(Util\Arr::getValue($config, 'usePathStyleEndpoint'), false);
+        $this->multiPartUpload     = Util\Str::toBoolean(Util\Arr::getValue($config, 'useMultiPartUpload'), false);
+        $this->multiPartUploadSize = Util\Arr::getValue($config, 'multiPartUploadPartSize');
+        $this->usePathStyle        = Util\Str::toBoolean(Util\Arr::getValue($config, 'usePathStyleEndpoint'), false);
         $this->endpoint         = Util\Arr::getValue($config, 'endpoint');
         $this->signatureVersion = Util\Arr::getValue($config, 'signatureVersion');
     }

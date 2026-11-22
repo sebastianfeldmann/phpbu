@@ -139,7 +139,7 @@ abstract class Cli
         $bin = '';
         // on nx systems use 'which' command.
         if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
-            $command = trim((string) `which $cmd`);
+            $command = trim((string) shell_exec('which ' . escapeshellarg($cmd)));
             $bin     = self::isExecutable($command);
         }
         return $bin;

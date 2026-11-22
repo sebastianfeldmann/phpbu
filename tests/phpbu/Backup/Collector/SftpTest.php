@@ -4,6 +4,7 @@ namespace phpbu\App\Backup\Collector;
 use phpbu\App\Backup\Path;
 use phpbu\App\Backup\Target;
 use phpbu\App\Util;
+use phpseclib4\Exception\FileSystemException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -30,7 +31,7 @@ class SftpTest extends TestCase
         $filename       = 'foo-%Y-%m-%d-%H_%i.txt';
         $target         = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
         $pathUtil       = new Path($remotePath);
-        $secLib         = $this->createMock(\phpseclib\Net\SFTP::class);
+        $secLib         = $this->createMock(\phpseclib4\Net\SFTP::class);
         $secLibFileList = [
             // directory
             '.' => [
@@ -69,7 +70,7 @@ class SftpTest extends TestCase
         ];
 
         $secLib->expects($this->once())
-               ->method('_list')
+               ->method('rawlist')
                ->with($remotePath)
                ->willReturn($secLibFileList);
 
@@ -151,9 +152,9 @@ class SftpTest extends TestCase
             ],
         ];
 
-        $secLib = $this->createMock(\phpseclib\Net\SFTP::class);
+        $secLib = $this->createMock(\phpseclib4\Net\SFTP::class);
         $secLib->expects($this->exactly(2))
-               ->method('_list')
+               ->method('rawlist')
                ->will($this->onConsecutiveCalls($listDir, $listFiles));
 
         $collector = new Sftp($target, $pathUtil, $secLib);
@@ -175,13 +176,12 @@ class SftpTest extends TestCase
         $filename       = 'foo-%Y-%m-%d-%H_%i.txt';
         $target         = new Target($path, $filename, strtotime('2014-12-07 04:30:57'));
         $pathUtil       = new Path($remotePath);
-        $secLib         = $this->createMock(\phpseclib\Net\SFTP::class);
-        $result         = null;
+        $secLib         = $this->createMock(\phpseclib4\Net\SFTP::class);
 
         $secLib->expects($this->once())
-            ->method('_list')
+            ->method('rawlist')
             ->with($remotePath)
-            ->willReturn($result);
+            ->willThrowException(new FileSystemException('No such file'));
 
         $collector = new Sftp($target, $pathUtil, $secLib);
 

@@ -27,6 +27,9 @@
   <!-- optional, default=false -->
   <option name="ipv6" value="true"/>
 
+  <!-- optional, default=none -->
+  <option name="readPreference" value="secondary"/>
+
   <!-- define your custom mongodump executable location -->
   <option name="pathToMongodump" value="/path/to/custom/bin" />
 </source>

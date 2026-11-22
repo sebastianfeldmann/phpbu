@@ -17,4 +17,7 @@
 
   <!-- optional, default false -->
   <option name="useMultiPartUpload" value="true" />
+
+  <!-- optional, multipart upload part size in bytes, default AWS SDK default (5MB) -->
+  <option name="multiPartUploadPartSize" value="104857600" />
 </sync>

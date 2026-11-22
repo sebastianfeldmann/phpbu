@@ -15,6 +15,11 @@
   <!-- optional -->
   <option name="key" value="somedir/id_rsa" />
 
+  <!-- optional, recommended: SHA256 fingerprint of the server's RSA host key;
+       without it the server is not authenticated before the login
+       ssh-keyscan -t rsa backup.example.com | ssh-keygen -lf - -->
+  <option name="hostKeyFingerprint" value="SHA256:XqhGD0P8Q2cbGSNhwSZoGYfCfkfqXIRb3VGOC+MAWP4" />
+
   <!-- optional, default=none -->
   <option name="path" value="somedir/somesubdir" />
 </sync>
