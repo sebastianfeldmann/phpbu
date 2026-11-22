@@ -52,6 +52,13 @@ class Sftp extends Xtp
     protected $privateKey;
 
     /**
+     * SHA256 fingerprint of the server's host key, as printed by ssh-keygen -l
+     *
+     * @var string
+     */
+    protected $hostKeyFingerprint;
+
+    /**
      * (non-PHPDoc)
      *
      * @see    \phpbu\App\Backup\Sync::setup()
@@ -78,6 +85,15 @@ class Sftp extends Xtp
             }
         }
         $this->privateKey = $privateKey;
+
+        $fingerprint = Util\Arr::getValue($config, 'hostKeyFingerprint', '');
+        if (!empty($fingerprint) && !preg_match('#^SHA256:[A-Za-z0-9+/]{43}$#D', $fingerprint)) {
+            throw new Exception(
+                '\'hostKeyFingerprint\' must be a SHA256 fingerprint like \'SHA256:...\', see ssh-keygen -l'
+            );
+        }
+        $this->hostKeyFingerprint = $fingerprint;
+
         $this->remotePath = new Path($config['path'], $this->time);
         $this->port       = Util\Arr::getValue($config, 'port', '22');
 
@@ -152,26 +168,104 @@ class Sftp extends Xtp
     {
         if (!$this->sftp) {
             // silence phpseclib errors
-            $old  = error_reporting(0);
-            $this->sftp = new phpseclib\Net\SFTP($this->host, $this->port);
-            $auth = $this->getAuth();
-
-            if (!$this->sftp->login($this->user, $auth)) {
+            $old = error_reporting(0);
+            try {
+                $sftp = $this->createSftp();
+                if (!empty($this->hostKeyFingerprint)) {
+                    $this->verifyHostKey($sftp);
+                }
+                if (!$sftp->login($this->user, $this->getAuth())) {
+                    throw new Exception(
+                        sprintf(
+                            'authentication failed for %s@%s%s',
+                            $this->user,
+                            $this->host,
+                            empty($this->password) ? '' : ' with password ****'
+                        )
+                    );
+                }
+            } finally {
+                // restore old error reporting
                 error_reporting($old);
-                throw new Exception(
-                    sprintf(
-                        'authentication failed for %s@%s%s',
-                        $this->user,
-                        $this->host,
-                        empty($this->password) ? '' : ' with password ****'
-                    )
-                );
             }
-            // restore old error reporting
-            error_reporting($old);
+            $this->sftp = $sftp;
         }
 
         return $this->sftp;
+    }
+
+    /**
+     * Create the phpseclib client, not connected yet.
+     *
+     * @return \phpseclib\Net\SFTP
+     */
+    protected function createSftp() : phpseclib\Net\SFTP
+    {
+        return new phpseclib\Net\SFTP($this->host, $this->port);
+    }
+
+    /**
+     * Compare the server's host key with the configured fingerprint before any credential is sent.
+     *
+     * getServerPublicHostKey() connects and checks that the server holds the private key of the
+     * host key it presents; the fingerprint check then ties that key to the configured server.
+     *
+     * @param  \phpseclib\Net\SFTP $sftp
+     * @throws \phpbu\App\Backup\Sync\Exception
+     */
+    protected function verifyHostKey(phpseclib\Net\SFTP $sftp)
+    {
+        $hostKey = $sftp->getServerPublicHostKey();
+        if (!is_string($hostKey) || strpos($hostKey, ' ') === false) {
+            throw new Exception(sprintf('could not read the host key of %s', $this->host));
+        }
+        $actual = self::fingerprint($hostKey);
+        if (!hash_equals($this->hostKeyFingerprint, $actual)) {
+            throw new Exception(
+                sprintf(
+                    'host key mismatch for %s: expected %s, got %s (%s key)',
+                    $this->host,
+                    $this->hostKeyFingerprint,
+                    $actual,
+                    self::keyType($hostKey)
+                )
+            );
+        }
+    }
+
+    /**
+     * Return the OpenSSH SHA256 fingerprint of a public key in "<type> <base64>" form.
+     *
+     * @param  string $publicKey
+     * @return string
+     */
+    public static function fingerprint(string $publicKey) : string
+    {
+        $parts = explode(' ', trim($publicKey));
+        $blob  = base64_decode($parts[1] ?? '', true);
+        return 'SHA256:' . rtrim(base64_encode(hash('sha256', (string) $blob, true)), '=');
+    }
+
+    /**
+     * Return the key type stored in a public key blob, e.g. "ssh-rsa".
+     *
+     * phpseclib prefixes the key with the signature algorithm (rsa-sha2-256), which
+     * ssh-keyscan and ssh-keygen do not show, so the type is read from the blob itself.
+     *
+     * @param  string $publicKey
+     * @return string
+     */
+    public static function keyType(string $publicKey) : string
+    {
+        $parts = explode(' ', trim($publicKey));
+        $blob  = (string) base64_decode($parts[1] ?? '', true);
+        if (strlen($blob) < 4) {
+            return 'unknown';
+        }
+        $length = unpack('N', substr($blob, 0, 4))[1];
+        $type   = substr($blob, 4, min($length, 64));
+        // the server sends this value, so it reaches the message only if it looks like a key type
+        return preg_match('#^[a-z0-9@.\-]{1,64}$#D', $type) ? $type : 'unknown';
     }
 
     /**
