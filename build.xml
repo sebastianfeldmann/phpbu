@@ -92,7 +92,6 @@
         <!-- Copy .xsd for config validation -->
         <copy file="${basedir}/phpbu.xsd" tofile="${basedir}/build/phar/phpbu.xsd"/>
 
-
         <!-- aws -->
         <copy file="${basedir}/vendor/aws/aws-sdk-php/LICENSE" tofile="${basedir}/build/phar/lib/aws-sdk/LICENSE"/>
         <copy todir="${basedir}/build/phar/lib/aws-sdk">
@@ -483,7 +482,7 @@
         <copy file="${basedir}/vendor/azure-oss/identity/LICENSE"
               tofile="${basedir}/build/phar/lib/azure-oss/identity/LICENSE"/>
         <copy todir="${basedir}/build/phar/lib/azure-oss/identity">
-            <fileset dir="${basedir}/vendor/azure-oss/identity/src">
+            <fileset dir="${basedir}/vendor/azure-oss/identity">
                 <include name="**/*.php"/>
             </fileset>
         </copy>
@@ -528,6 +527,15 @@
               tofile="${basedir}/build/phar/lib/mtdowling/jmespath.php/LICENSE"/>
         <copy todir="${basedir}/build/phar/lib/mtdowling/jmespath.php">
             <fileset dir="${basedir}/vendor/mtdowling/jmespath.php/src">
+                <include name="**/*.php"/>
+            </fileset>
+        </copy>
+
+        <!-- PHP-HTTP -->
+        <copy file="${basedir}/vendor/php-http/discovery/LICENSE"
+              tofile="${basedir}/build/phar/lib/php-http/discovery/LICENSE"/>
+        <copy todir="${basedir}/build/phar/lib/php-http/discovery">
+            <fileset dir="${basedir}/vendor/php-http/discovery/src">
                 <include name="**/*.php"/>
             </fileset>
         </copy>
