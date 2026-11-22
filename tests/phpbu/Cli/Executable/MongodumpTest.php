@@ -168,4 +168,18 @@ class MongodumpTest extends TestCase
             $mongo->getCommand()
         );
     }
+
+    /**
+     * Tests Mongodump::createCommandLine
+     */
+    public function testReadPreference()
+    {
+        $mongo = new Mongodump(PHPBU_TEST_BIN);
+        $mongo->dumpToDirectory('./dump')->useReadPreference('secondary');
+
+        $this->assertEquals(
+            '"' . PHPBU_TEST_BIN . '/mongodump" --out=\'./dump\' --readPreference=\'secondary\'',
+            $mongo->getCommand()
+        );
+    }
 }

@@ -108,6 +108,14 @@ class Mongodump extends SimulatorExecutable implements Simulator
     private $excludeCollectionsWithPrefix;
 
     /**
+     * Read preference
+     * --readPreference <string>
+     *
+     * @var string
+     */
+    private $readPreference;
+
+    /**
      * (No PHPDoc)
      *
      * @see    \phpbu\App\Backup\Source
@@ -121,6 +129,7 @@ class Mongodump extends SimulatorExecutable implements Simulator
 
         $this->pathToMongodump = Util\Arr::getValue($conf, 'pathToMongodump', '');
         $this->useIPv6         = Util\Str::toBoolean(Util\Arr::getValue($conf, 'ipv6', ''), false);
+        $this->readPreference  = Util\Arr::getValue($conf, 'readPreference', '');
 
         $this->setupValidation();
     }
@@ -213,7 +222,8 @@ class Mongodump extends SimulatorExecutable implements Simulator
                    ->dumpDatabases($this->databases)
                    ->dumpCollections($this->collections)
                    ->excludeCollections($this->excludeCollections)
-                   ->excludeCollectionsWithPrefix($this->excludeCollectionsWithPrefix);
+                   ->excludeCollectionsWithPrefix($this->excludeCollectionsWithPrefix)
+                   ->useReadPreference($this->readPreference);
         return $executable;
     }
 
